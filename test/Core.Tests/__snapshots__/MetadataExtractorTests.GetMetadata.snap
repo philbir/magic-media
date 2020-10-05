@@ -1,0 +1,34 @@
+﻿{
+  "Dimension": {
+    "Height": 2268,
+    "Width": 4032
+  },
+  "Location": {
+    "Point": {
+      "Type": "Point",
+      "Coordinates": [
+        9.066944,
+        47.078056
+      ]
+    },
+    "Altitude": 0,
+    "Type": "gps",
+    "GeoHash": "u0q7y663e",
+    "Address": {
+      "Name": null,
+      "City": "Springfield",
+      "CountryCode": null,
+      "Country": "US",
+      "Address": "742 Evergreen Terrace",
+      "Distric1": null,
+      "Distric2": null,
+      "EntityType": null
+    }
+  },
+  "Orientation": "Horizontal (normal)",
+  "Camera": {
+    "Model": "SM-N950F",
+    "Make": "samsung"
+  },
+  "ImageId": "G12LLKA02SM G12LLKL01GM\n"
+}

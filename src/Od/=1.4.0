@@ -1,0 +1,19 @@
+Collecting keras
+  Downloading Keras-2.4.3-py2.py3-none-any.whl (36 kB)
+Requirement already satisfied: numpy>=1.9.1 in /usr/local/lib/python3.8/site-packages (from keras) (1.19.2)
+Collecting scipy>=0.14
+  Downloading scipy-1.5.2-cp38-cp38-manylinux1_x86_64.whl (25.7 MB)
+Collecting h5py
+  Downloading h5py-2.10.0-cp38-cp38-manylinux1_x86_64.whl (2.9 MB)
+Collecting pyyaml
+  Downloading PyYAML-5.3.1.tar.gz (269 kB)
+Collecting six
+  Downloading six-1.15.0-py2.py3-none-any.whl (10 kB)
+Building wheels for collected packages: pyyaml
+  Building wheel for pyyaml (setup.py): started
+  Building wheel for pyyaml (setup.py): finished with status 'done'
+  Created wheel for pyyaml: filename=PyYAML-5.3.1-cp38-cp38-linux_x86_64.whl size=572459 sha256=9145b431e4ea646695cef1c5cbcf468e60158397f4976c114012f61f61967b30
+  Stored in directory: /root/.cache/pip/wheels/13/90/db/290ab3a34f2ef0b5a0f89235dc2d40fea83e77de84ed2dc05c
+Successfully built pyyaml
+Installing collected packages: scipy, six, h5py, pyyaml, keras
+Successfully installed h5py-2.10.0 keras-2.4.3 pyyaml-5.3.1 scipy-1.5.2 six-1.15.0
