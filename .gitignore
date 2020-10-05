@@ -299,3 +299,4 @@ output
 All.sln
 
 src/Face/models/
+*.pyc
