@@ -39,9 +39,7 @@ namespace MagicMedia.Store
 
         public VideoInfo VideoInfo { get; set; }
 
-        public string CameraId { get; set; }
-
-        public string DateTakenResolveType { get; set; }
+        public Guid? CameraId { get; set; }
 
         public int? ObjectCount { get; set; }
     }

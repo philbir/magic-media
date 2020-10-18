@@ -9,7 +9,6 @@ using Microsoft.Extensions.DependencyInjection;
 namespace MagicMedia.Stores
 {
     public class FileSystemMediaBlobStore : IMediaBlobStore
-
     {
         private readonly FileSystemStoreOptions _options;
 
@@ -31,6 +30,12 @@ namespace MagicMedia.Stores
         public async Task StoreAsync(MediaBlobData data, CancellationToken cancellationToken)
         {
             var filename = GetFilename(data);
+            var file = new FileInfo(filename);
+
+            if (!file.Directory.Exists)
+            {
+                Directory.CreateDirectory(file.Directory.FullName);
+            }
 
             await File.WriteAllBytesAsync(filename, data.Data, cancellationToken);
         }
@@ -48,9 +53,10 @@ namespace MagicMedia.Stores
             {
                 _options.RootDirectory
             };
+
             paths.AddRange(loc.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries));
 
-            if ( data.Directory != null)
+            if (data.Directory != null)
             {
                 paths.AddRange(data.Directory.Split(
                     new[] { '/' },
@@ -84,6 +90,7 @@ namespace MagicMedia.Stores
         {
             return new Dictionary<MediaBlobType, string>
             {
+                [MediaBlobType.Media] = "/",
                 [MediaBlobType.Deleted] = "System/Deleted",
                 [MediaBlobType.Duplicate] = "System/Duplicate",
                 [MediaBlobType.Imported] = "System/Imported",

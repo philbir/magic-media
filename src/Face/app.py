@@ -11,7 +11,6 @@ import json
 
 detector = None
 
-
 def create_app():
     app = Flask(__name__)
     face = FaceEncoder()

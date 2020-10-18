@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using MagicMedia;
 using MagicMedia.BingMaps;
+using MagicMedia.Discovery;
 using MagicMedia.Face;
 using MagicMedia.Playground;
 using MagicMedia.Store.MongoDb;
@@ -21,6 +23,10 @@ namespace Playground
             IServiceProvider sp = BuildServiceProvider();
             ImportSample importSample = sp.GetService<ImportSample>();
             IFaceModelBuilderService modelBuilder = sp.GetService<IFaceModelBuilderService>();
+
+            DiscoverySample discovery = sp.GetService<DiscoverySample>();
+
+            await discovery.DiscoverAsync();
 
             await modelBuilder.BuildModelAsyc(default);
 
@@ -50,6 +56,9 @@ namespace Playground
             services.AddMagicMedia();
             services.AddBingMaps(bingOptions);
             services.AddSingleton<ImportSample>();
+            services.AddSingleton<DiscoverySample>();
+            services.AddFileSystemDiscovery(new List<string> { @"C:\MagicMedia\Inbox" });
+
 
             return services.BuildServiceProvider();
         }

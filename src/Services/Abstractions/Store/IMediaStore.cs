@@ -11,10 +11,18 @@ namespace MagicMedia.Store
     {
         IFaceStore Faces { get; }
 
+        Task<IReadOnlyDictionary<Guid, MediaThumbnail>> GetThumbnailsByMediaIdsAsync(
+            IEnumerable<Guid> mediaIds,
+            ThumbnailSizeName size,
+            CancellationToken cancellationToken);
 
         Task InsertMediaAsync(
             Media media,
             IEnumerable<MediaFace> faces,
+            CancellationToken cancellationToken);
+
+        Task<IEnumerable<Media>> SearchAsync(
+            SearchMediaRequest request,
             CancellationToken cancellationToken);
     }
 }

@@ -87,8 +87,8 @@ namespace MagicMedia.Thumbnail
                 Format = "jpg",
                 Dimensions = new MediaDimension()
                 {
-                    Height = image.Height,
-                    Width = image.Width
+                    Height = resized.Height,
+                    Width = resized.Width
                 }
             };
         }

@@ -22,6 +22,7 @@ namespace MagicMedia.Store.MongoDb
                 .ConfigureConnection(con => con.WriteConcern = WriteConcern.WMajority)
                 .ConfigureConnection(con => con.ReadPreference = ReadPreference.Primary)
                 .ConfigureCollection(new FaceCollectionConfiguration())
+                .ConfigureCollection(new CameraCollectionConfiguration())
                 .ConfigureCollection(new MediaCollectionConfiguration());
         }
 
@@ -38,6 +39,14 @@ namespace MagicMedia.Store.MongoDb
             get
             {
                 return CreateCollection<MediaFace>();
+            }
+        }
+
+        public IMongoCollection<Camera> Cameras
+        {
+            get
+            {
+                return CreateCollection<Camera>();
             }
         }
 

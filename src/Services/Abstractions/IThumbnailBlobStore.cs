@@ -18,10 +18,6 @@ namespace MagicMedia
             CancellationToken cancellationToken);
 
         public Task<byte[]> GetAsync(Guid id, CancellationToken cancellationToken);
-
-        public Task<IEnumerable<ThumbnailData>> GetManyAsync(
-            IEnumerable<Guid> id,
-            CancellationToken cancellationToken);
     }
 
     public interface IMediaBlobStore

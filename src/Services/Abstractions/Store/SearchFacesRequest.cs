@@ -10,5 +10,4 @@ namespace MagicMedia.Store
     {
         public IEnumerable<FaceState>? States { get; set; }
     }
-
 }

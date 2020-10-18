@@ -23,9 +23,17 @@ namespace MagicMedia
             Stream stream,
             CancellationToken cancellationToken)
         {
+            Image image = await Image.LoadAsync(stream);
+
+            return await GetMetadataAsync(image, cancellationToken);
+        }
+
+        public async Task<MediaMetadata> GetMetadataAsync(
+            Image image,
+            CancellationToken cancellationToken)
+        {
             var metadata = new MediaMetadata();
 
-            Image image = await Image.LoadAsync(stream);
             ExifProfile? exifProfile = image.Metadata.ExifProfile;
 
             metadata.Dimension = new MediaDimension

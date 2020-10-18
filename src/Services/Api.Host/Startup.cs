@@ -1,5 +1,7 @@
-using Api.Host.GraphQL;
 using HotChocolate;
+using MagicMedia.Api.GraphQL;
+using MagicMedia.Api.GraphQL.DataLoaders;
+using MagicMedia.Api.GraphQL.Face;
 using MagicMedia.BingMaps;
 using MagicMedia.Store.MongoDb;
 using MagicMedia.Stores;
@@ -9,10 +11,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MongoDB.Extensions.Context;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MagicMedia.Api
 {
@@ -28,7 +26,13 @@ namespace MagicMedia.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddGraphQLServer()
-                .AddQueryType<Query>();
+                    .AddQueryType(d => d.Name("Query"))
+                        .AddType<MediaQueries>()
+                        .AddType<FaceQueries>()
+                    .AddType<MediaType>()
+                    .AddType<ThumbnailType>()
+                    .AddDataLoader<CameraByIdDataLoader>()
+                    .AddDataLoader<ThumbnailByMediaIdDataLoader>();
 
             BingMapsOptions bingOptions = Configuration.GetSection("MagicMedia:BingMaps")
                 .Get<BingMapsOptions>();
@@ -42,6 +46,8 @@ namespace MagicMedia.Api
             services.AddFileSystemStore(@"C:\MagicMedia");
             services.AddMagicMedia();
             services.AddBingMaps(bingOptions);
+
+            services.AddMvc();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -64,6 +70,7 @@ namespace MagicMedia.Api
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapGraphQL();
+                endpoints.MapControllers();
                 //endpoints.MapControllerRoute(
                 //    name: "default",
                 //    pattern: "{controller=Home}/{action=Index}/{id?}");

@@ -35,7 +35,7 @@ namespace MagicMedia.Face
                 IEnumerable<FaceDetectionResponse>? faces = await res.Content
                     .ReadFromJsonAsync<IEnumerable<FaceDetectionResponse>>(JsonSettings);
 
-                return faces;
+                return faces ?? new List<FaceDetectionResponse>();
             }
             else
             {

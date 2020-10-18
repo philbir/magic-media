@@ -1,6 +1,9 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MongoDB.Driver;
 
 namespace MagicMedia.Store.MongoDb
 {
@@ -12,14 +15,60 @@ namespace MagicMedia.Store.MongoDb
         public MongoMediaStore(
             MediaStoreContext mediaStoreContext,
             IThumbnailBlobStore thumbnailBlobStore,
-            IFaceStore faceStore)
+            IFaceStore faceStore,
+            ICameraStore cameraStore)
         {
             _mediaStoreContext = mediaStoreContext;
             _thumbnailBlobStore = thumbnailBlobStore;
             Faces = faceStore;
+            Cameras = cameraStore;
         }
 
         public IFaceStore Faces { get; }
+
+        public ICameraStore Cameras { get; }
+
+        public async Task<IEnumerable<Media>> SearchAsync(
+            SearchMediaRequest request,
+            CancellationToken cancellationToken)
+        {
+            FilterDefinition<Media> filter = Builders<Media>.Filter.Empty;
+
+            List<Media> medias = await _mediaStoreContext.Medias.Find(filter)
+                .ToListAsync(cancellationToken);
+
+            return medias;
+        }
+
+        public async Task<IReadOnlyDictionary<Guid, MediaThumbnail>> GetThumbnailsByMediaIdsAsync(
+            IEnumerable<Guid> mediaIds,
+            ThumbnailSizeName size,
+            CancellationToken cancellationToken)
+        {
+            FilterDefinition<Media> filter = Builders<Media>.Filter
+                .In(x => x.Id, mediaIds.ToList());
+
+            filter = filter & Builders<Media>.Filter.ElemMatch(x =>
+                x.Thumbnails,
+                Builders<MediaThumbnail>.Filter.Eq(t => t.Size, size));
+
+            List<Media> medias = await _mediaStoreContext.Medias.Find(filter)
+                .ToListAsync(cancellationToken);
+
+            var result = new Dictionary<Guid, MediaThumbnail>();
+
+            foreach (Media media in medias)
+            {
+                MediaThumbnail thumb = media.Thumbnails.FirstOrDefault();
+                if (thumb != null)
+                {
+                    thumb.Data = await _thumbnailBlobStore.GetAsync(thumb.Id, cancellationToken);
+                    result.Add(media.Id, thumb);
+                }
+            }
+
+            return result;
+        }
 
         public async Task InsertMediaAsync(
             Media media,
@@ -52,10 +101,13 @@ namespace MagicMedia.Store.MongoDb
                 }
             }
 
-            await _mediaStoreContext.Faces.InsertManyAsync(
-                faces,
-                options: null,
-                cancellationToken);
+            if (faces.Any())
+            {
+                await _mediaStoreContext.Faces.InsertManyAsync(
+                    faces,
+                    options: null,
+                    cancellationToken);
+            }
         }
     }
 }

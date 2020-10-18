@@ -19,12 +19,8 @@ namespace MagicMedia.Store.MongoDb
 
         public Task<byte[]> GetAsync(Guid id, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<ThumbnailData>> GetManyAsync(IEnumerable<Guid> id, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
+            return _gridFSBucket.DownloadAsBytesByNameAsync(
+                id.ToString("N"), null, cancellationToken);
         }
 
         public async Task StoreAsync(ThumbnailData data, CancellationToken cancellationToken)

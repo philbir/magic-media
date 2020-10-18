@@ -8,6 +8,7 @@ namespace MagicMedia
 {
     public enum MediaBlobType
     {
+        Media,
         VideoPreview,
         Web,
         Deleted,

@@ -1,15 +1,19 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using HotChocolate.Types;
 using MagicMedia.Store;
 
-namespace Api.Host.GraphQL
+namespace MagicMedia.Api.GraphQL.Face
 {
-    public class Query
+    [ExtendObjectType(Name = "Query")]
+    public class FaceQueries
     {
         private readonly IMediaStore _mediaStore;
 
-        public Query(IMediaStore mediaStore)
+        public FaceQueries(IMediaStore mediaStore)
         {
             _mediaStore = mediaStore;
         }
