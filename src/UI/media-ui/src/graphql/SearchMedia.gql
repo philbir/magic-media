@@ -1,0 +1,25 @@
+query search {
+  searchMedia(request: { thumbnailSize: S }) {
+    id
+    filename
+    dateTaken
+    cameraId
+    camera {
+      id
+      model
+      make
+    }
+    thumbnail(size: M) {
+      size
+      dataUrl
+      dimensions {
+        height
+        width
+      }
+    }
+    source {
+      identifier
+      type
+    }
+  }
+}

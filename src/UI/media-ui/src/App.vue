@@ -34,19 +34,19 @@
     </v-app-bar>
 
     <v-main>
-      <ApolloExample />
+      <Media />
     </v-main>
   </v-app>
 </template>
 
 <script>
-import ApolloExample from "./components/ApolloExample";
+import Media from "./components/Media";
 
 export default {
   name: "App",
 
   components: {
-    ApolloExample,
+    Media,
   },
 
   data: () => ({

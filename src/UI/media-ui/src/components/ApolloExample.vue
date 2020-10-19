@@ -2,7 +2,7 @@
   <div class="apollo-example">
     <!-- Cute tiny form -->
     <div class="form">
-      <label for="field-name" class="label">Name</label>
+      <label for="field-name" class="label">Name 2</label>
       <input
         v-model="name"
         placeholder="Type a name"
