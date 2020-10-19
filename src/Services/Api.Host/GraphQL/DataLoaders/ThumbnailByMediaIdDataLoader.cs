@@ -9,7 +9,7 @@ using MagicMedia.Store;
 
 namespace MagicMedia.Api.GraphQL.DataLoaders
 {
-    public class ThumbnailByMediaIdDataLoader : BatchDataLoader<Guid, MediaThumbnail>
+    public class ThumbnailByMediaIdDataLoader : BatchDataLoader<Tuple<Guid, ThumbnailSizeName>, MediaThumbnail>
     {
         private readonly IMediaStore _mediaStore;
 
@@ -21,19 +21,19 @@ namespace MagicMedia.Api.GraphQL.DataLoaders
             _mediaStore = mediaStore;
         }
 
-        public ThumbnailSizeName Size { get; set; }
-
-        protected async override Task<IReadOnlyDictionary<Guid, MediaThumbnail>> LoadBatchAsync(
-            IReadOnlyList<Guid> keys,
+        protected async override Task<IReadOnlyDictionary<Tuple<Guid, ThumbnailSizeName>, MediaThumbnail>> LoadBatchAsync(
+            IReadOnlyList<Tuple<Guid, ThumbnailSizeName>> keys,
             CancellationToken cancellationToken)
         {
+            ThumbnailSizeName size = keys.First().Item2;
+
             IReadOnlyDictionary<Guid, MediaThumbnail> thumbs = await _mediaStore
                 .GetThumbnailsByMediaIdsAsync(
-                    keys,
-                    Size,
+                    keys.Select( x => x.Item1),
+                    size,
                     cancellationToken);
 
-            return thumbs;
+            return thumbs.ToDictionary(k => new Tuple<Guid, ThumbnailSizeName>(k.Key, size), v => v.Value);
         }
     }
 }

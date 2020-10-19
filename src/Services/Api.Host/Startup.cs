@@ -48,6 +48,15 @@ namespace MagicMedia.Api
             services.AddBingMaps(bingOptions);
 
             services.AddMvc();
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(builder => {
+                            builder
+                                .WithOrigins("http://localhost:8080")
+                                .AllowAnyHeader()
+                                .AllowAnyMethod();
+                            });
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -60,11 +69,10 @@ namespace MagicMedia.Api
             {
                 app.UseExceptionHandler("/Home/Error");
             }
-
+            app.UseCors();
             app.UseStaticFiles();
 
             app.UseRouting();
-
             //app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

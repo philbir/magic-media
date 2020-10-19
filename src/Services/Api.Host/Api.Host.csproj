@@ -8,8 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="HotChocolate.AspNetCore" Version="11.0.0-preview.148" />
-    <PackageReference Include="HotChocolate.AspNetCore.Authorization" Version="11.0.0-preview.148" />
+    <PackageReference Include="HotChocolate.AspNetCore" Version="11.0.0-preview.161" />
+    <PackageReference Include="HotChocolate.AspNetCore.Authorization" Version="11.0.0-preview.161" />
   </ItemGroup>
 
   <ItemGroup>

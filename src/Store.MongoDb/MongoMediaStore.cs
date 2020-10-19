@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MongoDB.Driver;
+using SixLabors.ImageSharp.ColorSpaces;
 
 namespace MagicMedia.Store.MongoDb
 {
@@ -59,7 +60,7 @@ namespace MagicMedia.Store.MongoDb
 
             foreach (Media media in medias)
             {
-                MediaThumbnail thumb = media.Thumbnails.FirstOrDefault();
+                MediaThumbnail thumb = media.Thumbnails.Where(x => x.Size == size).FirstOrDefault();
                 if (thumb != null)
                 {
                     thumb.Data = await _thumbnailBlobStore.GetAsync(thumb.Id, cancellationToken);
