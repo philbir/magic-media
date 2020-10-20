@@ -1,10 +1,15 @@
 <template>
-  <div ref="main">
+  <div>
     <div v-if="loading">Loading...</div>
-    <div v-else>
+    <div v-else class="media-wrapper">
       <img
-        class="center-image"
         :src="'http://localhost:5000/media/webimage/' + media.id"
+        :style="{
+          'margin-left': box.left + 'px',
+          'margin-top': box.top + 'px',
+          height: box.height + 'px',
+          width: box.width + 'px',
+        }"
       />
     </div>
   </div>
@@ -19,6 +24,7 @@ export default {
       mediaId: this.$route.params.id,
       windowWidth: window.innerWidth,
       media: {},
+      box: {},
       loading: true,
     };
   },
@@ -37,15 +43,43 @@ export default {
   },
   methods: {
     setMedia(media) {
-      console.log(media);
-      console.log(this.$refs.main.clientHeight);
       this.media = media;
       this.loading = false;
+      this.box = this.getBox(media);
+    },
+    getBox(media) {
+      const w = document.querySelector("#app").clientWidth;
+      const h = document.querySelector("#app").clientHeight;
+      const screenOrientation = w > h ? "l" : "p";
+
+      const box = { left: 0, top: 0 };
+
+      if (screenOrientation === "l") {
+        const ar = media.dimension.height / h;
+        console.log(ar);
+        box.height = h;
+        box.width = media.dimension.width / ar;
+        box.left = (w - box.width) / 2;
+      } else {
+        const ar = media.dimension.width / w;
+        box.width = w;
+        box.height = media.dimension.height / ar;
+        box.top = (h - box.height) / 2;
+      }
+      console.log(h, w, screenOrientation, box, media.dimension);
+
+      return box;
     },
   },
 };
 </script>
 
 <style scoped>
+.media-wrapper {
+  background-color: #1b1b1c;
+  height: 100vh;
+  z-index: 2;
+  overflow: hidden;
+}
 </style>
 

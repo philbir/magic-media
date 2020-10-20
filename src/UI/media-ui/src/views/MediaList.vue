@@ -9,7 +9,7 @@
 
       <!-- Result -->
       <div v-else-if="data">
-        <div class="media-container" style="height: 200px">
+        <div class="media-container" style="height: 1000px">
           <div
             v-for="(box, i) in getLayout(data.searchMedia).boxes"
             :key="i"

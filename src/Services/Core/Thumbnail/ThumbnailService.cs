@@ -107,9 +107,7 @@ namespace MagicMedia.Thumbnail
                 rect = new Rectangle(0, toRem / 2, image.Width, image.Height - toRem);
             }
 
-            image.Mutate(x => x.Crop(rect));
-
-            return image;
+            return image.Clone(x => x.Crop(rect));
         }
     }
 }
