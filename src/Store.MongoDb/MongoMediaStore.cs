@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MongoDB.Driver;
-using SixLabors.ImageSharp.ColorSpaces;
+using MongoDB.Driver.Linq;
 
 namespace MagicMedia.Store.MongoDb
 {
@@ -39,6 +39,17 @@ namespace MagicMedia.Store.MongoDb
                 .ToListAsync(cancellationToken);
 
             return medias;
+        }
+
+        public async Task<Media> GetById(
+            Guid id,
+            CancellationToken cancellationToken)
+        {
+            Media media = await _mediaStoreContext.Medias.AsQueryable()
+                .Where(x => x.Id == id)
+                .FirstOrDefaultAsync(cancellationToken);
+
+            return media;
         }
 
         public async Task<IReadOnlyDictionary<Guid, MediaThumbnail>> GetThumbnailsByMediaIdsAsync(

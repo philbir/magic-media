@@ -1,29 +1,25 @@
-query search {
-  searchMedia(request: { thumbnailSize: XS }) {
+query mediaDetails($id: Uuid!) {
+  mediaById(id: $id) {
     id
     filename
     dateTaken
     cameraId
+    dimension {
+      height
+      width
+    }
     camera {
       id
       model
       make
     }
-    dimension {
-      height
-       width
-    }
-    thumbnail(size: L) {
+    thumbnail(size: M) {
       size
       dataUrl
       dimensions {
         height
         width
       }
-    }
-    source {
-      identifier
-      type
     }
   }
 }

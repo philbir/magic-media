@@ -24,5 +24,12 @@ namespace MagicMedia.Api.GraphQL
         {
             return await _mediaStore.SearchAsync(request, cancellationToken);
         }
+
+        public async Task<Media> GetMediaByIdAsync(
+            Guid id,
+            CancellationToken cancellationToken)
+        {
+            return await _mediaStore.GetById(id, cancellationToken);
+        }
     }
 }

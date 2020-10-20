@@ -11,6 +11,7 @@ namespace MagicMedia.Store
     {
         IFaceStore Faces { get; }
 
+        Task<Media> GetById(Guid id, CancellationToken cancellationToken);
         Task<IReadOnlyDictionary<Guid, MediaThumbnail>> GetThumbnailsByMediaIdsAsync(
             IEnumerable<Guid> mediaIds,
             ThumbnailSizeName size,
