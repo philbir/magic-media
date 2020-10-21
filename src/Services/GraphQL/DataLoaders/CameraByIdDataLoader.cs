@@ -8,7 +8,7 @@ using HotChocolate.DataLoader;
 using MagicMedia.Store;
 using MagicMedia.Thumbnail;
 
-namespace MagicMedia.Api.GraphQL.DataLoaders
+namespace MagicMedia.GraphQL.DataLoaders
 {
     public class CameraByIdDataLoader : BatchDataLoader<Guid, Camera>
     {

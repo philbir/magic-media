@@ -1,11 +1,11 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using MagicMedia.Api.GraphQL.DataLoaders;
+using MagicMedia.GraphQL.DataLoaders;
 using MagicMedia.Extensions;
 using MagicMedia.Store;
 
-namespace MagicMedia.Api.GraphQL
+namespace MagicMedia.GraphQL
 {
     internal class ThumbnailResolvers
     {

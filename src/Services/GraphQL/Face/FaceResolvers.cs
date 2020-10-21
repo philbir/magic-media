@@ -1,9 +1,9 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using MagicMedia.Api.GraphQL.DataLoaders;
+using MagicMedia.GraphQL.DataLoaders;
 using MagicMedia.Store;
 
-namespace MagicMedia.Api.GraphQL.Face
+namespace MagicMedia.GraphQL.Face
 {
     public class FaceResolvers
     {

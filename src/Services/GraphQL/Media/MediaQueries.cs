@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using HotChocolate.Types;
 using MagicMedia.Store;
 
-namespace MagicMedia.Api.GraphQL
+namespace MagicMedia.GraphQL
 {
     [ExtendObjectType(Name = "Query")]
     public class MediaQueries

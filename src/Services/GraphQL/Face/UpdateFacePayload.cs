@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using MagicMedia.Store;
 
-namespace MagicMedia.Api.GraphQL.Face
+namespace MagicMedia.GraphQL.Face
 {
     public class UpdateFacePayload : Payload
     {

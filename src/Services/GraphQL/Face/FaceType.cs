@@ -1,7 +1,7 @@
 using HotChocolate.Types;
 using MagicMedia.Store;
 
-namespace MagicMedia.Api.GraphQL.Face
+namespace MagicMedia.GraphQL.Face
 {
     public class FaceType : ObjectType<MediaFace>
     {

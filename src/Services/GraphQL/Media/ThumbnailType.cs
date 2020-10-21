@@ -1,8 +1,7 @@
 using HotChocolate.Types;
-using MagicMedia.Extensions;
 using MagicMedia.Store;
 
-namespace MagicMedia.Api.GraphQL
+namespace MagicMedia.GraphQL
 {
     public class ThumbnailType : ObjectType<MediaThumbnail>
     {

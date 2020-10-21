@@ -1,6 +1,6 @@
 using System;
 
-namespace MagicMedia.Api.GraphQL.Face
+namespace MagicMedia.GraphQL.Face
 {
     public class AssignPersonByHumanInput
     {

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using HotChocolate.Types;
 using MagicMedia.Store;
 
-namespace MagicMedia.Api.GraphQL
+namespace MagicMedia.GraphQL
 {
     public partial class MediaType : ObjectType<Media>
     {

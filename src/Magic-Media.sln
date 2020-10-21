@@ -21,13 +21,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Web", "..\samples\Sa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureAI", "Services\AzureAI\AzureAI.csproj", "{BE771D20-B1F1-4E37-9C7C-6F375FEAC1C1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Store.MongoDb", "Store.MongoDb\Store.MongoDb.csproj", "{3F93DB3B-DE32-4F65-9C4A-2682AB411B68}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Playground", "..\samples\Playground\Playground.csproj", "{FBDD3AC8-33D4-4343-BCF5-A418FCCB38CA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestMediaLibrary", "..\test_media\TestMediaLibrary\TestMediaLibrary.csproj", "{1A0A651C-CE15-40D1-97DC-8D425B5FAC8C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api.Host", "Services\Api.Host\Api.Host.csproj", "{1569C456-67B0-4C64-83A8-5A946F70BF18}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api.Host", "Services\Api.Host\Api.Host.csproj", "{1569C456-67B0-4C64-83A8-5A946F70BF18}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Store.MongoDb", "Services\Store.MongoDb\Store.MongoDb.csproj", "{36ACF258-C00B-4A12-9A05-A16F0C3CFF77}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphQL", "Services\GraphQL\GraphQL.csproj", "{3FFF58D6-68B2-4790-9679-88DF5A0D890E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,10 +65,6 @@ Global
 		{BE771D20-B1F1-4E37-9C7C-6F375FEAC1C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE771D20-B1F1-4E37-9C7C-6F375FEAC1C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE771D20-B1F1-4E37-9C7C-6F375FEAC1C1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3F93DB3B-DE32-4F65-9C4A-2682AB411B68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3F93DB3B-DE32-4F65-9C4A-2682AB411B68}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3F93DB3B-DE32-4F65-9C4A-2682AB411B68}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3F93DB3B-DE32-4F65-9C4A-2682AB411B68}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FBDD3AC8-33D4-4343-BCF5-A418FCCB38CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FBDD3AC8-33D4-4343-BCF5-A418FCCB38CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FBDD3AC8-33D4-4343-BCF5-A418FCCB38CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -79,6 +77,14 @@ Global
 		{1569C456-67B0-4C64-83A8-5A946F70BF18}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1569C456-67B0-4C64-83A8-5A946F70BF18}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1569C456-67B0-4C64-83A8-5A946F70BF18}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36ACF258-C00B-4A12-9A05-A16F0C3CFF77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36ACF258-C00B-4A12-9A05-A16F0C3CFF77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36ACF258-C00B-4A12-9A05-A16F0C3CFF77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36ACF258-C00B-4A12-9A05-A16F0C3CFF77}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3FFF58D6-68B2-4790-9679-88DF5A0D890E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FFF58D6-68B2-4790-9679-88DF5A0D890E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FFF58D6-68B2-4790-9679-88DF5A0D890E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FFF58D6-68B2-4790-9679-88DF5A0D890E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

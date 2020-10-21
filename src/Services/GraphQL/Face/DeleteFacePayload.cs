@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
-namespace MagicMedia.Api.GraphQL.Face
+namespace MagicMedia.GraphQL.Face
 {
     public class DeleteFacePayload : Payload
     {

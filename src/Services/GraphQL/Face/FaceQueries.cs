@@ -6,7 +6,7 @@ using HotChocolate.Types;
 using MagicMedia.Face;
 using MagicMedia.Store;
 
-namespace MagicMedia.Api.GraphQL.Face
+namespace MagicMedia.GraphQL.Face
 {
     [ExtendObjectType(Name = "Query")]
     public class FaceQueries

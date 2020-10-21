@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -7,7 +7,7 @@ using GreenDonut;
 using HotChocolate.DataLoader;
 using MagicMedia.Store;
 
-namespace MagicMedia.Api.GraphQL.DataLoaders
+namespace MagicMedia.GraphQL.DataLoaders
 {
     public class PersonByIdDataLoader : BatchDataLoader<Guid, Person>
     {

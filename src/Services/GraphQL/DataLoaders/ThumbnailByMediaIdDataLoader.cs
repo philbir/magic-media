@@ -7,7 +7,7 @@ using GreenDonut;
 using HotChocolate.DataLoader;
 using MagicMedia.Store;
 
-namespace MagicMedia.Api.GraphQL.DataLoaders
+namespace MagicMedia.GraphQL.DataLoaders
 {
     public class ThumbnailByMediaIdDataLoader : BatchDataLoader<Tuple<Guid, ThumbnailSizeName>, MediaThumbnail>
     {

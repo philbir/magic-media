@@ -1,7 +1,7 @@
 using HotChocolate;
-using MagicMedia.Api.GraphQL;
-using MagicMedia.Api.GraphQL.DataLoaders;
-using MagicMedia.Api.GraphQL.Face;
+using MagicMedia.GraphQL;
+using MagicMedia.GraphQL.DataLoaders;
+using MagicMedia.GraphQL.Face;
 using MagicMedia.BingMaps;
 using MagicMedia.Store.MongoDb;
 using MagicMedia.Stores;
@@ -26,16 +26,7 @@ namespace MagicMedia.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddGraphQLServer()
-                    .AddQueryType(d => d.Name("Query"))
-                        .AddType<MediaQueries>()
-                        .AddType<FaceQueries>()
-                     .AddMutationType(d => d.Name("Mutation"))
-                        .AddType<FaceMutations>()
-                    .AddType<MediaType>()
-                    .AddType<FaceType>()
-                    .AddType<ThumbnailType>()
-                    .AddDataLoader<CameraByIdDataLoader>()
-                    .AddDataLoader<ThumbnailByMediaIdDataLoader>();
+                .AddMagicMediaGrapQL();
 
             BingMapsOptions bingOptions = Configuration.GetSection("MagicMedia:BingMaps")
                 .Get<BingMapsOptions>();
