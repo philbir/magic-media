@@ -1,0 +1,20 @@
+mutation assignPersonByHuman($input: AssignPersonByHumanInput) {
+  assignPersonByHuman(input: $input) {
+    face {
+      id
+      person {
+        id
+        name
+        dateOfBirth
+        group
+      }
+      thumbnail {
+        id
+      }
+    }
+    errors {
+      code
+      message
+    }
+  }
+}

@@ -4,6 +4,7 @@
     <div v-else class="media-wrapper">
       <img
         :src="'http://localhost:5000/media/webimage/' + media.id"
+        ref="img"
         :style="{
           'margin-left': box.left + 'px',
           'margin-top': box.top + 'px',
@@ -11,12 +12,17 @@
           width: box.width + 'px',
         }"
       />
+
+      <template v-for="face in media.faces">
+        <FaceBox :key="face.id" :face="face"></FaceBox>
+      </template>
     </div>
   </div>
 </template>
 
 <script>
 import QUERY_GETBYID from "../graphql/GetMediaDetails.gql";
+import FaceBox from "../components/FaceBox.vue";
 
 export default {
   data() {
@@ -28,6 +34,7 @@ export default {
       loading: true,
     };
   },
+  components: { FaceBox },
   mounted() {
     this.$apollo
       .query({
@@ -56,7 +63,6 @@ export default {
 
       if (screenOrientation === "l") {
         const ar = media.dimension.height / h;
-        console.log(ar);
         box.height = h;
         box.width = media.dimension.width / ar;
         box.left = (w - box.width) / 2;
@@ -66,7 +72,6 @@ export default {
         box.height = media.dimension.height / ar;
         box.top = (h - box.height) / 2;
       }
-      console.log(h, w, screenOrientation, box, media.dimension);
 
       return box;
     },
@@ -78,7 +83,7 @@ export default {
 .media-wrapper {
   background-color: #1b1b1c;
   height: 100vh;
-  z-index: 2;
+  z-index: 1;
   overflow: hidden;
 }
 </style>

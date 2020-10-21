@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,7 +8,7 @@ using MongoDB.Driver.Linq;
 
 namespace MagicMedia.Store.MongoDb
 {
-    internal class FaceStore : IFaceStore
+    public class FaceStore : IFaceStore
     {
         private readonly MediaStoreContext _mediaStoreContext;
 
@@ -33,6 +34,15 @@ namespace MagicMedia.Store.MongoDb
             return faces;
         }
 
+        public async Task<IEnumerable<MediaFace>> GetFacesByMediaAsync(
+            Guid mediaId,
+            CancellationToken cancellationToken)
+        {
+            return await _mediaStoreContext.Faces.AsQueryable()
+                .Where(x => x.MediaId == mediaId)
+                .ToListAsync(cancellationToken);
+        }
+
         public async Task<IEnumerable<PersonEncodingData>> GetPersonEncodingsAsync(
             CancellationToken cancellationToken)
         {
@@ -44,6 +54,32 @@ namespace MagicMedia.Store.MongoDb
                     Encoding = x.Encoding
                 })
                 .ToListAsync(cancellationToken);
+        }
+
+        public async Task<MediaFace> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+        {
+            MediaFace face = await _mediaStoreContext.Faces.AsQueryable()
+                .Where(x => x.Id == id)
+                .FirstAsync(cancellationToken);
+
+            return face;
+        }
+
+        public async Task UpdateAsync(MediaFace face, CancellationToken cancellationToken)
+        {
+            await _mediaStoreContext.Faces.ReplaceOneAsync(
+                x => x.Id == face.Id,
+                face,
+                options: new ReplaceOptions(),
+                cancellationToken);
+        }
+
+        public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
+        {
+            await _mediaStoreContext.Faces.DeleteOneAsync(
+                x => x.Id == id,
+                options: new DeleteOptions(),
+                cancellationToken);
         }
     }
 }

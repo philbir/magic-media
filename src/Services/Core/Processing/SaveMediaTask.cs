@@ -29,7 +29,6 @@ namespace MagicMedia.Processing
 
         public string Name => MediaProcessorTaskNames.SaveMedia;
 
-
         private string GetFolder(MediaProcessorContext context)
         {
             if (context.Metadata.DateTaken.HasValue)
@@ -94,7 +93,7 @@ namespace MagicMedia.Processing
                     MediaId = media.Id,
                     RecognitionType = FaceRecognitionType.None,
                     State = FaceState.New,
-                    Thumnail = f.Thumbnail,
+                    Thumbnail = f.Thumbnail,
                 }).ToList();
 
                 media.FaceCount = faces.Count();

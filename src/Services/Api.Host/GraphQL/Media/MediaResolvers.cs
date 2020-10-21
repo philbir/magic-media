@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Api.GraphQL.DataLoaders;
@@ -8,15 +9,11 @@ namespace MagicMedia.Api.GraphQL
 {
     internal class MediaResolvers
     {
-        public async Task<MediaThumbnail> GetThumbnailAsync(
-            Media media,
-            ThumbnailByMediaIdDataLoader thumbnailLoader,
-            ThumbnailSizeName size,
-            CancellationToken cancellationToken)
+        private readonly IMediaStore _mediaStore;
+
+        public MediaResolvers(IMediaStore mediaStore)
         {
-            return await thumbnailLoader.LoadAsync(
-                new Tuple<Guid, ThumbnailSizeName>(media.Id, size),
-                cancellationToken);
+            _mediaStore = mediaStore;
         }
 
         public async Task<Camera?> GetCameraAsync(
@@ -30,6 +27,13 @@ namespace MagicMedia.Api.GraphQL
             }
 
             return null;
+        }
+
+        public async Task<IEnumerable<MediaFace>> GetFacesByMediaAsync(
+            Media media,
+            CancellationToken cancellationToken)
+        {
+            return await _mediaStore.Faces.GetFacesByMediaAsync(media.Id, cancellationToken);
         }
     }
 }

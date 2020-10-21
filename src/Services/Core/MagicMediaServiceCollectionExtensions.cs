@@ -18,6 +18,7 @@ namespace MagicMedia
             services.AddSingleton<IWebPImageConverter, DefaultWebPImageConverter>();
             services.AddSingleton<IDateTakenParser, DateTakenParser>();
             services.AddSingleton<ICameraService, CameraService>();
+            services.AddSingleton<IFaceService, FaceService>();
 
             services.AddSingleton<IMediaProcesserTask, AutoOrientTask>();
             services.AddSingleton<IMediaProcesserTask, ExtractMetadataTask>();

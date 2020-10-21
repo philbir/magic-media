@@ -11,7 +11,7 @@ namespace MagicMedia.Store
 
         public ImageBox Box { get; set; }
 
-        public MediaThumbnail Thumnail { get; set; }
+        public MediaThumbnail Thumbnail { get; set; }
 
         public Guid? PersonId { get; set; }
 

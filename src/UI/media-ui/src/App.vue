@@ -1,10 +1,12 @@
 <template>
   <v-app>
-    <v-app-bar app color="primary" light>
+    <!--
+    <v-app-bar app color="primary" style="z-index: 10" light>
       <h2 class="white--text">magic media</h2>
 
       <v-spacer></v-spacer>
     </v-app-bar>
+    -->
     <v-main>
       <router-view></router-view>
     </v-main>

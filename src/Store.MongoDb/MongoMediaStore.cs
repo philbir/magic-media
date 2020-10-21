@@ -17,17 +17,21 @@ namespace MagicMedia.Store.MongoDb
             MediaStoreContext mediaStoreContext,
             IThumbnailBlobStore thumbnailBlobStore,
             IFaceStore faceStore,
-            ICameraStore cameraStore)
+            ICameraStore cameraStore,
+            IPersonStore personStore)
         {
             _mediaStoreContext = mediaStoreContext;
             _thumbnailBlobStore = thumbnailBlobStore;
             Faces = faceStore;
             Cameras = cameraStore;
+            Persons = personStore;
         }
 
         public IFaceStore Faces { get; }
 
         public ICameraStore Cameras { get; }
+
+        public IPersonStore Persons { get; }
 
         public async Task<IEnumerable<Media>> SearchAsync(
             SearchMediaRequest request,
@@ -106,10 +110,10 @@ namespace MagicMedia.Store.MongoDb
                 foreach (MediaFace face in faces)
                 {
                     await _thumbnailBlobStore.StoreAsync(
-                        new ThumbnailData(face.Id, face.Thumnail.Data),
+                        new ThumbnailData(face.Thumbnail.Id, face.Thumbnail.Data),
                         cancellationToken);
 
-                    face.Thumnail.Data = null;
+                    face.Thumbnail.Data = null;
                 }
             }
 
