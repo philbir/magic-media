@@ -51,8 +51,16 @@ namespace MagicMedia.Playground
                     OriginalData = data,
                     File = file
                 };
+                try
+                {
+                    Console.WriteLine($"Importing: {file.Id}");
+                    await flow.ExecuteAsync(context, default);
+                }
+                catch ( Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
 
-                await flow.ExecuteAsync(context, default);
 
                 //TODO: Move to Imported or delete
             }

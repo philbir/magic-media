@@ -9,7 +9,6 @@ using MagicMedia.Face;
 using MagicMedia.Playground;
 using MagicMedia.Store.MongoDb;
 using MagicMedia.Stores;
-using MagicMedia.Thumbnail;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Extensions.Context;
@@ -58,7 +57,6 @@ namespace Playground
             services.AddSingleton<ImportSample>();
             services.AddSingleton<DiscoverySample>();
             services.AddFileSystemDiscovery(new List<string> { @"C:\MagicMedia\Inbox" });
-
 
             return services.BuildServiceProvider();
         }

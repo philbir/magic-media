@@ -1,0 +1,1 @@
+docker build -t magic-media-identity:dev -f .\Identity.Host\Dockerfile .

@@ -73,7 +73,7 @@ namespace MagicMedia.Playground
                 MediaId = media.Id,
                 RecognitionType = FaceRecognitionType.None,
                 State = FaceState.New,
-                Thumnail = f.Thumbnail,
+                Thumbnail = f.Thumbnail,
             });
 
             media.FaceCount = faces.Count();

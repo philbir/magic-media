@@ -5,14 +5,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="IdentityModel" Version="5.0.0-preview.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.0-rc.1.20453.2" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.8" />
     <PackageReference Include="Magick.NET-Q8-x64" Version="7.22.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="3.1.7" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Services\AzureAI\AzureAI.csproj" />
+    <ProjectReference Include="..\..\src\Services\BingMaps\BingMaps.csproj" />
     <ProjectReference Include="..\..\src\Services\Core\Core.csproj" />
+    <ProjectReference Include="..\..\src\Services\Store.MongoDb\Store.MongoDb.csproj" />
   </ItemGroup>
 
 </Project>

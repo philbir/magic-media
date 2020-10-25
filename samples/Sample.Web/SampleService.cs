@@ -33,7 +33,7 @@ namespace Sample.Web
         {
             var root = new DirectoryInfo(GetTestMediaPath());
 
-            foreach (FileInfo file in root.GetFiles())
+            foreach (FileInfo file in root.GetFiles("*.jpg"))
             {
                 var media = new SampleMedia
                 {

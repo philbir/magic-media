@@ -6,12 +6,14 @@ using System.Threading.Tasks;
 using MagicMedia;
 using MagicMedia.AzureAI;
 using MagicMedia.Face;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models;
 using SixLabors.ImageSharp;
 
 namespace Sample.Web.Controllers
 {
+    [Authorize]
     [Route("media")]
     public class MediaController : Controller
     {

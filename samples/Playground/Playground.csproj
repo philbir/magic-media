@@ -35,7 +35,7 @@
     <ProjectReference Include="..\..\src\Services\Abstractions\Abstractions.csproj" />
     <ProjectReference Include="..\..\src\Services\BingMaps\BingMaps.csproj" />
     <ProjectReference Include="..\..\src\Services\Core\Core.csproj" />
-    <ProjectReference Include="..\..\src\Store.MongoDb\Store.MongoDb.csproj" />
+    <ProjectReference Include="..\..\src\Services\Store.MongoDb\Store.MongoDb.csproj" />
     <ProjectReference Include="..\..\test_media\TestMediaLibrary\TestMediaLibrary.csproj" />
   </ItemGroup>
 

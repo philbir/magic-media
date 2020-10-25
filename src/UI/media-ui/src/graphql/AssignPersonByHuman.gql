@@ -1,4 +1,4 @@
-mutation assignPersonByHuman($input: AssignPersonByHumanInput) {
+mutation assignPersonByHuman($input: AssignPersonByHumanInput!) {
   assignPersonByHuman(input: $input) {
     face {
       id
