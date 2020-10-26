@@ -1,11 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Identity.UI.Tests.Components;
-using IdentityServer4.Models;
 using MagicMedia.Identity.Data;
 using MagicMedia.Identity.UI.Tests;
 using MagicMedia.Identity.UI.Tests.Components;

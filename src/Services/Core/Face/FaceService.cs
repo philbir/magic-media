@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using MagicMedia.Messaging;
 using MagicMedia.Store;
+using MassTransit;
 
 namespace MagicMedia.Face
 {
@@ -10,11 +12,16 @@ namespace MagicMedia.Face
     {
         private readonly IFaceStore _faceStore;
         private readonly IPersonStore _personStore;
+        private readonly IBus _bus;
 
-        public FaceService(IFaceStore faceStore, IPersonStore personStore)
+        public FaceService(
+            IFaceStore faceStore,
+            IPersonStore personStore,
+            IBus bus)
         {
             _faceStore = faceStore;
             _personStore = personStore;
+            _bus = bus;
         }
 
         public async Task<MediaFace> AssignPersonByHumanAsync(
@@ -33,6 +40,12 @@ namespace MagicMedia.Face
             face.RecognitionType = FaceRecognitionType.Human;
 
             await _faceStore.UpdateAsync(face, cancellationToken);
+
+            await _bus.Publish(new FaceUpdatedMessage
+            {
+                Id = face.Id,
+                Action = "ASSIGN_BY_HUMAN"
+            });
 
             return face;
             //TODO: Calculate age. Could be done using eventing...

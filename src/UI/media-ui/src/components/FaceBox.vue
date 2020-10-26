@@ -106,7 +106,7 @@
 </template>
 
 <script>
-import MUTATION_ASSIGN_PERSON from "../graphql/AssignPersonByHuman.gql";
+import { assignPerson } from "../services/faceService";
 import { getFaceColor } from "../services/faceColor";
 
 export default {
@@ -149,18 +149,9 @@ export default {
     },
     accept() {},
     async setName(name) {
-      const result = await this.$apollo.mutate({
-        mutation: MUTATION_ASSIGN_PERSON,
-        variables: {
-          input: {
-            faceId: this.face.id,
-            personName: name,
-          },
-        },
-      });
+      const result = await assignPerson(this.face.id, name);
       this.faceData = result.data.assignPersonByHuman.face;
       this.setBoxProperties(this.box, this.faceData);
-      console.log("UPD FACE", result.data.assignPersonByHuman);
       this.dialog = false;
     },
     setBoxProperties(box, face) {

@@ -11,6 +11,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MongoDB.Extensions.Context;
+using MagicMedia.Massaging;
+using MassTransit;
 
 namespace MagicMedia.Api
 {
@@ -40,6 +42,7 @@ namespace MagicMedia.Api
             services.AddFileSystemStore(@"C:\MagicMedia");
             services.AddMagicMedia();
             services.AddBingMaps(bingOptions);
+            services.AddMessaging(Configuration);
 
             services.AddMvc();
             services.AddCors(options =>
@@ -54,8 +57,13 @@ namespace MagicMedia.Api
             });
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(
+            IApplicationBuilder app,
+            IWebHostEnvironment env,
+            IBusControl busControl)
         {
+            busControl.Start();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
