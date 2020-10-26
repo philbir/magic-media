@@ -1,5 +1,6 @@
 using MagicMedia.Identity.Data.Mongo;
 using MagicMedia.Identity.Data.Mongo.Seeding;
+using MagicMedia.Identity.Services;
 using MagicMedia.Identity.Services.Sms;
 using MagicMedia.Identity.SignUp;
 using Microsoft.AspNetCore.Builder;
@@ -62,7 +63,7 @@ namespace MagicMedia.Identity
             });
 
             services.AddDataAccess(Configuration);
-
+            services.AddSingleton<ITotpCodeService, TotpCodeService>();
             services.AddECallSms(Configuration);
             services.AddSingleton<SignUpService>();
 

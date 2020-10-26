@@ -29,7 +29,7 @@ namespace MagicMedia.Identity
 
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction("Index", "SignUp");
         }
 
         /// <summary>

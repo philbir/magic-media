@@ -1,4 +1,6 @@
-﻿namespace MagicMedia.Identity.SignUp
+using System.Reflection.Metadata.Ecma335;
+
+namespace MagicMedia.Identity.SignUp
 {
     public class SignUpViewModel
     {

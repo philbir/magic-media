@@ -1,0 +1,40 @@
+@model ValidateMobileViewModel
+
+<div class="login-page" data-test-id="page:validate">
+  <div class="lead">
+    <h2>Signup</h2>
+  </div>
+  <div class="row">
+    <div class="col-sm-6">
+      <div class="card">
+        <div class="card-header">
+          <h2>Validate Mobile</h2>
+        </div>
+
+        <div class="card-body">
+          @if (Model.ErrorMessage != null)
+          {
+            <div class="alert alert-danger" role="alert">
+            @Model.ErrorMessage
+            </div>
+          }
+          else
+          {
+          <div class="alert alert-info" role="alert">
+            We just send you a message to your mobile phone.
+          </div>
+         }
+          <form method="post" asp-action="ValidateMobile" asp-controller="SignUp">
+            <input type="hidden" asp-for="SessionId" />
+            <div class="form-group">
+              <label type="text" asp-for="Code"></label>
+              <input class="form-control" placeholder="Code" asp-for="Code" autofocus>
+            </div>
+
+            <button class="btn btn-primary" name="button" value="validate">Validate</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -2,9 +2,12 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using Identity.UI.Tests.Container;
+using MagicMedia.Identity.Data;
+using MagicMedia.Identity.Data.Mongo;
 using Magnet.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Extensions.Context;
 using OpenQA.Selenium;
 using Squadron;
 using Xunit;
@@ -25,6 +28,19 @@ namespace MagicMedia.Identity.UI.Tests
         public string SeleniumHubUrl { get; private set; }
         public string HostUrl { get; private set; }
         public MessageReceiver MagnetSession { get; private set; }
+
+        public IIdentityDbContext GetDbContext()
+        {
+            MongoResource resource = Containers
+                .GetResource<MongoResource>("mongo");
+
+            return new IdentityDbContext(new MongoOptions
+            {
+                ConnectionString = resource.ConnectionString,
+                DatabaseName = "magic-identity"
+            });
+        }
+
 
         public async Task InitializeAsync()
         {
@@ -79,6 +95,7 @@ namespace MagicMedia.Identity.UI.Tests
             IConfigurationRoot config = new ConfigurationBuilder()
                 .SetBasePath(currentDir)
                 .AddJsonFile("appsettings.json")
+                .AddJsonFile("appsettings.user.json", optional: true)
                 .AddEnvironmentVariables()
                 .Build();
 

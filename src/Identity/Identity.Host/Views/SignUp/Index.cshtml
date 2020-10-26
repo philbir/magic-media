@@ -2,7 +2,7 @@
 
 <div class="login-page" data-test-id="page:signup">
   <div class="lead">
-    <h1>Signup</h1>
+    <h2>Signup</h2>
   </div>
   <div class="row">
     <div class="col-sm-6">
@@ -12,20 +12,21 @@
         </div>
 
         <div class="card-body">
-          <form method="post" asp-action="SignUp" asp-controller="SignUp">
+          <div class="card-body">
+            <form method="post" asp-action="SignUp" asp-controller="SignUp">
 
-            <div class="form-group">
-              <label type="email" asp-for="Email"></label>
-              <input class="form-control" placeholder="Email" asp-for="Email" autofocus>
-            </div>
-            <div class="form-group">
-              <label asp-for="Mobile"></label>
-              <input type="text" class="form-control" placeholder="+41 79 123 34 67" asp-for="Mobile" autocomplete="off">
-            </div>
-            <button class="btn btn-primary" name="button" value="signup">Sign up</button>
-          </form>
-        </div>
+              <div class="form-group">
+                <label type="email" asp-for="Email"></label>
+                <input class="form-control" placeholder="Email" asp-for="Email" autofocus>
+              </div>
+              <div class="form-group">
+                <label asp-for="Mobile"></label>
+                <input type="text" class="form-control" placeholder="+41 79 123 34 67" asp-for="Mobile" autocomplete="off">
+              </div>
+              <button class="btn btn-primary" name="button" value="signup">Sign up</button>
+            </form>
+          </div>
       </div>
-    </div>}
+    </div>
   </div>
 </div>

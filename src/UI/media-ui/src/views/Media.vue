@@ -3,7 +3,7 @@
     <div v-if="loading">Loading...</div>
     <div v-else class="media-wrapper">
       <img
-        :src="'http://localhost:5000/media/webimage/' + media.id"
+        :src="'http://localhost:5000/media/webimage/' + mediaId"
         ref="img"
         :style="{
           'margin-left': box.left + 'px',
@@ -21,7 +21,6 @@
 </template>
 
 <script>
-import QUERY_GETBYID from "../graphql/GetMediaDetails.gql";
 import FaceBox from "../components/FaceBox.vue";
 
 export default {
@@ -29,53 +28,48 @@ export default {
     return {
       mediaId: this.$route.params.id,
       windowWidth: window.innerWidth,
-      media: {},
-      box: {},
-      loading: true,
     };
   },
   components: { FaceBox },
-  mounted() {
-    this.$apollo
-      .query({
-        query: QUERY_GETBYID,
-        variables: {
-          id: this.$route.params.id,
-        },
-      })
-      .then((res) => {
-        console.log(res);
-        this.setMedia(res.data.mediaById);
-      });
+  created() {
+    this.$store.dispatch("loadMediaDetails", this.$route.params.id);
   },
-  methods: {
-    setMedia(media) {
-      this.media = media;
-      this.loading = false;
-      this.box = this.getBox(media);
+  computed: {
+    loading: function () {
+      return this.$store.state.currentMedia === null;
     },
-    getBox(media) {
-      const w = document.querySelector("#app").clientWidth;
-      const h = document.querySelector("#app").clientHeight;
-      const screenOrientation = w > h ? "l" : "p";
+    media: function () {
+      return this.$store.state.currentMedia;
+    },
+    box: function () {
+      const media = this.$store.state.currentMedia;
 
-      const box = { left: 0, top: 0 };
+      if (media) {
+        const w = document.querySelector("#app").clientWidth;
+        const h = document.querySelector("#app").clientHeight;
+        const screenOrientation = w > h ? "l" : "p";
 
-      if (screenOrientation === "l") {
-        const ar = media.dimension.height / h;
-        box.height = h;
-        box.width = media.dimension.width / ar;
-        box.left = (w - box.width) / 2;
-      } else {
-        const ar = media.dimension.width / w;
-        box.width = w;
-        box.height = media.dimension.height / ar;
-        box.top = (h - box.height) / 2;
+        const box = { left: 0, top: 0 };
+
+        if (screenOrientation === "l") {
+          const ar = media.dimension.height / h;
+          box.height = h;
+          box.width = media.dimension.width / ar;
+          box.left = (w - box.width) / 2;
+        } else {
+          const ar = media.dimension.width / w;
+          box.width = w;
+          box.height = media.dimension.height / ar;
+          box.top = (h - box.height) / 2;
+        }
+        console.log("BOX", box);
+        return box;
       }
 
-      return box;
+      return null;
     },
   },
+  methods: {},
 };
 </script>
 

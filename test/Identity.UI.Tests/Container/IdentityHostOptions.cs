@@ -1,3 +1,5 @@
+using MagicMedia.Identity.UI.Tests;
+using Microsoft.Extensions.Configuration;
 using Squadron;
 
 namespace Identity.UI.Tests.Container
@@ -6,6 +8,10 @@ namespace Identity.UI.Tests.Container
     {
         public override void Configure(ContainerResourceBuilder builder)
         {
+            IConfiguration config = IdentityTestContext.BuildConfiguration();
+            string passwordKey = "ECall:Password";
+            string fromKey = "ECall:From";
+
             base.Configure(builder);
             builder
                 .Name("identity")
@@ -14,8 +20,10 @@ namespace Identity.UI.Tests.Container
                 .InternalPort(80)
                 .ExternalPort(80)
                 .AddNetwork("identity-net")
-                .AddEnvironmentVariable($"ECall:Password=***")
-                .AddEnvironmentVariable($"ECall:From=***")
+                .AddEnvironmentVariable(
+                    $"{passwordKey}={config.GetValue<string>(passwordKey)}")
+                .AddEnvironmentVariable(
+                    $"{fromKey}={config.GetValue<string>(fromKey)}")
                 .Image("magic-media-identity:dev");
         }
     }
