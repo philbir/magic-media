@@ -45,11 +45,7 @@ namespace Playground
                 .Get<BingMapsOptions>();
 
             var services = new ServiceCollection();
-            services.AddMongoDbStore(new MongoOptions
-            {
-                DatabaseName = "magic",
-                ConnectionString = "mongodb://localhost:27017"
-            });
+            services.AddMongoDbStore(config);
 
             services.AddFileSystemStore(@"C:\MagicMedia");
             services.AddMagicMedia();

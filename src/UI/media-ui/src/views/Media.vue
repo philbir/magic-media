@@ -62,7 +62,6 @@ export default {
           box.height = media.dimension.height / ar;
           box.top = (h - box.height) / 2;
         }
-        console.log("BOX", box);
         return box;
       }
 

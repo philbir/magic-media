@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Extensions.Context;
 
@@ -7,8 +8,11 @@ namespace MagicMedia.Store.MongoDb
     {
         public static IServiceCollection AddMongoDbStore(
             this IServiceCollection services,
-            MongoOptions options)
+            IConfiguration configuration)
         {
+            MongoOptions options = configuration.GetSection("MagicMedia:Database")
+                .Get<MongoOptions>();
+
             services.AddSingleton(new MediaStoreContext(options));
             services.AddSingleton<IThumbnailBlobStore>((c) =>
             {

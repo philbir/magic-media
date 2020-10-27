@@ -33,11 +33,7 @@ namespace MagicMedia.Api
             BingMapsOptions bingOptions = Configuration.GetSection("MagicMedia:BingMaps")
                 .Get<BingMapsOptions>();
 
-            services.AddMongoDbStore(new MongoOptions
-            {
-                DatabaseName = "magic",
-                ConnectionString = "mongodb://localhost:27017"
-            });
+            services.AddMongoDbStore(Configuration);
 
             services.AddFileSystemStore(@"C:\MagicMedia");
             services.AddMagicMedia();

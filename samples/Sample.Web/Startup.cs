@@ -125,11 +125,7 @@ namespace Sample.Web
 
             services.AddBingMaps(bingOptions);
 
-            services.AddMongoDbStore(new MongoOptions
-            {
-                ConnectionString = "mongodb://localhost:27017",
-                DatabaseName = "magic"
-            });
+            services.AddMongoDbStore(Configuration);
 
             services.AddSingleton<SampleService>();
 

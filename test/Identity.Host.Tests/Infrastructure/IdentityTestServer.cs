@@ -14,9 +14,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using MongoDB.Driver;
-using Moq;
 using Squadron;
 using Xunit;
 
@@ -24,11 +22,11 @@ namespace MagicMedia.Identity.Host.Tests
 {
     public class IdentityTestServer : IAsyncLifetime
     {
-        public HttpClient? HttpClient { get; private set; }
+        public HttpClient HttpClient { get; private set; }
 
-        public MongoResource? MongoResource { get; private set; }
+        public MongoResource MongoResource { get; private set; }
 
-        public IMongoDatabase? Database { get; private set; }
+        public IMongoDatabase Database { get; private set; }
 
         public IServiceProvider Services { get; private set; }
 
