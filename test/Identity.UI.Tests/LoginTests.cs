@@ -28,7 +28,6 @@ namespace Identity.UI.Tests
 
             // Act
             LoginPage page = app.Open<LoginPage>($"{app.TestContext.HostUrl}Diagnostics");
-
             page.Login("alice", "alice");
 
             DiagnosticsPage diag = app.WaitForPage<DiagnosticsPage>();

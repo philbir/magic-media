@@ -1,0 +1,83 @@
+query search {
+  searchMedia(request: { thumbnailSize: S }) {
+    id
+    filename
+    dateTaken
+    cameraId
+    dimension {
+      height
+      width
+    }
+    camera {
+      id
+      model
+      make
+    }
+    thumbnail(size: M) {
+      size
+      dataUrl
+      dimensions {
+        height
+        width
+      }
+    }
+    source {
+      identifier
+      type
+    }
+  }
+}
+
+query mediaDetails($id: Uuid!) {
+  mediaById(id: $id) {
+    id
+    filename
+    dateTaken
+    cameraId
+    dimension {
+      height
+      width
+    }
+    camera {
+      id
+      model
+      make
+    }
+
+    faces {
+      id
+      box {
+        left
+        top
+        right
+        bottom
+      }
+      recognitionType
+      state
+      person {
+        id
+        name
+        dateOfBirth
+        group
+      }
+      personId
+      person{
+        name
+        dateOfBirth
+        group
+        id
+      }
+      thumbnail {
+        id
+      }
+    }
+    thumbnail(size: M) {
+      size
+      dataUrl
+      dimensions {
+        height
+        width
+      }
+    }
+  }
+}

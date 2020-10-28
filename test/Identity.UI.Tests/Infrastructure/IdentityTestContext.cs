@@ -41,7 +41,6 @@ namespace MagicMedia.Identity.UI.Tests
             });
         }
 
-
         public async Task InitializeAsync()
         {
             Configuration = BuildConfiguration();

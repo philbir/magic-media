@@ -1,0 +1,7 @@
+POST http://localhost:5500/connect/token
+Authorization: Basic Media.Test geCDNACu94a5DfZQ2Sm46DBjkSErAnNA
+Accept: application/json
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=client_credentials
+&scope=api.magic.read
