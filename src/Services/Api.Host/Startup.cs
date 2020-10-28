@@ -71,25 +71,6 @@ namespace MagicMedia.Api
                 options.RequireHttpsMetadata = false;
                 options.Authority = secOptions.Authority;
                 options.Audience = "api.magic";
-                options.Events = new JwtBearerEvents
-                {
-                    OnMessageReceived = c =>
-                    {
-                        return Task.CompletedTask;
-                    },
-                    OnAuthenticationFailed = c =>
-                    {
-                        return Task.CompletedTask;
-                    },
-                    OnChallenge = c =>
-                    {
-                        return Task.CompletedTask;
-                    },
-                    OnTokenValidated = c =>
-                    {
-                        return Task.CompletedTask;
-                    }
-                };
             });
 
             services.AddAuthorization(o => o.AddPolicy("Read", p =>
@@ -124,9 +105,6 @@ namespace MagicMedia.Api
             {
                 endpoints.MapGraphQL();
                 endpoints.MapControllers();
-                //endpoints.MapControllerRoute(
-                //    name: "default",
-                //    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

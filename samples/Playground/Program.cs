@@ -38,7 +38,7 @@ namespace Playground
             IConfigurationRoot config = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                  .AddJsonFile("appsettings.json")
-                 .AddJsonFile("appsettings.user.json", optional: true)
+                 .AddUserSecrets<Program>(optional: true)
                  .Build();
 
             BingMapsOptions bingOptions = config.GetSection("MagicMedia:BingMaps")

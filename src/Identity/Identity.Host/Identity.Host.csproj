@@ -6,6 +6,7 @@
     <RootNamespace>MagicMedia.Identity</RootNamespace>
     <Nullable>enable</Nullable>
     <LangVersion>9.0</LangVersion>
+    <UserSecretsId>88de70dc-7f81-4604-ae70-d6d320654f8d</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

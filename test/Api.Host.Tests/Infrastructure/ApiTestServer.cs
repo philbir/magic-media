@@ -2,9 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using FluentAssertions;
 using MagicMedia.Store.MongoDb;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
@@ -26,7 +24,6 @@ namespace MagicMedia.Api.Host.Tests.Infrastructure
         public HttpClient HttpClient { get; private set; }
         public IMagicMediaTest GraphQLClient { get; private set; }
         public MongoResource MongoResource { get; private set; }
-
         public IMongoDatabase Database { get; private set; }
         public MediaStoreContext DbContext { get; private set; }
         public IServiceProvider Services { get; private set; }
@@ -98,24 +95,6 @@ namespace MagicMedia.Api.Host.Tests.Infrastructure
         private static OperationDelegate PipelineFactory(IServiceProvider services)
         {
             return services.GetRequiredService<OperationDelegate>();
-        }
-    }
-
-    public class InMemoryHttpClientFactory
-    {
-        public HttpClient HttpClient { get; set; }
-
-        public Func<Task<string>> TokenResolver { get; set; }
-
-        public HttpClient CreateClient(string name)
-        {
-            if (TokenResolver != null)
-            {
-                var token = TokenResolver().GetAwaiter().GetResult();
-                HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
-                    "bearer", token);
-            }
-            return HttpClient;
         }
     }
 }

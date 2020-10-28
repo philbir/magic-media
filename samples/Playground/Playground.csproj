@@ -5,12 +5,12 @@
     <AssemblyName>MagicMedia.Playground</AssemblyName>
     <RootNamespace>MagicMedia.Playground</RootNamespace>
     <OutputType>Exe</OutputType>
+    <UserSecretsId>e8d8451e-4701-4d21-838c-cfb39c17eaa8</UserSecretsId>
 
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="appsettings.json" />
-    <None Remove="appsettings.user.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,15 +19,11 @@
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
-    <Content Include="appsettings.user.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0-rc.1.20451.14" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="3.1.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.8" />
   </ItemGroup>
 

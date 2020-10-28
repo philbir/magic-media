@@ -5,19 +5,14 @@
     <AssemblyName>MagicMedia.Identity.UI.Tests</AssemblyName>
     <RootNamespace>MagicMedia.Identity.UI.Tests</RootNamespace>
     <IsPackable>false</IsPackable>
+    <UserSecretsId>413bc704-08b2-4356-aada-84581d1f4eb3</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="appsettings.json" />
-    <None Remove="appsettings.user.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="appsettings.user.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
     <Content Include="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
@@ -27,6 +22,7 @@
 
   <ItemGroup>
     <PackageReference Include="IdentityModel" Version="5.0.0-preview.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="3.1.0" />
     <PackageReference Include="Selenium.Firefox.WebDriver" Version="0.27.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.8.0" />
     <PackageReference Include="FluentAssertions" Version="6.0.0-alpha0001" />

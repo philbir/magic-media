@@ -95,7 +95,7 @@ namespace MagicMedia.Identity.UI.Tests
             IConfigurationRoot config = new ConfigurationBuilder()
                 .SetBasePath(currentDir)
                 .AddJsonFile("appsettings.json")
-                .AddJsonFile("appsettings.user.json", optional: true)
+                .AddUserSecrets<IdentityTestContext>(optional: true)
                 .AddEnvironmentVariables()
                 .Build();
 

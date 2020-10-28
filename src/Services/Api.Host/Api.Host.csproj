@@ -5,6 +5,7 @@
     <AssemblyName>MagicMedia.Api.Host</AssemblyName>
     <RootNamespace>MagicMedia.Api</RootNamespace>
     <LangVersion>9.0</LangVersion>
+    <UserSecretsId>75433c12-81ac-4dee-88de-ab9f3fbcbc40</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
