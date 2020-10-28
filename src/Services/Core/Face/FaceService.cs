@@ -11,16 +11,16 @@ namespace MagicMedia.Face
     public class FaceService : IFaceService
     {
         private readonly IFaceStore _faceStore;
-        private readonly IPersonStore _personStore;
+        private readonly IPersonService _personService;
         private readonly IBus _bus;
 
         public FaceService(
             IFaceStore faceStore,
-            IPersonStore personStore,
+            IPersonService personStore,
             IBus bus)
         {
             _faceStore = faceStore;
-            _personStore = personStore;
+            _personService = personStore;
             _bus = bus;
         }
 
@@ -29,7 +29,7 @@ namespace MagicMedia.Face
             string personName,
             CancellationToken cancellationToken)
         {
-            Person person = await _personStore.GetOrCreatePersonAsync(
+            Person person = await _personService.GetOrCreatePersonAsync(
                 personName,
                 cancellationToken);
 

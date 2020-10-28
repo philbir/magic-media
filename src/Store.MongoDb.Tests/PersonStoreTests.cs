@@ -32,48 +32,25 @@ namespace MagicMedia.Store.MongoDb.Tests
             });
 
             var personStore = new PersonStore(dbContext);
-            string personName = "Bart";
+            var newPerson = new Person
+            {
+                Id = Guid.NewGuid(),
+                Name = "Bart",
+                DateOfBirth = new DateTime(1980, 4, 2),
+                Group = "Family"
+            };
 
             // Act
             Person person = await personStore
-                .GetOrCreatePersonAsync(personName, default);
+                .AddAsync(newPerson, default);
 
             // Assert
             Person cratedPerson = await dbContext.Persons.AsQueryable()
-                .Where(x => x.Name == personName)
+                .Where(x => x.Id == newPerson.Id)
                 .FirstOrDefaultAsync();
 
-            cratedPerson.Name.Should().Be(personName);
-        }
-
-        [Fact]
-        public async Task GetOrCreatePerson_ExistingPerson_ExistingReturned()
-        {
-            // Arrange
-            IMongoDatabase db = _mongo.CreateDatabase();
-
-            var dbContext = new MediaStoreContext(new MongoOptions
-            {
-                ConnectionString = _mongo.ConnectionString,
-                DatabaseName = db.DatabaseNamespace.DatabaseName
-            });
-
-            var existingPerson = new Person
-            {
-                Id = Guid.NewGuid(),
-                Name = "Bart"
-            };
-            await dbContext.Persons.InsertOneAsync(
-                existingPerson);
-
-            PersonStore personStore = new PersonStore(dbContext);
-
-            // Act
-            Person person = await personStore
-                .GetOrCreatePersonAsync(existingPerson.Name, default);
-
-            // Assert
-            person.Id.Should().Be(existingPerson.Id);
+            cratedPerson.Name.Should().Be(person.Name);
+            cratedPerson.Group.Should().Be(person.Group);
         }
     }
 }

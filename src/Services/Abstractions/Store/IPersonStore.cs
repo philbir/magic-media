@@ -7,7 +7,14 @@ namespace MagicMedia.Store
 {
     public interface IPersonStore
     {
-        Task<Person> GetOrCreatePersonAsync(string name, CancellationToken cancellationToken);
-        Task<IEnumerable<Person>> GetPersonsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken);
+        Task<Person> AddAsync(Person person, CancellationToken cancellationToken);
+
+        Task<Person> GetByIdAsnc(Guid id, CancellationToken cancellationToken);
+
+        Task<IEnumerable<Person>> GetPersonsAsync(
+            IEnumerable<Guid> ids,
+            CancellationToken cancellationToken);
+
+        Task<Person> TryGetByNameAsync(string name, CancellationToken cancellationToken);
     }
 }

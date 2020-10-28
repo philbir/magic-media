@@ -18,6 +18,7 @@ namespace MagicMedia
             services.AddSingleton<IWebPImageConverter, DefaultWebPImageConverter>();
             services.AddSingleton<IDateTakenParser, DateTakenParser>();
             services.AddSingleton<ICameraService, CameraService>();
+            services.AddSingleton<IPersonService, PersonService>();
             services.AddSingleton<IFaceService, FaceService>();
 
             services.AddSingleton<IMediaProcesserTask, AutoOrientTask>();
@@ -30,8 +31,6 @@ namespace MagicMedia
             services.AddSingleton<IMediaProcesserTaskFactory, MediaProcesserTaskFactory>();
             services.AddSingleton<IMediaProcessorFlowFactory, MediaProcessorFlowFactory>();
             services.AddSingleton<IMediaProcessorFlowFactory, MediaProcessorFlowFactory>();
-
-
 
             return services;
         }

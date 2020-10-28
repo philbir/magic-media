@@ -26,27 +26,36 @@ namespace MagicMedia.Store.MongoDb
                 .ToListAsync(cancellationToken);
         }
 
-        public async Task<Person> GetOrCreatePersonAsync(
-            string name,
+        public async Task<Person> GetByIdAsnc(
+            Guid id,
             CancellationToken cancellationToken)
         {
             Person person = await _mediaStoreContext.Persons.AsQueryable()
+                .Where(x => x.Id == id)
+                .SingleAsync(cancellationToken);
+
+            return person;
+        }
+
+        public async Task<Person?> TryGetByNameAsync(
+            string name,
+            CancellationToken cancellationToken)
+        {
+            Person? person = await _mediaStoreContext.Persons.AsQueryable()
                 .Where(x => x.Name.ToLower() == name.ToLower())
                 .FirstOrDefaultAsync(cancellationToken);
 
-            if (person == null)
-            {
-                person = new Person
-                {
-                    Id = Guid.NewGuid(),
-                    Name = name
-                };
+            return person;
+        }
 
-                await _mediaStoreContext.Persons.InsertOneAsync(
-                    person,
-                    options: null,
-                    cancellationToken);
-            }
+        public async Task<Person> AddAsync(
+            Person person,
+            CancellationToken cancellationToken)
+        {
+            await _mediaStoreContext.Persons.InsertOneAsync(
+                person,
+                options: null,
+                cancellationToken);
 
             return person;
         }
