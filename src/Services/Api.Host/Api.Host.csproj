@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.0-rc.2.20475.17" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\BingMaps\BingMaps.csproj" />
     <ProjectReference Include="..\Core\Core.csproj" />
     <ProjectReference Include="..\GraphQL\GraphQL.csproj" />

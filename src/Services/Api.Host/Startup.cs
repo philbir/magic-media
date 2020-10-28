@@ -13,9 +13,17 @@ using Microsoft.Extensions.Hosting;
 using MongoDB.Extensions.Context;
 using MagicMedia.Massaging;
 using MassTransit;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Threading.Tasks;
 
 namespace MagicMedia.Api
 {
+    public class SecurityOptions
+    {
+        public string Authority { get; set; }
+
+    }
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -33,13 +41,15 @@ namespace MagicMedia.Api
             BingMapsOptions bingOptions = Configuration.GetSection("MagicMedia:BingMaps")
                 .Get<BingMapsOptions>();
 
+            SecurityOptions secOptions = Configuration.GetSection("MagicMedia:Security")
+                .Get<SecurityOptions>();
+
             services.AddMongoDbStore(Configuration);
 
             services.AddFileSystemStore(@"C:\MagicMedia");
             services.AddMagicMedia();
             services.AddBingMaps(bingOptions);
             services.AddMessaging(Configuration);
-
             services.AddMvc();
             services.AddCors(options =>
             {
@@ -51,6 +61,41 @@ namespace MagicMedia.Api
                                 .AllowAnyMethod();
                             });
             });
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = "jwt";
+            })
+            .AddJwtBearer("jwt", options =>
+            {
+                options.RequireHttpsMetadata = false;
+                options.Authority = secOptions.Authority;
+                options.Audience = "api.magic";
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = c =>
+                    {
+                        return Task.CompletedTask;
+                    },
+                    OnAuthenticationFailed = c =>
+                    {
+                        return Task.CompletedTask;
+                    },
+                    OnChallenge = c =>
+                    {
+                        return Task.CompletedTask;
+                    },
+                    OnTokenValidated = c =>
+                    {
+                        return Task.CompletedTask;
+                    }
+                };
+            });
+
+            services.AddAuthorization(o => o.AddPolicy("Read", p =>
+            {
+                p.RequireClaim("scope", "api.magic.read");
+            }));
         }
 
         public void Configure(
@@ -72,7 +117,8 @@ namespace MagicMedia.Api
             app.UseStaticFiles();
 
             app.UseRouting();
-            //app.UseAuthorization();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

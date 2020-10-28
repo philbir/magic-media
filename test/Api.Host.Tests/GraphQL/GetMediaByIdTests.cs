@@ -7,12 +7,12 @@ using Xunit;
 
 namespace MagicMedia.Api.Host.Tests.GraphQL
 {
-    [Collection(TestCollectionNames.ApiServer)]
+    [Collection(TestCollectionNames.ApiServerWithIdentity)]
     public class GetMediaByIdTests 
     {
-        private readonly ApiTestServer _apiTestServer;
+        private readonly ApiTestServerWithIdentity _apiTestServer;
 
-        public GetMediaByIdTests(ApiTestServer apiTestServer)
+        public GetMediaByIdTests(ApiTestServerWithIdentity apiTestServer)
         {
             _apiTestServer = apiTestServer;
         }
@@ -27,7 +27,7 @@ namespace MagicMedia.Api.Host.Tests.GraphQL
             IOperationResult<IMediaDetails> result = await _apiTestServer.GraphQLClient
                 .MediaDetailsAsync(id, default);
 
-            // Arrange
+            // Assert
             result.Data.MediaById.Filename.Should().Be("Test01.jpg");
         }
     }

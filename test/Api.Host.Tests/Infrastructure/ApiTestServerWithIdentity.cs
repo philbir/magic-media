@@ -2,9 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using FluentAssertions;
+using MagicMedia.Api.Host.Tests.Containers;
 using MagicMedia.Store.MongoDb;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
@@ -18,15 +17,17 @@ using StrawberryShake;
 using StrawberryShake.Http;
 using StrawberryShake.Http.Pipelines;
 using Xunit;
+using IdentityModel.Client;
 
 namespace MagicMedia.Api.Host.Tests.Infrastructure
 {
-    public class ApiTestServer : IAsyncLifetime
+    public class ApiTestServerWithIdentity : IAsyncLifetime
     {
         public HttpClient HttpClient { get; private set; }
         public IMagicMediaTest GraphQLClient { get; private set; }
+        public ComposeResource<MagicApiAppOptions> Containers { get; private set; }
         public MongoResource MongoResource { get; private set; }
-
+        public GenericContainerResource<IdentityHostOptions> IdentityHost { get; private set; }
         public IMongoDatabase Database { get; private set; }
         public MediaStoreContext DbContext { get; private set; }
         public IServiceProvider Services { get; private set; }
@@ -35,8 +36,12 @@ namespace MagicMedia.Api.Host.Tests.Infrastructure
 
         public async Task InitializeAsync()
         {
-            MongoResource = new MongoResource();
-            await MongoResource.InitializeAsync();
+            Containers = new ComposeResource<MagicApiAppOptions>();
+            await Containers.InitializeAsync();
+
+            MongoResource = Containers.GetResource<MongoResource>("mongo");
+            IdentityHost = Containers
+                .GetResource<GenericContainerResource<IdentityHostOptions>>("identity");
 
             Database = MongoResource.CreateDatabase();
 
@@ -46,6 +51,8 @@ namespace MagicMedia.Api.Host.Tests.Infrastructure
                     ConnectionString = MongoResource.ConnectionString,
                     DatabaseName = Database.DatabaseNamespace.DatabaseName
                 });
+
+            string identityUrl = IdentityHost.GetContainerUri().ToString();
 
             IWebHostBuilder hostBuilder = new WebHostBuilder()
                 .ConfigureAppConfiguration(builder =>
@@ -57,7 +64,8 @@ namespace MagicMedia.Api.Host.Tests.Infrastructure
                         ["MagicMedia:Database:ConnectionString"] =
                         MongoResource.ConnectionString,
                         ["MagicMedia:Database:DatabaseName"] =
-                        Database.DatabaseNamespace.DatabaseName
+                        Database.DatabaseNamespace.DatabaseName,
+                        ["MagicMedia:Security:Authority"] = identityUrl
                     });
                 })
                 .ConfigureTestServices(services =>
@@ -77,16 +85,38 @@ namespace MagicMedia.Api.Host.Tests.Infrastructure
             var server = new TestServer(hostBuilder);
             Services = server.Services;
             HttpClient = server.CreateClient();
+
             GraphQLClient = Services.GetService<IMagicMediaTest>();
             _httpClientFactory.HttpClient = server.CreateClient();
             _httpClientFactory.HttpClient.BaseAddress = new Uri("http://localhost/graphql");
+            _httpClientFactory.TokenResolver = GetTokenAsync;
 
             await SeedIntialDataAsync();
+
+            //TODO. Improve readycheck for IdentityServer container
+            await Task.Delay(TimeSpan.FromSeconds(1));
         }
+
+        public async Task<string> GetTokenAsync()
+        {
+            var httpClient = new HttpClient();
+            httpClient.BaseAddress = IdentityHost.GetContainerUri();
+
+            TokenResponse res = await httpClient.RequestClientCredentialsTokenAsync(
+                new ClientCredentialsTokenRequest
+                {
+                    Address = $"{httpClient.BaseAddress}connect/token",
+                    ClientId = "Media.Test",
+                    ClientSecret = "geCDNACu94a5DfZQ2Sm46DBjkSErAnNA"
+                });
+
+            return res.AccessToken;
+        }
+
 
         public async Task DisposeAsync()
         {
-            await MongoResource?.DisposeAsync();
+            await Containers?.DisposeAsync();
         }
 
         public async Task SeedIntialDataAsync()
@@ -98,24 +128,6 @@ namespace MagicMedia.Api.Host.Tests.Infrastructure
         private static OperationDelegate PipelineFactory(IServiceProvider services)
         {
             return services.GetRequiredService<OperationDelegate>();
-        }
-    }
-
-    public class InMemoryHttpClientFactory
-    {
-        public HttpClient HttpClient { get; set; }
-
-        public Func<Task<string>> TokenResolver { get; set; }
-
-        public HttpClient CreateClient(string name)
-        {
-            if (TokenResolver != null)
-            {
-                var token = TokenResolver().GetAwaiter().GetResult();
-                HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
-                    "bearer", token);
-            }
-            return HttpClient;
         }
     }
 }

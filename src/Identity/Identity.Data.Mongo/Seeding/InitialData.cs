@@ -69,12 +69,29 @@ namespace MagicMedia.Identity.Data.Mongo.Seeding
                     AllowOfflineAccess = true,
                     AlwaysIncludeUserClaimsInIdToken = true,
                     AllowedScopes = new List<string>
-                        {
-                            IdentityServerConstants.StandardScopes.OpenId,
-                            IdentityServerConstants.StandardScopes.Profile,
-                            "fiantec.api"
-                        },
-                    }
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        "api.magic.read",
+                        "api.magic.write",
+                    },
+                },
+                new MagicClient
+                {
+                    ClientName = "Media Test",
+                    ClientId = "Media.Test",
+                    RequirePkce = true,
+                    RequireClientSecret = true,
+                    ClientSecrets = new List<Secret>
+                        { new Secret("geCDNACu94a5DfZQ2Sm46DBjkSErAnNA".ToSha256()) },
+                    AllowedGrantTypes = GrantTypes.ClientCredentials,
+                    AlwaysIncludeUserClaimsInIdToken = true,
+                    AllowedScopes = new List<string>
+                    {
+                        "api.magic.read",
+                        "api.magic.write",
+                    },
+                }
             };
     }
 }

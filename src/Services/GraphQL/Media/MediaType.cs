@@ -19,6 +19,7 @@ namespace MagicMedia.GraphQL
                     .GetThumbnailAsync(default!, default!, default!, default!));
 
             descriptor
+                //.Authorize("Read")
                 .Field("camera")
                 .ResolveWith<MediaResolvers>(x => x.GetCameraAsync(default!, default!, default!));
 
