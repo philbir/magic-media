@@ -4,7 +4,7 @@ using Xunit;
 
 namespace MagicMedia.Tests.Core
 {
-    public class AgeCalcuatorServiceTests
+    public class AgeCalculatorServiceTests
     {
         [Fact]
         public void CalculateAge_ReturnsExpectedAge()

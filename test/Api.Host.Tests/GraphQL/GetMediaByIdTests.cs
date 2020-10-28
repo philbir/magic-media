@@ -18,7 +18,7 @@ namespace MagicMedia.Api.Host.Tests.GraphQL
         }
 
         [Fact]
-        public async Task GetMediaById_ReturnsExpectedMedia()
+        public async Task GetMediaById_MediaExists_ReturnsExpectedMedia()
         {
             // Arrange
             Guid id = DataSeeder.DefaultMedia.Id;
@@ -27,7 +27,7 @@ namespace MagicMedia.Api.Host.Tests.GraphQL
             IOperationResult<IMediaDetails> result = await _apiTestServer.GraphQLClient
                 .MediaDetailsAsync(id, default);
 
-            // Arrange
+            // Assert
             result.Data.MediaById.Filename.Should().Be("Test01.jpg");
         }
     }
