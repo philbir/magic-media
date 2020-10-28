@@ -18,7 +18,7 @@ namespace MagicMedia.Api.Host.Tests.GraphQL
         }
 
         [Fact]
-        public async Task GetMediaById_ReturnsExpectedMedia()
+        public async Task GetMediaById_MediaExists_ReturnsExpectedMedia()
         {
             // Arrange
             Guid id = DataSeeder.DefaultMedia.Id;
