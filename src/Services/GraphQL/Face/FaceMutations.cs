@@ -11,10 +11,14 @@ namespace MagicMedia.GraphQL.Face
     public class FaceMutations
     {
         private readonly IFaceService _faceService;
+        private readonly IFaceModelBuilderService _faceModelBuilder;
 
-        public FaceMutations(IFaceService faceService)
+        public FaceMutations(
+            IFaceService faceService,
+            IFaceModelBuilderService faceModelBuilder)
         {
             _faceService = faceService;
+            _faceModelBuilder = faceModelBuilder;
         }
 
         public async Task<UpdateFacePayload> AssignPersonByHumanAsync(
@@ -49,6 +53,13 @@ namespace MagicMedia.GraphQL.Face
                 cancellationToken);
 
             return new DeleteFacePayload(id);
+        }
+
+        public async Task<int> BuildModelAsync(CancellationToken cancellationToken)
+        {
+            BuildFaceModelResult? res = await _faceModelBuilder.BuildModelAsyc(cancellationToken);
+
+            return res.FaceCount;
         }
     }
 }

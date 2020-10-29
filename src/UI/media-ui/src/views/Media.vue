@@ -3,7 +3,8 @@
     <div v-if="loading">Loading...</div>
     <div v-else class="media-wrapper">
       <img
-        :src="'http://localhost:5000/media/webimage/' + mediaId"
+        :src="'/api/media/webimage/' + mediaId"
+        @load="onImgLoaded"
         ref="img"
         :style="{
           'margin-left': box.left + 'px',
@@ -13,8 +14,8 @@
         }"
       />
 
-      <template v-for="face in media.faces">
-        <FaceBox :key="face.id" :face="face"></FaceBox>
+      <template v-show="imagedLoaded" v-for="face in media.faces">
+        <FaceBox :key="face.id" :face="face" :image="image"></FaceBox>
       </template>
     </div>
   </div>
@@ -26,6 +27,13 @@ import FaceBox from "../components/FaceBox.vue";
 export default {
   data() {
     return {
+      image: {
+        loaded: false,
+        width: 0,
+        naturalWidth: 0,
+        offsetLeft: 0,
+        offsetTop: 0,
+      },
       mediaId: this.$route.params.id,
       windowWidth: window.innerWidth,
     };
@@ -68,7 +76,20 @@ export default {
       return null;
     },
   },
-  methods: {},
+  methods: {
+    onImgLoaded() {
+      this.$nextTick(() => {
+        this.image = {
+          width: this.$refs.img.width,
+          naturalWidth: this.$refs.img.naturalWidth,
+          offsetLeft: this.$refs.img.offsetLeft,
+          offsetTop: this.$refs.img.offsetTop,
+          loaded: true,
+        };
+        console.log(this.image);
+      });
+    },
+  },
 };
 </script>
 

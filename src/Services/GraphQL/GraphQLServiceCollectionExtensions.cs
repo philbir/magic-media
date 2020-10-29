@@ -13,7 +13,7 @@ namespace MagicMedia
             this IRequestExecutorBuilder builder)
         {
             builder
-                .AddQueryType(d => d.Name("Query").Authorize("Read"))
+                .AddQueryType(d => d.Name("Query"))
                 .AddType<MediaQueries>()
                 .AddType<FaceQueries>()
                 .AddMutationType(d => d.Name("Mutation"))

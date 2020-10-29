@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 //import Home from '../views/Home.vue'
 import MediaList from '../views/MediaList.vue'
 import Media from '../views/Media.vue'
+import Upload from '../views/Upload.vue'
 
 Vue.use(VueRouter)
 
@@ -16,6 +17,11 @@ const routes = [
     path: '/media/:id',
     name: 'media',
     component: Media
+  },
+  {
+    path: '/upload',
+    name: 'upload',
+    component: Upload
   },
 ]
 

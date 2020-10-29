@@ -1,7 +1,7 @@
 <template>
   <div>
     <div
-      v-if="box"
+      v-if="image.loaded"
       class="face-box"
       @click="this.openDialog"
       :style="{
@@ -35,10 +35,7 @@
             <v-spacer></v-spacer>
             <v-col sm="3">
               <img
-                :src="
-                  'http://localhost:5000/media/thumbnail/' +
-                  faceData.thumbnail.id
-                "
+                :src="'/api/media/thumbnail/' + faceData.thumbnail.id"
                 class="dialog-face-image"
               />
             </v-col>
@@ -114,44 +111,43 @@ export default {
     this.faceData = this.face;
   },
   mounted() {
-    this.$nextTick(() => {
-      window.setTimeout(() => {
-        // img.naturalWidth is 0 without this timeout
-        const box = {};
-        const img = this.$parent.$refs.img;
-        const ratio = img.naturalWidth / img.width;
-        console.log(img.offsetLeft, img.offsetTop, img.naturalWidth, img.width);
-        box.left = Math.round(this.face.box.left / ratio) + img.offsetLeft;
-        box.top = Math.round(this.face.box.top / ratio) + img.offsetTop;
-        box.width = Math.round(
-          (this.face.box.right - this.face.box.left) / ratio
-        );
-        box.height = Math.round(
-          (this.face.box.bottom - this.face.box.top) / ratio
-        );
-        this.setBoxProperties(box, this.face);
-        this.setData(box);
-      }, 50);
-    });
+    this.$nextTick(() => {});
   },
-  props: ["face"],
+  props: ["face", "image"],
   data() {
     return {
-      box: null,
+      //box: null,
       dialog: false,
       faceData: null,
     };
   },
-  methods: {
-    setData(box) {
+  computed: {
+    box: function () {
+      const box = {};
+      const ratio = this.image.naturalWidth / this.image.width;
+      box.left = Math.round(this.face.box.left / ratio) + this.image.offsetLeft;
+      box.top = Math.round(this.face.box.top / ratio) + this.image.offsetTop;
+      box.width = Math.round(
+        (this.face.box.right - this.face.box.left) / ratio
+      );
+      box.height = Math.round(
+        (this.face.box.bottom - this.face.box.top) / ratio
+      );
+      box.showName = box.width > 30 && this.face.person;
+      if (box.showName) {
+        box.height = box.height + 12;
+        box.top = box.top - 12;
+      }
+      box.color = getFaceColor(this.face);
       console.log(box);
-      this.box = box;
+      return box;
     },
+  },
+  methods: {
     accept() {},
     async setName(name) {
       const result = await assignPerson(this.face.id, name);
-      this.faceData = result.data.assignPersonByHuman.face;
-      this.setBoxProperties(this.box, this.faceData);
+      this.face = result.data.assignPersonByHuman.face;
       this.dialog = false;
     },
     setBoxProperties(box, face) {
@@ -169,7 +165,6 @@ export default {
       });
     },
     setFocus() {
-      console.log(this.$refs.combo.$refs.input);
       if (this.faceData.person === null) this.$refs.combo.$refs.input.focus();
     },
   },

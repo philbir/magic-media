@@ -33,20 +33,22 @@ namespace MagicMedia
             CancellationToken cancellationToken)
         {
             var metadata = new MediaMetadata();
-
-            ExifProfile? exifProfile = image.Metadata.ExifProfile;
-
             metadata.Dimension = new MediaDimension
             {
                 Height = image.Height,
                 Width = image.Width
             };
 
-            metadata.GeoLocation = await GetGeoLocationDataAsync(exifProfile, cancellationToken);
-            metadata.Camera = GetCameraData(exifProfile);
-            metadata.DateTaken = GetDateTaken(exifProfile);
-            metadata.Orientation = exifProfile.GetValue(ExifTag.Orientation).ToString();
-            metadata.ImageId = exifProfile.GetValue(ExifTag.ImageID).ToString();
+            ExifProfile? exifProfile = image.Metadata.ExifProfile;
+
+            if ( exifProfile != null)
+            {
+                metadata.GeoLocation = await GetGeoLocationDataAsync(exifProfile, cancellationToken);
+                metadata.Camera = GetCameraData(exifProfile);
+                metadata.DateTaken = GetDateTaken(exifProfile);
+                metadata.Orientation = exifProfile.GetValue(ExifTag.Orientation)?.ToString();
+                metadata.ImageId = exifProfile.GetValue(ExifTag.ImageID)?.ToString();
+            }
 
             return metadata;
         }
@@ -75,7 +77,7 @@ namespace MagicMedia
             IExifValue<string> model = exifProfile.GetValue(ExifTag.Model);
             IExifValue<string> make = exifProfile.GetValue(ExifTag.Make);
 
-            if (model.GetValue() != null)
+            if (model?.GetValue() != null)
             {
                 return new CameraData
                 {

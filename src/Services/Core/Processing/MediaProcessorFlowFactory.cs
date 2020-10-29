@@ -22,6 +22,7 @@ namespace MagicMedia.Processing
                         MediaProcessorTaskNames.ExtractMetadata,
                         MediaProcessorTaskNames.GenerateThumbnails,
                         MediaProcessorTaskNames.BuildFaceData,
+                        MediaProcessorTaskNames.PredictPersons,
                         MediaProcessorTaskNames.GenerateWebImage,
                         MediaProcessorTaskNames.SaveMedia,
                     });

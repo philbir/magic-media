@@ -4,7 +4,7 @@ namespace MagicMedia.Face
 {
     public class PredictPersonRequest
     {
-        IEnumerable<double> Encoding { get; set; }
+        public IEnumerable<double> Encoding { get; set; }
 
         public double Distance { get; set; }
     }

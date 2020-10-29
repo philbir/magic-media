@@ -30,6 +30,7 @@ namespace Identity.UI.Tests
             await Task.Delay(TimeSpan.FromSeconds(5));
             using IdentityApp app = _testContext.CreateApp<IdentityApp>();
             await app.TestContext.StartMagnetAsync();
+
             string mobileNr = "+41798074288";
             string email = $"{Guid.NewGuid().ToString("N").Substring(0, 6)}@magic-media.io";
 
