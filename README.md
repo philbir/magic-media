@@ -5,13 +5,13 @@ It uses features like face detection/recognition, object detection, geo encoding
 
 It is build with privacy in mind, you can enjoy features you know from tools like Google Photos but without giving all you precious data away.
 
-> Project state is work in process
+> Project state: is work in process
 
 ## Overview
-
+![Magic Media](https://github.com/philbir/magic-media/blob/main/images/magic_media_overview.png?raw=true)
 ## Open source
 
-The project is build on top of some awsome opensource libraryes platforms and libraries.
+The project is build on top of some awsome opensource platforms and libraries.
 
 - [Hot Chocolate GraphQL](https://github.com/ChilliCream/hotchocolate)
 - [Face Recognition](https://github.com/ageitgey/face_recognition)
