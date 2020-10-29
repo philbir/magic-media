@@ -2,6 +2,14 @@ mutation assignPersonByHuman($input: AssignPersonByHumanInput!) {
   assignPersonByHuman(input: $input) {
     face {
       id
+      recognitionType
+      state
+      box {
+        left
+        top
+        right
+        bottom
+      }
       person {
         id
         name

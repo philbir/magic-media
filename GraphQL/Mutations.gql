@@ -1,0 +1,25 @@
+mutation assignPersonByHuman($input: AssignPersonByHumanInput!) {
+  assignPersonByHuman(input: $input) {
+    face {
+      id
+      box {
+        left
+        top
+        right
+        bottom
+      }
+      personId
+      person {
+        id
+        name
+      }
+    }
+    errors {
+      code
+      message
+    }
+  }
+}
+mutation buildModel {
+  buildModel
+}

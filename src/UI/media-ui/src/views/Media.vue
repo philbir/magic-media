@@ -79,14 +79,16 @@ export default {
   methods: {
     onImgLoaded() {
       this.$nextTick(() => {
-        this.image = {
-          width: this.$refs.img.width,
-          naturalWidth: this.$refs.img.naturalWidth,
-          offsetLeft: this.$refs.img.offsetLeft,
-          offsetTop: this.$refs.img.offsetTop,
-          loaded: true,
-        };
-        console.log(this.image);
+        window.setTimeout(() => {
+          this.image = {
+            width: this.$refs.img.width,
+            naturalWidth: this.$refs.img.naturalWidth,
+            offsetLeft: this.$refs.img.offsetLeft,
+            offsetTop: this.$refs.img.offsetTop,
+            loaded: true,
+          };
+          console.log(this.image);
+        }, 750);
       });
     },
   },

@@ -116,29 +116,31 @@ export default {
   props: ["face", "image"],
   data() {
     return {
-      //box: null,
       dialog: false,
-      faceData: null,
+      faceData: this.face,
     };
   },
   computed: {
     box: function () {
       const box = {};
+
       const ratio = this.image.naturalWidth / this.image.width;
-      box.left = Math.round(this.face.box.left / ratio) + this.image.offsetLeft;
-      box.top = Math.round(this.face.box.top / ratio) + this.image.offsetTop;
+      box.left =
+        Math.round(this.faceData.box.left / ratio) + this.image.offsetLeft;
+      box.top =
+        Math.round(this.faceData.box.top / ratio) + this.image.offsetTop;
       box.width = Math.round(
-        (this.face.box.right - this.face.box.left) / ratio
+        (this.faceData.box.right - this.faceData.box.left) / ratio
       );
       box.height = Math.round(
-        (this.face.box.bottom - this.face.box.top) / ratio
+        (this.faceData.box.bottom - this.faceData.box.top) / ratio
       );
-      box.showName = box.width > 30 && this.face.person;
+      box.showName = box.width > 30 && this.faceData.person;
       if (box.showName) {
         box.height = box.height + 12;
         box.top = box.top - 12;
       }
-      box.color = getFaceColor(this.face);
+      box.color = getFaceColor(this.faceData);
       console.log(box);
       return box;
     },
@@ -146,17 +148,10 @@ export default {
   methods: {
     accept() {},
     async setName(name) {
-      const result = await assignPerson(this.face.id, name);
-      this.face = result.data.assignPersonByHuman.face;
+      const result = await assignPerson(this.faceData.id, name);
+      console.log(result.data.assignPersonByHuman.face);
+      this.faceData = result.data.assignPersonByHuman.face;
       this.dialog = false;
-    },
-    setBoxProperties(box, face) {
-      box.showName = box.width > 30 && face.person;
-      if (box.showName) {
-        box.height = box.height + 12;
-        box.top = box.top - 12;
-      }
-      box.color = getFaceColor(face);
     },
     openDialog() {
       this.dialog = true;
