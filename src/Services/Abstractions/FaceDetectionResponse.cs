@@ -20,6 +20,9 @@ namespace MagicMedia
         public double[] Encoding { get; set; }
 
         public MediaThumbnail Thumbnail { get; set; }
+        public Guid? PersonId { get; set; }
+        public double DistanceThreshold { get; set; }
+        public FaceRecognitionType RecognitionType { get; set; }
     }
 
     public class ImageBox

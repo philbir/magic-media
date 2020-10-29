@@ -30,7 +30,9 @@ query mediaDetails($id: Uuid!) {
         dateOfBirth
         group
       }
-      personId
+      personId,
+      recognitionType,
+      state
     }
     thumbnail(size: M) {
       size

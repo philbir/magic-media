@@ -21,7 +21,6 @@ namespace MagicMedia.Face
             _faceDetectionService = faceDetectionService;
         }
 
-
         public async Task<BuildFaceModelResult> BuildModelAsyc(CancellationToken cancellationToken)
         {
             IEnumerable<PersonEncodingData>? encodings = await _faceStore

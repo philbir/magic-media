@@ -1,7 +1,8 @@
-﻿namespace MagicMedia.Discovery
+namespace MagicMedia.Discovery
 {
     public enum MediaDiscoverySource
     {
-        FileSystem
+        FileSystem,
+        WebUpload
     }
 }

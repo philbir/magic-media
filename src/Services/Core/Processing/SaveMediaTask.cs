@@ -91,9 +91,11 @@ namespace MagicMedia.Processing
                     Id = f.Id,
                     Encoding = f.Encoding,
                     MediaId = media.Id,
-                    RecognitionType = FaceRecognitionType.None,
+                    RecognitionType = f.RecognitionType,
                     State = FaceState.New,
                     Thumbnail = f.Thumbnail,
+                    PersonId = f.PersonId,
+                    DistanceThreshold = f.DistanceThreshold
                 }).ToList();
 
                 media.FaceCount = faces.Count();

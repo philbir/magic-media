@@ -11,10 +11,9 @@ export default new Vuex.Store({
   },
   mutations: {
     setMediaList(state, mediaList){
-      state.mediaList.push(... mediaList);
+      Vue.set(state, 'mediaList', [... mediaList])
     },
     setSelectedMedia(state, media){
-      console.log('MUT', media)
       state.currentMedia = Object.assign({}, media);
     }
   },

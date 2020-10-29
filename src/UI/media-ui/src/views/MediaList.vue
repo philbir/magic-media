@@ -20,6 +20,8 @@
         }"
       />
     </div>
+
+    <v-icon large color="gray" @click="handleUpload"> mdi-upload </v-icon>
   </div>
 
   <!-- No result -->
@@ -31,12 +33,8 @@ import { mediaListViewMap } from "../services/mediaListViewMap";
 
 export default {
   created() {
-    console.log(this.$store);
-    if (
-      this.$store.mediaList === undefined ||
-      this.$store.mediaList.length === 0
-    )
-      this.$store.dispatch("searchMedia");
+    console.log("CREATED");
+    this.$store.dispatch("searchMedia");
   },
   computed: {
     windowWidth: () => window.innerWidth,
@@ -67,7 +65,11 @@ export default {
   data() {
     return {};
   },
-  methods: {},
+  methods: {
+    handleUpload() {
+      this.$router.push("/upload");
+    },
+  },
 };
 </script>
 
