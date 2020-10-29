@@ -49,7 +49,7 @@
                   ref="combo"
                   dense
                   :value="faceData.person ? faceData.person.name : null"
-                  :items="['Yael', 'Jana', 'Philippe', 'Eun Ju']"
+                  :items="personNames"
                   label="Name"
                   v-on:change="setName"
                 ></v-combobox>
@@ -121,6 +121,11 @@ export default {
     };
   },
   computed: {
+    personNames: function () {
+      console.log("NAMES", this.$store.state.persons);
+
+      return this.$store.state.persons.map((item) => item.name);
+    },
     box: function () {
       const box = {};
 
