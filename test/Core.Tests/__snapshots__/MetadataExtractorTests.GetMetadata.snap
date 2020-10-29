@@ -3,7 +3,7 @@
     "Height": 2268,
     "Width": 4032
   },
-  "Location": {
+  "GeoLocation": {
     "Point": {
       "Type": "Point",
       "Coordinates": [
@@ -30,5 +30,6 @@
     "Model": "SM-N950F",
     "Make": "samsung"
   },
-  "ImageId": "G12LLKA02SM G12LLKL01GM\n"
+  "ImageId": "G12LLKA02SM G12LLKL01GM\n",
+  "DateTaken": "2020-08-06T11:38:26"
 }

@@ -45,7 +45,7 @@ namespace MagicMedia.Api.Host.Tests
             // Arrange
             Store.MediaThumbnail thumbnail = DataSeeder.DefaultMedia.Thumbnails.First();
 
-            var request = new HttpRequestMessage(HttpMethod.Get, $"media/thumbnail/{thumbnail.Id}");
+            var request = new HttpRequestMessage(HttpMethod.Get, $"api/media/thumbnail/{thumbnail.Id}");
 
             // Act
             HttpResponseMessage respone = await _apiTestServer.HttpClient.SendAsync(request);

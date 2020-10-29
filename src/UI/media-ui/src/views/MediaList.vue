@@ -22,6 +22,7 @@
     </div>
 
     <v-icon large color="gray" @click="handleUpload"> mdi-upload </v-icon>
+    <v-icon large color="gray" @click="handleRefresh"> mdi-refresh </v-icon>
   </div>
 
   <!-- No result -->
@@ -33,7 +34,6 @@ import { mediaListViewMap } from "../services/mediaListViewMap";
 
 export default {
   created() {
-    console.log("CREATED");
     this.$store.dispatch("searchMedia");
   },
   computed: {
@@ -68,6 +68,9 @@ export default {
   methods: {
     handleUpload() {
       this.$router.push("/upload");
+    },
+    handleRefresh() {
+      this.$store.dispatch("searchMedia");
     },
   },
 };
