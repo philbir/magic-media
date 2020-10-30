@@ -11,4 +11,4 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build the Docker image
-      run: docker build --tag magic-media-host:$(date +%s) -f src/Services/Api.Host/Dockerfile src/Services
+      run: docker build --tag magic-media-host:$(date +%s) -f ./src/Services/Api.Host/Dockerfile ./src/Services
