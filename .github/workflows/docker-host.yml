@@ -3,10 +3,6 @@ name:  Docker Host Build & Publish
 on:
   push:
     branches: [ main ]
-defaults:
-  run:
-    working-directory: ./src/Service
-    
 jobs:
   main:
     runs-on: ubuntu-latest
@@ -22,6 +18,9 @@ jobs:
           username: ${{ github.actor }}
           password:  ${{ secrets.GITHUB_TOKEN }}
       - run: ls -la
+      - run: ls -la ./src
+      - run: ls -la src
+      - run: ls -la ../src
       - name: Build and push
         id: docker_build
         uses: docker/build-push-action@v2
