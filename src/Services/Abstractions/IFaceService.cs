@@ -13,5 +13,6 @@ namespace MagicMedia.Face
             string personName,
             CancellationToken cancellationToken);
         Task DeleteAsync(Guid id, CancellationToken cancellationToken);
+        Task<MediaFace> UnAssignPersonAsync(Guid id, CancellationToken cancellationToken);
     }
 }

@@ -16,6 +16,7 @@ namespace MagicMedia
                 .AddQueryType(d => d.Name("Query"))
                 .AddType<MediaQueries>()
                 .AddType<FaceQueries>()
+                .AddType<PersonQueries>()
                 .AddMutationType(d => d.Name("Mutation"))
                 .AddType<FaceMutations>()
                 .AddType<MediaType>()

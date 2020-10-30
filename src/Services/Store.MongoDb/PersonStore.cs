@@ -26,6 +26,13 @@ namespace MagicMedia.Store.MongoDb
                 .ToListAsync(cancellationToken);
         }
 
+        public async Task<IEnumerable<Person>> GetAllAsync(
+            CancellationToken cancellationToken)
+        {
+            return await _mediaStoreContext.Persons.AsQueryable()
+                .ToListAsync(cancellationToken);
+        }
+
         public async Task<Person> GetByIdAsnc(
             Guid id,
             CancellationToken cancellationToken)

@@ -44,6 +44,17 @@ namespace MagicMedia.GraphQL.Face
             return new UpdateFacePayload(face);
         }
 
+        public async Task<UpdateFacePayload> UnAssignPersonFromFaceAsync(
+            Guid id,
+            CancellationToken cancellationToken)
+        {
+            MediaFace face = await _faceService.UnAssignPersonAsync(
+                id,
+                cancellationToken);
+
+            return new UpdateFacePayload(face);
+        }
+
         public async Task<DeleteFacePayload> DeleteFaceAsync(
             Guid id,
             CancellationToken cancellationToken)

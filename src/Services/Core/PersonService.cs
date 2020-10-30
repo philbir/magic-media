@@ -28,6 +28,12 @@ namespace MagicMedia
             return await _personStore.GetPersonsAsync(ids, cancellationToken);
         }
 
+        public async Task<IEnumerable<Person>> GetAllAsync(
+            CancellationToken cancellationToken)
+        {
+            return await _personStore.GetAllAsync(cancellationToken);
+        }
+
         public async Task<Person> GetOrCreatePersonAsync(
             string name,
             CancellationToken cancellationToken)
