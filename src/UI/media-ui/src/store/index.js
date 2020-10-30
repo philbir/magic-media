@@ -12,14 +12,19 @@ export default new Vuex.Store({
     persons: []
   },
   mutations: {
-    setMediaList(state, mediaList){
+    MEDIAITEMS_LOADED(state, mediaList){
       Vue.set(state, 'mediaList', [... mediaList])
     },
-    setSelectedMedia(state, media){
+    MEDIADETAILS_LOADED(state, media){
       state.currentMedia = Object.assign({}, media);
     },
     PERSONS_LOADED(state, persons){
       Vue.set(state, 'persons', [... persons])
+    },
+    PERSON_ADDED(state, person){
+      var persons = state.persons.filter( x => x.id == person.id);
+        if (persons.length === 0)
+          state.persons.push(person);
     }
   },
   actions: {
@@ -27,7 +32,7 @@ export default new Vuex.Store({
       try
       {
         const res = await searchMedia();
-        commit('setMediaList', res.data.searchMedia);
+        commit('MEDIAITEMS_LOADED', res.data.searchMedia);
       }
       catch (ex){
         console.error(ex)
@@ -37,7 +42,7 @@ export default new Vuex.Store({
       try
       {
         const res =  await getById(id);
-        commit('setSelectedMedia', res.data.mediaById);
+        commit('MEDIADETAILS_LOADED', res.data.mediaById);
       }
       catch (ex){
         console.error(ex)

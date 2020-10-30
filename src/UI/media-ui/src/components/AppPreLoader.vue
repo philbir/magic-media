@@ -1,5 +1,5 @@
 <template>
-  <div v-show="preloaded">
+  <div v-if="preloaded">
     <slot></slot>
   </div>
 </template>

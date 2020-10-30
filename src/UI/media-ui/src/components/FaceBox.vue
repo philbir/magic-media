@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="faceData && box">
     <div
       v-if="image.loaded"
       class="face-box"
@@ -48,6 +48,7 @@
                 <v-combobox
                   ref="combo"
                   dense
+                  clearable
                   :value="faceData.person ? faceData.person.name : null"
                   :items="personNames"
                   label="Name"
@@ -58,6 +59,7 @@
             <v-row>
               <v-col>
                 <v-btn
+                  v-show="showApproved"
                   depressed
                   elevation="2"
                   large
@@ -68,6 +70,8 @@
                   <v-icon dark> mdi-emoticon-happy </v-icon></v-btn
                 >
                 <v-btn
+                  v-show="showUnassign"
+                  @click="unAssignPerson"
                   depressed
                   elevation="2"
                   large
@@ -78,6 +82,7 @@
                   <v-icon dark> mdi-emoticon-sad </v-icon></v-btn
                 >
                 <v-btn
+                  @click="deleteFace"
                   depressed
                   elevation="2"
                   large
@@ -103,7 +108,12 @@
 </template>
 
 <script>
-import { assignPerson } from "../services/faceService";
+/* eslint-disable no-debugger */
+import {
+  assignPerson,
+  unAssignPerson,
+  deleteFace,
+} from "../services/faceService";
 import { getFaceColor } from "../services/faceColor";
 
 export default {
@@ -122,9 +132,16 @@ export default {
   },
   computed: {
     personNames: function () {
-      console.log("NAMES", this.$store.state.persons);
-
       return this.$store.state.persons.map((item) => item.name);
+    },
+    showApproved: function () {
+      return (
+        this.faceData.recognitionType === "COMPUTER" &&
+        this.faceData.state !== "VALIDATED"
+      );
+    },
+    showUnassign: function () {
+      return this.faceData.person !== null;
     },
     box: function () {
       const box = {};
@@ -146,17 +163,31 @@ export default {
         box.top = box.top - 12;
       }
       box.color = getFaceColor(this.faceData);
-      console.log(box);
+      console.log("COMPUTED_BOX", box);
+
       return box;
     },
   },
   methods: {
     accept() {},
     async setName(name) {
-      const result = await assignPerson(this.faceData.id, name);
-      console.log(result.data.assignPersonByHuman.face);
-      this.faceData = result.data.assignPersonByHuman.face;
-      this.dialog = false;
+      if (name) {
+        const result = await assignPerson(this.faceData.id, name);
+        console.log(result.data.assignPersonByHuman.face);
+        this.faceData = result.data.assignPersonByHuman.face;
+        this.$store.commit("PERSON_ADDED", this.faceData.person);
+
+        this.dialog = false;
+      }
+    },
+    async unAssignPerson() {
+      const result = await unAssignPerson(this.faceData.id);
+      this.faceData = result.data.unAssignPersonFromFace.face;
+    },
+    async deleteFace() {
+      const result = await deleteFace(this.faceData.id);
+      console.log(result);
+      this.faceData = null;
     },
     openDialog() {
       this.dialog = true;

@@ -1,0 +1,20 @@
+fragment face on MediaFace {
+      id
+      mediaId
+      box {
+        left
+        top
+        right
+        bottom
+      }
+      recognitionType
+      state
+      personId
+      person {
+        id
+        name
+      },
+        thumbnail {
+        id
+      }
+}
