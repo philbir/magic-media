@@ -13,8 +13,6 @@ namespace MagicMedia.Api.Host.Tests
 
         System.DateTimeOffset? DateTaken { get; }
 
-        System.Guid? CameraId { get; }
-
         IMediaDimension Dimension { get; }
 
         ICamera Camera { get; }

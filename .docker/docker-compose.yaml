@@ -1,0 +1,28 @@
+version: "3"
+services:
+  mongo:
+    container_name: mm_mongo
+    image: mongo
+    restart: always
+    ports:
+      - 27217:27017
+  api:
+    container_name: mm_demo_api
+    image: skycontainers.azurecr.io/magic-media-api:v1
+    restart: always
+    volumes:
+      - ./data:/app/store
+    ports:
+      - 7780:80
+    environment:
+      MagicMedia__BingMaps__ApiKey: "***"
+      MagicMedia__Database__ConnectionString: mongodb://mongo:27017
+      MagicMedia__FileSystemStore__RootDirectory: /app/store
+      MagicMedia__Face__Url: http://face:5001
+  face:
+    container_name: mm_face
+    image: magic-media-face:dev
+    restart: always
+    ports:
+      - 7781:5001
+

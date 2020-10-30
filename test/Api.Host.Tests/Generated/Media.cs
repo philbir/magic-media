@@ -12,7 +12,6 @@ namespace MagicMedia.Api.Host.Tests
             System.Guid id, 
             string filename, 
             System.DateTimeOffset? dateTaken, 
-            System.Guid? cameraId, 
             IMediaDimension dimension, 
             ICamera camera, 
             IReadOnlyList<IMediaFace> faces, 
@@ -21,7 +20,6 @@ namespace MagicMedia.Api.Host.Tests
             Id = id;
             Filename = filename;
             DateTaken = dateTaken;
-            CameraId = cameraId;
             Dimension = dimension;
             Camera = camera;
             Faces = faces;
@@ -33,8 +31,6 @@ namespace MagicMedia.Api.Host.Tests
         public string Filename { get; }
 
         public System.DateTimeOffset? DateTaken { get; }
-
-        public System.Guid? CameraId { get; }
 
         public IMediaDimension Dimension { get; }
 

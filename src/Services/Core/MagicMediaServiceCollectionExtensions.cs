@@ -2,15 +2,18 @@ using MagicMedia.Face;
 using MagicMedia.Metadata;
 using MagicMedia.Processing;
 using MagicMedia.Thumbnail;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace MagicMedia
 {
     public static class MagicMediaServiceCollectionExtensions
     {
-        public static IServiceCollection AddMagicMedia(this IServiceCollection services)
+        public static IServiceCollection AddMagicMedia(
+            this IServiceCollection services,
+            IConfiguration configuration)
         {
-            services.AddFaceDetection();
+            services.AddFaceDetection(configuration);
             services.AddThumbnailService();
             services.AddSingleton<IMetadataExtractor, MetadataExtractor>();
             services.AddSingleton<IBoxExtractorService, BoxExtractorService>();

@@ -1,19 +1,16 @@
 module.exports = {
-
-  "transpileDependencies": [
-    "vuetify"
-  ],
+  transpileDependencies: ["vuetify"],
   devServer: {
     proxy: {
       "/api": {
         changeOrigin: true,
-        target: "http://localhost:5000/"
+        target: "https://magic-media-demo.birbaum.me/"
       },
       "/graphql": {
         ws: true,
         changeOrigin: true,
-        target: "http://localhost:5000/"
+        target: "https://magic-media-demo.birbaum.me/"
       }
     }
   }
-}
+};

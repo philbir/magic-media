@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Configuration;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace MagicMedia.Stores
@@ -72,13 +73,15 @@ namespace MagicMedia.Stores
     {
         public static IServiceCollection AddFileSystemStore(
             this IServiceCollection services,
-            string rootDirectory)
+            IConfiguration configuration)
         {
-            var options = new FileSystemStoreOptions
+            FileSystemStoreOptions options = configuration.GetSection("MagicMedia:FileSystemStore")
+                .Get<FileSystemStoreOptions>();
+
+            if (options.BlobTypeMap == null || options.BlobTypeMap.Count == 0)
             {
-                RootDirectory = rootDirectory,
-                BlobTypeMap = GetDefaultMap()
-            };
+                options.BlobTypeMap = GetDefaultMap();
+            }
 
             services.AddSingleton(options);
             services.AddSingleton<IMediaBlobStore, FileSystemMediaBlobStore>();
