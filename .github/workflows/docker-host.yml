@@ -18,9 +18,6 @@ jobs:
           registry: docker.pkg.github.com
           username: ${{ github.actor }}
           password:  ${{ secrets.GITHUB_TOKEN }}
-      - run: ls -la
-      - run: ls -la ./src
-      - run: ls -la ./src/Services
       - name: Build and push
         id: docker_build
         uses: docker/build-push-action@v2
@@ -28,5 +25,5 @@ jobs:
           context: ./src/Services
           file: ./src/Services/Api.Host/Dockerfile
           push: true
-          tags: magicmedia/host:latest
+          tags: philbir/magic-media-host:latest
 
