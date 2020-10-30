@@ -1,8 +1,7 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net.Http;
-using MagicMedia.Api.Host.Tests.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using StrawberryShake;
@@ -30,7 +29,7 @@ namespace MagicMedia.Api.Host.Tests
             serviceCollection.AddSingleton<IOperationExecutorFactory>(sp =>
                 new HttpOperationExecutorFactory(
                     _clientName,
-                    sp.GetRequiredService<InMemoryHttpClientFactory>().CreateClient,
+                    sp.GetRequiredService<IHttpClientFactory>().CreateClient,
                     PipelineFactory(sp),
                     sp));
 

@@ -47,8 +47,8 @@ namespace Playground
             var services = new ServiceCollection();
             services.AddMongoDbStore(config);
 
-            services.AddFileSystemStore(@"C:\MagicMedia");
-            services.AddMagicMedia();
+            services.AddFileSystemStore(config);
+            services.AddMagicMedia(config);
             services.AddBingMaps(bingOptions);
             services.AddSingleton<ImportSample>();
             services.AddSingleton<DiscoverySample>();

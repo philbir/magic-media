@@ -32,7 +32,7 @@ namespace MagicMedia.Tests.Core.FaceDetection
         private IServiceProvider BuildServiceProvider()
         {
             var services = new ServiceCollection();
-            services.AddFaceDetection();
+            services.AddFaceDetection(null);
 
             return services.BuildServiceProvider();
         }

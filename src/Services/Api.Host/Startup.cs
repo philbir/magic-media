@@ -1,21 +1,13 @@
-using HotChocolate;
-using MagicMedia.GraphQL;
-using MagicMedia.GraphQL.DataLoaders;
-using MagicMedia.GraphQL.Face;
 using MagicMedia.BingMaps;
+using MagicMedia.Massaging;
 using MagicMedia.Store.MongoDb;
 using MagicMedia.Stores;
+using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using MongoDB.Extensions.Context;
-using MagicMedia.Massaging;
-using MassTransit;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using System.Threading.Tasks;
 
 namespace MagicMedia.Api
 {
@@ -46,21 +38,11 @@ namespace MagicMedia.Api
 
             services.AddMongoDbStore(Configuration);
 
-            services.AddFileSystemStore(@"C:\MagicMedia");
-            services.AddMagicMedia();
+            services.AddFileSystemStore(Configuration);
+            services.AddMagicMedia(Configuration);
             services.AddBingMaps(bingOptions);
             services.AddMessaging(Configuration);
             services.AddMvc();
-            services.AddCors(options =>
-            {
-                options.AddDefaultPolicy(builder => {
-                            builder
-                                .WithOrigins("http://localhost:8080")
-                                .WithOrigins("http://localhost:8081")
-                                .AllowAnyHeader()
-                                .AllowAnyMethod();
-                            });
-            });
 
             services.AddAuthentication(options =>
             {
@@ -105,6 +87,14 @@ namespace MagicMedia.Api
             {
                 endpoints.MapGraphQL();
                 endpoints.MapControllers();
+            });
+
+
+            app.UseSpa(spa =>
+            {
+                // To learn more about options for serving an Angular SPA from ASP.NET Core,
+                // see https://go.microsoft.com/fwlink/?linkid=864501
+                //spa.Options.SourcePath = "ClientApp";
             });
         }
     }

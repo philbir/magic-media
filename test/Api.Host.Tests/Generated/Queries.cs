@@ -20,27 +20,27 @@ namespace MagicMedia.Api.Host.Tests
         };
         private readonly byte[] _hash = new byte[]
         {
-            75,
-            78,
-            116,
-            117,
-            83,
-            70,
+            55,
+            119,
+            84,
+            113,
+            97,
+            57,
             49,
-            50,
-            101,
-            122,
-            71,
-            53,
-            54,
-            43,
             97,
             117,
+            48,
+            119,
+            119,
+            119,
+            67,
+            80,
             90,
-            49,
-            66,
-            56,
-            49,
+            104,
+            50,
+            88,
+            115,
+            50,
             103,
             61,
             61
@@ -133,15 +133,6 @@ namespace MagicMedia.Api.Host.Tests
             107,
             101,
             110,
-            32,
-            99,
-            97,
-            109,
-            101,
-            114,
-            97,
-            73,
-            100,
             32,
             100,
             105,
@@ -475,7 +466,6 @@ namespace MagicMedia.Api.Host.Tests
                 id
                 filename
                 dateTaken
-                cameraId
                 dimension {
                   height
                   width

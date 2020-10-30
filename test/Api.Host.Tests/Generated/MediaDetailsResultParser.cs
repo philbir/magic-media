@@ -51,7 +51,6 @@ namespace MagicMedia.Api.Host.Tests
                 DeserializeUuid(obj, "id"),
                 DeserializeNullableString(obj, "filename"),
                 DeserializeNullableDateTime(obj, "dateTaken"),
-                DeserializeNullableUuid(obj, "cameraId"),
                 ParseMediaDetailsMediaByIdDimension(obj, "dimension"),
                 ParseMediaDetailsMediaByIdCamera(obj, "camera"),
                 ParseMediaDetailsMediaByIdFaces(obj, "faces"),
@@ -280,7 +279,11 @@ namespace MagicMedia.Api.Host.Tests
 
             return (System.DateTimeOffset?)_dateTimeSerializer.Deserialize(value.GetString());
         }
-
+        private int DeserializeInt(JsonElement obj, string fieldName)
+        {
+            JsonElement value = obj.GetProperty(fieldName);
+            return (int)_intSerializer.Deserialize(value.GetInt32());
+        }
         private System.Guid? DeserializeNullableUuid(JsonElement obj, string fieldName)
         {
             if (!obj.TryGetProperty(fieldName, out JsonElement value))
@@ -294,11 +297,6 @@ namespace MagicMedia.Api.Host.Tests
             }
 
             return (System.Guid?)_uuidSerializer.Deserialize(value.GetString());
-        }
-        private int DeserializeInt(JsonElement obj, string fieldName)
-        {
-            JsonElement value = obj.GetProperty(fieldName);
-            return (int)_intSerializer.Deserialize(value.GetInt32());
         }
         private ThumbnailSizeName DeserializeThumbnailSizeName(JsonElement obj, string fieldName)
         {

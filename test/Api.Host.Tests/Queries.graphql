@@ -3,7 +3,6 @@ query mediaDetails($id: Uuid!) {
     id
     filename
     dateTaken
-    cameraId
     dimension {
       height
       width

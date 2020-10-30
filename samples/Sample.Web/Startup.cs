@@ -1,3 +1,6 @@
+using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Threading.Tasks;
 using IdentityModel;
 using MagicMedia;
 using MagicMedia.AzureAI;
@@ -5,24 +8,15 @@ using MagicMedia.BingMaps;
 using MagicMedia.Face;
 using MagicMedia.Store.MongoDb;
 using MagicMedia.Stores;
-using MagicMedia.Thumbnail;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
-using MongoDB.Extensions.Context;
-using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Sample.Web
 {
@@ -116,12 +110,12 @@ namespace Sample.Web
                     CheckSameSite(cookieContext.Context, cookieContext.CookieOptions);
             });
 
-            services.AddMagicMedia();
-            services.AddFaceDetection();
+            services.AddMagicMedia(Configuration);
+            services.AddFaceDetection(Configuration);
             BingMapsOptions bingOptions = Configuration.GetSection("MagicMedia:BingMaps")
                 .Get<BingMapsOptions>();
 
-            services.AddFileSystemStore(@"C:\MagicMedia");
+            services.AddFileSystemStore(Configuration);
 
             services.AddBingMaps(bingOptions);
 
