@@ -15,7 +15,7 @@ jobs:
       - name: Login to Github packages
         uses: docker/login-action@v1 
         with:
-          registry: docker.pkg.github.com
+          registry: ghcr.io
           username: ${{ github.actor }}
           password:  ${{ secrets.GITHUB_TOKEN }}
       - name: Build and push
@@ -25,5 +25,5 @@ jobs:
           context: ./src/Services
           file: ./src/Services/Api.Host/Dockerfile
           push: true
-          tags: philbir/magic-media-host:latest
+          tags: philbir/magic-media/host:latest
 
