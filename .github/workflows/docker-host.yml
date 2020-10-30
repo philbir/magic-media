@@ -10,6 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       with:
-        path: /src/Services
+        repository: philbir/magic-media
+        path: src/Services
     - name: Build the Docker image
       run: docker build --tag magic-media-host:$(date +%s) -f Api.Host/Dockerfile .
