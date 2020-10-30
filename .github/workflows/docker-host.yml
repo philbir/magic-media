@@ -3,7 +3,10 @@ name:  Docker Host Build & Publish
 on:
   push:
     branches: [ main ]
-
+defaults:
+  run:
+    working-directory: ./src/Service
+    
 jobs:
   main:
     runs-on: ubuntu-latest
@@ -23,8 +26,8 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v2
         with:
-          context: magic-media/src/Service
-          file: magic-media/src/Service/Api.Host/Dockerfile
+          context: .
+          file: ./Api.Host/Dockerfile
           push: true
           tags: magicmedia/host:latest
 
