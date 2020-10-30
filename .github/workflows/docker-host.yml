@@ -9,8 +9,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-      with:
-        repository: philbir/magic-media
-        path: src/Services
     - name: Build the Docker image
-      run: docker build --tag magic-media-host:$(date +%s) -f Api.Host/Dockerfile .
+      run: ls -la
