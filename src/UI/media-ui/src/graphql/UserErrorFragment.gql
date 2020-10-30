@@ -1,0 +1,4 @@
+fragment userError on UserError{
+  code
+  message
+}

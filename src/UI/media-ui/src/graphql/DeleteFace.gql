@@ -1,0 +1,10 @@
+#import "./UserErrorFragment.gql"
+
+mutation deleteFace($id: Uuid!) {
+  deleteFace(id: $id){
+    id
+    errors{
+      ... userError
+    }
+  }
+}

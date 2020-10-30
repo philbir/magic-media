@@ -41,32 +41,36 @@ namespace MagicMedia.Face
 
             await _faceStore.UpdateAsync(face, cancellationToken);
 
-            await _bus.Publish(new FaceUpdatedMessage
-            {
-                Id = face.Id,
-                Action = "ASSIGN_BY_HUMAN"
-            });
+            await _bus.Publish(new FaceUpdatedMessage(face.Id, person.Id, "ASSIGN_BY_HUMAN"));
 
             return face;
-            //TODO: Calculate age. Could be done using eventing...
         }
 
-        public async Task<MediaFace> UnAssignAsync(Guid id, CancellationToken cancellationToken)
+        public async Task<MediaFace> UnAssignPersonAsync(
+            Guid id,
+            CancellationToken cancellationToken)
         {
             MediaFace face = await _faceStore.GetByIdAsync(id, cancellationToken);
 
             if (face.PersonId.HasValue)
             {
+                Guid currentPersonId = face.PersonId.Value;
+
                 if (face.RecognitionType == FaceRecognitionType.Computer)
                 {
                     face.FalsePositivePersons = face.FalsePositivePersons ?? new List<Guid>();
-                    face.FalsePositivePersons.Add(face.PersonId.Value);
+                    face.FalsePositivePersons.Add(currentPersonId);
                 }
+
                 face.PersonId = null;
                 face.State = FaceState.New;
                 face.RecognitionType = FaceRecognitionType.None;
 
                 await _faceStore.UpdateAsync(face, cancellationToken);
+                await _bus.Publish(new FaceUpdatedMessage(
+                    face.Id,
+                    currentPersonId,
+                    "UNASSIGN_PERSON"));
             }
 
             return face;
@@ -84,6 +88,10 @@ namespace MagicMedia.Face
                 face.State = FaceState.Validated;
 
                 await _faceStore.UpdateAsync(face, cancellationToken);
+                await _bus.Publish(new FaceUpdatedMessage(
+                    face.Id,
+                    face.PersonId.Value,
+                    "APPROVE_COMPUTER"));
             }
 
             return face;
@@ -92,6 +100,8 @@ namespace MagicMedia.Face
         public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
         {
             await _faceStore.DeleteAsync(id, cancellationToken);
+
+            await _bus.Publish(new FaceUpdatedMessage(id, "DELETED"));
         }
     }
 }

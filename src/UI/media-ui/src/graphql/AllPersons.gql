@@ -1,0 +1,9 @@
+query allPersons {
+  persons {
+    id
+    name
+    dateOfBirth
+    group
+    userId
+  }
+}

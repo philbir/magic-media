@@ -88,7 +88,7 @@ export default {
             loaded: true,
           };
           console.log(this.image);
-        }, 750);
+        }, 250);
       });
     },
   },
