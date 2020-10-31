@@ -9,7 +9,9 @@
     </v-app-bar>
     -->
       <v-main>
-        <router-view></router-view>
+        <vue-page-transition>
+          <router-view />
+        </vue-page-transition>
       </v-main>
     </AppPreLoader>
   </v-app>
@@ -17,6 +19,10 @@
 
 <script>
 import AppPreLoader from "./components/AppPreLoader";
+import VuePageTransition from "vue-page-transition";
+import Vue from "vue";
+
+Vue.use(VuePageTransition);
 
 export default {
   name: "App",

@@ -1,39 +1,42 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-//import Home from '../views/Home.vue'
-import MediaList from '../views/MediaList.vue'
-import Media from '../views/Media.vue'
-import MediaCarousel from '../views/MediaCarousel.vue'
-import Upload from '../views/Upload.vue'
+import Vue from "vue";
+import VueRouter from "vue-router";
 
-Vue.use(VueRouter)
+import Media from "../views/Media.vue";
+import MediaCarousel from "../views/MediaCarousel.vue";
+import MediaList from "../views/MediaList.vue";
+import Upload from "../views/Upload.vue";
+
+//import Home from '../views/Home.vue'
+
+Vue.use(VueRouter);
 
 const routes = [
   {
-    path: '/',
-    name: 'Home',
+    path: "/",
+    name: "Home",
     component: MediaList
   },
   {
-    path: '/media/:id',
-    name: 'media',
-    component: Media
+    path: "/media/:id",
+    name: "media",
+    component: Media,
+    meta: { transition: "zoom" }
   },
   {
-    path: '/mediac/:id',
-    name: 'mediac',
+    path: "/mediac/:id",
+    name: "mediac",
     component: MediaCarousel
   },
   {
-    path: '/upload',
-    name: 'upload',
+    path: "/upload",
+    name: "upload",
     component: Upload
-  },
-]
+  }
+];
 
 const router = new VueRouter({
-  mode: 'history',
+  mode: "history",
   routes
-})
+});
 
-export default router
+export default router;

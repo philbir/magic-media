@@ -17,14 +17,12 @@
           </v-col>
         </v-row>
       </div>
-      <img
-        :src="'/api/media/webimage/' + mediaId"
-        @load="onImgLoaded"
-        ref="img"
-      />
-      <template v-show="image.loaded" v-for="face in media.faces">
-        <FaceBox :key="face.id" :face="face" :image="image"></FaceBox>
-      </template>
+      <img :src="imageSrc" @load="onImgLoaded" ref="img" />
+      <div v-show="image.loaded">
+        <template v-for="face in media.faces">
+          <FaceBox :key="face.id" :face="face" :image="image"></FaceBox>
+        </template>
+      </div>
     </div>
   </div>
 </template>
@@ -50,6 +48,18 @@ export default {
   created() {
     this.$store.dispatch("loadMediaDetails", this.$route.params.id);
   },
+  beforeRouteUpdate(to, from, next) {
+    console.log(to);
+    this.image.loaded = false;
+
+    this.$store.dispatch("loadMediaDetails", to.params.id).then(() => {
+      next();
+    });
+  },
+  beforeRouteLeave(to, from, next) {
+    this.image.loaded = false;
+    next();
+  },
   computed: {
     thumbnail: function () {
       if (this.$store) {
@@ -61,6 +71,12 @@ export default {
         }
       }
 
+      return null;
+    },
+    imageSrc: function () {
+      if (this.media.id === this.$route.params.id) {
+        return "/api/media/webimage/" + this.media.id;
+      }
       return null;
     },
     loading: function () {
@@ -100,7 +116,9 @@ export default {
   methods: {
     onImgLoaded() {
       this.$nextTick(() => {
-        this.setImage();
+        window.setTimeout(() => {
+          this.setImage();
+        }, 500);
       });
     },
     setImage() {
@@ -114,10 +132,21 @@ export default {
         };
       }
     },
-    handlePrevious: () => {},
+    handlePrevious: function () {
+      var next = this.$store.getters.nextMedia(-1);
+      if (next) {
+        this.$router.replace({ name: "media", params: { id: next.id } });
+      } else {
+        this.$router.push("/");
+      }
+    },
     handleNext: function () {
-      var next = this.$store.getters.nextMedia;
-      console.log(next);
+      var next = this.$store.getters.nextMedia(+1);
+      if (next) {
+        this.$router.replace({ name: "media", params: { id: next.id } });
+      } else {
+        this.$router.push("/");
+      }
     },
     onResize() {
       this.setImage();
