@@ -47,7 +47,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Identity.UI.Tests", "..\tes
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Store.MongoDb.Tests", "Store.MongoDb.Tests\Store.MongoDb.Tests.csproj", "{9E0FAD38-D0BD-427A-AF6F-46FEF69236F4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api.Host.Tests", "..\test\Api.Host.Tests\Api.Host.Tests.csproj", "{7A3C2334-E7B7-44FC-9FE7-13BEEAAAF699}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api.Host.Tests", "..\test\Api.Host.Tests\Api.Host.Tests.csproj", "{7A3C2334-E7B7-44FC-9FE7-13BEEAAAF699}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleDataSeeder", "..\samples\SampleDataSeeder\SampleDataSeeder.csproj", "{1544E576-BD97-4576-8239-857F290F3388}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -135,6 +137,10 @@ Global
 		{7A3C2334-E7B7-44FC-9FE7-13BEEAAAF699}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7A3C2334-E7B7-44FC-9FE7-13BEEAAAF699}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7A3C2334-E7B7-44FC-9FE7-13BEEAAAF699}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1544E576-BD97-4576-8239-857F290F3388}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1544E576-BD97-4576-8239-857F290F3388}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1544E576-BD97-4576-8239-857F290F3388}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1544E576-BD97-4576-8239-857F290F3388}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -153,6 +159,7 @@ Global
 		{99CD05D1-0A5B-423C-8ACE-DF4FBE961114} = {F6075731-6037-4B36-B720-4A4E2CF5D42F}
 		{9E0FAD38-D0BD-427A-AF6F-46FEF69236F4} = {F6075731-6037-4B36-B720-4A4E2CF5D42F}
 		{7A3C2334-E7B7-44FC-9FE7-13BEEAAAF699} = {F6075731-6037-4B36-B720-4A4E2CF5D42F}
+		{1544E576-BD97-4576-8239-857F290F3388} = {B9946157-A449-4176-805B-F47D209D29AA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {779E8080-1E0E-4536-9183-89B02491C584}
