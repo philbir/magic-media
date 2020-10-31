@@ -60,6 +60,17 @@ export default new Vuex.Store({
       }
     }
   },
+  getters: {
+    nextMedia: state => {
+      /* eslint-disable no-debugger */
+      debugger;
+      console.log('aaaa')
+      const currentId = state.currentMedia.id;
+      const idx = state.mediaList.findIndex(x => x.id == currentId );
+
+      console.log(idx);
+    }
+  },
   modules: {
   }
 })

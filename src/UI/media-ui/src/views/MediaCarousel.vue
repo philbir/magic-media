@@ -1,31 +1,28 @@
 <template>
   <div v-resize="onResize">
     <div v-if="loading">Loading...</div>
-    <div v-else class="media-wrapper">
-      <div class="media-nav">
-        <v-row>
-          <v-col class="ma-4">
-            <v-icon large color="grey darken-1" @click="handlePrevious">
-              mdi-chevron-left-circle
-            </v-icon>
-          </v-col>
-          <v-spacer></v-spacer>
-          <v-col justify="end" align="right" class="ma-3" @click="handleNext">
-            <v-icon large color="grey darken-1">
-              mdi-chevron-right-circle
-            </v-icon>
-          </v-col>
-        </v-row>
-      </div>
-      <img
-        :src="'/api/media/webimage/' + mediaId"
-        @load="onImgLoaded"
-        ref="img"
-      />
-      <template v-show="image.loaded" v-for="face in media.faces">
-        <FaceBox :key="face.id" :face="face" :image="image"></FaceBox>
-      </template>
-    </div>
+
+    <v-carousel
+      v-else
+      height="100%"
+      hide-delimiter-background
+      show-arrows-on-hover
+      hide-delimiters
+      @change="changed"
+    >
+      <v-carousel-item v-for="(m, i) in items" :key="i">
+        <div class="media-wrapper">
+          <img
+            :src="'/api/media/webimage/' + mediaId"
+            @load="onImgLoaded"
+            ref="img"
+          />
+          <template v-show="imagedLoaded" v-for="face in media.faces">
+            <FaceBox :key="face.id" :face="face" :image="image"></FaceBox>
+          </template>
+        </div>
+      </v-carousel-item>
+    </v-carousel>
   </div>
 </template>
 
@@ -35,6 +32,7 @@ import FaceBox from "../components/FaceBox.vue";
 export default {
   data() {
     return {
+      items: [1, 2, 3, 4, 5, 6, 7, 8],
       image: {
         loaded: false,
         width: 0,
@@ -51,20 +49,7 @@ export default {
     this.$store.dispatch("loadMediaDetails", this.$route.params.id);
   },
   computed: {
-    thumbnail: function () {
-      if (this.$store) {
-        const existing = this.$store.mediaList.filter(
-          (x) => x.id == this.$route.params.id
-        );
-        if (existing.length > 0) {
-          return existing.thumbnail.dataUrl;
-        }
-      }
-
-      return null;
-    },
     loading: function () {
-      //return this.image.loading;
       return this.$store.state.currentMedia === null;
     },
     media: function () {
@@ -98,26 +83,24 @@ export default {
     },
   },
   methods: {
+    changed(e) {
+      console.log(e);
+    },
     onImgLoaded() {
       this.$nextTick(() => {
-        this.setImage();
+        window.setTimeout(() => {
+          this.setImage();
+        }, 250);
       });
     },
     setImage() {
-      if (this.$refs.img && this.$refs.img.width) {
-        this.image = {
-          width: this.$refs.img.width,
-          naturalWidth: this.$refs.img.naturalWidth,
-          offsetLeft: this.$refs.img.offsetLeft - this.$refs.img.width / 2,
-          offsetTop: this.$refs.img.offsetTop - this.$refs.img.height / 2,
-          loaded: true,
-        };
-      }
-    },
-    handlePrevious: () => {},
-    handleNext: function () {
-      var next = this.$store.getters.nextMedia;
-      console.log(next);
+      this.image = {
+        width: this.$refs.img.width,
+        naturalWidth: this.$refs.img.naturalWidth,
+        offsetLeft: this.$refs.img.offsetLeft - this.$refs.img.width / 2,
+        offsetTop: this.$refs.img.offsetTop - this.$refs.img.height / 2,
+        loaded: true,
+      };
     },
     onResize() {
       this.setImage();
@@ -137,14 +120,6 @@ export default {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-}
-
-.media-nav {
-  position: absolute;
-  display: flex;
-  width: 100%;
-  top: 44vh;
-  z-index: 1000;
 }
 </style>
 

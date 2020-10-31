@@ -4,12 +4,12 @@ module.exports = {
     proxy: {
       "/api": {
         changeOrigin: true,
-        target: "https://magic-media-demo.birbaum.me/"
+        target: "http://localhost:5000/"
       },
       "/graphql": {
         ws: true,
         changeOrigin: true,
-        target: "https://magic-media-demo.birbaum.me/"
+        target: "http://localhost:5000/"
       }
     }
   }
