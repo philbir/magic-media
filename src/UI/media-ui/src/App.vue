@@ -33,3 +33,9 @@ export default {
   }),
 };
 </script>
+<style scoped>
+html {
+  overflow-x: hidden !important;
+  overflow-y: hidden !important;
+}
+</style>

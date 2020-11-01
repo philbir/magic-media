@@ -34,7 +34,8 @@ import { mediaListViewMap } from "../services/mediaListViewMap";
 
 export default {
   created() {
-    this.$store.dispatch("searchMedia");
+    if (this.$store.state.mediaList.length === 0)
+      this.$store.dispatch("searchMedia");
   },
   computed: {
     windowWidth: () => window.innerWidth,

@@ -48,7 +48,6 @@ namespace MagicMedia.Processing
             MediaProcessorContext context,
             CancellationToken cancellationToken)
         {
-
             var media = new Media
             {
                 Id = Guid.NewGuid(),

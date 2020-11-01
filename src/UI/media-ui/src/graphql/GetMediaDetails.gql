@@ -13,6 +13,15 @@ query mediaDetails($id: Uuid!) {
       model
       make
     }
+    geoLocation{
+      address{
+        name
+        address
+        city
+        country
+        countryCode
+      }
+    }
     faces {
       id
       box {
