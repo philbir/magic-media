@@ -20,7 +20,8 @@ const routes = [
     path: "/media/:id",
     name: "media",
     component: Media,
-    meta: { transition: "face" }
+    meta: { transition: "face", fullscreen: true },
+    
   },
   {
     path: "/mediac/:id",

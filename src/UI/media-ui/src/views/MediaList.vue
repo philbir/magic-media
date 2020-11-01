@@ -1,29 +1,27 @@
 <template>
-  <div>
+  <div
+    class="media-container"
+    ref="container"
+    :style="{ height: layout.containerHeight + 'px' }"
+  >
     <div
-      class="media-container"
-      :style="{ height: layout.containerHeight + 20 + 'px' }"
-    >
-      <div
-        v-for="(box, i) in layout.boxes"
-        :key="i"
-        class="media-item"
-        v-on:click="
-          $router.push({ name: 'media', params: { id: box.media.id } })
-        "
-        :style="{
-          left: box.left + 'px',
-          top: box.top + 'px',
-          height: box.height + 'px',
-          width: box.width + 'px',
-          'background-image': 'url(' + box.media.thumbnail.dataUrl + ')',
-        }"
-      />
-    </div>
-
+      v-for="(box, i) in layout.boxes"
+      :key="i"
+      class="media-item"
+      v-on:click="$router.push({ name: 'media', params: { id: box.media.id } })"
+      :style="{
+        left: box.left + 'px',
+        top: box.top + 'px',
+        height: box.height + 'px',
+        width: box.width + 'px',
+        'background-image': 'url(' + box.media.thumbnail.dataUrl + ')',
+      }"
+    />
+  </div>
+  <!--
     <v-icon large color="gray" @click="handleUpload"> mdi-upload </v-icon>
     <v-icon large color="gray" @click="handleRefresh"> mdi-refresh </v-icon>
-  </div>
+    -->
 
   <!-- No result -->
 </template>
@@ -36,12 +34,15 @@ export default {
   created() {
     if (this.$store.state.mediaList.length === 0)
       this.$store.dispatch("searchMedia");
+
+    //this.containerWith = this.$refs.container.clientWidth - 5;
+    this.containerWith = window.innerWidth - 264;
   },
+
   computed: {
-    windowWidth: () => window.innerWidth,
     layout: function () {
       const items = this.$store.state.mediaList;
-      const viewMap = mediaListViewMap["l"];
+      const viewMap = mediaListViewMap[this.$store.state.filter.thumbnailSize];
       const ratios = [];
       items.forEach((item) => {
         ratios.push(
@@ -50,8 +51,9 @@ export default {
             : item.dimension.width / item.dimension.height
         );
       });
+      console.log(this.containerWith, window.innerWidth);
       const layout = justified(ratios, {
-        containerWidth: window.innerWidth,
+        containerWidth: this.containerWith,
         targetRowHeight: viewMap.rowHeight,
         boxSpacing: viewMap.spacing,
         containerPadding: viewMap.spacing,
@@ -64,13 +66,15 @@ export default {
     },
   },
   data() {
-    return {};
+    return {
+      containerWith: 0,
+    };
   },
   methods: {
-    handleUpload() {
+    handleUpload: function () {
       this.$router.push("/upload");
     },
-    handleRefresh() {
+    handleRefresh: function () {
       this.$store.dispatch("searchMedia");
     },
   },

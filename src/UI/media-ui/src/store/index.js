@@ -12,7 +12,11 @@ export default new Vuex.Store({
   state: {
     mediaList: [],
     currentMedia: null,
-    persons: []
+    persons: [],
+    filter: {
+      pageSize: 100,
+      thumbnailSize: 'M'
+    }
   },
   mutations: {
     MEDIAITEMS_LOADED(state, mediaList) {
@@ -27,16 +31,23 @@ export default new Vuex.Store({
     PERSON_ADDED(state, person) {
       var persons = state.persons.filter(x => x.id == person.id);
       if (persons.length === 0) state.persons.push(person);
+    },
+    SET_THUMBNAIL_SIZE(state, size){
+      state.filter.thumbnailSize = size;
     }
   },
   actions: {
-    async searchMedia({ commit }) {
+    async searchMedia({ commit, state }) {
       try {
-        const res = await searchMedia();
+        const res = await searchMedia(state.filter);
         commit("MEDIAITEMS_LOADED", res.data.searchMedia);
       } catch (ex) {
         console.error(ex);
       }
+    },
+    setThumbnailSize({ dispatch, commit }, size){
+      commit("SET_THUMBNAIL_SIZE", size);
+      dispatch('searchMedia')
     },
     async loadMediaDetails({ commit }, id) {
       try {
@@ -49,7 +60,6 @@ export default new Vuex.Store({
     async getAllPersons({ commit }) {
       try {
         const res = await getAllPersons();
-        console.log(res.data);
         commit("PERSONS_LOADED", res.data.persons);
       } catch (ex) {
         console.error(ex);
