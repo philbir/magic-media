@@ -23,7 +23,7 @@
         <v-row>
           <v-col class="ml-2">
             <v-icon @click="handleHome" color="white"> mdi-home </v-icon>
-            {{ media.filename }}
+            {{ media.dateTaken | dateformat("DATETIME_MED") }}
           </v-col>
           <v-spacer></v-spacer>
           <v-col class="mr-4" align="right">
@@ -238,7 +238,7 @@ export default {
   display: flex;
   width: 100%;
   top: 44vh;
-  z-index: 1000;
+  z-index: 100;
 }
 
 .head {

@@ -67,7 +67,7 @@ namespace MagicMedia.Api.Controllers
                 OriginalData = target.ToArray(),
                 File = new MediaDiscoveryIdentifier
                 {
-                    Id = file.Name,
+                    Id = file.FileName,
                     Source = MediaDiscoverySource.WebUpload
                 }
             }, cancellationToken);
