@@ -11,8 +11,7 @@ export default {
     preloaded: false,
   }),
   created() {
-    this.$store.dispatch("getAllPersons").then((e) => {
-      console.log(e);
+    this.$store.dispatch("getAllPersons").then(() => {
       this.preloaded = true;
     });
   },

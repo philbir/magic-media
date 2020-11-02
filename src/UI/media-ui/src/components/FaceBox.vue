@@ -163,7 +163,6 @@ export default {
         box.top = box.top - 12;
       }
       box.color = getFaceColor(this.faceData);
-      console.log("COMPUTED_BOX", box);
 
       return box;
     },
@@ -173,7 +172,6 @@ export default {
     async setName(name) {
       if (name) {
         const result = await assignPerson(this.faceData.id, name);
-        console.log(result.data.assignPersonByHuman.face);
         this.faceData = result.data.assignPersonByHuman.face;
         this.$store.commit("PERSON_ADDED", this.faceData.person);
 
