@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Discovery;
@@ -18,7 +18,6 @@ namespace SampleDataSeeder
             _sources = sources;
             _processorFlowFactory = processorFlowFactory;
         }
-
 
         public async Task RunAsync(int count, CancellationToken cancellationToken)
         {

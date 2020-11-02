@@ -7707,6 +7707,11 @@ lru-cache@^5.0.0, lru-cache@^5.1.1:
   dependencies:
     yallist "^3.0.2"
 
+luxon@^1.25.0:
+  version "1.25.0"
+  resolved "https://registry.yarnpkg.com/luxon/-/luxon-1.25.0.tgz#d86219e90bc0102c0eb299d65b2f5e95efe1fe72"
+  integrity sha512-hEgLurSH8kQRjY6i4YLey+mcKVAWXbDNlZRmM6AgWDJ1cY3atl8Ztf5wEY7VBReFbmGnwQPz7KYJblL8B2k0jQ==
+
 make-dir@^2.0.0:
   version "2.1.0"
   resolved "https://registry.npm.taobao.org/make-dir/download/make-dir-2.1.0.tgz#5f0310e18b8be898cc07009295a30ae41e91e6f5"
@@ -11406,6 +11411,13 @@ vue-loader@^15.9.2:
     loader-utils "^1.1.0"
     vue-hot-reload-api "^2.3.0"
     vue-style-loader "^4.1.0"
+
+vue-luxon@^0.9.0:
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/vue-luxon/-/vue-luxon-0.9.0.tgz#15f05cf89682d11dfa8a1613d065ce7e65bd68b0"
+  integrity sha512-RQiWZT3VNMrcf3edlziwlFrKlin9C69Urm/r3mTvHzUHOJkjXHHc3m+FiKHIhfMaRVOoTt0+ZAtc7wl8e70KiQ==
+  dependencies:
+    luxon "^1.25.0"
 
 vue-page-transition@^0.2.2:
   version "0.2.2"

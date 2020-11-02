@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using MagicMedia.SampleDataSeader;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace SampleDataSeeder
@@ -12,6 +13,12 @@ namespace SampleDataSeeder
                 c.BaseAddress = new Uri("https://source.unsplash.com/random/");
             });
 
+            services.AddHttpClient("MagicMedia", c =>
+            {
+                c.BaseAddress = new Uri("http://192.168.0.77:7780/api/");
+            });
+
+            services.AddSingleton<ApiSeeder>();
             services.AddSingleton<Seeder>();
 
             services.AddSingleton<ISampleDataSource, UnsplashRandomDataSource>();
