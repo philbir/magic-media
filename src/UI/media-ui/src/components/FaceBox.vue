@@ -92,6 +92,17 @@
                 >
                   <v-icon dark> mdi-trash-can</v-icon></v-btn
                 >
+                <v-btn
+                  @click="predictPerson"
+                  depressed
+                  elevation="2"
+                  large
+                  color="blue"
+                  class="ma-1"
+                  icon
+                >
+                  <v-icon dark> mdi-auto-fix</v-icon></v-btn
+                >
               </v-col>
             </v-row>
           </v-container>
@@ -113,6 +124,7 @@ import {
   assignPerson,
   unAssignPerson,
   deleteFace,
+  predictPerson,
 } from "../services/faceService";
 import { getFaceColor } from "../services/faceColor";
 
@@ -186,6 +198,11 @@ export default {
       const result = await deleteFace(this.faceData.id);
       console.log(result);
       this.faceData = null;
+    },
+    async predictPerson() {
+      const result = await predictPerson(this.faceData.id);
+      console.log(result);
+      this.faceData = result.data.predictPerson.face;
     },
     openDialog() {
       this.dialog = true;

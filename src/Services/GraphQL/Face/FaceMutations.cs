@@ -8,17 +8,20 @@ using MagicMedia.Store;
 namespace MagicMedia.GraphQL.Face
 {
     [ExtendObjectType(Name = "Mutation")]
-    public class FaceMutations
+    public partial class FaceMutations
     {
         private readonly IFaceService _faceService;
         private readonly IFaceModelBuilderService _faceModelBuilder;
+        private readonly IFaceDetectionService _faceDetectionService;
 
         public FaceMutations(
             IFaceService faceService,
-            IFaceModelBuilderService faceModelBuilder)
+            IFaceModelBuilderService faceModelBuilder,
+            IFaceDetectionService faceDetectionService)
         {
             _faceService = faceService;
             _faceModelBuilder = faceModelBuilder;
+            _faceDetectionService = faceDetectionService;
         }
 
         public async Task<UpdateFacePayload> AssignPersonByHumanAsync(
@@ -66,11 +69,23 @@ namespace MagicMedia.GraphQL.Face
             return new DeleteFacePayload(id);
         }
 
-        public async Task<int> BuildModelAsync(CancellationToken cancellationToken)
+        public async Task<BuildFaceModelPayload> BuildPersonModelAsync(CancellationToken cancellationToken)
         {
             BuildFaceModelResult? res = await _faceModelBuilder.BuildModelAsyc(cancellationToken);
 
-            return res.FaceCount;
+            return new BuildFaceModelPayload(res.FaceCount);
+        }
+
+        public async Task<PredictPersonPayload> PredictPersonAsync(
+            PredictPersonInput input,
+            CancellationToken cancellationToken)
+        {
+            (MediaFace face, bool hasMatch) result = await _faceService.PredictPersonAsync(
+                input.FaceId,
+                input.Distance,
+                cancellationToken);
+
+            return new PredictPersonPayload(result.hasMatch, result.face);
         }
     }
 }

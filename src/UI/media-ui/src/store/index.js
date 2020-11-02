@@ -14,7 +14,7 @@ export default new Vuex.Store({
     currentMedia: null,
     persons: [],
     filter: {
-      pageSize: 100,
+      pageSize: 200,
       thumbnailSize: 'M'
     }
   },

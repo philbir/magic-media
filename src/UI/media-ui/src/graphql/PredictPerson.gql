@@ -1,0 +1,13 @@
+#import "./FaceFragment.gql"
+#import "./UserErrorFragment.gql"
+
+mutation predictPerson($input: PredictPersonInput!) {
+  predictPerson(input: $input) {
+    face {
+      ...face
+    }
+    errors {
+      ...userError
+    }
+  }
+}

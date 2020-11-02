@@ -1,5 +1,5 @@
-query search {
-  searchMedia(request: { thumbnailSize: XS }) {
+query search($request: SearchMediaRequestInput! ) {
+  searchMedia(request: $request) {
     id
     filename
     dateTaken
