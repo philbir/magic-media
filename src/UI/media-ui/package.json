@@ -5,6 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "release": "vue-cli-service build --dist ../../Services/Api.Host/wwwroot",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
