@@ -93,6 +93,7 @@
                   <v-icon dark> mdi-trash-can</v-icon></v-btn
                 >
                 <v-btn
+                  v-if="showPredict"
                   @click="predictPerson"
                   depressed
                   elevation="2"
@@ -113,6 +114,12 @@
             Close
           </v-btn>
         </v-card-actions>
+        <v-progress-linear
+          v-if="inProgress"
+          indeterminate
+          color="blue"
+          top
+        ></v-progress-linear>
       </v-card>
     </v-dialog>
   </div>
@@ -140,6 +147,7 @@ export default {
     return {
       dialog: false,
       faceData: this.face,
+      inProgress: false,
     };
   },
   computed: {
@@ -154,6 +162,9 @@ export default {
     },
     showUnassign: function () {
       return this.faceData.person !== null;
+    },
+    showPredict: function () {
+      return this.faceData.person === null;
     },
     box: function () {
       const box = {};
@@ -195,14 +206,28 @@ export default {
       this.faceData = result.data.unAssignPersonFromFace.face;
     },
     async deleteFace() {
-      const result = await deleteFace(this.faceData.id);
-      console.log(result);
+      await deleteFace(this.faceData.id);
+
+      this.$magic.snack("Face deleted", "SUCCESS");
+
       this.faceData = null;
     },
     async predictPerson() {
+      this.inProgress = true;
       const result = await predictPerson(this.faceData.id);
-      console.log(result);
+
+      if (result.data.predictPerson.hasMatch) {
+        this.$magic.snack(
+          result.data.predictPerson.face.person.name + " found.",
+          "SUCCESS"
+        );
+      } else {
+        this.$magic.snack("No person found.", "INFO");
+      }
+
       this.faceData = result.data.predictPerson.face;
+
+      this.inProgress = false;
     },
     openDialog() {
       this.dialog = true;
@@ -223,6 +248,7 @@ export default {
   border-color: blueviolet;
   border-width: 1 px;
   border-style: solid;
+  z-index: 101;
 }
 
 .face-name {

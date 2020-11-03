@@ -1,5 +1,6 @@
 <template>
   <AppPreLoader>
+    <Upload :show="showUpload"></Upload>
     <v-app>
       <v-app-bar
         app
@@ -27,6 +28,10 @@
           </v-list>
         </v-menu>
         <v-spacer></v-spacer>
+        <v-icon color="white" class="mr-2" @click="openUpload">
+          mdi-cloud-upload-outline
+        </v-icon>
+
         <v-icon color="white"> mdi-cog </v-icon>
       </v-app-bar>
 
@@ -39,12 +44,30 @@
           <router-view />
         </vue-page-transition>
       </v-main>
+
+      <v-snackbar
+        v-for="(snack, i) in snacks"
+        :key="'snack' + i"
+        :value="snack.show"
+        rounded
+        app
+        bottom
+        :color="snack.color"
+      >
+        <v-icon> {{ snack.icon }}</v-icon>
+        {{ snack.text }}
+
+        <template v-slot:action="">
+          <v-icon @click="snack.show = false" color="white"> mdi-close </v-icon>
+        </template>
+      </v-snackbar>
     </v-app>
   </AppPreLoader>
 </template>
 
 <script>
 import AppPreLoader from "./components/AppPreLoader";
+import Upload from "./components/Upload";
 import FolderTree from "./components/FolderTree";
 import VuePageTransition from "vue-page-transition";
 import Vue from "vue";
@@ -53,7 +76,7 @@ Vue.use(VuePageTransition);
 
 export default {
   name: "App",
-  components: { AppPreLoader, FolderTree },
+  components: { AppPreLoader, FolderTree, Upload },
 
   data: () => ({
     sizes: [
@@ -66,8 +89,33 @@ export default {
       { text: "Medium", code: "M" },
       { text: "Large", code: "L" },
     ],
+    showUpload: false,
   }),
   computed: {
+    snacks: function () {
+      return this.$store.state.snackbar.snacks.map((snack) => {
+        switch (snack.type) {
+          case "INFO":
+            snack.icon = "mdi-information-outline";
+            snack.color = "blue";
+            break;
+          case "WARN":
+            snack.icon = "mdi-alert-outline";
+            snack.color = "yellow";
+            break;
+          case "ERROR":
+            snack.icon = "mdi-nuke";
+            snack.color = "red";
+            break;
+          case "SUCCESS":
+            snack.icon = "mdi-check-circle-outline";
+            snack.color = "green";
+            break;
+        }
+
+        return snack;
+      });
+    },
     isFullscreen: function () {
       if (this.$route.meta.fullscreen) {
         return true;
@@ -78,7 +126,10 @@ export default {
   },
   methods: {
     setSize: function (code) {
-      this.$store.dispatch("setThumbnailSize", code);
+      this.$store.dispatch("media/setThumbnailSize", code);
+    },
+    openUpload: function () {
+      this.$store.dispatch("media/toggleUploadDialog", true);
     },
   },
 };

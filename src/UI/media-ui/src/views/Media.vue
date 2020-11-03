@@ -1,6 +1,6 @@
 <template>
   <div v-resize="onResize">
-    <div v-if="loading">Loading...</div>
+    <v-progress-linear v-if="loading" indeterminate color="blue" top />
     <div v-else class="media-wrapper" @mousemove="onMouseMove">
       <Keypress key-event="keyup" @success="keyPressed" />
 
@@ -83,13 +83,12 @@ export default {
   },
   components: { FaceBox, Keypress: () => import("vue-keypress"), FilmStripe },
   created() {
-    this.$store.dispatch("loadMediaDetails", this.$route.params.id);
+    this.$store.dispatch("media/loadDetails", this.$route.params.id);
   },
   beforeRouteUpdate(to, from, next) {
-    console.log(to);
     this.image.loaded = false;
 
-    this.$store.dispatch("loadMediaDetails", to.params.id).then(() => {
+    this.$store.dispatch("media/loadDetails", to.params.id).then(() => {
       next();
     });
   },
@@ -100,7 +99,7 @@ export default {
   computed: {
     thumbnail: function () {
       if (this.$store) {
-        const existing = this.$store.mediaList.filter(
+        const existing = this.$store.state.media.list.filter(
           (x) => x.id == this.$route.params.id
         );
         if (existing.length > 0) {
@@ -117,23 +116,19 @@ export default {
       return null;
     },
     loading: function () {
-      //return this.image.loading;
-      return this.$store.state.currentMedia === null;
+      return this.media === null;
     },
     media: function () {
-      return this.$store.state.currentMedia;
+      return this.$store.state.media.current;
     },
     geoLocation: function () {
-      if (
-        this.$store.state.currentMedia.geoLocation &&
-        this.$store.state.currentMedia.geoLocation.address
-      ) {
-        return this.$store.state.currentMedia.geoLocation.address.name;
+      if (this.media.geoLocation && this.media.geoLocation.address) {
+        return this.media.geoLocation.address.name;
       }
       return null;
     },
     box: function () {
-      const media = this.$store.state.currentMedia;
+      const media = this.media;
 
       if (media) {
         const w = document.querySelector("#app").clientWidth;
@@ -185,7 +180,7 @@ export default {
       this.navigate(+1);
     },
     navigate: function (step) {
-      var next = this.$store.getters.nextMedia(step);
+      var next = this.$store.getters["media/next"](step);
       if (next) {
         this.$router.replace({ name: "media", params: { id: next.id } });
       } else {
@@ -199,7 +194,6 @@ export default {
       this.showStripe = e.clientY > 300;
     },
     keyPressed: function (e) {
-      console.log(e.event.keyCode);
       switch (e.event.keyCode) {
         case 37:
           this.navigate(-1);
@@ -211,7 +205,6 @@ export default {
           this.$router.push("/");
           break;
       }
-      console.log(e.event.key, e.event.keyCode);
     },
     onResize() {
       this.setImage();

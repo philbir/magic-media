@@ -22,7 +22,7 @@ namespace SampleDataSeeder
 
             //await seeder.RunAsync(100, default);
 
-            await apiSeeder.SeedFromDirectoryAsync(@"C:\Users\tree\Pictures\RF", default);
+            await apiSeeder.SeedFromDirectoryAsync(@"C:\SamplePhotos", default);
         }
 
         private static IServiceProvider BuildServiceProvider()

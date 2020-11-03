@@ -25,7 +25,15 @@ namespace MagicMedia.SampleDataSeader
             foreach (FileInfo file in dir.GetFiles("*.jpg"))
             {
                 Console.WriteLine($"Uploading {file.Name}");
-                await UploadAsync(file, cancellationToken);
+                try
+                {
+                    await UploadAsync(file, cancellationToken);
+
+                }
+                catch  (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
             }
         }
 

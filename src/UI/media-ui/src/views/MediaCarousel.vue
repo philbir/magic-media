@@ -83,9 +83,6 @@ export default {
     },
   },
   methods: {
-    changed(e) {
-      console.log(e);
-    },
     onImgLoaded() {
       this.$nextTick(() => {
         window.setTimeout(() => {

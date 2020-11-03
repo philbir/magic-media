@@ -3,6 +3,7 @@
 
 mutation predictPerson($input: PredictPersonInput!) {
   predictPerson(input: $input) {
+    hasMatch
     face {
       ...face
     }

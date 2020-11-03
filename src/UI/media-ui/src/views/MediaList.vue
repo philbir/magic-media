@@ -4,6 +4,7 @@
     ref="container"
     :style="{ height: layout.containerHeight + 'px' }"
   >
+    <v-progress-linear v-if="loading" indeterminate color="blue" top />
     <div
       v-for="(box, i) in layout.boxes"
       :key="i"
@@ -32,8 +33,8 @@ import { mediaListViewMap } from "../services/mediaListViewMap";
 
 export default {
   created() {
-    if (this.$store.state.mediaList.length === 0)
-      this.$store.dispatch("searchMedia");
+    if (this.$store.state.media.list.length === 0)
+      this.$store.dispatch("media/search");
 
     //this.containerWith = this.$refs.container.clientWidth - 5;
     this.containerWith = window.innerWidth - 264;
@@ -41,8 +42,9 @@ export default {
 
   computed: {
     layout: function () {
-      const items = this.$store.state.mediaList;
-      const viewMap = mediaListViewMap[this.$store.state.filter.thumbnailSize];
+      const items = this.$store.state.media.list;
+      const viewMap =
+        mediaListViewMap[this.$store.state.media.filter.thumbnailSize];
       const ratios = [];
       items.forEach((item) => {
         ratios.push(
@@ -51,7 +53,6 @@ export default {
             : item.dimension.width / item.dimension.height
         );
       });
-      console.log(this.containerWith, window.innerWidth);
       const layout = justified(ratios, {
         containerWidth: this.containerWith,
         targetRowHeight: viewMap.rowHeight,
@@ -64,6 +65,9 @@ export default {
       });
       return layout;
     },
+    loading: function () {
+      return this.$store.state.media.listLoading;
+    },
   },
   data() {
     return {
@@ -75,7 +79,7 @@ export default {
       this.$router.push("/upload");
     },
     handleRefresh: function () {
-      this.$store.dispatch("searchMedia");
+      this.$store.dispatch("media/search");
     },
   },
 };
