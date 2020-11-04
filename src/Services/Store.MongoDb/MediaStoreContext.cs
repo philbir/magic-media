@@ -59,6 +59,14 @@ namespace MagicMedia.Store.MongoDb
             }
         }
 
+        public IMongoCollection<GeoAddressCache> GeoAddressCache
+        {
+            get
+            {
+                return CreateCollection<GeoAddressCache>();
+            }
+        }
+
         public IGridFSBucket CreateGridFsBucket()
         {
             return new GridFSBucket(Database, new GridFSBucketOptions());

@@ -20,18 +20,21 @@ namespace MagicMedia.Discovery
         public Task<IEnumerable<MediaDiscoveryIdentifier>> DiscoverMediaAsync(
             CancellationToken cancellationToken)
         {
-            var files = new List<string>();
+            var result = new List<MediaDiscoveryIdentifier>();
 
             foreach (var location in _options.Locations)
             {
-                files.AddRange(Directory.GetFiles(location, "*.jpg", SearchOption.AllDirectories));
+                string[] files = Directory.GetFiles(location, "*.jpg", SearchOption.AllDirectories);
+                result.AddRange(files.Select(x =>
+                    new MediaDiscoveryIdentifier
+                    {
+                        BasePath = location,
+                        Id = x,
+                        Source = SourceType
+                    }));
             }
 
-            return Task.FromResult(files.Distinct().Select(x => new MediaDiscoveryIdentifier
-            {
-                Source = SourceType,
-                Id = x
-            }));
+            return Task.FromResult(result.Distinct());
         }
 
         public async Task<byte[]> GetMediaDataAsync(string id, CancellationToken cancellationToken)

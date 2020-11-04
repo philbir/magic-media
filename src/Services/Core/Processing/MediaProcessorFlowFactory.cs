@@ -26,6 +26,15 @@ namespace MagicMedia.Processing
                         MediaProcessorTaskNames.GenerateWebImage,
                         MediaProcessorTaskNames.SaveMedia,
                     });
+                case "ImportImageNoFace":
+                    return new MediaProcessorFlow(_taskFactory, new[]
+                    {
+                        MediaProcessorTaskNames.AutoOrient,
+                        MediaProcessorTaskNames.ExtractMetadata,
+                        MediaProcessorTaskNames.GenerateThumbnails,
+                        MediaProcessorTaskNames.GenerateWebImage,
+                        MediaProcessorTaskNames.SaveMedia,
+                    });
                 default:
                     throw new ArgumentException("Invalid flow", nameof(name));
             }

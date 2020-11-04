@@ -31,16 +31,26 @@ namespace MagicMedia.Processing
 
         private string GetFolder(MediaProcessorContext context)
         {
-            if (context.Metadata.DateTaken.HasValue)
+            switch (context.Options.SaveMedia.SaveMode)
             {
-                return string.Join("/",
-                    "New",
-                    context.Metadata.DateTaken.Value.Year.ToString(),
-                    context.Metadata.DateTaken.Value.ToString("MMMM", new CultureInfo("en-US")));
-            }
-            else
-            {
-                return "New/Unknown_Date";
+                case SaveMediaMode.CreateNew:
+                    if (context.Metadata.DateTaken.HasValue)
+                    {
+                        return string.Join("/",
+                            "New",
+                            context.Metadata.DateTaken.Value.Year.ToString(),
+                            context.Metadata.DateTaken.Value.ToString("MMMM", new CultureInfo("en-US")));
+                    }
+                    else
+                    {
+                        return "New/Unknown_Date";
+                    }
+                case SaveMediaMode.KeepInSource:
+                    var directoryName = Path.GetDirectoryName(context.File.Id);
+                    var relativePath = directoryName.Replace(context.File.BasePath, "");
+                    return relativePath;
+                default:
+                    throw new ApplicationException($"Invalid SaveMediaMode: {context.Options.SaveMedia.SaveMode}");
             }
         }
 
@@ -111,19 +121,36 @@ namespace MagicMedia.Processing
                 },
                 cancellationToken);
 
-            MemoryStream stream = new MemoryStream();
-            await context.Image.SaveAsJpegAsync(stream, cancellationToken);
-            stream.Position = 0;
+            if (context.Options.SaveMedia.SaveMode == SaveMediaMode.CreateNew)
+            {
+                MemoryStream stream = new MemoryStream();
+                await context.Image.SaveAsJpegAsync(stream, cancellationToken);
+                stream.Position = 0;
 
-            await _blobStore.StoreAsync(
-                new MediaBlobData
-                {
-                    Type = MediaBlobType.Media,
-                    Data = stream.ToArray(),
-                    Directory = media.Folder,
-                    Filename = Path.GetFileName(context.File.Id)
-                },
-                cancellationToken);
+                await _blobStore.StoreAsync(
+                    new MediaBlobData
+                    {
+                        Type = MediaBlobType.Media,
+                        Data = stream.ToArray(),
+                        Directory = media.Folder,
+                        Filename = Path.GetFileName(context.File.Id)
+                    },
+                    cancellationToken);
+            }
+
+            if (context.Options.SaveMedia.SourceAction == SaveMediaSourceAction.Delete)
+            {
+                //TODO: Delete source
+
+            }
+            else if (context.Options.SaveMedia.SourceAction == SaveMediaSourceAction.Delete)
+            {
+                //TODO: Move
+            }
+            else if (context.Options.SaveMedia.SourceAction == SaveMediaSourceAction.Replace)
+            {
+                //TODO: Overwrite source
+            }
         }
 
         private async Task<Guid?> GetCameraIdAsync(MediaProcessorContext context, CancellationToken cancellationToken)

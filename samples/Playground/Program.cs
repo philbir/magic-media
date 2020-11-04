@@ -25,11 +25,8 @@ namespace Playground
 
             DiscoverySample discovery = sp.GetService<DiscoverySample>();
 
-            await discovery.DiscoverAsync();
+            await discovery.ScanExistingAsync(default);
 
-            await modelBuilder.BuildModelAsyc(default);
-
-            await importSample.ImportMedia();
         }
 
 
@@ -50,9 +47,12 @@ namespace Playground
             services.AddFileSystemStore(config);
             services.AddMagicMedia(config);
             services.AddBingMaps(bingOptions);
+
+            services.Decorate<IGeoDecoderService, GeoDecoderCacheStore>();
+
             services.AddSingleton<ImportSample>();
             services.AddSingleton<DiscoverySample>();
-            services.AddFileSystemDiscovery(new List<string> { @"C:\MagicMedia\Inbox" });
+            services.AddFileSystemDiscovery(new List<string> { @"P:\Moments\Family\2020" });
 
             return services.BuildServiceProvider();
         }
