@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using MagicMedia.Store;
 
 namespace MagicMedia.GraphQL.Face
 {
@@ -12,7 +13,24 @@ namespace MagicMedia.GraphQL.Face
             Id = id;
         }
 
-        public DeleteFacePayload(IReadOnlyList<UserError> errors = null)
+        public DeleteFacePayload(IReadOnlyList<UserError>? errors = null)
+            : base(errors)
+        {
+        }
+    }
+
+    public class PredictPersonPayload : Payload
+    {
+        public bool HasMatch { get; }
+        public MediaFace? Face { get; }
+
+        public PredictPersonPayload(bool hasMatch, MediaFace face)
+        {
+            HasMatch = hasMatch;
+            Face = face;
+        }
+
+        public PredictPersonPayload(IReadOnlyList<UserError>? errors = null)
             : base(errors)
         {
         }

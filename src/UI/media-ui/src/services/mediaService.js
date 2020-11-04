@@ -6,7 +6,7 @@ import QUERY_GETBYID from "../graphql/GetMediaDetails.gql";
     return await apollo.query({
      query: QUERY_SEARCH,
      variables: {
-      request
+      request: request
      }
    });
  };

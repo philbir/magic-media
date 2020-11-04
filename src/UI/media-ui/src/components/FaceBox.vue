@@ -92,6 +92,18 @@
                 >
                   <v-icon dark> mdi-trash-can</v-icon></v-btn
                 >
+                <v-btn
+                  v-if="showPredict"
+                  @click="predictPerson"
+                  depressed
+                  elevation="2"
+                  large
+                  color="blue"
+                  class="ma-1"
+                  icon
+                >
+                  <v-icon dark> mdi-auto-fix</v-icon></v-btn
+                >
               </v-col>
             </v-row>
           </v-container>
@@ -102,6 +114,12 @@
             Close
           </v-btn>
         </v-card-actions>
+        <v-progress-linear
+          v-if="inProgress"
+          indeterminate
+          color="blue"
+          top
+        ></v-progress-linear>
       </v-card>
     </v-dialog>
   </div>
@@ -113,6 +131,7 @@ import {
   assignPerson,
   unAssignPerson,
   deleteFace,
+  predictPerson,
 } from "../services/faceService";
 import { getFaceColor } from "../services/faceColor";
 
@@ -128,11 +147,12 @@ export default {
     return {
       dialog: false,
       faceData: this.face,
+      inProgress: false,
     };
   },
   computed: {
     personNames: function () {
-      return this.$store.state.persons.map((item) => item.name);
+      return this.$store.state.person.persons.map((item) => item.name);
     },
     showApproved: function () {
       return (
@@ -142,6 +162,9 @@ export default {
     },
     showUnassign: function () {
       return this.faceData.person !== null;
+    },
+    showPredict: function () {
+      return this.faceData.person === null;
     },
     box: function () {
       const box = {};
@@ -173,7 +196,7 @@ export default {
       if (name) {
         const result = await assignPerson(this.faceData.id, name);
         this.faceData = result.data.assignPersonByHuman.face;
-        this.$store.commit("PERSON_ADDED", this.faceData.person);
+        this.$store.commit("person/PERSON_ADDED", this.faceData.person);
 
         this.dialog = false;
       }
@@ -183,9 +206,28 @@ export default {
       this.faceData = result.data.unAssignPersonFromFace.face;
     },
     async deleteFace() {
-      const result = await deleteFace(this.faceData.id);
-      console.log(result);
+      await deleteFace(this.faceData.id);
+
+      this.$magic.snack("Face deleted", "SUCCESS");
+
       this.faceData = null;
+    },
+    async predictPerson() {
+      this.inProgress = true;
+      const result = await predictPerson(this.faceData.id);
+
+      if (result.data.predictPerson.hasMatch) {
+        this.$magic.snack(
+          result.data.predictPerson.face.person.name + " found.",
+          "SUCCESS"
+        );
+      } else {
+        this.$magic.snack("No person found.", "INFO");
+      }
+
+      this.faceData = result.data.predictPerson.face;
+
+      this.inProgress = false;
     },
     openDialog() {
       this.dialog = true;
@@ -206,6 +248,7 @@ export default {
   border-color: blueviolet;
   border-width: 1 px;
   border-style: solid;
+  z-index: 101;
 }
 
 .face-name {

@@ -4,7 +4,6 @@ import VueRouter from "vue-router";
 import Media from "../views/Media.vue";
 import MediaCarousel from "../views/MediaCarousel.vue";
 import MediaList from "../views/MediaList.vue";
-import Upload from "../views/Upload.vue";
 
 //import Home from '../views/Home.vue'
 
@@ -27,11 +26,6 @@ const routes = [
     path: "/mediac/:id",
     name: "mediac",
     component: MediaCarousel
-  },
-  {
-    path: "/upload",
-    name: "upload",
-    component: Upload
   }
 ];
 

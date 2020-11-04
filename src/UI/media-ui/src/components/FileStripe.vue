@@ -22,10 +22,10 @@ export default {
   computed: {
     medias: function () {
       let self = this;
-      return this.$store.state.mediaList.map((item) => {
+      return this.$store.state.media.list.map((item) => {
         if (
-          self.$store.state.currentMedia &&
-          self.$store.state.currentMedia.id === item.id
+          self.$store.state.media.current &&
+          self.$store.state.media.current.id === item.id
         ) {
           item.isSelected = true;
         } else item.isSelected = false;
