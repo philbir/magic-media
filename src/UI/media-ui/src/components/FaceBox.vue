@@ -152,7 +152,7 @@ export default {
   },
   computed: {
     personNames: function () {
-      return this.$store.state.persons.map((item) => item.name);
+      return this.$store.state.person.persons.map((item) => item.name);
     },
     showApproved: function () {
       return (
@@ -196,7 +196,7 @@ export default {
       if (name) {
         const result = await assignPerson(this.faceData.id, name);
         this.faceData = result.data.assignPersonByHuman.face;
-        this.$store.commit("PERSON_ADDED", this.faceData.person);
+        this.$store.commit("person/PERSON_ADDED", this.faceData.person);
 
         this.dialog = false;
       }

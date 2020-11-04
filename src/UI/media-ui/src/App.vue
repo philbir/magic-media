@@ -16,7 +16,6 @@
               <v-icon>mdi-resize</v-icon>
             </v-btn>
           </template>
-
           <v-list dense>
             <v-list-item
               v-for="size in sizes"
@@ -28,6 +27,7 @@
           </v-list>
         </v-menu>
         <v-spacer></v-spacer>
+
         <v-icon color="white" class="mr-2" @click="openUpload">
           mdi-cloud-upload-outline
         </v-icon>

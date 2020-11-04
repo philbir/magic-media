@@ -100,15 +100,17 @@ export default {
     thumbnail: function () {
       if (this.$store) {
         const existing = this.$store.state.media.list.filter(
-          (x) => x.id == this.$route.params.id
+          (x) => x.id === this.$route.params.id
         );
+
         if (existing.length > 0) {
-          return existing.thumbnail.dataUrl;
+          return existing[0].thumbnail.dataUrl;
         }
       }
 
       return null;
     },
+
     imageSrc: function () {
       if (this.media.id === this.$route.params.id) {
         return "/api/media/webimage/" + this.media.id;
