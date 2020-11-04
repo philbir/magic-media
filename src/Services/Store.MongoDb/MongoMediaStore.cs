@@ -40,6 +40,8 @@ namespace MagicMedia.Store.MongoDb
             FilterDefinition<Media> filter = Builders<Media>.Filter.Empty;
 
             List<Media> medias = await _mediaStoreContext.Medias.Find(filter)
+                .SortByDescending(x => x.Source.ImportedAt)
+                .Limit(request.PageSize)
                 .ToListAsync(cancellationToken);
 
             return medias;

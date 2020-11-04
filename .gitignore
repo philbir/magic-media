@@ -300,3 +300,4 @@ All.sln
 
 src/Face/models/
 *.pyc
+**/Api.Host/wwwroot

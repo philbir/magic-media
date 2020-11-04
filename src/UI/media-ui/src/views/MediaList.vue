@@ -1,29 +1,28 @@
 <template>
-  <div>
+  <div
+    class="media-container"
+    ref="container"
+    :style="{ height: layout.containerHeight + 'px' }"
+  >
+    <v-progress-linear v-if="loading" indeterminate color="blue" top />
     <div
-      class="media-container"
-      :style="{ height: layout.containerHeight + 20 + 'px' }"
-    >
-      <div
-        v-for="(box, i) in layout.boxes"
-        :key="i"
-        class="media-item"
-        v-on:click="
-          $router.push({ name: 'media', params: { id: box.media.id } })
-        "
-        :style="{
-          left: box.left + 'px',
-          top: box.top + 'px',
-          height: box.height + 'px',
-          width: box.width + 'px',
-          'background-image': 'url(' + box.media.thumbnail.dataUrl + ')',
-        }"
-      />
-    </div>
-
+      v-for="(box, i) in layout.boxes"
+      :key="i"
+      class="media-item"
+      v-on:click="$router.push({ name: 'media', params: { id: box.media.id } })"
+      :style="{
+        left: box.left + 'px',
+        top: box.top + 'px',
+        height: box.height + 'px',
+        width: box.width + 'px',
+        'background-image': 'url(' + box.media.thumbnail.dataUrl + ')',
+      }"
+    />
+  </div>
+  <!--
     <v-icon large color="gray" @click="handleUpload"> mdi-upload </v-icon>
     <v-icon large color="gray" @click="handleRefresh"> mdi-refresh </v-icon>
-  </div>
+    -->
 
   <!-- No result -->
 </template>
@@ -34,13 +33,18 @@ import { mediaListViewMap } from "../services/mediaListViewMap";
 
 export default {
   created() {
-    this.$store.dispatch("searchMedia");
+    if (this.$store.state.media.list.length === 0)
+      this.$store.dispatch("media/search");
+
+    //this.containerWith = this.$refs.container.clientWidth - 5;
+    this.containerWith = window.innerWidth - 264;
   },
+
   computed: {
-    windowWidth: () => window.innerWidth,
     layout: function () {
-      const items = this.$store.state.mediaList;
-      const viewMap = mediaListViewMap["l"];
+      const items = this.$store.state.media.list;
+      const viewMap =
+        mediaListViewMap[this.$store.state.media.filter.thumbnailSize];
       const ratios = [];
       items.forEach((item) => {
         ratios.push(
@@ -50,7 +54,7 @@ export default {
         );
       });
       const layout = justified(ratios, {
-        containerWidth: window.innerWidth,
+        containerWidth: this.containerWith,
         targetRowHeight: viewMap.rowHeight,
         boxSpacing: viewMap.spacing,
         containerPadding: viewMap.spacing,
@@ -61,16 +65,21 @@ export default {
       });
       return layout;
     },
+    loading: function () {
+      return this.$store.state.media.listLoading;
+    },
   },
   data() {
-    return {};
+    return {
+      containerWith: 0,
+    };
   },
   methods: {
-    handleUpload() {
+    handleUpload: function () {
       this.$router.push("/upload");
     },
-    handleRefresh() {
-      this.$store.dispatch("searchMedia");
+    handleRefresh: function () {
+      this.$store.dispatch("media/search");
     },
   },
 };

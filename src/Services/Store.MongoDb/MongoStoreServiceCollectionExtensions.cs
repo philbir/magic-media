@@ -14,7 +14,10 @@ namespace MagicMedia.Store.MongoDb
             MongoOptions options = configuration.GetSection("MagicMedia:Database")
                 .Get<MongoOptions>();
 
+<<<<<<< HEAD
             Console.WriteLine(options.ConnectionString);
+=======
+>>>>>>> d6e340bd94b7733ad7fd351f7cbd24f5251d7bf9
 
             services.AddSingleton(new MediaStoreContext(options));
             services.AddSingleton<IThumbnailBlobStore>((c) =>

@@ -1,0 +1,13 @@
+mutation buildPersonModel {
+  buildPersonModel {
+    faceCount
+    errors {
+      ...userError
+    }
+  }
+}
+
+fragment userError on UserError {
+  code
+  message
+}

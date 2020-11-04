@@ -1,33 +1,37 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-//import Home from '../views/Home.vue'
-import MediaList from '../views/MediaList.vue'
-import Media from '../views/Media.vue'
-import Upload from '../views/Upload.vue'
+import Vue from "vue";
+import VueRouter from "vue-router";
 
-Vue.use(VueRouter)
+import Media from "../views/Media.vue";
+import MediaCarousel from "../views/MediaCarousel.vue";
+import MediaList from "../views/MediaList.vue";
+
+//import Home from '../views/Home.vue'
+
+Vue.use(VueRouter);
 
 const routes = [
   {
-    path: '/',
-    name: 'Home',
+    path: "/",
+    name: "Home",
     component: MediaList
   },
   {
-    path: '/media/:id',
-    name: 'media',
-    component: Media
+    path: "/media/:id",
+    name: "media",
+    component: Media,
+    meta: { transition: "face", fullscreen: true },
+    
   },
   {
-    path: '/upload',
-    name: 'upload',
-    component: Upload
-  },
-]
+    path: "/mediac/:id",
+    name: "mediac",
+    component: MediaCarousel
+  }
+];
 
 const router = new VueRouter({
-  mode: 'history',
+  mode: "history",
   routes
-})
+});
 
-export default router
+export default router;
