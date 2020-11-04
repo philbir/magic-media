@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MagicMedia.Search;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 
@@ -88,6 +90,38 @@ namespace MagicMedia.Store.MongoDb
             return result;
         }
 
+        public async Task SaveFacesAsync(
+            Guid mediaId,
+            IEnumerable<MediaFace> faces,
+            CancellationToken cancellationToken)
+        {
+            if (faces != null)
+            {
+                foreach (MediaFace face in faces)
+                {
+                    await _thumbnailBlobStore.StoreAsync(
+                        new ThumbnailData(face.Thumbnail.Id, face.Thumbnail.Data),
+                        cancellationToken);
+
+                    face.Thumbnail.Data = null;
+                }
+
+                if (faces.Any())
+                {
+                    await _mediaStoreContext.Faces.InsertManyAsync(
+                        faces,
+                        options: null,
+                        cancellationToken);
+                }
+            }
+
+            await _mediaStoreContext.Medias.UpdateOneAsync(
+                x => x.Id == mediaId,
+                Builders<Media>.Update.Set(f => f.FaceCount, faces.Count()),
+                options: null,
+                cancellationToken);
+        }
+
         public async Task InsertMediaAsync(
             Media media,
             IEnumerable<MediaFace> faces,
@@ -126,6 +160,18 @@ namespace MagicMedia.Store.MongoDb
                     options: null,
                     cancellationToken);
             }
+        }
+
+        public async Task<IEnumerable<SearchFacetItem>> GetGroupedCountriesAsync(
+            CancellationToken cancellationToken)
+        {
+            IEnumerable<BsonDocument> docs = await _mediaStoreContext.ExecuteAggregation(
+                CollectionNames.Media,
+                "Media_GroupByCountry",
+                cancellationToken);
+
+
+            return null;
         }
     }
 }

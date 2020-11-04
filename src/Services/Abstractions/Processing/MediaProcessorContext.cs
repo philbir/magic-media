@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using MagicMedia.Discovery;
+using MagicMedia.Store;
 using SixLabors.ImageSharp;
 
 namespace MagicMedia.Processing
@@ -21,6 +22,7 @@ namespace MagicMedia.Processing
         public MediaDiscoveryIdentifier File { get; set; }
 
         public MediaProcessingOptions Options { get; set; }
+        public Media Media { get; set; }
     }
 
     public class MediaProcessingOptions

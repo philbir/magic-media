@@ -36,7 +36,7 @@
       </v-app-bar>
 
       <v-navigation-drawer clipped v-if="!isFullscreen" app>
-        <FolderTree></FolderTree>
+        <MediaFilter></MediaFilter>
       </v-navigation-drawer>
 
       <v-main :class="{ fullscreen: isFullscreen }">
@@ -68,7 +68,7 @@
 <script>
 import AppPreLoader from "./components/AppPreLoader";
 import Upload from "./components/Upload";
-import FolderTree from "./components/FolderTree";
+import MediaFilter from "./components/MediaFilter";
 import VuePageTransition from "vue-page-transition";
 import Vue from "vue";
 
@@ -76,7 +76,7 @@ Vue.use(VuePageTransition);
 
 export default {
   name: "App",
-  components: { AppPreLoader, FolderTree, Upload },
+  components: { AppPreLoader, Upload, MediaFilter },
 
   data: () => ({
     sizes: [

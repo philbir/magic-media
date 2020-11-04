@@ -48,7 +48,13 @@ namespace MagicMedia.Processing
                 case SaveMediaMode.KeepInSource:
                     var directoryName = Path.GetDirectoryName(context.File.Id);
                     var relativePath = directoryName.Replace(context.File.BasePath, "");
-                    return relativePath;
+
+                    if (string.IsNullOrWhiteSpace(relativePath))
+                    {
+                        relativePath = "/";
+                    }
+
+                    return relativePath.Replace("\\", "/");
                 default:
                     throw new ApplicationException($"Invalid SaveMediaMode: {context.Options.SaveMedia.SaveMode}");
             }
@@ -141,7 +147,6 @@ namespace MagicMedia.Processing
             if (context.Options.SaveMedia.SourceAction == SaveMediaSourceAction.Delete)
             {
                 //TODO: Delete source
-
             }
             else if (context.Options.SaveMedia.SourceAction == SaveMediaSourceAction.Delete)
             {

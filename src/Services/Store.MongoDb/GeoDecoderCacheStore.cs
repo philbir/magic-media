@@ -23,7 +23,6 @@ namespace MagicMedia.Store.MongoDb
             double longitude,
             CancellationToken cancellationToken)
         {
-
             string id = $"{latitude}_{latitude}";
 
             GeoAddressCache cached = await _mediaStoreContext.GeoAddressCache.AsQueryable()
@@ -32,25 +31,51 @@ namespace MagicMedia.Store.MongoDb
 
             if (cached != null)
             {
-                return cached;
+                return new GeoAddress
+                {
+                    Address = cached.Address,
+                    City = cached.City,
+                    Country = cached.Country,
+                    CountryCode = cached.CountryCode,
+                    Distric1 = cached.Distric1,
+                    Distric2 = cached.Distric2,
+                    EntityType = cached.EntityType,
+                    Name = cached.Name,
+                };
             }
 
-            GeoAddress geoAddress = await _geoDecoderService.DecodeAsync(latitude, longitude, cancellationToken);
+            GeoAddress geoAddress = await _geoDecoderService.DecodeAsync(
+                latitude,
+                longitude,
+                cancellationToken);
 
-            cached = new GeoAddressCache
+            if (geoAddress != null)
             {
-                Address = geoAddress.Address,
-                City = geoAddress.City,
-                Country = geoAddress.Country,
-                CountryCode = geoAddress.CountryCode,
-                Distric1 = geoAddress.Distric1,
-                Distric2 = geoAddress.Distric2,
-                EntityType = geoAddress.EntityType,
-                Name = geoAddress.Name,
-                Id = id
-            };
+                cached = new GeoAddressCache
+                {
+                    Address = geoAddress.Address,
+                    City = geoAddress.City,
+                    Country = geoAddress.Country,
+                    CountryCode = geoAddress.CountryCode,
+                    Distric1 = geoAddress.Distric1,
+                    Distric2 = geoAddress.Distric2,
+                    EntityType = geoAddress.EntityType,
+                    Name = geoAddress.Name,
+                    Id = id
+                };
+            }
+            else
+            {
+                cached = new GeoAddressCache
+                {
+                    Id = id
+                };
+            }
 
-            await _mediaStoreContext.GeoAddressCache.InsertOneAsync(cached, options: null, cancellationToken);
+            await _mediaStoreContext.GeoAddressCache.InsertOneAsync(
+                cached,
+                options: null,
+                cancellationToken);
 
             return geoAddress;
         }

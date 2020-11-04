@@ -27,21 +27,23 @@ namespace MagicMedia.Playground
         }
 
 
-        public async Task ScanExistingAsync(CancellationToken cancellationToken)
+        public async Task ScanExistingAsync(
+            FileSystemDiscoveryOptions options,
+            CancellationToken cancellationToken)
         {
             var todo = new List<MediaDiscoveryIdentifier>();
 
             foreach (IMediaSourceDiscovery source in _discoveryFactory.GetSources())
             {
                 IEnumerable<MediaDiscoveryIdentifier> identifiers = await source
-                    .DiscoverMediaAsync(default);
+                    .DiscoverMediaAsync(options, cancellationToken);
 
                 todo.AddRange(identifiers);
             }
 
             IMediaProcessorFlow flow = _flowFactory.CreateFlow("ImportImageNoFace");
 
-            var options = new MediaProcessingOptions
+            var processionOptions = new MediaProcessingOptions
             {
                 SaveMedia = new SaveMediaFileOptions
                 {
@@ -61,7 +63,7 @@ namespace MagicMedia.Playground
                 {
                     OriginalData = data,
                     File = file,
-                    Options = options
+                    Options = processionOptions
                 };
                 try
                 {
@@ -76,14 +78,16 @@ namespace MagicMedia.Playground
         }
 
 
-        public async Task DiscoverAsync()
+        public async Task DiscoverAsync(
+            FileSystemDiscoveryOptions options,
+            CancellationToken cancellationToken)
         {
             var todo = new List<MediaDiscoveryIdentifier>();
 
             foreach (IMediaSourceDiscovery source in _discoveryFactory.GetSources())
             {
                 IEnumerable<MediaDiscoveryIdentifier> identifiers = await source
-                    .DiscoverMediaAsync(default);
+                    .DiscoverMediaAsync(options, cancellationToken);
 
                 todo.AddRange(identifiers);
             }

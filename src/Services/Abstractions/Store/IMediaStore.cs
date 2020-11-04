@@ -21,7 +21,7 @@ namespace MagicMedia.Store
             Media media,
             IEnumerable<MediaFace> faces,
             CancellationToken cancellationToken);
-
+        Task SaveFacesAsync(Guid mediaId, IEnumerable<MediaFace> faces, CancellationToken cancellationToken);
         Task<IEnumerable<Media>> SearchAsync(
             SearchMediaRequest request,
             CancellationToken cancellationToken);

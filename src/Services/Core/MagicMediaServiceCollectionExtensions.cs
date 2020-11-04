@@ -31,6 +31,7 @@ namespace MagicMedia
             services.AddSingleton<IMediaProcesserTask, GenerateWebImageTask>();
             services.AddSingleton<IMediaProcesserTask, SaveMediaTask>();
             services.AddSingleton<IMediaProcesserTask, PredictPersonsTask>();
+            services.AddSingleton<IMediaProcesserTask, SaveFaceDataAsync>();
 
             services.AddSingleton<IMediaProcesserTaskFactory, MediaProcesserTaskFactory>();
             services.AddSingleton<IMediaProcessorFlowFactory, MediaProcessorFlowFactory>();

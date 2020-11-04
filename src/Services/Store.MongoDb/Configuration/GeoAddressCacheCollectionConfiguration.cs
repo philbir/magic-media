@@ -1,17 +1,17 @@
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
 using MongoDB.Extensions.Context;
 
 namespace MagicMedia.Store.MongoDb.Configuration
 {
-    internal class CameraCollectionConfiguration :
-        IMongoCollectionConfiguration<Camera>
+    internal class GeoAddressCacheCollectionConfiguration :
+        IMongoCollectionConfiguration<GeoAddressCache>
     {
         public void OnConfiguring(
-            IMongoCollectionBuilder<Camera> builder)
+            IMongoCollectionBuilder<GeoAddressCache> builder)
         {
             builder
-                .WithCollectionName(CollectionNames.Camera)
-                .AddBsonClassMap<Camera>(cm =>
+                .WithCollectionName(CollectionNames.GeoAddressCache)
+                .AddBsonClassMap<GeoAddressCache>(cm =>
                 {
                     cm.AutoMap();
                     cm.MapIdMember(c => c.Id);

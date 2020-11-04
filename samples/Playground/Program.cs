@@ -21,14 +21,28 @@ namespace Playground
         {
             IServiceProvider sp = BuildServiceProvider();
             ImportSample importSample = sp.GetService<ImportSample>();
-            IFaceModelBuilderService modelBuilder = sp.GetService<IFaceModelBuilderService>();
 
             DiscoverySample discovery = sp.GetService<DiscoverySample>();
+            FaceScanner faceScanner = sp.GetService<FaceScanner>();
 
-            await discovery.ScanExistingAsync(default);
+            await faceScanner.RunAsync(default);
+
+            return;
+
+            await discovery.ScanExistingAsync( new FileSystemDiscoveryOptions
+            {
+                Locations = new List<FileDiscoveryLocation>
+                {
+                    new FileDiscoveryLocation
+                    {
+                         Filter = "*.jpg",
+                         Path = @"Family\2019",
+                         Root = @"P:\Drive\Moments",
+                    }
+                }
+            }, default);
 
         }
-
 
         private static IServiceProvider BuildServiceProvider()
         {
@@ -52,7 +66,8 @@ namespace Playground
 
             services.AddSingleton<ImportSample>();
             services.AddSingleton<DiscoverySample>();
-            services.AddFileSystemDiscovery(new List<string> { @"P:\Moments\Family\2020" });
+            services.AddSingleton<FaceScanner>();
+            services.AddFileSystemDiscovery();
 
             return services.BuildServiceProvider();
         }

@@ -35,6 +35,12 @@ namespace MagicMedia.Processing
                         MediaProcessorTaskNames.GenerateWebImage,
                         MediaProcessorTaskNames.SaveMedia,
                     });
+                case "ScanFaces":
+                    return new MediaProcessorFlow(_taskFactory, new[]
+                    {
+                        MediaProcessorTaskNames.BuildFaceData,
+                        MediaProcessorTaskNames.SaveFaces,
+                    });
                 default:
                     throw new ArgumentException("Invalid flow", nameof(name));
             }

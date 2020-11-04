@@ -8,27 +8,29 @@ namespace MagicMedia.Discovery
 {
     public class FileSystemSourceDiscovery : IMediaSourceDiscovery
     {
-        private readonly FileSystemDiscoveryOptions _options;
-
         public MediaDiscoverySource SourceType => MediaDiscoverySource.FileSystem;
 
-        public FileSystemSourceDiscovery(FileSystemDiscoveryOptions options)
-        {
-            _options = options;
-        }
-
         public Task<IEnumerable<MediaDiscoveryIdentifier>> DiscoverMediaAsync(
+            FileSystemDiscoveryOptions options,
             CancellationToken cancellationToken)
         {
             var result = new List<MediaDiscoveryIdentifier>();
 
-            foreach (var location in _options.Locations)
+            foreach (FileDiscoveryLocation location in options.Locations)
             {
-                string[] files = Directory.GetFiles(location, "*.jpg", SearchOption.AllDirectories);
+                var filePath = location.Root != null ?
+                    Path.Combine(location.Root, location.Path) :
+                    location.Path;
+
+                string[] files = Directory.GetFiles(
+                    filePath,
+                    location.Filter,
+                    SearchOption.AllDirectories);
+
                 result.AddRange(files.Select(x =>
                     new MediaDiscoveryIdentifier
                     {
-                        BasePath = location,
+                        BasePath = location.Root ?? filePath,
                         Id = x,
                         Source = SourceType
                     }));
