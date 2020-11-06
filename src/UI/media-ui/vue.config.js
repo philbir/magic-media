@@ -9,12 +9,12 @@ module.exports = {
     proxy: {
       "/api": {
         changeOrigin: true,
-        target: "https://magic-media-preview.birbaum.me/"
+        target: process.env.API_BASE_URL
       },
       "/graphql": {
         ws: true,
         changeOrigin: true,
-        target: "https://magic-media-preview.birbaum.me/"
+        target: process.env.API_BASE_URL
       }
     }
   }

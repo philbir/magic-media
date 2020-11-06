@@ -1,0 +1,16 @@
+query facets {
+  facets {
+    country {
+      ...facet
+    }
+    city {
+      ...facet
+    }
+  }
+}
+
+fragment facet on SearchFacetItem {
+  text
+  value
+  count
+}

@@ -10,6 +10,10 @@ namespace MagicMedia.GraphQL.Face
             descriptor
                 .Field("person")
                 .ResolveWith<FaceResolvers>(x => x.GetPersonAsync(default!, default!, default!));
+
+            descriptor
+                .Field("media")
+                .ResolveWith<FaceResolvers>(x => x.GetMediaAsync(default!, default!, default!));
         }
     }
 }

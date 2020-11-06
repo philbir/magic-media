@@ -1,5 +1,7 @@
-﻿using System.Threading;
+using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
+using GreenDonut;
 using MagicMedia.GraphQL.DataLoaders;
 using MagicMedia.Store;
 
@@ -18,6 +20,14 @@ namespace MagicMedia.GraphQL.Face
             }
 
             return null;
+        }
+
+        public async Task<Media> GetMediaAsync(
+            MediaFace face,
+            MediaByIdDataLoader dataLoader,
+            CancellationToken cancellationToken)
+        {
+            return await dataLoader.LoadAsync(face.MediaId, cancellationToken);
         }
     }
 }

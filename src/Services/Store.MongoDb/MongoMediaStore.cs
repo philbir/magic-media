@@ -49,7 +49,7 @@ namespace MagicMedia.Store.MongoDb
             return medias;
         }
 
-        public async Task<Media> GetById(
+        public async Task<Media> GetByIdAsync(
             Guid id,
             CancellationToken cancellationToken)
         {
@@ -58,6 +58,17 @@ namespace MagicMedia.Store.MongoDb
                 .FirstOrDefaultAsync(cancellationToken);
 
             return media;
+        }
+
+        public async Task<IEnumerable<Media>> GetManyAsync(
+            IEnumerable<Guid> ids,
+            CancellationToken cancellationToken)
+        {
+            List<Media> medias = await _mediaStoreContext.Medias.AsQueryable()
+                .Where(x => ids.ToList().Contains(x.Id))
+                .ToListAsync(cancellationToken);
+
+            return medias;
         }
 
         public async Task<IReadOnlyDictionary<Guid, MediaThumbnail>> GetThumbnailsByMediaIdsAsync(
@@ -162,6 +173,33 @@ namespace MagicMedia.Store.MongoDb
             }
         }
 
+        public async Task<IEnumerable<SearchFacetItem>> GetGroupedCitiesAsync(
+                CancellationToken cancellationToken)
+        {
+            IEnumerable<BsonDocument> docs = await _mediaStoreContext.ExecuteAggregation(
+                CollectionNames.Media,
+                "Media_GroupByCity",
+                cancellationToken);
+
+            var result = new List<SearchFacetItem>();
+
+
+            foreach (BsonDocument doc in docs)
+            {
+                var item = new SearchFacetItem();
+                item.Count = doc["count"].AsInt32;
+
+                if (doc["_id"].IsString)
+                {
+                    item.Text = doc["_id"].AsString;
+                    item.Value = doc["_id"].AsString;
+                    result.Add(item);
+                }
+            }
+
+            return result;
+        }
+
         public async Task<IEnumerable<SearchFacetItem>> GetGroupedCountriesAsync(
             CancellationToken cancellationToken)
         {
@@ -170,8 +208,33 @@ namespace MagicMedia.Store.MongoDb
                 "Media_GroupByCountry",
                 cancellationToken);
 
+            var result = new List<SearchFacetItem>();
 
-            return null;
+            foreach (BsonDocument doc in docs)
+            {
+                var item = new SearchFacetItem();
+                item.Count = doc["count"].AsInt32;
+
+                var idDoc = doc["_id"] as BsonDocument;
+
+                if (idDoc.Contains("code"))
+                {
+                    if (idDoc["code"].IsString)
+                    {
+                        item.Value = idDoc["code"].AsString;
+                        item.Text = idDoc["name"].AsString;
+                    }
+                    else
+                    {
+                        item.Value = "Empty";
+                        item.Text = "Empty";
+                    }
+
+                    result.Add(item);
+                }
+            }
+
+            return result;
         }
     }
 }

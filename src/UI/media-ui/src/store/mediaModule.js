@@ -1,6 +1,6 @@
 import Vue from 'vue';
 
-import { getById, searchMedia } from "../services/mediaService";
+import { getById, searchMedia, getSearchFacets } from "../services/mediaService";
 
 const mediaModule = {
     namespaced: true,
@@ -9,6 +9,7 @@ const mediaModule = {
             open: false
         },
         list: [],
+        facets: null,
         current: null,
         listLoading: false,
         filter: {
@@ -32,6 +33,9 @@ const mediaModule = {
         },
         SET_MEDIALIST_LOADING: function (state, isloading) {
             state.listLoading = isloading;
+        },
+        SEARCH_FACETS_LOADED: function (state, facets) {
+            Vue.set(state, "facets", facets);
         }
     },
     actions: {
@@ -53,6 +57,15 @@ const mediaModule = {
             try {
                 const res = await getById(id);
                 commit("DETAILS_LOADED", res.data.mediaById);
+            } catch (ex) {
+                console.error(ex);
+            }
+        },
+        async getSearchFacets({ commit }) {
+            try {
+                const res = await getSearchFacets();
+                console.log(res)
+                commit('SEARCH_FACETS_LOADED', res.data.facets)
             } catch (ex) {
                 console.error(ex);
             }

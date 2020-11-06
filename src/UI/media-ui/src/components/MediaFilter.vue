@@ -41,6 +41,27 @@
         </v-list-item-group>
       </v-list>
     </div>
+    <div v-if="activeTabId == 'geo'">
+      <v-list flat dense>
+        <v-list-item-group v-model="selectedCountries" multiple>
+          <v-list-item dense v-for="country in countries" :key="country.id">
+            <template v-slot:default="{ active }">
+              <v-list-item-action>
+                <v-checkbox
+                  :input-value="active"
+                  :value="country.code"
+                  color="primary"
+                ></v-checkbox>
+              </v-list-item-action>
+
+              <v-list-item-content>
+                <v-list-item-title>{{ country.text }}</v-list-item-title>
+              </v-list-item-content>
+            </template>
+          </v-list-item>
+        </v-list-item-group>
+      </v-list>
+    </div>
   </div>
 </template>
 
@@ -49,9 +70,13 @@ import FolderTree from "./FolderTree";
 
 export default {
   components: { FolderTree },
+  created() {
+    this.$store.dispatch("media/getSearchFacets");
+  },
   data() {
     return {
       settings: [],
+      selectedCountries: [],
       activeTabId: "folder",
       dates: null,
       tabDef: [
@@ -96,6 +121,9 @@ export default {
           id: p.id,
         };
       });
+    },
+    countries: function () {
+      return this.$store.state.media.facets.country;
     },
   },
   methods: {

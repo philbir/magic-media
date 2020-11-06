@@ -84,7 +84,8 @@ namespace MagicMedia.Store.MongoDb
             PipelineDefinition<BsonDocument, BsonDocument> pipeline =
                 AggregationPipelineFactory.Create(name);
 
-            IMongoCollection<BsonDocument> collection = Database.GetCollection<BsonDocument>(name);
+            IMongoCollection<BsonDocument> collection = Database
+                .GetCollection<BsonDocument>(collectionName);
 
             IAsyncCursor<BsonDocument> cursor = await collection.AggregateAsync(
                 pipeline,

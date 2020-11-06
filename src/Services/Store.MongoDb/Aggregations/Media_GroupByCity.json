@@ -1,0 +1,8 @@
+[
+  {
+    "$group": {
+       "_id": "$GeoLocation.Address.City",
+       "count": { "$sum": 1 }
+    }
+  }
+]     
