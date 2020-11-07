@@ -18,7 +18,7 @@ A preview of the running application can be found here:
 
 ### UI project
 
-The UI needs a running API running on http://localhost:5000, first start `API.Host` project and then
+The UI needs a running API running on http://localhost:5000, first startthe  `API.Host` project and then
 you can start the UI in `src/UI/media-ui` using `yarn serve`
 
 You can also use the preview api withhout having to run an API locally, just use:
@@ -26,9 +26,9 @@ You can also use the preview api withhout having to run an API locally, just use
 
 ### Face detection
 
-To work on the face detection project most convinient way is to use [Visual Studio Code Remote Containers](https://code.visualstudio.com/docs/remote/containers-tutorial)
+To work on the face detection project the most convinient way is to use [VS Code Remote Containers](https://code.visualstudio.com/docs/remote/containers-tutorial)
 
-Then just open `src/Face` in a remote container.
+Then just open the `src/Face` directory in a remote container.
 
 ## Architecture
 

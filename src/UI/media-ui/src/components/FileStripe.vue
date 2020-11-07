@@ -22,7 +22,13 @@ export default {
   computed: {
     medias: function () {
       let self = this;
-      return this.$store.state.media.list.map((item) => {
+
+      var medias = [...this.$store.state.media.list];
+      if (medias.length > 100) {
+        medias.splice(0, 100);
+      }
+
+      return medias.map((item) => {
         if (
           self.$store.state.media.current &&
           self.$store.state.media.current.id === item.id
@@ -35,9 +41,7 @@ export default {
   },
   methods: {
     onMediaClick: function (id) {
-      const r = this.$refs["img" + id][0];
-      this.$vuetify.goTo(r, {});
-      this.$router.replace({ name: "media", params: { id } });
+      this.$store.dispatch("media/show", id);
     },
   },
 };

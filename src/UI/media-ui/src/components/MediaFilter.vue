@@ -25,12 +25,25 @@
     ></v-date-picker>
 
     <div v-if="activeTabId == 'person'">
-      <v-list flat dense>
-        <v-list-item-group v-model="settings" multiple>
-          <v-list-item dense v-for="person in persons" :key="person.id">
+      <v-list flat dense max-height="250" width="250" class="overflow-y-auto">
+        <v-list-item-group
+          v-model="selectedPersons"
+          multiple
+          @change="onSelectPerson"
+        >
+          <v-list-item
+            dense
+            v-for="person in persons"
+            :key="person.id"
+            :value="person"
+          >
             <template v-slot:default="{ active }">
               <v-list-item-action>
-                <v-checkbox :input-value="active" color="primary"></v-checkbox>
+                <v-checkbox
+                  :input-value="active"
+                  :true-value="person.id"
+                  color="primary"
+                ></v-checkbox>
               </v-list-item-action>
 
               <v-list-item-content>
@@ -42,25 +55,70 @@
       </v-list>
     </div>
     <div v-if="activeTabId == 'geo'">
-      <v-list flat dense>
-        <v-list-item-group v-model="selectedCountries" multiple>
-          <v-list-item dense v-for="country in countries" :key="country.id">
-            <template v-slot:default="{ active }">
-              <v-list-item-action>
-                <v-checkbox
-                  :input-value="active"
-                  :value="country.code"
-                  color="primary"
-                ></v-checkbox>
-              </v-list-item-action>
+      <v-card class="mx-auto" tile>
+        <v-list flat dense max-height="250" width="250" class="overflow-y-auto">
+          <v-subheader>Countries</v-subheader>
+          <v-list-item-group
+            v-model="selectedCountries"
+            @change="onSelectCountry"
+            multiple
+          >
+            <v-list-item
+              style="height: 26px"
+              dense
+              v-for="country in countries"
+              :key="country.value"
+              :value="country"
+            >
+              <template v-slot:default="{ active }">
+                <v-list-item-action>
+                  <v-checkbox
+                    :input-value="active"
+                    :true-value="country.value"
+                    color="primary"
+                  ></v-checkbox>
+                </v-list-item-action>
 
-              <v-list-item-content>
-                <v-list-item-title>{{ country.text }}</v-list-item-title>
-              </v-list-item-content>
-            </template>
-          </v-list-item>
-        </v-list-item-group>
-      </v-list>
+                <v-list-item-content>
+                  <v-list-item-title>{{ country.text }}</v-list-item-title>
+                </v-list-item-content>
+              </template>
+            </v-list-item>
+          </v-list-item-group>
+        </v-list>
+      </v-card>
+      <v-card class="mx-auto" tile width="250">
+        <v-list flat dense max-height="250" class="overflow-y-auto">
+          <v-subheader>Cities</v-subheader>
+          <v-list-item-group
+            v-model="selectedCities"
+            @change="onSelectCity"
+            multiple
+          >
+            <v-list-item
+              style="height: 26px"
+              dense
+              v-for="city in cities"
+              :key="city.value"
+              :value="city"
+            >
+              <template v-slot:default="{ active }">
+                <v-list-item-action>
+                  <v-checkbox
+                    :input-value="active"
+                    :true-value="city.value"
+                    color="primary"
+                  ></v-checkbox>
+                </v-list-item-action>
+
+                <v-list-item-content>
+                  <v-list-item-title>{{ city.text }}</v-list-item-title>
+                </v-list-item-content>
+              </template>
+            </v-list-item>
+          </v-list-item-group>
+        </v-list>
+      </v-card>
     </div>
   </div>
 </template>
@@ -75,8 +133,9 @@ export default {
   },
   data() {
     return {
-      settings: [],
+      selectedPersons: [],
       selectedCountries: [],
+      selectedCities: [],
       activeTabId: "folder",
       dates: null,
       tabDef: [
@@ -125,11 +184,31 @@ export default {
     countries: function () {
       return this.$store.state.media.facets.country;
     },
+    cities: function () {
+      return this.$store.state.media.facets.city;
+    },
   },
   methods: {
     select: function (tab) {
       this.activeTabId = tab.id;
     },
+    onSelectPerson: function () {
+      var selected = this.selectedPersons.map((x) => x.id);
+      this.$store.dispatch("media/setPersonFilter", selected);
+    },
+    onSelectCity: function () {
+      var selected = this.selectedCities.map((x) => x.value);
+      console.log(selected);
+      this.$store.dispatch("media/setCityFilter", selected);
+    },
+    onSelectCountry: function () {
+      var selected = this.selectedCountries.map((x) => x.value);
+      console.log(selected);
+      this.$store.dispatch("media/setCountryFilter", selected);
+    },
   },
 };
 </script>
+
+<style scoped>
+</style>

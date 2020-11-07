@@ -41,12 +41,52 @@ namespace MagicMedia.Store.MongoDb
         {
             FilterDefinition<Media> filter = Builders<Media>.Filter.Empty;
 
+            if (request.Persons is { } persons && persons.Any())
+            {
+                IEnumerable<Guid> mediaIds = await GetMediaIdsByPersons(
+                    persons,
+                    cancellationToken);
+
+                if (mediaIds.Any())
+                {
+                    filter = filter & Builders<Media>.Filter.In(x => x.Id, mediaIds);
+                }
+            }
+
+            if (request.Cities is { } cities && cities.Any())
+            {
+                filter = filter & Builders<Media>.Filter.In(
+                    x => x.GeoLocation.Address.City,
+                    cities);
+            }
+
+            if (request.Countries is { } countries && countries.Any())
+            {
+                filter = filter & Builders<Media>.Filter.In(
+                    x => x.GeoLocation.Address.CountryCode,
+                    countries);
+            }
+
             List<Media> medias = await _mediaStoreContext.Medias.Find(filter)
                 .SortByDescending(x => x.Source.ImportedAt)
+                .Skip(request.PageNr * request.PageSize)
                 .Limit(request.PageSize)
                 .ToListAsync(cancellationToken);
 
             return medias;
+        }
+
+        private async Task<IEnumerable<Guid>> GetMediaIdsByPersons(
+            IEnumerable<Guid> persons,
+            CancellationToken cancellationToken)
+        {
+            List<Guid> ids = await _mediaStoreContext.Faces.AsQueryable()
+                .Where(x => x.PersonId.HasValue)
+                .Where(x => persons.ToList().Contains(x.PersonId.Value))
+                .Select(x => x.MediaId)
+                .ToListAsync(cancellationToken);
+
+            return ids;
         }
 
         public async Task<Media> GetByIdAsync(

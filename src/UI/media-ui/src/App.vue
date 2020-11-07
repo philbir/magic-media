@@ -26,7 +26,46 @@
             </v-list-item>
           </v-list>
         </v-menu>
+
+        <v-switch
+          dense
+          @change="toggleEditMode"
+          color="info"
+          value="edit"
+          class="mt-4 ml-2"
+        >
+          <template v-slot:label>
+            <span class="white--text">{{ editModeText }}</span>
+          </template>
+        </v-switch>
+
+        <v-menu left bottom v-if="editModeText == 'Edit'">
+          <template v-slot:activator="{ on, attrs }">
+            <a v-bind="attrs" v-on="on">
+              <h4 class="white--text ml-4">{{ selectedCount }} selected</h4></a
+            >
+          </template>
+          <v-list dense>
+            <v-list-item v-for="action in mediaActions" :key="action.text">
+              <v-list-item-title> {{ action.text }}</v-list-item-title>
+            </v-list-item>
+            <v-divider></v-divider>
+            <v-list-item>
+              <v-list-item-title>Select all</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+
         <v-spacer></v-spacer>
+        <v-progress-circular
+          indeterminate
+          :size="22"
+          :width="2"
+          color="white"
+          class="mr-4 ml-1"
+          v-show="loading"
+        ></v-progress-circular>
+        <h4 class="white--text mr-4">{{ mediaCount }}</h4>
 
         <v-icon color="white" class="mr-2" @click="openUpload">
           mdi-cloud-upload-outline
@@ -62,6 +101,13 @@
         </template>
       </v-snackbar>
     </v-app>
+    <v-dialog
+      v-model="mediaViewerOpen"
+      fullscreen
+      transition="scale-transition"
+    >
+      <MediaViewer v-if="mediaViewerOpen"></MediaViewer>
+    </v-dialog>
   </AppPreLoader>
 </template>
 
@@ -69,6 +115,7 @@
 import AppPreLoader from "./components/AppPreLoader";
 import Upload from "./components/Upload";
 import MediaFilter from "./components/MediaFilter";
+import MediaViewer from "./components/MediaViewer";
 import VuePageTransition from "vue-page-transition";
 import Vue from "vue";
 
@@ -76,9 +123,10 @@ Vue.use(VuePageTransition);
 
 export default {
   name: "App",
-  components: { AppPreLoader, Upload, MediaFilter },
+  components: { AppPreLoader, Upload, MediaFilter, MediaViewer },
 
   data: () => ({
+    dialog: true,
     sizes: [
       {
         text: "Square XS",
@@ -89,9 +137,24 @@ export default {
       { text: "Medium", code: "M" },
       { text: "Large", code: "L" },
     ],
+
     showUpload: false,
   }),
   computed: {
+    mediaActions: function () {
+      return [
+        { text: "Add to album" },
+        { text: "Move" },
+        { text: "Edit" },
+        { text: "Delete" },
+      ];
+    },
+    editModeText: function () {
+      return this.$store.state.media.isEditMode ? "Edit" : "View";
+    },
+    mediaViewerOpen: function () {
+      return this.$store.state.media.currentMediaId != null;
+    },
     snacks: function () {
       return this.$store.state.snackbar.snacks.map((snack) => {
         switch (snack.type) {
@@ -116,6 +179,15 @@ export default {
         return snack;
       });
     },
+    mediaCount: function () {
+      return this.$store.state.media.list.length;
+    },
+    selectedCount: function () {
+      return this.$store.state.media.selectedIndexes.length;
+    },
+    loading: function () {
+      return this.$store.state.media.listLoading;
+    },
     isFullscreen: function () {
       if (this.$route.meta.fullscreen) {
         return true;
@@ -131,6 +203,9 @@ export default {
     openUpload: function () {
       this.$store.dispatch("media/toggleUploadDialog", true);
     },
+    toggleEditMode: function (value) {
+      this.$store.dispatch("media/toggleEditMode", value === "edit");
+    },
   },
 };
 </script>
@@ -142,13 +217,13 @@ html {
 
 main {
   height: 90vh;
-  overflow-y: auto;
+  overflow-y: hidden;
   overflow-x: hidden;
 }
 
-.fullscreen {
-  height: auto;
-  overflow-y: hidden;
+.v-dialog--fullscreen {
+  overflow: hidden !important;
+  overflow-x: hidden !important;
 }
 </style>
 
