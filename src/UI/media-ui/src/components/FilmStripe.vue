@@ -23,10 +23,13 @@ export default {
     medias: function () {
       let self = this;
 
-      var medias = [...this.$store.state.media.list];
-      if (medias.length > 100) {
-        medias.splice(0, 100);
-      }
+      const currentIndex = this.$store.state.media.list.findIndex(
+        (x) => x.id === this.$store.state.media.currentMediaId
+      );
+
+      const max = 16;
+      const start = currentIndex > max / 2 ? currentIndex - max / 2 : 0;
+      var medias = [...this.$store.state.media.list.slice(start, start + max)];
 
       return medias.map((item) => {
         if (

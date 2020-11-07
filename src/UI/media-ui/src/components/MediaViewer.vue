@@ -48,8 +48,8 @@
 
 <script>
 import FaceBox from "./FaceBox";
-import FilmStripe from "./FileStripe.vue";
-//import trottle from "lodash";
+import FilmStripe from "./FilmStripe.vue";
+//import debounce from "lodash";
 
 export default {
   data() {
@@ -81,7 +81,10 @@ export default {
     };
   },
   components: { FaceBox, Keypress: () => import("vue-keypress"), FilmStripe },
-  created() {},
+  created() {
+    //this.onResize = debounce(this.onResize, 1000);
+    //this.onMouseMove = debounce(this.onMouseMove, 500);
+  },
   computed: {
     thumbnail: function () {
       if (this.$store) {
