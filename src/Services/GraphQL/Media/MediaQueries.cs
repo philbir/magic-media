@@ -1,9 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using HotChocolate.Types;
+using MagicMedia.Search;
 using MagicMedia.Store;
 
 namespace MagicMedia.GraphQL
@@ -18,7 +17,7 @@ namespace MagicMedia.GraphQL
             _mediaStore = mediaStore;
         }
 
-        public async Task<IEnumerable<Media>> SearchMediaAsync(
+        public async Task<SearchResult<Media>> SearchMediaAsync(
             SearchMediaRequest request,
             CancellationToken cancellationToken)
         {

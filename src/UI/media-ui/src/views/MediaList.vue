@@ -96,7 +96,6 @@ export default {
       }
       layout.boxes = null;
 
-      console.log(layout);
       return layout;
     },
     loading: function () {

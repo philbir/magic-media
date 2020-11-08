@@ -7,6 +7,7 @@ using MagicMedia.Search;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
+using SixLabors.ImageSharp.ColorSpaces;
 
 namespace MagicMedia.Store.MongoDb
 {
@@ -35,7 +36,7 @@ namespace MagicMedia.Store.MongoDb
 
         public IPersonStore Persons { get; }
 
-        public async Task<IEnumerable<Media>> SearchAsync(
+        public async Task<SearchResult<Media>> SearchAsync(
             SearchMediaRequest request,
             CancellationToken cancellationToken)
         {
@@ -67,13 +68,16 @@ namespace MagicMedia.Store.MongoDb
                     countries);
             }
 
-            List<Media> medias = await _mediaStoreContext.Medias.Find(filter)
+            IFindFluent<Media, Media>? cursor = _mediaStoreContext.Medias.Find(filter);
+            long totalCount = await cursor.CountDocumentsAsync(cancellationToken);
+
+            List <Media> medias = await cursor
                 .SortByDescending(x => x.Source.ImportedAt)
                 .Skip(request.PageNr * request.PageSize)
                 .Limit(request.PageSize)
-                .ToListAsync(cancellationToken);
+                .ToListAsync();
 
-            return medias;
+            return new SearchResult<Media>(medias, (int) totalCount);
         }
 
         private async Task<IEnumerable<Guid>> GetMediaIdsByPersons(
@@ -237,7 +241,7 @@ namespace MagicMedia.Store.MongoDb
                 }
             }
 
-            return result;
+            return result.OrderByDescending(x => x.Count);
         }
 
         public async Task<IEnumerable<SearchFacetItem>> GetGroupedCountriesAsync(
@@ -274,7 +278,7 @@ namespace MagicMedia.Store.MongoDb
                 }
             }
 
-            return result;
+            return result.OrderByDescending(x => x.Count);
         }
     }
 }
