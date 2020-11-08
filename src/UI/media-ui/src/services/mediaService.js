@@ -1,9 +1,10 @@
-import apollo from '../apollo'
-import QUERY_SEARCH from "../graphql/SearchMedia.gql";
+import apollo from "../apollo";
+import QUERY_FOLDER_TREE from "../graphql/GetFolderTree.gql";
 import QUERY_GETBYID from "../graphql/GetMediaDetails.gql";
 import QUERY_SEARCH_FACETS from "../graphql/SearchFacets.gql";
+import QUERY_SEARCH from "../graphql/SearchMedia.gql";
 
-export const searchMedia = async (request) => {
+export const searchMedia = async request => {
   return await apollo.query({
     query: QUERY_SEARCH,
     variables: {
@@ -12,20 +13,25 @@ export const searchMedia = async (request) => {
   });
 };
 
-export const getById = async (id) => {
+export const getById = async id => {
   return await apollo.query({
     query: QUERY_GETBYID,
     variables: {
-      id: id,
-    },
+      id: id
+    }
   });
 };
-
 
 export const getSearchFacets = async () => {
   return await apollo.query({
     query: QUERY_SEARCH_FACETS,
-    variables: {
-    },
+    variables: {}
+  });
+};
+
+export const getFolderTree = async () => {
+  return await apollo.query({
+    query: QUERY_FOLDER_TREE,
+    variables: {}
   });
 };

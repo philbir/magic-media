@@ -11,10 +11,12 @@ namespace MagicMedia.GraphQL
     public class MediaQueries
     {
         private readonly IMediaStore _mediaStore;
+        private readonly IFolderTreeService _folderTreeService;
 
-        public MediaQueries(IMediaStore mediaStore)
+        public MediaQueries(IMediaStore mediaStore, IFolderTreeService folderTreeService)
         {
             _mediaStore = mediaStore;
+            _folderTreeService = folderTreeService;
         }
 
         public async Task<SearchResult<Media>> SearchMediaAsync(
@@ -29,6 +31,11 @@ namespace MagicMedia.GraphQL
             CancellationToken cancellationToken)
         {
             return await _mediaStore.GetByIdAsync(id, cancellationToken);
+        }
+
+        public async Task<FolderItem> GetFolderTreeAsync(CancellationToken cancellationToken)
+        {
+            return await _folderTreeService.GetTreeAsync(cancellationToken);
         }
     }
 }

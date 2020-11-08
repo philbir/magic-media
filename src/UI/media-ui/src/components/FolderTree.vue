@@ -1,11 +1,13 @@
 <template>
   <v-treeview
-    :open="initiallyOpen"
-    :items="items"
-    dense
     activatable
+    selection-type="independent"
+    :multiple-active="false"
+    :open="initiallyOpen"
+    :items="folderTree"
+    dense
     item-key="name"
-    open-on-click
+    :open-on-click="false"
   >
     <template v-slot:prepend="{ open }">
       <v-icon color="blue">
@@ -17,35 +19,19 @@
 
 <script>
 export default {
+  created() {
+    this.$store.dispatch("media/getFolderTree");
+  },
   data: () => ({
     initiallyOpen: ["Home"],
     files: {},
     tree: [],
-    items: [
-      {
-        name: "Home",
-        children: [
-          {
-            name: "Family",
-            children: [
-              {
-                name: "2020",
-              },
-              {
-                name: "2019",
-              },
-            ],
-          },
-          {
-            name: "Vacation",
-          },
-          {
-            name: "Kids",
-          },
-        ],
-      },
-    ],
   }),
+  computed: {
+    folderTree: function () {
+      return [this.$store.state.media.folderTree];
+    },
+  },
 };
 </script>
 

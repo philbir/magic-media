@@ -38,6 +38,7 @@ namespace MagicMedia
             services.AddSingleton<IMediaProcessorFlowFactory, MediaProcessorFlowFactory>();
 
             services.AddSingleton<ISearchFacetService, SearchFacetService>();
+            services.AddSingleton<IFolderTreeService, FolderTreeService>();
 
             return services;
         }
