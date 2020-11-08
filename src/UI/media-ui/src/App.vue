@@ -2,41 +2,9 @@
   <AppPreLoader>
     <Upload :show="showUpload"></Upload>
     <v-app>
-      <v-app-bar
-        app
-        dense
-        clipped-left
-        v-if="!isFullscreen"
-        color="indigo darken-4"
-      >
-        <v-app-bar-nav-icon color="white"></v-app-bar-nav-icon>
-        <v-menu left bottom>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn color="white" icon v-bind="attrs" v-on="on">
-              <v-icon>mdi-resize</v-icon>
-            </v-btn>
-          </template>
-          <v-list dense>
-            <v-list-item
-              v-for="size in sizes"
-              :key="size.code"
-              @click="setSize(size.code)"
-            >
-              <v-list-item-title> {{ size.text }}</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
-        <v-spacer></v-spacer>
-
-        <v-icon color="white" class="mr-2" @click="openUpload">
-          mdi-cloud-upload-outline
-        </v-icon>
-
-        <v-icon color="white"> mdi-cog </v-icon>
-      </v-app-bar>
-
+      <router-view name="appbar"></router-view>
       <v-navigation-drawer clipped v-if="!isFullscreen" app>
-        <FolderTree></FolderTree>
+        <router-view name="left"></router-view>
       </v-navigation-drawer>
 
       <v-main :class="{ fullscreen: isFullscreen }">
@@ -62,13 +30,20 @@
         </template>
       </v-snackbar>
     </v-app>
+    <v-dialog
+      v-model="mediaViewerOpen"
+      fullscreen
+      transition="scale-transition"
+    >
+      <MediaViewer v-if="mediaViewerOpen"></MediaViewer>
+    </v-dialog>
   </AppPreLoader>
 </template>
 
 <script>
 import AppPreLoader from "./components/AppPreLoader";
 import Upload from "./components/Upload";
-import FolderTree from "./components/FolderTree";
+import MediaViewer from "./components/MediaViewer";
 import VuePageTransition from "vue-page-transition";
 import Vue from "vue";
 
@@ -76,9 +51,10 @@ Vue.use(VuePageTransition);
 
 export default {
   name: "App",
-  components: { AppPreLoader, FolderTree, Upload },
+  components: { AppPreLoader, Upload, MediaViewer },
 
   data: () => ({
+    dialog: true,
     sizes: [
       {
         text: "Square XS",
@@ -92,6 +68,51 @@ export default {
     showUpload: false,
   }),
   computed: {
+    mediaActions: function () {
+      return [
+        { text: "Add to album" },
+        { text: "Move" },
+        { text: "Edit" },
+        { text: "Delete" },
+      ];
+    },
+    navMenuItems: function () {
+      return [
+        {
+          text: "Media",
+          icon: "mdi-image",
+          route: "Home",
+        },
+        {
+          text: "Face",
+          icon: "mdi-face-recognition",
+          route: "Faces",
+        },
+        {
+          text: "Persons",
+          icon: "mdi-account-details",
+          route: "Persons",
+        },
+        {
+          text: "Album",
+          icon: "mdi-image-album",
+          route: "Albums",
+        },
+        {
+          text: "Map",
+          icon: "mdi-map-search-outline",
+          route: "Map",
+        },
+      ];
+    },
+
+    editModeText: function () {
+      return this.$store.state.media.isEditMode ? "Edit" : "View";
+    },
+
+    mediaViewerOpen: function () {
+      return this.$store.state.media.currentMediaId != null;
+    },
     snacks: function () {
       return this.$store.state.snackbar.snacks.map((snack) => {
         switch (snack.type) {
@@ -116,6 +137,15 @@ export default {
         return snack;
       });
     },
+    mediaCount: function () {
+      return this.$store.state.media.list.length;
+    },
+    selectedCount: function () {
+      return this.$store.state.media.selectedIndexes.length;
+    },
+    loading: function () {
+      return this.$store.state.media.listLoading;
+    },
     isFullscreen: function () {
       if (this.$route.meta.fullscreen) {
         return true;
@@ -131,6 +161,16 @@ export default {
     openUpload: function () {
       this.$store.dispatch("media/toggleUploadDialog", true);
     },
+    toggleEditMode: function (value) {
+      this.$store.dispatch("media/toggleEditMode", value === "edit");
+    },
+    selectAll: function () {
+      this.$store.dispatch("media/selectAll");
+    },
+    onNavClickOutside: function () {
+      console.log("OUT");
+      this.navOpen = false;
+    },
   },
 };
 </script>
@@ -142,13 +182,47 @@ html {
 
 main {
   height: 90vh;
-  overflow-y: auto;
+  overflow-y: hidden;
   overflow-x: hidden;
 }
 
-.fullscreen {
-  height: auto;
-  overflow-y: hidden;
+.v-dialog--fullscreen {
+  overflow: hidden !important;
+  overflow-x: hidden !important;
+}
+
+::-webkit-scrollbar {
+  width: 2px;
+  height: 2px;
+}
+::-webkit-scrollbar-button {
+  width: 0px;
+  height: 0px;
+}
+::-webkit-scrollbar-thumb {
+  background: #e1e1e1;
+  border: 0px none #ffffff;
+  border-radius: 50px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #ffffff;
+}
+::-webkit-scrollbar-thumb:active {
+  background: #000000;
+}
+::-webkit-scrollbar-track {
+  background: #666666;
+  border: 0px none #ffffff;
+  border-radius: 50px;
+}
+::-webkit-scrollbar-track:hover {
+  background: #666666;
+}
+::-webkit-scrollbar-track:active {
+  background: #333333;
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
 }
 </style>
 

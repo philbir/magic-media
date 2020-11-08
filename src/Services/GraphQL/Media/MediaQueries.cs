@@ -29,7 +29,7 @@ namespace MagicMedia.GraphQL
             Guid id,
             CancellationToken cancellationToken)
         {
-            return await _mediaStore.GetById(id, cancellationToken);
+            return await _mediaStore.GetByIdAsync(id, cancellationToken);
         }
     }
 }

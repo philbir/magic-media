@@ -5,6 +5,8 @@ import vuetify from "./plugins/vuetify";
 import router from "./router";
 import store from "./store";
 import { DateTime } from 'luxon'
+import Fragment from 'vue-fragment'
+
 
 Vue.config.productionTip = false;
 
@@ -24,6 +26,7 @@ const magicPlugin = {
 }
 
 Vue.use(magicPlugin)
+Vue.use(Fragment.Plugin)
 
 Vue.filter('dateformat', function (value, format = 'DATE_SHORT') {
   if (!value)

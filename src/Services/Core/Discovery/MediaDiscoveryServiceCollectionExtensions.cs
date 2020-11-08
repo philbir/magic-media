@@ -6,16 +6,10 @@ namespace MagicMedia.Discovery
     public static class MediaDiscoveryServiceCollectionExtensions
     {
         public static IServiceCollection AddFileSystemDiscovery(
-            this IServiceCollection services,
-            IEnumerable<string> locations)
+            this IServiceCollection services)
         {
             services.AddSingleton<IMediaSourceDiscovery, FileSystemSourceDiscovery>();
             services.AddSingleton<IMediaSourceDiscoveryFactory, MediaSourceDiscoveryFactory>();
-
-            services.AddSingleton(new FileSystemDiscoveryOptions
-            {
-                Locations = locations
-            });
 
             return services;
         }

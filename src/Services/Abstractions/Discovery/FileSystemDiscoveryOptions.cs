@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace MagicMedia.Discovery
 {
     public class FileSystemDiscoveryOptions
     {
-        public IEnumerable<string> Locations { get; set; } = new List<string>();
+        public IEnumerable<FileDiscoveryLocation> Locations { get; set; }
+            = new List<FileDiscoveryLocation>();
     }
 }

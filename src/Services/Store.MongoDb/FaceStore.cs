@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Face;
+using MagicMedia.Search;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 
@@ -17,21 +20,35 @@ namespace MagicMedia.Store.MongoDb
             _mediaStoreContext = mediaStoreContext;
         }
 
-        public async Task<IEnumerable<MediaFace>> SearchAsync(
+        public async Task<SearchResult<MediaFace>> SearchAsync(
             SearchFacesRequest request,
             CancellationToken cancellationToken)
         {
             FilterDefinition<MediaFace> filter = Builders<MediaFace>.Filter.Empty;
 
-            if (request.States is { } states)
+            if (request.States is { } states && states.Any())
             {
                 filter = filter & Builders<MediaFace>.Filter.In(x => x.State, states);
             }
+            if (request.RecognitionTypes is { } types && types.Any())
+            {
+                filter = filter & Builders<MediaFace>.Filter.In(x => x.RecognitionType, types);
+            }
+            if ( request.Persons is { } persons && persons.Any())
+            {
+                filter = filter & Builders<MediaFace>.Filter.In(nameof(MediaFace.PersonId), persons);
+            }
 
-            List<MediaFace> faces = await _mediaStoreContext.Faces.Find(filter)
-                .ToListAsync(cancellationToken);
+            IFindFluent<MediaFace, MediaFace> cursor = _mediaStoreContext.Faces.Find(filter);
 
-            return faces;
+            long totalCount = await cursor.CountDocumentsAsync(cancellationToken);
+
+            List<MediaFace> faces = await cursor
+                .Skip(request.PageNr * request.PageSize)
+                .Limit(request.PageSize)
+                .ToListAsync();
+
+            return new SearchResult<MediaFace>(faces, (int) totalCount);
         }
 
         public async Task<IEnumerable<MediaFace>> GetFacesByMediaAsync(

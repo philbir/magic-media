@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using HotChocolate.Types;
 using MagicMedia.Face;
+using MagicMedia.Search;
 using MagicMedia.Store;
 
 namespace MagicMedia.GraphQL.Face
@@ -20,7 +21,7 @@ namespace MagicMedia.GraphQL.Face
             _faceService = faceService;
         }
 
-        public async Task<IEnumerable<MediaFace>> SearchFacesAsync(
+        public async Task<SearchResult<MediaFace>> SearchFacesAsync(
             SearchFacesRequest request,
             CancellationToken cancellationToken)
         {

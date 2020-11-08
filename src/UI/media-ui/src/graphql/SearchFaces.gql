@@ -1,0 +1,27 @@
+query searchFaces($request: SearchFacesRequestInput!) {
+  searchFaces(request: $request) {
+    items {
+      id
+      media {
+        id
+        filename
+      }
+      person {
+        id
+        name
+      }
+      recognitionType
+      state
+      distanceThreshold
+      thumbnail {
+        id
+        dataUrl
+        dimensions {
+          height
+          width
+        }
+      }
+    }
+    totalCount
+  }
+}

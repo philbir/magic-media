@@ -3,7 +3,6 @@
     <v-progress-linear v-if="loading" indeterminate color="blue" top />
     <div v-else class="media-wrapper" @mousemove="onMouseMove">
       <Keypress key-event="keyup" @success="keyPressed" />
-
       <div class="media-nav">
         <v-row>
           <v-col class="ma-4">
@@ -48,9 +47,9 @@
 </template>
 
 <script>
-import FaceBox from "../components/FaceBox.vue";
-import FilmStripe from "../components/FileStripe.vue";
-//import trottle from "lodash";
+import FaceBox from "./FaceBox";
+import FilmStripe from "./FilmStripe.vue";
+//import debounce from "lodash";
 
 export default {
   data() {
@@ -83,18 +82,8 @@ export default {
   },
   components: { FaceBox, Keypress: () => import("vue-keypress"), FilmStripe },
   created() {
-    this.$store.dispatch("media/loadDetails", this.$route.params.id);
-  },
-  beforeRouteUpdate(to, from, next) {
-    this.image.loaded = false;
-
-    this.$store.dispatch("media/loadDetails", to.params.id).then(() => {
-      next();
-    });
-  },
-  beforeRouteLeave(to, from, next) {
-    this.image.loaded = false;
-    next();
+    //this.onResize = debounce(this.onResize, 1000);
+    //this.onMouseMove = debounce(this.onMouseMove, 500);
   },
   computed: {
     thumbnail: function () {
@@ -112,10 +101,7 @@ export default {
     },
 
     imageSrc: function () {
-      if (this.media.id === this.$route.params.id) {
-        return "/api/media/webimage/" + this.media.id;
-      }
-      return null;
+      return "/api/media/webimage/" + this.media.id;
     },
     loading: function () {
       return this.media === null;
@@ -182,15 +168,16 @@ export default {
       this.navigate(+1);
     },
     navigate: function (step) {
-      var next = this.$store.getters["media/next"](step);
-      if (next) {
-        this.$router.replace({ name: "media", params: { id: next.id } });
+      this.image.loaded = false;
+      var nextId = this.$store.getters["next"](step);
+      if (nextId) {
+        this.$store.dispatch("media/show", nextId);
       } else {
-        this.$router.push("/");
+        this.handleHome();
       }
     },
     handleHome: function () {
-      this.$router.push("/");
+      this.$store.dispatch("media/close");
     },
     onMouseMove: function (e) {
       this.showStripe = e.clientY > 300;
@@ -204,7 +191,7 @@ export default {
           this.navigate(1);
           break;
         case 27:
-          this.$router.push("/");
+          this.handleHome();
           break;
       }
     },
@@ -231,7 +218,7 @@ export default {
 .media-nav {
   position: absolute;
   display: flex;
-  width: 100%;
+  width: 99%;
   top: 44vh;
   z-index: 100;
 }

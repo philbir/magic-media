@@ -9,6 +9,7 @@ namespace MagicMedia.Processing
         public static readonly string PredictPersons = "PredictPersons";
         public static readonly string AutoOrient = "AutoOrient";
         public static readonly string SaveMedia = "SaveMedia";
+        public static readonly string SaveFaces = "SaveFaces";
         public static readonly string ParseDateTaken = "ParseDateTaken";
     }
 }

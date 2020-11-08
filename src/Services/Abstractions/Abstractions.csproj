@@ -4,6 +4,7 @@
     <TargetFramework>net5.0</TargetFramework>
     <AssemblyName>MagicMedia.Abstractions</AssemblyName>
     <RootNamespace>MagicMedia</RootNamespace>
+    <Nullable>enable</Nullable>
     <LangVersion>9.0</LangVersion>
   </PropertyGroup>
 

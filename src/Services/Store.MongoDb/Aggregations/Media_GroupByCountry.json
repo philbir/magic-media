@@ -1,0 +1,11 @@
+[
+  {
+    "$group": {
+      "_id": {
+        "name": "$GeoLocation.Address.Country",
+        "code": "$GeoLocation.Address.CountryCode"
+      },
+      "count": { "$sum": 1 }
+    }
+  }
+]

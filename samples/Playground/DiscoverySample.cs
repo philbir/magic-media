@@ -26,14 +26,68 @@ namespace MagicMedia.Playground
             _store = store;
         }
 
-        public async Task DiscoverAsync()
+
+        public async Task ScanExistingAsync(
+            FileSystemDiscoveryOptions options,
+            CancellationToken cancellationToken)
         {
             var todo = new List<MediaDiscoveryIdentifier>();
 
             foreach (IMediaSourceDiscovery source in _discoveryFactory.GetSources())
             {
                 IEnumerable<MediaDiscoveryIdentifier> identifiers = await source
-                    .DiscoverMediaAsync(default);
+                    .DiscoverMediaAsync(options, cancellationToken);
+
+                todo.AddRange(identifiers);
+            }
+
+            IMediaProcessorFlow flow = _flowFactory.CreateFlow("ImportImageNoFace");
+
+            var processionOptions = new MediaProcessingOptions
+            {
+                SaveMedia = new SaveMediaFileOptions
+                {
+                    SaveMode = SaveMediaMode.KeepInSource,
+                    SourceAction = SaveMediaSourceAction.Keep
+                }
+            };
+
+
+            foreach (MediaDiscoveryIdentifier file in todo)
+            {
+                IMediaSourceDiscovery src = _discoveryFactory.GetSource(file.Source);
+
+                byte[] data = await src.GetMediaDataAsync(file.Id, default);
+
+                var context = new MediaProcessorContext
+                {
+                    OriginalData = data,
+                    File = file,
+                    Options = processionOptions
+                };
+                try
+                {
+                    Console.WriteLine($"Importing: {file.Id}");
+                    await flow.ExecuteAsync(context, default);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+        }
+
+
+        public async Task DiscoverAsync(
+            FileSystemDiscoveryOptions options,
+            CancellationToken cancellationToken)
+        {
+            var todo = new List<MediaDiscoveryIdentifier>();
+
+            foreach (IMediaSourceDiscovery source in _discoveryFactory.GetSources())
+            {
+                IEnumerable<MediaDiscoveryIdentifier> identifiers = await source
+                    .DiscoverMediaAsync(options, cancellationToken);
 
                 todo.AddRange(identifiers);
             }

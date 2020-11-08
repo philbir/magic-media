@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using MagicMedia.Store.MongoDb.Configuration;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Serializers;
@@ -24,6 +27,7 @@ namespace MagicMedia.Store.MongoDb
                 .ConfigureCollection(new FaceCollectionConfiguration())
                 .ConfigureCollection(new CameraCollectionConfiguration())
                 .ConfigureCollection(new PersonCollectionConfiguration())
+                .ConfigureCollection(new GeoAddressCacheCollectionConfiguration())
                 .ConfigureCollection(new MediaCollectionConfiguration());
         }
 
@@ -59,9 +63,38 @@ namespace MagicMedia.Store.MongoDb
             }
         }
 
+        public IMongoCollection<GeoAddressCache> GeoAddressCache
+        {
+            get
+            {
+                return CreateCollection<GeoAddressCache>();
+            }
+        }
+
         public IGridFSBucket CreateGridFsBucket()
         {
             return new GridFSBucket(Database, new GridFSBucketOptions());
+        }
+
+        internal async Task<IEnumerable<BsonDocument>> ExecuteAggregation(
+            string collectionName,
+            string name,
+            CancellationToken cancellationToken)
+        {
+            PipelineDefinition<BsonDocument, BsonDocument> pipeline =
+                AggregationPipelineFactory.Create(name);
+
+            IMongoCollection<BsonDocument> collection = Database
+                .GetCollection<BsonDocument>(collectionName);
+
+            IAsyncCursor<BsonDocument> cursor = await collection.AggregateAsync(
+                pipeline,
+                options: null,
+                cancellationToken);
+
+            List<BsonDocument> documents = await cursor.ToListAsync(cancellationToken);
+
+            return documents;
         }
     }
 }

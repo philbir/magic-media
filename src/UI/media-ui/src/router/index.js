@@ -1,11 +1,11 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-
-import Media from "../views/Media.vue";
-import MediaCarousel from "../views/MediaCarousel.vue";
 import MediaList from "../views/MediaList.vue";
-
-//import Home from '../views/Home.vue'
+import FaceList from "../views/FaceList.vue";
+import MediaFilter from "../components/MediaFilter"
+import MediaAppBar from "../components/MediaAppBar"
+import FaceAppBar from "../components/FaceAppBar"
+import FaceFilter from "../components/FaceFilter"
 
 Vue.use(VueRouter);
 
@@ -13,20 +13,21 @@ const routes = [
   {
     path: "/",
     name: "Home",
-    component: MediaList
+    components: {
+      default: MediaList,
+      left: MediaFilter,
+      appbar: MediaAppBar
+    }
   },
   {
-    path: "/media/:id",
-    name: "media",
-    component: Media,
-    meta: { transition: "face", fullscreen: true },
-    
+    path: "/faces",
+    name: "Faces",
+    components: {
+      default: FaceList,
+      left: FaceFilter,
+      appbar: FaceAppBar
+    }
   },
-  {
-    path: "/mediac/:id",
-    name: "mediac",
-    component: MediaCarousel
-  }
 ];
 
 const router = new VueRouter({

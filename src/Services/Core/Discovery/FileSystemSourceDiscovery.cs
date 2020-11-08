@@ -8,30 +8,35 @@ namespace MagicMedia.Discovery
 {
     public class FileSystemSourceDiscovery : IMediaSourceDiscovery
     {
-        private readonly FileSystemDiscoveryOptions _options;
-
         public MediaDiscoverySource SourceType => MediaDiscoverySource.FileSystem;
 
-        public FileSystemSourceDiscovery(FileSystemDiscoveryOptions options)
-        {
-            _options = options;
-        }
-
         public Task<IEnumerable<MediaDiscoveryIdentifier>> DiscoverMediaAsync(
+            FileSystemDiscoveryOptions options,
             CancellationToken cancellationToken)
         {
-            var files = new List<string>();
+            var result = new List<MediaDiscoveryIdentifier>();
 
-            foreach (var location in _options.Locations)
+            foreach (FileDiscoveryLocation location in options.Locations)
             {
-                files.AddRange(Directory.GetFiles(location, "*.jpg", SearchOption.AllDirectories));
+                var filePath = location.Root != null ?
+                    Path.Combine(location.Root, location.Path) :
+                    location.Path;
+
+                string[] files = Directory.GetFiles(
+                    filePath,
+                    location.Filter,
+                    SearchOption.AllDirectories);
+
+                result.AddRange(files.Select(x =>
+                    new MediaDiscoveryIdentifier
+                    {
+                        BasePath = location.Root ?? filePath,
+                        Id = x,
+                        Source = SourceType
+                    }));
             }
 
-            return Task.FromResult(files.Distinct().Select(x => new MediaDiscoveryIdentifier
-            {
-                Source = SourceType,
-                Id = x
-            }));
+            return Task.FromResult(result.Distinct());
         }
 
         public async Task<byte[]> GetMediaDataAsync(string id, CancellationToken cancellationToken)

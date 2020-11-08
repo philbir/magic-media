@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MagicMedia.Search;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 
@@ -39,15 +41,55 @@ namespace MagicMedia.Store.MongoDb
         {
             FilterDefinition<Media> filter = Builders<Media>.Filter.Empty;
 
+            if (request.Persons is { } persons && persons.Any())
+            {
+                IEnumerable<Guid> mediaIds = await GetMediaIdsByPersons(
+                    persons,
+                    cancellationToken);
+
+                if (mediaIds.Any())
+                {
+                    filter = filter & Builders<Media>.Filter.In(x => x.Id, mediaIds);
+                }
+            }
+
+            if (request.Cities is { } cities && cities.Any())
+            {
+                filter = filter & Builders<Media>.Filter.In(
+                    x => x.GeoLocation.Address.City,
+                    cities);
+            }
+
+            if (request.Countries is { } countries && countries.Any())
+            {
+                filter = filter & Builders<Media>.Filter.In(
+                    x => x.GeoLocation.Address.CountryCode,
+                    countries);
+            }
+
             List<Media> medias = await _mediaStoreContext.Medias.Find(filter)
                 .SortByDescending(x => x.Source.ImportedAt)
+                .Skip(request.PageNr * request.PageSize)
                 .Limit(request.PageSize)
                 .ToListAsync(cancellationToken);
 
             return medias;
         }
 
-        public async Task<Media> GetById(
+        private async Task<IEnumerable<Guid>> GetMediaIdsByPersons(
+            IEnumerable<Guid> persons,
+            CancellationToken cancellationToken)
+        {
+            List<Guid> ids = await _mediaStoreContext.Faces.AsQueryable()
+                .Where(x => x.PersonId.HasValue)
+                .Where(x => persons.ToList().Contains(x.PersonId.Value))
+                .Select(x => x.MediaId)
+                .ToListAsync(cancellationToken);
+
+            return ids;
+        }
+
+        public async Task<Media> GetByIdAsync(
             Guid id,
             CancellationToken cancellationToken)
         {
@@ -56,6 +98,17 @@ namespace MagicMedia.Store.MongoDb
                 .FirstOrDefaultAsync(cancellationToken);
 
             return media;
+        }
+
+        public async Task<IEnumerable<Media>> GetManyAsync(
+            IEnumerable<Guid> ids,
+            CancellationToken cancellationToken)
+        {
+            List<Media> medias = await _mediaStoreContext.Medias.AsQueryable()
+                .Where(x => ids.ToList().Contains(x.Id))
+                .ToListAsync(cancellationToken);
+
+            return medias;
         }
 
         public async Task<IReadOnlyDictionary<Guid, MediaThumbnail>> GetThumbnailsByMediaIdsAsync(
@@ -86,6 +139,38 @@ namespace MagicMedia.Store.MongoDb
             }
 
             return result;
+        }
+
+        public async Task SaveFacesAsync(
+            Guid mediaId,
+            IEnumerable<MediaFace> faces,
+            CancellationToken cancellationToken)
+        {
+            if (faces != null)
+            {
+                foreach (MediaFace face in faces)
+                {
+                    await _thumbnailBlobStore.StoreAsync(
+                        new ThumbnailData(face.Thumbnail.Id, face.Thumbnail.Data),
+                        cancellationToken);
+
+                    face.Thumbnail.Data = null;
+                }
+
+                if (faces.Any())
+                {
+                    await _mediaStoreContext.Faces.InsertManyAsync(
+                        faces,
+                        options: null,
+                        cancellationToken);
+                }
+            }
+
+            await _mediaStoreContext.Medias.UpdateOneAsync(
+                x => x.Id == mediaId,
+                Builders<Media>.Update.Set(f => f.FaceCount, faces.Count()),
+                options: null,
+                cancellationToken);
         }
 
         public async Task InsertMediaAsync(
@@ -126,6 +211,70 @@ namespace MagicMedia.Store.MongoDb
                     options: null,
                     cancellationToken);
             }
+        }
+
+        public async Task<IEnumerable<SearchFacetItem>> GetGroupedCitiesAsync(
+                CancellationToken cancellationToken)
+        {
+            IEnumerable<BsonDocument> docs = await _mediaStoreContext.ExecuteAggregation(
+                CollectionNames.Media,
+                "Media_GroupByCity",
+                cancellationToken);
+
+            var result = new List<SearchFacetItem>();
+
+
+            foreach (BsonDocument doc in docs)
+            {
+                var item = new SearchFacetItem();
+                item.Count = doc["count"].AsInt32;
+
+                if (doc["_id"].IsString)
+                {
+                    item.Text = doc["_id"].AsString;
+                    item.Value = doc["_id"].AsString;
+                    result.Add(item);
+                }
+            }
+
+            return result;
+        }
+
+        public async Task<IEnumerable<SearchFacetItem>> GetGroupedCountriesAsync(
+            CancellationToken cancellationToken)
+        {
+            IEnumerable<BsonDocument> docs = await _mediaStoreContext.ExecuteAggregation(
+                CollectionNames.Media,
+                "Media_GroupByCountry",
+                cancellationToken);
+
+            var result = new List<SearchFacetItem>();
+
+            foreach (BsonDocument doc in docs)
+            {
+                var item = new SearchFacetItem();
+                item.Count = doc["count"].AsInt32;
+
+                var idDoc = doc["_id"] as BsonDocument;
+
+                if (idDoc.Contains("code"))
+                {
+                    if (idDoc["code"].IsString)
+                    {
+                        item.Value = idDoc["code"].AsString;
+                        item.Text = idDoc["name"].AsString;
+                    }
+                    else
+                    {
+                        item.Value = "Empty";
+                        item.Text = "Empty";
+                    }
+
+                    result.Add(item);
+                }
+            }
+
+            return result;
         }
     }
 }
