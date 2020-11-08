@@ -5,13 +5,11 @@ using System.Threading.Tasks;
 using MagicMedia;
 using MagicMedia.BingMaps;
 using MagicMedia.Discovery;
-using MagicMedia.Face;
 using MagicMedia.Playground;
 using MagicMedia.Store.MongoDb;
 using MagicMedia.Stores;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using MongoDB.Extensions.Context;
 
 namespace Playground
 {
@@ -25,10 +23,6 @@ namespace Playground
             DiscoverySample discovery = sp.GetService<DiscoverySample>();
             FaceScanner faceScanner = sp.GetService<FaceScanner>();
 
-            await faceScanner.RunAsync(default);
-
-            return;
-
             await discovery.ScanExistingAsync( new FileSystemDiscoveryOptions
             {
                 Locations = new List<FileDiscoveryLocation>
@@ -37,11 +31,12 @@ namespace Playground
                     {
                          Filter = "*.jpg",
                          Path = @"Family\2019",
-                         Root = @"P:\Drive\Moments",
+                         Root = @"P:\Moments\",
                     }
                 }
             }, default);
 
+            await faceScanner.RunAsync(default);
         }
 
         private static IServiceProvider BuildServiceProvider()
