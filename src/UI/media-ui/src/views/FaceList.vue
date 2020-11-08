@@ -72,7 +72,7 @@ export default {
         item.idx = i;
         return item;
       });
-      const width = 110;
+      const width = 112;
       const height = 130;
       const itemsPerRow = Math.floor(this.containerWith / width);
 
@@ -90,7 +90,6 @@ export default {
         rows: rows,
         itemHeight: height,
       };
-      console.log(layout);
       return layout;
     },
     loading: function () {
@@ -169,8 +168,6 @@ export default {
 .face-item {
   width: 112px;
   height: 120px;
-  align-content: space-around;
-  justify-content: center;
 }
 
 .face-item-image {
@@ -186,8 +183,11 @@ export default {
 }
 
 .face-item-title {
-  font-size: 18px;
+  font-size: 14px;
   text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .face-row {
@@ -197,9 +197,8 @@ export default {
 .face-row-container {
   position: relative;
   display: flex;
-  flex-wrap: wrap;
+  align-items: flex-start;
   align-content: space-around;
-  justify-content: center;
 }
 
 .face-item.selected {

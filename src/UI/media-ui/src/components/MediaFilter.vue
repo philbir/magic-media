@@ -25,117 +25,55 @@
     ></v-date-picker>
 
     <div v-if="activeTabId == 'person'">
-      <v-list flat dense max-height="250" width="250" class="overflow-y-auto">
-        <v-list-item-group
-          v-model="selectedPersons"
-          multiple
-          @change="onSelectPerson"
-        >
-          <v-list-item
-            dense
-            v-for="person in persons"
-            :key="person.id"
-            :value="person"
-          >
-            <template v-slot:default="{ active }">
-              <v-list-item-action>
-                <v-checkbox
-                  :input-value="active"
-                  :true-value="person.id"
-                  color="primary"
-                ></v-checkbox>
-              </v-list-item-action>
-
-              <v-list-item-content>
-                <v-list-item-title>{{ person.name }}</v-list-item-title>
-              </v-list-item-content>
-            </template>
-          </v-list-item>
-        </v-list-item-group>
-      </v-list>
+      <FilterList
+        :items="persons"
+        title="Person"
+        max-height="250"
+        value-field="id"
+        text-field="name"
+        @change="onSelectPerson"
+      ></FilterList>
     </div>
     <div v-if="activeTabId == 'geo'">
-      <v-card class="mx-auto" tile>
-        <v-list flat dense max-height="250" width="250" class="overflow-y-auto">
-          <v-subheader>Countries</v-subheader>
-          <v-list-item-group
-            v-model="selectedCountries"
-            @change="onSelectCountry"
-            multiple
+      <FilterList
+        :items="countries"
+        title="Countries"
+        max-height="250"
+        @change="onSelectCountry"
+      >
+        <template v-slot:default="{ item }">
+          <v-list-item-title
+            class="list-country"
+            :style="{
+              'background-image':
+                'url(https://www.countryflags.io/' + 'de' + '/shiny/64.png',
+            }"
+            >{{ item.display }}</v-list-item-title
           >
-            <v-list-item
-              style="height: 26px"
-              dense
-              v-for="country in countries"
-              :key="country.value"
-              :value="country"
-            >
-              <template v-slot:default="{ active }">
-                <v-list-item-action>
-                  <v-checkbox
-                    :input-value="active"
-                    :true-value="country.value"
-                    color="primary"
-                  ></v-checkbox>
-                </v-list-item-action>
-
-                <v-list-item-content>
-                  <v-list-item-title>{{ country.text }}</v-list-item-title>
-                </v-list-item-content>
-              </template>
-            </v-list-item>
-          </v-list-item-group>
-        </v-list>
-      </v-card>
-      <v-card class="mx-auto" tile width="250">
-        <v-list flat dense max-height="250" class="overflow-y-auto">
-          <v-subheader>Cities</v-subheader>
-          <v-list-item-group
-            v-model="selectedCities"
-            @change="onSelectCity"
-            multiple
-          >
-            <v-list-item
-              style="height: 26px"
-              dense
-              v-for="city in cities"
-              :key="city.value"
-              :value="city"
-            >
-              <template v-slot:default="{ active }">
-                <v-list-item-action>
-                  <v-checkbox
-                    :input-value="active"
-                    :true-value="city.value"
-                    color="primary"
-                  ></v-checkbox>
-                </v-list-item-action>
-
-                <v-list-item-content>
-                  <v-list-item-title>{{ city.text }}</v-list-item-title>
-                </v-list-item-content>
-              </template>
-            </v-list-item>
-          </v-list-item-group>
-        </v-list>
-      </v-card>
+        </template>
+      </FilterList>
+      <FilterList
+        :items="cities"
+        title="Cities"
+        max-height="250"
+        @change="onSelectCity"
+      ></FilterList>
     </div>
   </div>
 </template>
 
 <script>
 import FolderTree from "./FolderTree";
+import FilterList from "./Common/FilterList";
 
 export default {
-  components: { FolderTree },
+  components: { FolderTree, FilterList },
   created() {
     this.$store.dispatch("media/getSearchFacets");
   },
   data() {
     return {
       selectedPersons: [],
-      selectedCountries: [],
-      selectedCities: [],
       activeTabId: "folder",
       dates: null,
       tabDef: [
@@ -192,18 +130,16 @@ export default {
     select: function (tab) {
       this.activeTabId = tab.id;
     },
-    onSelectPerson: function () {
-      var selected = this.selectedPersons.map((x) => x.id);
+    onSelectPerson: function (persons) {
+      const selected = persons.map((x) => x.id);
       this.$store.dispatch("media/setPersonFilter", selected);
     },
-    onSelectCity: function () {
-      var selected = this.selectedCities.map((x) => x.value);
-      console.log(selected);
+    onSelectCity: function (cities) {
+      const selected = cities.map((x) => x.value);
       this.$store.dispatch("media/setCityFilter", selected);
     },
-    onSelectCountry: function () {
-      var selected = this.selectedCountries.map((x) => x.value);
-      console.log(selected);
+    onSelectCountry: function (countries) {
+      const selected = countries.map((x) => x.value);
       this.$store.dispatch("media/setCountryFilter", selected);
     },
   },
@@ -211,4 +147,9 @@ export default {
 </script>
 
 <style scoped>
+.list-country {
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position-x: 142px;
+}
 </style>

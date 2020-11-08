@@ -260,6 +260,9 @@ export default {
   position: absolute;
   width: 100%;
   height: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 .dialog-face-image {
   height: 74px;

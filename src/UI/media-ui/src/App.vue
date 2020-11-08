@@ -167,10 +167,6 @@ export default {
     selectAll: function () {
       this.$store.dispatch("media/selectAll");
     },
-    onNavClickOutside: function () {
-      console.log("OUT");
-      this.navOpen = false;
-    },
   },
 };
 </script>

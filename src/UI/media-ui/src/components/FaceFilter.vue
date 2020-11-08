@@ -1,48 +1,13 @@
 <template>
   <div>
-    <v-card flat class="ma-0">
-      <v-card-text>
-        <v-row align="center">
-          <v-subheader>Persons</v-subheader>
-        </v-row>
-        <v-row>
-          <v-list
-            flat
-            dense
-            max-height="250"
-            width="250"
-            class="overflow-y-auto"
-          >
-            <v-list-item-group
-              v-model="selectedPersons"
-              multiple
-              @change="onSelectPerson"
-            >
-              <v-list-item
-                dense
-                v-for="person in persons"
-                :key="person.id"
-                :value="person"
-              >
-                <template v-slot:default="{ active }">
-                  <v-list-item-action>
-                    <v-checkbox
-                      :input-value="active"
-                      :true-value="person.id"
-                      color="primary"
-                    ></v-checkbox>
-                  </v-list-item-action>
-
-                  <v-list-item-content>
-                    <v-list-item-title>{{ person.name }}</v-list-item-title>
-                  </v-list-item-content>
-                </template>
-              </v-list-item>
-            </v-list-item-group>
-          </v-list>
-        </v-row>
-      </v-card-text>
-    </v-card>
+    <FilterList
+      :items="persons"
+      title="Person"
+      max-height="250"
+      value-field="id"
+      text-field="name"
+      @change="onSelectPerson"
+    ></FilterList>
 
     <v-card flat>
       <v-card-text>
@@ -92,8 +57,9 @@
 </template>
 
 <script>
+import FilterList from "./Common/FilterList";
 export default {
-  components: {},
+  components: { FilterList },
   created() {},
   data() {
     return {
@@ -114,8 +80,8 @@ export default {
   },
 
   methods: {
-    onSelectPerson: function () {
-      var selected = this.selectedPersons.map((x) => x.id);
+    onSelectPerson: function (persons) {
+      const selected = persons.map((x) => x.id);
       this.$store.dispatch("face/setPersonFilter", selected);
     },
     onRecognitionTypeChange: function () {
