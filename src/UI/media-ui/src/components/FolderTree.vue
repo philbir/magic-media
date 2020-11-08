@@ -1,4 +1,4 @@
-<template>
+vvv<template>
   <v-treeview
     activatable
     selection-type="independent"
@@ -7,10 +7,13 @@
     :items="folderTree"
     dense
     item-key="name"
+    :return-object="true"
     :open-on-click="false"
+    @update:active="onSelect"
   >
-    <template v-slot:prepend="{ open }">
-      <v-icon color="blue">
+    <template v-slot:prepend="{ open, item }">
+      <v-icon v-if="item.name === 'Home'"> mdi-home </v-icon>
+      <v-icon v-else small color="blue">
         {{ open ? "mdi-folder-open" : "mdi-folder" }}
       </v-icon>
     </template>
@@ -29,7 +32,15 @@ export default {
   }),
   computed: {
     folderTree: function () {
-      return [this.$store.state.media.folderTree];
+      return this.$store.state.media.folderTree.children;
+    },
+  },
+  methods: {
+    onSelect(e) {
+      console.log(e);
+      if (e.length > 0) {
+        this.$store.dispatch("media/setFolderFilter", e[0].path);
+      }
     },
   },
 };
