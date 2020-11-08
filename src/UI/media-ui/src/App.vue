@@ -2,80 +2,9 @@
   <AppPreLoader>
     <Upload :show="showUpload"></Upload>
     <v-app>
-      <v-app-bar
-        app
-        dense
-        clipped-left
-        v-if="!isFullscreen"
-        color="indigo darken-4"
-      >
-        <v-app-bar-nav-icon color="white"></v-app-bar-nav-icon>
-        <v-menu left bottom>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn color="white" icon v-bind="attrs" v-on="on">
-              <v-icon>mdi-resize</v-icon>
-            </v-btn>
-          </template>
-          <v-list dense>
-            <v-list-item
-              v-for="size in sizes"
-              :key="size.code"
-              @click="setSize(size.code)"
-            >
-              <v-list-item-title> {{ size.text }}</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
-
-        <v-switch
-          dense
-          @change="toggleEditMode"
-          color="info"
-          value="edit"
-          class="mt-4 ml-2"
-        >
-          <template v-slot:label>
-            <span class="white--text">{{ editModeText }}</span>
-          </template>
-        </v-switch>
-
-        <v-menu left bottom v-if="editModeText == 'Edit'">
-          <template v-slot:activator="{ on, attrs }">
-            <a v-bind="attrs" v-on="on">
-              <h4 class="white--text ml-4">{{ selectedCount }} selected</h4></a
-            >
-          </template>
-          <v-list dense>
-            <v-list-item v-for="action in mediaActions" :key="action.text">
-              <v-list-item-title> {{ action.text }}</v-list-item-title>
-            </v-list-item>
-            <v-divider></v-divider>
-            <v-list-item>
-              <v-list-item-title>Select all</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
-
-        <v-spacer></v-spacer>
-        <v-progress-circular
-          indeterminate
-          :size="22"
-          :width="2"
-          color="white"
-          class="mr-4 ml-1"
-          v-show="loading"
-        ></v-progress-circular>
-        <h4 class="white--text mr-4">{{ mediaCount }}</h4>
-
-        <v-icon color="white" class="mr-2" @click="openUpload">
-          mdi-cloud-upload-outline
-        </v-icon>
-
-        <v-icon color="white"> mdi-cog </v-icon>
-      </v-app-bar>
-
+      <router-view name="appbar"></router-view>
       <v-navigation-drawer clipped v-if="!isFullscreen" app>
-        <MediaFilter></MediaFilter>
+        <router-view name="left"></router-view>
       </v-navigation-drawer>
 
       <v-main :class="{ fullscreen: isFullscreen }">
@@ -114,7 +43,6 @@
 <script>
 import AppPreLoader from "./components/AppPreLoader";
 import Upload from "./components/Upload";
-import MediaFilter from "./components/MediaFilter";
 import MediaViewer from "./components/MediaViewer";
 import VuePageTransition from "vue-page-transition";
 import Vue from "vue";
@@ -123,7 +51,7 @@ Vue.use(VuePageTransition);
 
 export default {
   name: "App",
-  components: { AppPreLoader, Upload, MediaFilter, MediaViewer },
+  components: { AppPreLoader, Upload, MediaViewer },
 
   data: () => ({
     dialog: true,
@@ -137,7 +65,6 @@ export default {
       { text: "Medium", code: "M" },
       { text: "Large", code: "L" },
     ],
-
     showUpload: false,
   }),
   computed: {
@@ -149,9 +76,40 @@ export default {
         { text: "Delete" },
       ];
     },
+    navMenuItems: function () {
+      return [
+        {
+          text: "Media",
+          icon: "mdi-image",
+          route: "Home",
+        },
+        {
+          text: "Face",
+          icon: "mdi-face-recognition",
+          route: "Faces",
+        },
+        {
+          text: "Persons",
+          icon: "mdi-account-details",
+          route: "Persons",
+        },
+        {
+          text: "Album",
+          icon: "mdi-image-album",
+          route: "Albums",
+        },
+        {
+          text: "Map",
+          icon: "mdi-map-search-outline",
+          route: "Map",
+        },
+      ];
+    },
+
     editModeText: function () {
       return this.$store.state.media.isEditMode ? "Edit" : "View";
     },
+
     mediaViewerOpen: function () {
       return this.$store.state.media.currentMediaId != null;
     },
@@ -206,6 +164,13 @@ export default {
     toggleEditMode: function (value) {
       this.$store.dispatch("media/toggleEditMode", value === "edit");
     },
+    selectAll: function () {
+      this.$store.dispatch("media/selectAll");
+    },
+    onNavClickOutside: function () {
+      console.log("OUT");
+      this.navOpen = false;
+    },
   },
 };
 </script>
@@ -224,6 +189,40 @@ main {
 .v-dialog--fullscreen {
   overflow: hidden !important;
   overflow-x: hidden !important;
+}
+
+::-webkit-scrollbar {
+  width: 2px;
+  height: 2px;
+}
+::-webkit-scrollbar-button {
+  width: 0px;
+  height: 0px;
+}
+::-webkit-scrollbar-thumb {
+  background: #e1e1e1;
+  border: 0px none #ffffff;
+  border-radius: 50px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #ffffff;
+}
+::-webkit-scrollbar-thumb:active {
+  background: #000000;
+}
+::-webkit-scrollbar-track {
+  background: #666666;
+  border: 0px none #ffffff;
+  border-radius: 50px;
+}
+::-webkit-scrollbar-track:hover {
+  background: #666666;
+}
+::-webkit-scrollbar-track:active {
+  background: #333333;
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
 }
 </style>
 

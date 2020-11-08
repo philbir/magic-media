@@ -94,6 +94,9 @@ const mediaModule = {
             }
 
             Vue.set(state, 'selectedIndexes', current)
+        },
+        ALL_SELECTED: function (state) {
+            state.selectedIndexes = [...Array(state.list.length).keys()];
         }
     },
     actions: {
@@ -168,6 +171,9 @@ const mediaModule = {
         },
         select: function ({ commit }, id) {
             commit('SELECTED', id);
+        },
+        selectAll: function ({ commit }) {
+            commit('ALL_SELECTED');
         }
     },
     getters: {
@@ -177,7 +183,7 @@ const mediaModule = {
             if (idx > -1) {
                 const newIndex = idx + step;
                 if (newIndex > state.list.length) return null;
-                return state.list[newIndex];
+                return state.list[newIndex].id;
             }
 
             return null;

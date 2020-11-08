@@ -169,8 +169,12 @@ export default {
     },
     navigate: function (step) {
       this.image.loaded = false;
-      var next = this.$store.getters["media/next"](step);
-      this.$store.dispatch("media/show", next.id);
+      var nextId = this.$store.getters["next"](step);
+      if (nextId) {
+        this.$store.dispatch("media/show", nextId);
+      } else {
+        this.handleHome();
+      }
     },
     handleHome: function () {
       this.$store.dispatch("media/close");

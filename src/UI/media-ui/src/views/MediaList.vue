@@ -75,7 +75,7 @@ export default {
         containerPadding: viewMap.spacing,
       });
       layout.rowHeight = viewMap.rowHeight + viewMap.spacing;
-      layout.clientHeight = window.innerHeight - 80;
+      layout.clientHeight = window.innerHeight - 50;
       layout.boxes.forEach((box, i) => {
         box.media = items[i];
         box.media.idx = i;
@@ -141,6 +141,9 @@ export default {
         this.$store.dispatch("media/show", media.id);
       }
     },
+    selectAll: function () {
+      this.$store.dispatch("media/selectAll");
+    },
     onScroll: function (e) {
       const elm = e.target;
       const percent = (elm.scrollTop + elm.clientHeight) / elm.scrollHeight;
@@ -168,6 +171,7 @@ export default {
   position: absolute;
   background-repeat: no-repeat;
   background-size: 100% 100%;
+  border-radius: 3px;
 }
 
 .media-row {

@@ -27,8 +27,9 @@ export default {
         (x) => x.id === this.$store.state.media.currentMediaId
       );
 
-      const max = 16;
-      const start = currentIndex > max / 2 ? currentIndex - max / 2 : 0;
+      const max = 15;
+      const start =
+        currentIndex > max / 2 ? Math.ceil(currentIndex - max / 2) : 0;
       var medias = [...this.$store.state.media.list.slice(start, start + max)];
 
       return medias.map((item) => {
