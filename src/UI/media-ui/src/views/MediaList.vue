@@ -51,7 +51,9 @@ export default {
     if (this.$store.state.media.list.length === 0)
       this.$store.dispatch("media/search");
 
-    this.containerWith = window.innerWidth - 264;
+    this.containerWith =
+      window.innerWidth - (this.$vuetify.breakpoint.mobile ? 0 : 264);
+    console.log(this.$vuetify);
     this.onScroll = debounce(this.onScroll, 100);
   },
 

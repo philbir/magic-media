@@ -61,7 +61,8 @@ export default {
     if (this.$store.state.face.list.length === 0)
       this.$store.dispatch("face/search");
 
-    this.containerWith = window.innerWidth - 264;
+    this.containerWith =
+      window.innerWidth - (this.$vuetify.breakpoint.mobile ? 0 : 264);
     this.onScroll = debounce(this.onScroll, 100);
   },
 

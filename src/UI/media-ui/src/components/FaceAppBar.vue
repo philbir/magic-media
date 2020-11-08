@@ -7,7 +7,7 @@
       @change="toggleEditMode"
       color="info"
       value="edit"
-      class="mt-4 ml-2"
+      class="mt-4 ml-2 d-none d-md-block"
     >
       <template v-slot:label>
         <span class="white--text">{{ editModeText }}</span>

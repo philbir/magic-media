@@ -15,6 +15,8 @@ const mediaModule = {
     list: [],
     facets: null,
     current: null,
+    totalLoaded: 0,
+    totalCount: 0,
     currentMediaId: null,
     listLoading: false,
     selectedIndexes: [],
@@ -30,16 +32,18 @@ const mediaModule = {
     }
   }),
   mutations: {
-    MEDIAITEMS_LOADED(state, mediaList) {
+    MEDIAITEMS_LOADED(state, result) {
       const max = 600;
       const current = [...state.list];
       if (current.length > max) {
         current.splice(0, state.filter.pageSize);
       }
 
-      Vue.set(state, "list", [...current, ...mediaList]);
+      Vue.set(state, "list", [...current, ...result.items]);
       state.listLoading = false;
-      state.hasMore = mediaList.length > 0;
+      state.totalCount = result.totalCount;
+      state.totalLoaded = state.totalLoaded + result.items.length;
+      state.hasMore = result.items.length > 0;
     },
     DETAILS_LOADED(state, media) {
       state.currentMediaId = media.id;
@@ -63,31 +67,31 @@ const mediaModule = {
     PAGE_NR_INC(state) {
       state.filter.pageNr++;
     },
-    UPLOAD_DIALOG_TOGGLED: function(state, open) {
+    UPLOAD_DIALOG_TOGGLED: function (state, open) {
       state.uploadDialog.open = open;
     },
-    SET_MEDIALIST_LOADING: function(state, isloading) {
+    SET_MEDIALIST_LOADING: function (state, isloading) {
       state.listLoading = isloading;
     },
-    SEARCH_FACETS_LOADED: function(state, facets) {
+    SEARCH_FACETS_LOADED: function (state, facets) {
       Vue.set(state, "facets", facets);
     },
-    RESET_FILTER: function(state) {
+    RESET_FILTER: function (state) {
       state.list = [];
       state.filter.pageNr = 0;
       state.selectedIndexes = [];
     },
-    MEDIA_CLOSED: function(state) {
+    MEDIA_CLOSED: function (state) {
       state.currentMediaId = null;
       state.current = null;
     },
-    EDIT_MODE_TOGGLE: function(state, value) {
+    EDIT_MODE_TOGGLE: function (state, value) {
       state.isEditMode = value;
       if (!value) {
         state.selectedIndexes = [];
       }
     },
-    SELECTED: function(state, idx) {
+    SELECTED: function (state, idx) {
       const current = [...state.selectedIndexes];
       const i = current.indexOf(idx);
       if (i > -1) {
@@ -98,7 +102,7 @@ const mediaModule = {
 
       Vue.set(state, "selectedIndexes", current);
     },
-    ALL_SELECTED: function(state) {
+    ALL_SELECTED: function (state) {
       state.selectedIndexes = [...Array(state.list.length).keys()];
     }
   },
@@ -165,16 +169,16 @@ const mediaModule = {
         console.error(ex);
       }
     },
-    toggleUploadDialog: function({ commit }, open) {
+    toggleUploadDialog: function ({ commit }, open) {
       commit("UPLOAD_DIALOG_TOGGLED", open);
     },
-    toggleEditMode: function({ commit }, value) {
+    toggleEditMode: function ({ commit }, value) {
       commit("EDIT_MODE_TOGGLE", value);
     },
-    select: function({ commit }, id) {
+    select: function ({ commit }, id) {
       commit("SELECTED", id);
     },
-    selectAll: function({ commit }) {
+    selectAll: function ({ commit }) {
       commit("ALL_SELECTED");
     }
   },
