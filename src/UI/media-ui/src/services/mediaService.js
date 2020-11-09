@@ -1,9 +1,10 @@
 import apollo from "../apollo";
 import QUERY_FOLDER_TREE from "../graphql/GetFolderTree.gql";
 import QUERY_GETBYID from "../graphql/GetMediaDetails.gql";
+import MUTATION_MOVE_MEDIA from "../graphql/MoveMedia.gql";
 import QUERY_SEARCH_FACETS from "../graphql/SearchFacets.gql";
 import QUERY_SEARCH from "../graphql/SearchMedia.gql";
-import MUTATION_MOVE_MEDIA from "../graphql/MoveMedia.gql";
+import SUBSCRIPTION_OPERATION_COMPLETED from "../graphql/SubscribeOperationCompleted.gql";
 
 export const searchMedia = async (request, size) => {
   return await apollo.query({
@@ -38,7 +39,7 @@ export const getFolderTree = async () => {
   });
 };
 
-export const moveMedia = async (request) => {
+export const moveMedia = async request => {
   return await apollo.query({
     query: MUTATION_MOVE_MEDIA,
     variables: {
@@ -47,17 +48,18 @@ export const moveMedia = async (request) => {
   });
 };
 
-export const subscribeOperationCompleted = async (id) => {
-  return await apollo.subscribe({
-    query: MUTATION_MOVE_MEDIA,
-    variables: {
-      operationId: id
-    }
-  }).subscribe({
-    next(data) {
-      console.log(data)
-    }
-  });
+export const subscribeOperationCompleted = async id => {
+  console.log(id);
+  return await apollo
+    .subscribe({
+      query: SUBSCRIPTION_OPERATION_COMPLETED,
+      variables: {
+        name: "MediaOperation"
+      }
+    })
+    .subscribe({
+      next(data) {
+        console.log("GQL_SUB", data);
+      }
+    });
 };
-
-

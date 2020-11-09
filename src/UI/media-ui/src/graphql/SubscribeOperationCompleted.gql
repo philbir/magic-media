@@ -1,10 +1,8 @@
-subscription operationCompleted{
-operationCompleted(operationId: "e6bceaab02dd499dbe05566ed7a6e04d"){
-
-  operationId
-  task{
-    name
+subscription operationCompleted($name: String!) {
+  operationCompleted(name: $name) {
+    operationId
+    task {
+      name
+    }
   }
-}
-
 }

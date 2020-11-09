@@ -1,5 +1,4 @@
 import Vue from "vue";
-/* eslint-disable no-debugger */
 
 import {
   getById,
@@ -8,6 +7,8 @@ import {
   moveMedia,
   searchMedia
 } from "../services/mediaService";
+/* eslint-disable no-debugger */
+
 
 const mediaModule = {
   namespaced: true,
@@ -81,33 +82,33 @@ const mediaModule = {
     PAGE_NR_INC(state) {
       state.filter.pageNr++;
     },
-    UPLOAD_DIALOG_TOGGLED: function (state, open) {
+    UPLOAD_DIALOG_TOGGLED: function(state, open) {
       state.uploadDialog.open = open;
     },
-    SET_MEDIALIST_LOADING: function (state, isloading) {
+    SET_MEDIALIST_LOADING: function(state, isloading) {
       state.listLoading = isloading;
     },
-    SEARCH_FACETS_LOADED: function (state, facets) {
+    SEARCH_FACETS_LOADED: function(state, facets) {
       Vue.set(state, "facets", facets);
     },
-    RESET_FILTER: function (state) {
+    RESET_FILTER: function(state) {
       state.list = [];
       state.filter.pageNr = 0;
       state.totalLoaded = 0;
       state.totalCount = 0;
       state.selectedIndexes = [];
     },
-    MEDIA_CLOSED: function (state) {
+    MEDIA_CLOSED: function(state) {
       state.currentMediaId = null;
       state.current = null;
     },
-    EDIT_MODE_TOGGLE: function (state, value) {
+    EDIT_MODE_TOGGLE: function(state, value) {
       state.isEditMode = value;
       if (!value) {
         state.selectedIndexes = [];
       }
     },
-    SELECTED: function (state, idx) {
+    SELECTED: function(state, idx) {
       const current = [...state.selectedIndexes];
       const i = current.indexOf(idx);
       if (i > -1) {
@@ -118,7 +119,7 @@ const mediaModule = {
 
       Vue.set(state, "selectedIndexes", current);
     },
-    ALL_SELECTED: function (state) {
+    ALL_SELECTED: function(state) {
       state.selectedIndexes = [...Array(state.list.length).keys()];
     }
   },
@@ -157,7 +158,6 @@ const mediaModule = {
     },
     async moveSelected({ commit, state }, newLocation) {
       try {
-
         const ids = [];
         for (let i = 0; i < state.selectedIndexes.length; i++) {
           ids.push(state.list[i].id);
@@ -166,12 +166,11 @@ const mediaModule = {
         const res = await moveMedia({
           ids,
           newLocation
-        })
+        });
 
         commit("OPERATION_COMMITED", res.moveMedia.id);
-
       } catch (ex) {
-        console.error(ex)
+        console.error(ex);
         this.$magic.snack("Error loading", "ERROR");
       }
     },
@@ -218,16 +217,16 @@ const mediaModule = {
         console.error(ex);
       }
     },
-    toggleUploadDialog: function ({ commit }, open) {
+    toggleUploadDialog: function({ commit }, open) {
       commit("UPLOAD_DIALOG_TOGGLED", open);
     },
-    toggleEditMode: function ({ commit }, value) {
+    toggleEditMode: function({ commit }, value) {
       commit("EDIT_MODE_TOGGLE", value);
     },
-    select: function ({ commit }, id) {
+    select: function({ commit }, id) {
       commit("SELECTED", id);
     },
-    selectAll: function ({ commit }) {
+    selectAll: function({ commit }) {
       commit("ALL_SELECTED");
     }
   },

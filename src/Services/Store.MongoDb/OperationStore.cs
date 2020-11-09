@@ -43,5 +43,24 @@ namespace MagicMedia.Store.MongoDb
                 .Where(x => x.Id == operationId)
                 .SingleAsync(cancellationToken);
         }
+
+        public async Task UpdateTaskAsync(
+            Guid operationId,
+            MediaOperationTask task,
+            CancellationToken cancellationToken)
+        {
+            FilterDefinition<MediaOperation> filter = Builders<MediaOperation>.Filter.Eq(x => x.Id, operationId)
+                & Builders<MediaOperation>.Filter.ElemMatch(
+                    x => x.Tasks,
+                    Builders<MediaOperationTask>.Filter.Eq(t => t.Id, task.Id));
+
+            UpdateDefinition<MediaOperation>? update = Builders<MediaOperation>.Update.Set("Tasks.$", task);
+
+            await _mediaStoreContext.Operations.UpdateOneAsync(
+                filter,
+                update,
+                options: null,
+                cancellationToken);
+        }
     }
 }

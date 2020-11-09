@@ -4,11 +4,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Messaging;
-using MagicMedia.Operations;
 using MagicMedia.Store;
 using MassTransit;
 
-namespace MagicMedia
+namespace MagicMedia.Operations
 {
     public class MediaOperationsService : IMediaOperationsService
     {
@@ -72,6 +71,7 @@ namespace MagicMedia
         {
             return moveMediaRequest.Ids.Select(id => new MediaOperationTask
             {
+                Id = Guid.NewGuid(),
                 Name = "MoveMedia",
                 Entity = new OperationEntityIdentifier
                 {
@@ -83,7 +83,7 @@ namespace MagicMedia
                     { "NewLocation", moveMediaRequest.NewLocation }
                 },
                 Steps = BuildMoveMediaSteps()
-            });
+            }).ToArray();
         }
 
         private IEnumerable<MediaOperationStep> BuildMoveMediaSteps()

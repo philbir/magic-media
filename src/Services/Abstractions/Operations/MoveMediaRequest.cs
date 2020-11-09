@@ -1,10 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security.Authentication.ExtendedProtection;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace MagicMedia.Operations
 {
@@ -41,6 +37,8 @@ namespace MagicMedia.Operations
 
     public class MediaOperationTask
     {
+        public Guid Id { get; set; }
+
         public OperationEntityIdentifier Entity { get; set; }
 
         public IDictionary<string, object> Data { get; set; }
@@ -56,7 +54,7 @@ namespace MagicMedia.Operations
 
         public MediaOperationStepState State { get; set; }
 
-        public IList<string> Messages { get; set; }
+        public IList<string> Messages { get; set; } = new List<string>();
     }
 
     public enum MediaOperationStepState

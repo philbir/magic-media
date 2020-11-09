@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using MagicMedia.Messaging;
 using MagicMedia.Store;
 using MassTransit;
+using SixLabors.ImageSharp.ColorSpaces;
 
 namespace MagicMedia.Operations
 {
@@ -35,7 +36,9 @@ namespace MagicMedia.Operations
                 operationId,
                 cancellationToken);
 
-            foreach (MediaOperationStep step in task.Steps)
+            MediaOperationTask savedTask = operation.Tasks.Single(x => x.Id == task.Id);
+
+            foreach (MediaOperationStep step in savedTask.Steps.Where(x => x.State == MediaOperationStepState.New))
             {
                 var ctx = new MediaOperationStepContext(
                     operationId,
@@ -45,6 +48,7 @@ namespace MagicMedia.Operations
 
                 await ExecuteStepAsync(ctx);
             }
+
 
             //Save
         }
@@ -61,7 +65,29 @@ namespace MagicMedia.Operations
                     $"No OperationStep with name: { context.Step.Name} found.");
             }
 
-            MediaOperationStepResult result = await instance.ExecuteAsync(context);
+            MediaOperationStep storedStep = context.Task.Steps.Single(x => x.Name == context.Step.Name);
+
+            MediaOperationStepResult? result = null;
+
+            try
+            {
+                result = await instance.ExecuteAsync(context);
+            }
+            catch (Exception ex)
+            {
+                result = new MediaOperationStepResult
+                {
+                    State = MediaOperationStepState.Failed,
+                    Messages = new List<string> { ex.Message }
+                };
+            }
+
+            storedStep.State = MediaOperationStepState.Failed;
+            var messages = new List<string>(storedStep.Messages);
+            messages.AddRange(result.Messages);
+            storedStep.Messages = messages;
+
+            await _operationStore.UpdateTaskAsync(context.OperationId, context.Task, context.OperationAbord);
 
             var message = new MediaOperationStepExecutedMessage
             {

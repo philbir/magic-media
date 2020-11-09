@@ -10,5 +10,6 @@ namespace MagicMedia.Store
         Task AddAsync(MediaOperation operation, CancellationToken cancellationToken);
         Task<MediaOperation> GetAsync(Guid operationId, CancellationToken cancellationToken);
         Task UpdateAsync(MediaOperation operation, CancellationToken cancellationToken);
+        Task UpdateTaskAsync(Guid operationId, MediaOperationTask task, CancellationToken cancellationToken);
     }
 }

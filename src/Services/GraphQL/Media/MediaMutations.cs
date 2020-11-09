@@ -23,14 +23,14 @@ namespace MagicMedia.GraphQL
         {
             MediaOperationResult operation = await _operationsService.MoveMediaAsync(request, cancellationToken);
 
-            //await eventSender.SendAsync(Guid.Parse("e6bceaab02dd499dbe05566ed7a6e04d"), new NewMediaOperationTaskMessage
-            //{
-            //    OperationId = operation.Id,
-            //    Task = new MediaOperationTask
-            //    {
-            //        Name = "Bla"
-            //    }
-            //});
+            await eventSender.SendAsync("MediaOperation", new NewMediaOperationTaskMessage
+            {
+                OperationId = operation.Id,
+                Task = new MediaOperationTask
+                {
+                    Name = "Bla"
+                }
+            });
 
             return new MediaOperationPayload(operation.Id);
         }
@@ -40,7 +40,7 @@ namespace MagicMedia.GraphQL
     public class MediaSubscriptions
     {
         [Subscribe]
-        public NewMediaOperationTaskMessage OperationCompleted([Topic] Guid operationId, [EventMessage] NewMediaOperationTaskMessage payload)
+        public NewMediaOperationTaskMessage OperationCompleted([Topic] string name, [EventMessage] NewMediaOperationTaskMessage payload)
         {
             return payload;
         }
