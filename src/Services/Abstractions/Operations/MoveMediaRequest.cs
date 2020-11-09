@@ -3,10 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Authentication.ExtendedProtection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MagicMedia.Operations
 {
+    public record MediaOperationStepContext(
+        Guid OperationId,
+        MediaOperationStep Step,
+        MediaOperationTask Task,
+        CancellationToken OperationAbord);
+
     public class MoveMediaRequest
     {
         public IEnumerable<Guid> Ids { get; set; }

@@ -25,13 +25,14 @@ namespace MagicMedia.Massaging
             services.AddMassTransit(s =>
             {
                 s.AddConsumer<FaceUpdatedConsumer>();
+                s.AddConsumer<NewMediaOperationTaskConsumer>();
 
                 if (options.Transport == MessagingTransport.InMemory)
                 {
                     s.AddBus(provider => Bus.Factory.CreateUsingInMemory(cfg => {
                        cfg.ReceiveEndpoint(e =>
                        {
-                           e.ConfigureConsumers();
+                           e.ConfigureConsumers(provider);
                        });
                     }));
                 }
@@ -42,7 +43,7 @@ namespace MagicMedia.Massaging
                         cfg.Host(options.ServiceBus.ConnectionString);
                         cfg.ReceiveEndpoint(options.ServiceBus.ReceiveQueueName, e =>
                         {
-                            e.ConfigureConsumers();
+                            e.ConfigureConsumers(provider);
                         });
                     }));
                 };
@@ -52,9 +53,16 @@ namespace MagicMedia.Massaging
             return services;
         }
 
-        public static void ConfigureConsumers(this IReceiveEndpointConfigurator e)
+        public static void ConfigureConsumers(
+            this IReceiveEndpointConfigurator e,
+            IServiceCollection services,
+            IServiceProvider serviceProvider)
         {
-            e.Consumer<FaceUpdatedConsumer>();
+            services.AddSingleton<FaceUpdatedConsumer>();
+            services.AddSingleton<NewMediaOperationTaskConsumer>();
+
+            e.Consumer<FaceUpdatedConsumer>(serviceProvider);
+            e.Consumer<NewMediaOperationTaskConsumer>(serviceProvider);
         }
     }
 }

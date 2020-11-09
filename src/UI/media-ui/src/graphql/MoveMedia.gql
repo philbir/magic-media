@@ -1,0 +1,8 @@
+mutation moveMedia($request: MoveMediaRequestInput!) {
+  moveMedia(request: $request) {
+    operationId
+    errors {
+      code
+    }
+  }
+}

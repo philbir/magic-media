@@ -20,7 +20,6 @@ namespace MagicMedia
             _operationStore = operationStore;
             _bus = bus;
         }
-
         public async Task<MediaOperationResult> MoveMediaAsync(
             MoveMediaRequest request,
             CancellationToken cancellationToken)
@@ -36,7 +35,6 @@ namespace MagicMedia
                 Id = operation.Id
             };
         }
-
 
         private async Task PublishMessagesAsync(MediaOperation operation)
         {
@@ -92,13 +90,13 @@ namespace MagicMedia
         {
             yield return new MediaOperationStep
             {
-                Name = "MoveMedia_MoveFile",
+                Name = MediaOperationStepNames.MoveMediaFile,
                 State = MediaOperationStepState.New,
             };
 
             yield return new MediaOperationStep
             {
-                Name = "MoveMedia_UpdateDatabase",
+                Name = MediaOperationStepNames.MoveMediaUpdateMetadata,
                 State = MediaOperationStepState.New,
             };
         }

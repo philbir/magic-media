@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,24 +18,5 @@ namespace MagicMedia
         public Task<byte[]> GetAsync(Guid id, CancellationToken cancellationToken);
     }
 
-    public interface IMediaBlobStore
-    {
-        public Task StoreAsync(MediaBlobData data, CancellationToken cancellationToken);
-
-        public Task<MediaBlobData> GetAsync(MediaBlobData request, CancellationToken cancellationToken);
-    }
-
     public record ThumbnailData(Guid Id, byte[] Data);
-
-
-    public record MediaBlobData
-    {
-        public string Filename { get; init; }
-
-        public string Directory { get; init; } = "/";
-
-        public byte[] Data { get; init; }
-
-        public MediaBlobType Type { get; set; }
-    }
 }

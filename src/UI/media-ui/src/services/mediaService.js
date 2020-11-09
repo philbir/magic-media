@@ -3,6 +3,7 @@ import QUERY_FOLDER_TREE from "../graphql/GetFolderTree.gql";
 import QUERY_GETBYID from "../graphql/GetMediaDetails.gql";
 import QUERY_SEARCH_FACETS from "../graphql/SearchFacets.gql";
 import QUERY_SEARCH from "../graphql/SearchMedia.gql";
+import MUTATION_MOVE_MEDIA from "../graphql/MoveMedia.gql";
 
 export const searchMedia = async request => {
   return await apollo.query({
@@ -33,5 +34,14 @@ export const getFolderTree = async () => {
   return await apollo.query({
     query: QUERY_FOLDER_TREE,
     variables: {}
+  });
+};
+
+export const moveMedia = async (request) => {
+  return await apollo.query({
+    query: MUTATION_MOVE_MEDIA,
+    variables: {
+      request: request
+    }
   });
 };

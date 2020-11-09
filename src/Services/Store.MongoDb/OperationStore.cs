@@ -1,6 +1,9 @@
-﻿using System.Threading;
+using System;
+using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Operations;
+using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 
 namespace MagicMedia.Store.MongoDb
 {
@@ -13,13 +16,32 @@ namespace MagicMedia.Store.MongoDb
             _mediaStoreContext = mediaStoreContext;
         }
 
-
         public async Task AddAsync(MediaOperation operation, CancellationToken cancellationToken)
         {
             await _mediaStoreContext.Operations.InsertOneAsync(
                 operation,
                 options: null,
                 cancellationToken);
+        }
+
+        public async Task UpdateAsync(
+            MediaOperation operation,
+            CancellationToken cancellationToken)
+        {
+            await _mediaStoreContext.Operations.ReplaceOneAsync(
+                x => x.Id == operation.Id,
+                operation,
+                options: new ReplaceOptions(),
+                cancellationToken);
+        }
+
+        public async Task<MediaOperation> GetAsync(
+            Guid operationId,
+            CancellationToken cancellationToken)
+        {
+            return await _mediaStoreContext.Operations.AsQueryable()
+                .Where(x => x.Id == operationId)
+                .SingleAsync(cancellationToken);
         }
     }
 }

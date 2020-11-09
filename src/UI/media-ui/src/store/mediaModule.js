@@ -1,9 +1,11 @@
 import Vue from "vue";
+/* eslint-disable no-debugger */
 
 import {
   getById,
   getFolderTree,
   getSearchFacets,
+  moveMedia,
   searchMedia
 } from "../services/mediaService";
 
@@ -150,6 +152,26 @@ const mediaModule = {
         const res = await getFolderTree();
         commit("FOLDER_TREE_LOADED", res.data.folderTree);
       } catch (ex) {
+        this.$magic.snack("Error loading", "ERROR");
+      }
+    },
+    async moveSelected({ commit, state }, newLocation) {
+      try {
+
+        const ids = [];
+        for (let i = 0; i < state.selectedIndexes.length; i++) {
+          ids.push(state.list[i].id);
+        }
+
+        const res = await moveMedia({
+          ids,
+          newLocation
+        })
+
+        commit("OPERATION_COMMITED", res.moveMedia.id);
+
+      } catch (ex) {
+        console.error(ex)
         this.$magic.snack("Error loading", "ERROR");
       }
     },

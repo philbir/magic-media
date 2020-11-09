@@ -1,5 +1,6 @@
 using MagicMedia.Face;
 using MagicMedia.Metadata;
+using MagicMedia.Operations;
 using MagicMedia.Processing;
 using MagicMedia.Thumbnail;
 using Microsoft.Extensions.Configuration;
@@ -41,6 +42,9 @@ namespace MagicMedia
             services.AddSingleton<IFolderTreeService, FolderTreeService>();
 
             services.AddSingleton<IMediaOperationsService, MediaOperationsService>();
+            services.AddSingleton<IMediaOperationTaskHandler, MediaOperationTaskHandler>();
+            services.AddSingleton<IMediaOperationStep, MoveMediaFileOperationStep>();
+            services.AddSingleton<IMediaOperationStep, MoveMediaDatabaseOperationStep>();
 
             return services;
         }

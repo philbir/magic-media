@@ -42,7 +42,11 @@
         >
       </template>
       <v-list dense>
-        <v-list-item v-for="action in mediaActions" :key="action.text">
+        <v-list-item
+          v-for="action in mediaActions"
+          :key="action.text"
+          @click="onClickAction(action.action)"
+        >
           <v-list-item-title> {{ action.text }}</v-list-item-title>
         </v-list-item>
         <v-divider></v-divider>
@@ -97,10 +101,10 @@ export default {
   computed: {
     mediaActions: function () {
       return [
-        { text: "Add to album" },
-        { text: "Move" },
-        { text: "Edit" },
-        { text: "Delete" },
+        { text: "Add to album", action: "ADD_TO_ALBUM" },
+        { text: "Move", action: "MOVE" },
+        { text: "Edit", action: "EDIT" },
+        { text: "Delete", acion: "DELETE" },
       ];
     },
     editModeText: function () {
@@ -131,6 +135,10 @@ export default {
     },
     selectAll: function () {
       this.$store.dispatch("media/selectAll");
+    },
+    onClickAction: function (action) {
+      console.log(action);
+      this.$store.dispatch("media/moveSelected", "/Test/123/Final");
     },
   },
 };
