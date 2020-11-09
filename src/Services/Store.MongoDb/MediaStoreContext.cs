@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using MagicMedia.Operations;
 using MagicMedia.Store.MongoDb.Configuration;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Serializers;
@@ -27,6 +28,7 @@ namespace MagicMedia.Store.MongoDb
                 .ConfigureCollection(new FaceCollectionConfiguration())
                 .ConfigureCollection(new CameraCollectionConfiguration())
                 .ConfigureCollection(new PersonCollectionConfiguration())
+                .ConfigureCollection(new MediaOperationCollectionConfiguration())
                 .ConfigureCollection(new GeoAddressCacheCollectionConfiguration())
                 .ConfigureCollection(new MediaCollectionConfiguration());
         }
@@ -68,6 +70,14 @@ namespace MagicMedia.Store.MongoDb
             get
             {
                 return CreateCollection<GeoAddressCache>();
+            }
+        }
+
+        public IMongoCollection<MediaOperation> Operations
+        {
+            get
+            {
+                return CreateCollection<MediaOperation>();
             }
         }
 

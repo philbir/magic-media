@@ -25,17 +25,10 @@ namespace MagicMedia.Store.MongoDb
             services.AddSingleton<IFaceStore, FaceStore>();
             services.AddSingleton<ICameraStore, CameraStore>();
             services.AddSingleton<IPersonStore, PersonStore>();
+            services.AddSingleton<IOperationStore, OperationStore>();
 
             return services;
         }
 
-        public static IServiceCollection AddMongoDbGeoCache(
-            this IServiceCollection services,
-            Func<IGeoDecoderService> geoDecoderResolver)
-        {
-            services.AddSingleton(c => new GeoDecoderCacheStore(c.GetRequiredService<MediaStoreContext>(), geoDecoderResolver()));
-
-            return services;
-        }
     }
 }
