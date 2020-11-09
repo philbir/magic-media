@@ -185,6 +185,15 @@ namespace MagicMedia.Store.MongoDb
                 cancellationToken);
         }
 
+        public async Task UpdateAsync(Media media, CancellationToken cancellationToken)
+        {
+            await _mediaStoreContext.Medias.ReplaceOneAsync(
+                x => x.Id == media.Id,
+                media,
+                options: new ReplaceOptions(),
+                cancellationToken);
+        }
+
         public async Task InsertMediaAsync(
             Media media,
             IEnumerable<MediaFace> faces,

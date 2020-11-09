@@ -28,6 +28,9 @@ namespace MagicMedia
                 .AddDataLoader<CameraByIdDataLoader>()
                 .AddDataLoader<ThumbnailByMediaIdDataLoader>()
                 .AddDataLoader<MediaByIdDataLoader>()
+                .AddSubscriptionType(d => d.Name("Subscription"))
+                .AddType<MediaSubscriptions>()
+                .AddInMemorySubscriptions()
                 .AddAuthorization();
 
             return builder;

@@ -5,9 +5,9 @@ using HotChocolate.Types;
 
 namespace MagicMedia.GraphQL.SearchFacets
 {
-    public class SearchFacetType : ObjectType<SearchFacets>
+    public class SearchFacetType : ObjectType
     {
-        protected override void Configure(IObjectTypeDescriptor<SearchFacets> descriptor)
+        protected override void Configure(IObjectTypeDescriptor descriptor)
         {
             descriptor
                 .Field("country")
@@ -16,12 +16,6 @@ namespace MagicMedia.GraphQL.SearchFacets
             descriptor
                 .Field("city")
                 .ResolveWith<SearchFacetResolvers>(x => x.GetCitiesAsync(default!));
-
-
         }
-    }
-
-    public class SearchFacets
-    {
     }
 }

@@ -41,14 +41,4 @@ namespace MagicMedia.Operations
             };
         }
     }
-
-    public class MoveMediaDatabaseOperationStep : IMediaOperationStep
-    {
-        public string Name => MediaOperationStepNames.MoveMediaUpdateMetadata;
-
-        public async Task<MediaOperationStepResult> ExecuteAsync(MediaOperationStepContext context)
-        {
-            return new MediaOperationStepResult();
-        }
-    }
 }

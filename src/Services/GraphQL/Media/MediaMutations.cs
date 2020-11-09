@@ -1,6 +1,10 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
+using HotChocolate;
+using HotChocolate.Subscriptions;
 using HotChocolate.Types;
+using MagicMedia.Messaging;
 using MagicMedia.Operations;
 
 namespace MagicMedia.GraphQL
@@ -15,11 +19,30 @@ namespace MagicMedia.GraphQL
             _operationsService = operationsService;
         }
 
-        public async Task<MediaOperationPayload> MoveMediaAsync(MoveMediaRequest request, CancellationToken cancellationToken)
+        public async Task<MediaOperationPayload> MoveMediaAsync(MoveMediaRequest request, [Service] ITopicEventSender eventSender, CancellationToken cancellationToken)
         {
             MediaOperationResult operation = await _operationsService.MoveMediaAsync(request, cancellationToken);
 
+            //await eventSender.SendAsync(Guid.Parse("e6bceaab02dd499dbe05566ed7a6e04d"), new NewMediaOperationTaskMessage
+            //{
+            //    OperationId = operation.Id,
+            //    Task = new MediaOperationTask
+            //    {
+            //        Name = "Bla"
+            //    }
+            //});
+
             return new MediaOperationPayload(operation.Id);
+        }
+    }
+
+    [ExtendObjectType(Name = "Subscription")]
+    public class MediaSubscriptions
+    {
+        [Subscribe]
+        public NewMediaOperationTaskMessage OperationCompleted([Topic] Guid operationId, [EventMessage] NewMediaOperationTaskMessage payload)
+        {
+            return payload;
         }
     }
 }

@@ -44,7 +44,7 @@ namespace MagicMedia
             services.AddSingleton<IMediaOperationsService, MediaOperationsService>();
             services.AddSingleton<IMediaOperationTaskHandler, MediaOperationTaskHandler>();
             services.AddSingleton<IMediaOperationStep, MoveMediaFileOperationStep>();
-            services.AddSingleton<IMediaOperationStep, MoveMediaDatabaseOperationStep>();
+            services.AddSingleton<IMediaOperationStep, MoveMediaUpdateMedadataOperationStep>();
 
             return services;
         }

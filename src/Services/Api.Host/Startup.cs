@@ -76,6 +76,8 @@ namespace MagicMedia.Api
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
+            app.UseWebSockets();
             app.UseCors();
             app.UseStaticFiles();
 

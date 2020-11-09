@@ -47,14 +47,21 @@ namespace MagicMedia.Stores
             CancellationToken cancellationToken)
         {
             //MediaBlobData file = await GetAsync(request, cancellationToken);
-            var current =  GetFilename(request);
+            var filename =  GetFilename(request);
 
-            var newDir = Path.Combine(
-                _options.RootDirectory,
-                newLocation.Replace('/', Path.DirectorySeparatorChar),
-                Path.GetFileName(current));
+            var newPathFragments = new List<string> { _options.RootDirectory };
+            newPathFragments.AddRange(newLocation.Split('/'));
 
-            File.Move(current, newDir, true);
+            var newDir = Path.Combine(newPathFragments.ToArray());
+
+            if (!Directory.Exists(newDir))
+            {
+                Directory.CreateDirectory(newDir);
+            }
+
+            var newFilename = Path.Combine(newDir, Path.GetFileName(filename));
+
+            File.Move(filename, newFilename, true);
 
             return Task.CompletedTask;
         }

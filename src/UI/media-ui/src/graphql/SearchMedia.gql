@@ -14,7 +14,7 @@ query search($request: SearchMediaRequestInput!) {
         height
         width
       }
-      thumbnail(size: M) {
+      thumbnail {
         size
         dataUrl
         dimensions {
