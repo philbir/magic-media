@@ -5,11 +5,12 @@ import QUERY_SEARCH_FACETS from "../graphql/SearchFacets.gql";
 import QUERY_SEARCH from "../graphql/SearchMedia.gql";
 import MUTATION_MOVE_MEDIA from "../graphql/MoveMedia.gql";
 
-export const searchMedia = async request => {
+export const searchMedia = async (request, size) => {
   return await apollo.query({
     query: QUERY_SEARCH,
     variables: {
-      request: request
+      request: request,
+      size: size
     }
   });
 };
@@ -45,3 +46,18 @@ export const moveMedia = async (request) => {
     }
   });
 };
+
+export const subscribeOperationCompleted = async (id) => {
+  return await apollo.subscribe({
+    query: MUTATION_MOVE_MEDIA,
+    variables: {
+      operationId: id
+    }
+  }).subscribe({
+    next(data) {
+      console.log(data)
+    }
+  });
+};
+
+

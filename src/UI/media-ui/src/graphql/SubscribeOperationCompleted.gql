@@ -1,0 +1,10 @@
+subscription operationCompleted{
+operationCompleted(operationId: "e6bceaab02dd499dbe05566ed7a6e04d"){
+
+  operationId
+  task{
+    name
+  }
+}
+
+}

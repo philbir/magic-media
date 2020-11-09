@@ -29,10 +29,10 @@ const mediaModule = {
     selectedIndexes: [],
     hasMore: true,
     isEditMode: false,
+    thumbnailSize: "M",
     filter: {
       pageNr: 0,
       pageSize: 200,
-      thumbnailSize: "M",
       countries: [],
       cities: [],
       persons: []
@@ -63,7 +63,7 @@ const mediaModule = {
     FILTER_THUMBNAIL_SIZE_SET(state, size) {
       state.list = [];
       state.filter.pageNr = 0;
-      state.filter.thumbnailSize = size;
+      state.thumbnailSize = size;
       state.selectedIndexes = [];
     },
     FILTER_PERSONS_SET(state, persons) {
@@ -127,7 +127,7 @@ const mediaModule = {
       try {
         commit("SET_MEDIALIST_LOADING", true);
 
-        const res = await searchMedia(state.filter);
+        const res = await searchMedia(state.filter, state.thumbnailSize);
         commit("MEDIAITEMS_LOADED", res.data.searchMedia);
       } catch (ex) {
         this.$magic.snack("Error loading", "ERROR");

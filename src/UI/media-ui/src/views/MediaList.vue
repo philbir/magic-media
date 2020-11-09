@@ -60,8 +60,7 @@ export default {
   computed: {
     layout: function () {
       const items = this.$store.state.media.list;
-      const viewMap =
-        mediaListViewMap[this.$store.state.media.filter.thumbnailSize];
+      const viewMap = mediaListViewMap[this.$store.state.media.thumbnailSize];
       const ratios = [];
       items.forEach((item) => {
         ratios.push(

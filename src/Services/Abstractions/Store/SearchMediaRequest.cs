@@ -10,8 +10,6 @@ namespace MagicMedia.Store
 
         public int PageNr { get; set; }
 
-        public ThumbnailSizeName ThumbnailSize { get; set; }
-
         public IEnumerable<Guid>? Persons { get; set; }
 
         public IEnumerable<string>? Countries { get; set; }
