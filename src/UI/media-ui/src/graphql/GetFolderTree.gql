@@ -1,0 +1,41 @@
+query folderTree {
+  folderTree {
+    ...folder
+    children {
+      ...folder
+      children {
+        ...folder
+        children {
+          ...folder
+          children {
+            ...folder
+            children {
+              ...folder
+              children {
+                ...folder
+                children {
+                  ...folder
+                  children {
+                    ...folder
+                    children {
+                      ...folder
+                      children {
+                        ...folder
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+fragment folder on FolderItem {
+  name
+  path
+  level
+}

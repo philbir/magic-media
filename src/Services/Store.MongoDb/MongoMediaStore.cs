@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Search;
@@ -41,6 +42,13 @@ namespace MagicMedia.Store.MongoDb
             CancellationToken cancellationToken)
         {
             FilterDefinition<Media> filter = Builders<Media>.Filter.Empty;
+          
+            if (!string.IsNullOrEmpty(request.Folder))
+            {
+                filter &= Builders<Media>.Filter.Regex(
+                    x => x.Folder,
+                    new BsonRegularExpression("^/" + Regex.Escape(request.Folder), "i"));
+            }
 
             if (request.Persons is { } persons && persons.Any())
             {
@@ -50,20 +58,20 @@ namespace MagicMedia.Store.MongoDb
 
                 if (mediaIds.Any())
                 {
-                    filter = filter & Builders<Media>.Filter.In(x => x.Id, mediaIds);
+                    filter &= Builders<Media>.Filter.In(x => x.Id, mediaIds);
                 }
             }
 
             if (request.Cities is { } cities && cities.Any())
             {
-                filter = filter & Builders<Media>.Filter.In(
+                filter &= Builders<Media>.Filter.In(
                     x => x.GeoLocation.Address.City,
                     cities);
             }
 
             if (request.Countries is { } countries && countries.Any())
             {
-                filter = filter & Builders<Media>.Filter.In(
+                filter &= Builders<Media>.Filter.In(
                     x => x.GeoLocation.Address.CountryCode,
                     countries);
             }
@@ -71,13 +79,13 @@ namespace MagicMedia.Store.MongoDb
             IFindFluent<Media, Media>? cursor = _mediaStoreContext.Medias.Find(filter);
             long totalCount = await cursor.CountDocumentsAsync(cancellationToken);
 
-            List <Media> medias = await cursor
+            List<Media> medias = await cursor
                 .SortByDescending(x => x.Source.ImportedAt)
                 .Skip(request.PageNr * request.PageSize)
                 .Limit(request.PageSize)
                 .ToListAsync();
 
-            return new SearchResult<Media>(medias, (int) totalCount);
+            return new SearchResult<Media>(medias, (int)totalCount);
         }
 
         private async Task<IEnumerable<Guid>> GetMediaIdsByPersons(
@@ -215,6 +223,14 @@ namespace MagicMedia.Store.MongoDb
                     options: null,
                     cancellationToken);
             }
+        }
+
+        public async Task<IEnumerable<string>> GetAllFoldersAsync(CancellationToken cancellationToken)
+        {
+            return await _mediaStoreContext.Medias.AsQueryable()
+                .Select(x => x.Folder)
+                .Distinct()
+                .ToListAsync(cancellationToken);
         }
 
         public async Task<IEnumerable<SearchFacetItem>> GetGroupedCitiesAsync(

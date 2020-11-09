@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Security.Principal;
 
 namespace MagicMedia.Store
 {
@@ -16,5 +17,7 @@ namespace MagicMedia.Store
         public IEnumerable<string>? Countries { get; set; }
 
         public IEnumerable<string>? Cities { get; set; }
+
+        public string? Folder { get; set; }
     }
 }

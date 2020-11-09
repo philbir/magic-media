@@ -12,6 +12,7 @@ namespace MagicMedia.Store
     {
         IFaceStore Faces { get; }
 
+        Task<IEnumerable<string>> GetAllFoldersAsync(CancellationToken cancellationToken);
         Task<Media> GetByIdAsync(Guid id, CancellationToken cancellationToken);
         Task<IEnumerable<SearchFacetItem>> GetGroupedCitiesAsync(CancellationToken cancellationToken);
         Task<IEnumerable<SearchFacetItem>> GetGroupedCountriesAsync(CancellationToken cancellationToken);

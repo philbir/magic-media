@@ -23,14 +23,19 @@
       @change="toggleEditMode"
       color="info"
       value="edit"
-      class="mt-4 ml-2"
+      class="mt-4 d-none d-md-block"
     >
       <template v-slot:label>
         <span class="white--text">{{ editModeText }}</span>
       </template>
     </v-switch>
 
-    <v-menu left bottom v-if="editModeText == 'Edit'">
+    <v-menu
+      left
+      class="d-sm-none-and-down"
+      bottom
+      v-if="editModeText == 'Edit'"
+    >
       <template v-slot:activator="{ on, attrs }">
         <a v-bind="attrs" v-on="on">
           <h4 class="white--text ml-4">{{ selectedCount }} selected</h4></a
@@ -56,7 +61,9 @@
       class="mr-4 ml-1"
       v-show="loading"
     ></v-progress-circular>
-    <h4 class="white--text mr-4">{{ mediaCount }}</h4>
+    <h4 class="white--text mr-4" v-if="totalLoaded > 0">
+      {{ totalLoaded }} / {{ totalCount }}
+    </h4>
 
     <v-icon color="white" class="mr-2" @click="openUpload">
       mdi-cloud-upload-outline
@@ -99,8 +106,11 @@ export default {
     editModeText: function () {
       return this.$store.state.media.isEditMode ? "Edit" : "View";
     },
-    mediaCount: function () {
-      return this.$store.state.media.list.length;
+    totalLoaded: function () {
+      return this.$store.state.media.totalLoaded;
+    },
+    totalCount: function () {
+      return this.$store.state.media.totalCount;
     },
     selectedCount: function () {
       return this.$store.state.media.selectedIndexes.length;

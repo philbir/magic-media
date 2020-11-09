@@ -1,29 +1,32 @@
-query search($request: SearchMediaRequestInput! ) {
+query search($request: SearchMediaRequestInput!) {
   searchMedia(request: $request) {
-    id
-    filename
-    dateTaken
-    cameraId
-    camera {
+    items {
       id
-      model
-      make
-    }
-    dimension {
-      height
-       width
-    }
-    thumbnail(size: L) {
-      size
-      dataUrl
-      dimensions {
+      filename
+      dateTaken
+      cameraId
+      camera {
+        id
+        model
+        make
+      }
+      dimension {
         height
         width
       }
+      thumbnail(size: M) {
+        size
+        dataUrl
+        dimensions {
+          height
+          width
+        }
+      }
+      source {
+        identifier
+        type
+      }
     }
-    source {
-      identifier
-      type
-    }
+    totalCount
   }
 }
