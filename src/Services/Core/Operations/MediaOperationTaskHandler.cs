@@ -48,6 +48,9 @@ namespace MagicMedia.Operations
 
                 await ExecuteStepAsync(ctx);
             }
+
+            operation = await _operationStore.GetAsync(operationId, cancellationToken);
+
         }
 
         private async Task ExecuteStepAsync(

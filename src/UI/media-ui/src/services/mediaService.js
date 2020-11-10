@@ -5,6 +5,7 @@ import MUTATION_MOVE_MEDIA from "../graphql/MoveMedia.gql";
 import QUERY_SEARCH_FACETS from "../graphql/SearchFacets.gql";
 import QUERY_SEARCH from "../graphql/SearchMedia.gql";
 import SUBSCRIPTION_OPERATION_COMPLETED from "../graphql/SubscribeOperationCompleted.gql";
+
 /* eslint-disable no-debugger */
 export const searchMedia = async (request, size) => {
   return await apollo.query({
@@ -48,10 +49,10 @@ export const moveMedia = async request => {
   });
 };
 
+
 export const subscribeOperationCompleted = async id => {
-  debugger;
   console.log(id);
-  apollo
+  return apollo
     .subscribe({
       query: SUBSCRIPTION_OPERATION_COMPLETED,
       variables: {
@@ -59,12 +60,14 @@ export const subscribeOperationCompleted = async id => {
       }
     })
     .subscribe({
-      next({ data }) {
-        debugger;
+      next(data) {
         console.log("GQL_SUB", data);
       },
       error(err) {
         console.log(err);
+      },
+      complete(c) {
+        console.log(c)
       }
-    });
+    })
 };

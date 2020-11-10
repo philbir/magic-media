@@ -1,5 +1,5 @@
-subscription operationCompleted($name: String!) {
-  operationCompleted(name: $name) {
+subscription operationCompleted {
+  operationCompleted(name: "MediaOperation") {
     operationId
     task {
       name

@@ -60,7 +60,14 @@ namespace MagicMedia.Operations
     public enum MediaOperationStepState
     {
         New,
-        InProgress,
+        Success,
+        Failed
+    }
+
+    public enum MediaOperationTaskState
+    {
+        New,
+        InProgress
         Success,
         Failed
     }

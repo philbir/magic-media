@@ -53,7 +53,6 @@ export default {
 
     this.containerWith =
       window.innerWidth - (this.$vuetify.breakpoint.mobile ? 0 : 264);
-    console.log(this.$vuetify);
     this.onScroll = debounce(this.onScroll, 100);
   },
 
