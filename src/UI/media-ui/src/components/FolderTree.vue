@@ -73,7 +73,6 @@ export default {
   },
   methods: {
     onSelect(e) {
-      console.log(e);
       if (e.length > 0) {
         this.$store.dispatch("media/setFolderFilter", e[0].path);
       }

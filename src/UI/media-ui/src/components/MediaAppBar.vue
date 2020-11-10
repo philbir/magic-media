@@ -73,19 +73,25 @@
       mdi-cloud-upload-outline
     </v-icon>
     <Upload :show="showUpload"></Upload>
+    <MoveMediaDialog
+      :show="showMove"
+      @close="showMove = false"
+    ></MoveMediaDialog>
   </v-app-bar>
 </template>
 
 <script>
 import Upload from "./Upload";
+import MoveMediaDialog from "./MoveMediaDialog";
 import AppBarNavMenu from "./AppBarNavMenu";
 
 export default {
   name: "App",
-  components: { Upload, AppBarNavMenu },
+  components: { Upload, AppBarNavMenu, MoveMediaDialog },
 
   data: () => ({
     dialog: true,
+    showMove: false,
     sizes: [
       {
         text: "Square XS",
@@ -138,7 +144,7 @@ export default {
     },
     onClickAction: function (action) {
       console.log(action);
-      this.$store.dispatch("media/moveSelected", "/Test/123/Final");
+      this.showMove = true;
     },
   },
 };

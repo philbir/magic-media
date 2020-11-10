@@ -40,8 +40,8 @@ export const getFolderTree = async () => {
 };
 
 export const moveMedia = async request => {
-  return await apollo.query({
-    query: MUTATION_MOVE_MEDIA,
+  return await apollo.mutate({
+    mutation: MUTATION_MOVE_MEDIA,
     variables: {
       request: request
     }

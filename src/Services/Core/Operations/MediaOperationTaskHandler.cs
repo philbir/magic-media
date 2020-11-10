@@ -48,9 +48,6 @@ namespace MagicMedia.Operations
 
                 await ExecuteStepAsync(ctx);
             }
-
-
-            //Save
         }
 
         private async Task ExecuteStepAsync(
