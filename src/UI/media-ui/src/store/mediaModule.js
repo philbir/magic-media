@@ -6,7 +6,6 @@ import {
   getSearchFacets,
   moveMedia,
   searchMedia,
-  subscribeOperationCompleted,
 } from "../services/mediaService";
 
 /* eslint-disable no-debugger */
@@ -179,7 +178,6 @@ const mediaModule = {
     async moveSelected({ commit, state }, newLocation) {
       try {
         const ids = getMediaIdsFromIndexes(state);
-        subscribeOperationCompleted();
         const res = await moveMedia({
           ids,
           newLocation

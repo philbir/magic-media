@@ -52,7 +52,16 @@ Vue.use(VuePageTransition);
 export default {
   name: "App",
   components: { AppPreLoader, Upload, MediaViewer },
-
+  created() {
+    this.$socket.on("moveMediaCompleted", (data) => {
+      console.log(data);
+    });
+    this.$socket.on("moveMediaRequestCompleted", (data) => {
+      console.log(data);
+      this.$store.dispatch("media/getFolderTree");
+      this.$magic.snack("Move completed! " + data.successCount, "SUCCESS");
+    });
+  },
   data: () => ({
     dialog: true,
     sizes: [

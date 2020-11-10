@@ -7,7 +7,7 @@ namespace MagicMedia
 {
     public interface IMediaOperationsService
     {
-        Task<MediaOperationResult> MoveMediaAsync(
+        Task MoveMediaAsync(
             MoveMediaRequest request,
             CancellationToken cancellationToken);
     }

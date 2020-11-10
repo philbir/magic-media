@@ -42,9 +42,7 @@ namespace MagicMedia
             services.AddSingleton<IFolderTreeService, FolderTreeService>();
 
             services.AddSingleton<IMediaOperationsService, MediaOperationsService>();
-            services.AddSingleton<IMediaOperationTaskHandler, MediaOperationTaskHandler>();
-            services.AddSingleton<IMediaOperationStep, MoveMediaFileOperationStep>();
-            services.AddSingleton<IMediaOperationStep, MoveMediaUpdateMedadataOperationStep>();
+            services.AddSingleton<IMoveMediaHandler, MoveMediaHandler>();
 
             return services;
         }

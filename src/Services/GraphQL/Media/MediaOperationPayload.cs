@@ -5,9 +5,9 @@ namespace MagicMedia.GraphQL
 {
     public class MediaOperationPayload : Payload
     {
-        public Guid OperationId { get; }
+        public string? OperationId { get; }
 
-        public MediaOperationPayload(Guid operationId)
+        public MediaOperationPayload(string operationId)
         {
             OperationId = operationId;
         }

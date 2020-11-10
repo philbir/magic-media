@@ -3,16 +3,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MagicMedia.Messaging;
 using MagicMedia.Operations;
 using MassTransit;
 
 namespace MagicMedia.Massaging.Consumers
 {
-    public class MoveMediaConsumer : IConsumer<MoveMediaRequest>
+    public class MoveMediaConsumer : IConsumer<MoveMediaMessage>
     {
-        public Task Consume(ConsumeContext<MoveMediaRequest> context)
+        private readonly IMoveMediaHandler _moveMediaHandler;
+
+        public MoveMediaConsumer(IMoveMediaHandler moveMediaHandler)
         {
-            throw new NotImplementedException();
+            _moveMediaHandler = moveMediaHandler;
+        }
+
+        public async Task Consume(ConsumeContext<MoveMediaMessage> context)
+        {
+            await _moveMediaHandler.ExecuteAsync(
+                context.Message,
+                context.CancellationToken);
         }
     }
 }

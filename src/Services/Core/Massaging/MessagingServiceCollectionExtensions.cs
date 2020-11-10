@@ -1,13 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using MagicMedia.Massaging.Consumers;
 using MagicMedia.Messaging;
 using MassTransit;
-using MassTransit.Azure.ServiceBus.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -25,7 +19,9 @@ namespace MagicMedia.Massaging
             services.AddMassTransit(s =>
             {
                 s.AddConsumer<FaceUpdatedConsumer>();
-                s.AddConsumer<NewMediaOperationTaskConsumer>();
+                s.AddConsumer<MoveMediaConsumer>();
+                s.AddConsumer<MoveMediaCompletedConsumer>();
+                s.AddConsumer<MoveMediaRequestCompletedConsumer>();
 
                 if (options.Transport == MessagingTransport.InMemory)
                 {
@@ -59,10 +55,9 @@ namespace MagicMedia.Massaging
             IServiceProvider serviceProvider)
         {
             services.AddSingleton<FaceUpdatedConsumer>();
-            services.AddSingleton<NewMediaOperationTaskConsumer>();
+            
 
             e.Consumer<FaceUpdatedConsumer>(serviceProvider);
-            e.Consumer<NewMediaOperationTaskConsumer>(serviceProvider);
         }
     }
 }

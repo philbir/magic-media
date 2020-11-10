@@ -1,4 +1,5 @@
 using MagicMedia.BingMaps;
+using MagicMedia.Hubs;
 using MagicMedia.Massaging;
 using MagicMedia.Store.MongoDb;
 using MagicMedia.Stores;
@@ -43,6 +44,7 @@ namespace MagicMedia.Api
             services.AddBingMaps(bingOptions);
             services.AddMessaging(Configuration);
             services.AddMvc();
+            services.AddSignalR();
 
             services.AddAuthentication(options =>
             {
@@ -77,7 +79,6 @@ namespace MagicMedia.Api
                 app.UseExceptionHandler("/Home/Error");
             }
 
-            app.UseWebSockets();
             app.UseCors();
             app.UseStaticFiles();
 
@@ -89,6 +90,7 @@ namespace MagicMedia.Api
             {
                 endpoints.MapGraphQL();
                 endpoints.MapControllers();
+                endpoints.MapHub<MediaHub>("/signalr");
             });
 
 
