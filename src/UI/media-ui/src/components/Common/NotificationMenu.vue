@@ -1,5 +1,5 @@
 <template>
-  <v-menu offset-y>
+  <v-menu offset-y :v-show="true">
     <template v-slot:activator="{ on, attrs }">
       <v-badge
         :value="activeNotifications.length > 0"
@@ -13,11 +13,16 @@
       </v-badge>
     </template>
 
-    <v-list width="360">
+    <v-list width="360" v-if="activeNotifications.length > 0">
       <template v-for="ntf in activeNotifications">
         <v-list-item :key="ntf.id">
           <v-list-item-content>
-            <v-alert dense :type="ntf.type.toLowerCase()">
+            <v-alert
+              dismissible
+              :type="ntf.type.toLowerCase()"
+              v-model="ntf.active"
+              @
+            >
               {{ ntf.text }}</v-alert
             >
           </v-list-item-content>
@@ -36,35 +41,6 @@ export default {
     },
     activeNotifications: function () {
       return this.$store.state.snackbar.notifications.filter((x) => x.active);
-    },
-    navMenuItems: function () {
-      return [
-        {
-          text: "Media",
-          icon: "mdi-image",
-          route: "Home",
-        },
-        {
-          text: "Face",
-          icon: "mdi-face-recognition",
-          route: "Faces",
-        },
-        {
-          text: "Persons",
-          icon: "mdi-account-details",
-          route: "Persons",
-        },
-        {
-          text: "Album",
-          icon: "mdi-image-album",
-          route: "Albums",
-        },
-        {
-          text: "Map",
-          icon: "mdi-map-search-outline",
-          route: "Map",
-        },
-      ];
     },
   },
 };

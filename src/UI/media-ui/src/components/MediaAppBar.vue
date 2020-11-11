@@ -44,6 +44,7 @@
       <v-list dense>
         <v-list-item
           v-for="action in mediaActions"
+          v-show="selectedCount > 0"
           :key="action.text"
           @click="onClickAction(action.action)"
         >

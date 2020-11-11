@@ -25,7 +25,7 @@ const snackbarModule = {
     OPERATION_UPDATED: function(state, operation) {
       const idx = state.notifications.findIndex(x => x.id === operation.id);
       if (idx > -1) {
-        state.notification[idx] = operation;
+        state.notifications[idx] = operation;
       }
     }
   },
@@ -60,12 +60,14 @@ const snackbarModule = {
     moveMediaRequestCompleted: function({ state, commit }, operation) {
       const ntf = state.notifications.find(x => x.id === operation.operationId);
       if (ntf) {
-        if (ntf.errorCount === 0) {
+        if (operation.errorCount === 0) {
           ntf.type = "success";
         } else {
           ntf.type = "warning";
         }
-
+        ntf.successCount = operation.successCount;
+        ntf.errorCount = operation.errorCount;
+        ntf.text = `${ntf.successCount} of ${ntf.totalCount} moved`;
         commit("OPERATION_UPDATED", ntf);
       }
     }

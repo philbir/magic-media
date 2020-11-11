@@ -47,7 +47,7 @@ namespace MagicMedia.Store.MongoDb
             {
                 filter &= Builders<Media>.Filter.Regex(
                     x => x.Folder,
-                    new BsonRegularExpression("^/" + Regex.Escape(request.Folder), "i"));
+                    new BsonRegularExpression("^" + Regex.Escape(request.Folder), "i"));
             }
 
             if (request.Persons is { } persons && persons.Any())
