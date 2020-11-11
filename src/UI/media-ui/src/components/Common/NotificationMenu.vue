@@ -1,29 +1,25 @@
 <template>
   <v-menu offset-y>
     <template v-slot:activator="{ on, attrs }">
-      <v-badge :value="count" :content="count" color="green" overlap>
-        <v-icon
-          color="white"
-          v-bind="attrs"
-          v-on="on"
-          class="mr-2 ml-2"
-          @click="openUpload"
-        >
+      <v-badge
+        :value="activeNotifications.length > 0"
+        :content="activeNotifications.length"
+        color="red"
+        overlap
+      >
+        <v-icon color="white" v-bind="attrs" v-on="on" class="mr-2 ml-2">
           mdi-bell-outline
         </v-icon>
       </v-badge>
     </template>
 
-    <v-list two-line width="360">
-      <template>
-        <v-list-item>
-          <v-list-item-icon>
-            <v-icon>mdi-information-outline</v-icon>
-          </v-list-item-icon>
-
+    <v-list width="360">
+      <template v-for="ntf in activeNotifications">
+        <v-list-item :key="ntf.id">
           <v-list-item-content>
-            <v-list-item-title>Media Moved</v-list-item-title>
-            <v-list-item-subtitle>1 / 2</v-list-item-subtitle>
+            <v-alert dense :type="ntf.type.toLowerCase()">
+              {{ ntf.text }}</v-alert
+            >
           </v-list-item-content>
         </v-list-item>
       </template>
@@ -37,6 +33,9 @@ export default {
   computed: {
     count: function () {
       return 10;
+    },
+    activeNotifications: function () {
+      return this.$store.state.snackbar.notifications.filter((x) => x.active);
     },
     navMenuItems: function () {
       return [

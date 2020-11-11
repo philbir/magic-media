@@ -53,11 +53,16 @@ export default {
   name: "App",
   components: { AppPreLoader, Upload, MediaViewer },
   created() {
+    const self = this;
     this.$socket.on("moveMediaCompleted", (data) => {
       console.log(data);
+
+      self.$store.dispatch("snackbar/moveMediaCompleted", data);
     });
     this.$socket.on("moveMediaRequestCompleted", (data) => {
       console.log(data);
+
+      self.$store.dispatch("snackbar/moveMediaRequestCompleted", data);
       this.$store.dispatch("media/getFolderTree");
       this.$magic.snack("Move completed! " + data.successCount, "SUCCESS");
     });
