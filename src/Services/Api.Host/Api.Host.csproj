@@ -1,16 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
     <AssemblyName>MagicMedia.Api.Host</AssemblyName>
     <RootNamespace>MagicMedia.Api</RootNamespace>
-    <LangVersion>9.0</LangVersion>
     <UserSecretsId>75433c12-81ac-4dee-88de-ab9f3fbcbc40</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.0-rc.2.20475.17" />
-    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="5.0.0-rc.2.20475.17" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="$(AspNetCoreVersion)" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="$(AspNetCoreVersion)" />
   </ItemGroup>
 
   <ItemGroup>

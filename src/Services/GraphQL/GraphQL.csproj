@@ -1,16 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
     <AssemblyName>MagicMedia.GraphQL</AssemblyName>
     <RootNamespace>MagicMedia.GraphQL</RootNamespace>
-    <Nullable>enable</Nullable>
-    <LangVersion>9.0</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="HotChocolate.AspNetCore" Version="11.0.0-rc.0" />
-    <PackageReference Include="HotChocolate.AspNetCore.Authorization" Version="11.0.0-rc.0" />
+    <PackageReference Include="HotChocolate.AspNetCore" Version="$(HotChocolateVersion)" />
+    <PackageReference Include="HotChocolate.AspNetCore.Authorization" Version="$(HotChocolateVersion)" />
   </ItemGroup>
 
   <ItemGroup>

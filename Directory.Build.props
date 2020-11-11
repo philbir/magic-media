@@ -1,41 +1,19 @@
 <Project>
   <PropertyGroup>
-    <LangVersion>8.0</LangVersion>
-  </PropertyGroup>
-  
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0' OR '$(TargetFramework)' == 'netcoreapp2.1'">
-    <NoWarn>$(NoWarn);8600;8601;8602;8603;8604;CS0436</NoWarn>
-  </PropertyGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' OR '$(TargetFramework)' == 'netcoreapp2.1'">
-    <Compile Include="$(MSBuildThisFileDirectory)/src/Nullable.cs" />
-  </ItemGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DebugType>portable</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DebugType>pdbonly</DebugType>
-    <DebugSymbols>true</DebugSymbols>
+    <LangVersion>9.0</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup>
     <Version Condition="$(Version) == ''">0.0.0</Version>
-    <Product>SwissLife One-Login</Product>
-    <Authors>Swiss Life authors and contributors</Authors>
-    <Company>Swiss Life</Company>
-    <Copyright>Copyright © 2020 Swiss Life</Copyright>
-    <PackageProjectUrl>https://swisslife.visualstudio.com/F2C/_git/One-Login</PackageProjectUrl>
-    <RepositoryUrl>https://swisslife.visualstudio.com/F2C/_git/One-Login</RepositoryUrl>
+    <Product>Magic Media</Product>
+    <Authors>Philippe Birbaum</Authors>
+    <RepositoryUrl>https://github.com/philbir/magic-media</RepositoryUrl>
     <RepositoryType>GIT</RepositoryType>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <PropertyGroup>
     <DefaultItemExcludes>$(DefaultItemExcludes);obj\**</DefaultItemExcludes>
-    
-  </PropertyGroup>  
+  </PropertyGroup>
 
 </Project>
