@@ -72,6 +72,8 @@
     <v-icon color="white" class="mr-2" @click="openUpload">
       mdi-cloud-upload-outline
     </v-icon>
+    <NotificationMenu></NotificationMenu>
+
     <Upload :show="showUpload"></Upload>
     <MoveMediaDialog
       :show="showMove"
@@ -84,10 +86,11 @@
 import Upload from "./Upload";
 import MoveMediaDialog from "./MoveMediaDialog";
 import AppBarNavMenu from "./AppBarNavMenu";
+import NotificationMenu from "./Common/NotificationMenu";
 
 export default {
   name: "App",
-  components: { Upload, AppBarNavMenu, MoveMediaDialog },
+  components: { Upload, AppBarNavMenu, MoveMediaDialog, NotificationMenu },
 
   data: () => ({
     dialog: true,

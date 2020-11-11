@@ -1,7 +1,8 @@
 const snackbarModule = {
     namespaced: true,
     state: () => ({
-        snacks: []
+        snacks: [],
+        notifications: [],
     }),
     mutations: {
         SNACK_ADDED: function (state, snack) {
@@ -12,7 +13,10 @@ const snackbarModule = {
         addSnack: function ({ commit }, snack) {
             snack.show = true;
             commit('SNACK_ADDED', snack)
-        }
+        },
+        addNotification: function ({ commit }, notification) {
+            commit('NOTIFICATION_ADDED', notification)
+        },
     },
     getters: {}
 }
