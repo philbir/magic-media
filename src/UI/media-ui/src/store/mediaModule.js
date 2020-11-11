@@ -175,7 +175,7 @@ const mediaModule = {
         this.$magic.snack("Error loading", "ERROR");
       }
     },
-    async moveSelected({ commit, state }, newLocation) {
+    async moveSelected({ commit, state, dispatch }, newLocation) {
       try {
         const ids = getMediaIdsFromIndexes(state);
         const res = await moveMedia({
@@ -184,6 +184,15 @@ const mediaModule = {
         });
 
         commit("OPERATION_COMMITED", res.data.moveMedia.operationId);
+
+        dispatch('snack/operationStarted', {
+          id: res.data.moveMedia.operationId,
+          type: 'INFO',
+          title: 'Move media',
+          totalCount: ids.length,
+          text: 'Move media started'
+        })
+
       } catch (ex) {
         console.error(ex);
         this.$magic.snack("Error loading", "ERROR");

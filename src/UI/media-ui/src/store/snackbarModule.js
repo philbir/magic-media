@@ -17,6 +17,9 @@ const snackbarModule = {
         addNotification: function ({ commit }, notification) {
             commit('NOTIFICATION_ADDED', notification)
         },
+        operationStarted: function ({ commit }, operation) {
+            console.log(operation)
+        }
     },
     getters: {}
 }

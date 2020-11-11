@@ -14,21 +14,19 @@
       </v-badge>
     </template>
 
-    <v-list dense width="200">
-      <v-list-item
-        v-for="item in navMenuItems"
-        :key="item.text"
-        link
-        :to="{ name: item.route }"
-      >
-        <v-list-item-icon>
-          <v-icon>{{ item.icon }}</v-icon>
-        </v-list-item-icon>
+    <v-list two-line width="360">
+      <template>
+        <v-list-item>
+          <v-list-item-icon>
+            <v-icon>mdi-information-outline</v-icon>
+          </v-list-item-icon>
 
-        <v-list-item-content>
-          <v-list-item-title>{{ item.text }}</v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
+          <v-list-item-content>
+            <v-list-item-title>Media Moved</v-list-item-title>
+            <v-list-item-subtitle>1 / 2</v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+      </template>
     </v-list>
   </v-menu>
 </template>
