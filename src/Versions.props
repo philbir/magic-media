@@ -1,0 +1,9 @@
+<Project>
+    <PropertyGroup>
+        <MassTransitVersion>7.0.6</MassTransitVersion>
+        <SixLaborsImageSharpVersion>1.0.1</SixLaborsImageSharpVersion>
+        <AspNetCoreVersion>5.0.0</AspNetCoreVersion>
+        <HotChocolateVersion>11.0.0-rc.1</HotChocolateVersion>
+        <IdentityServerVersion>4.1.1</IdentityServerVersion>
+    </PropertyGroup>
+</Project>
