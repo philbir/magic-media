@@ -47,7 +47,7 @@ namespace MagicMedia.Store.MongoDb
             {
                 filter &= Builders<Media>.Filter.Regex(
                     x => x.Folder,
-                    new BsonRegularExpression("^/" + Regex.Escape(request.Folder), "i"));
+                    new BsonRegularExpression("^" + Regex.Escape(request.Folder), "i"));
             }
 
             if (request.Persons is { } persons && persons.Any())
@@ -182,6 +182,15 @@ namespace MagicMedia.Store.MongoDb
                 x => x.Id == mediaId,
                 Builders<Media>.Update.Set(f => f.FaceCount, faces.Count()),
                 options: null,
+                cancellationToken);
+        }
+
+        public async Task UpdateAsync(Media media, CancellationToken cancellationToken)
+        {
+            await _mediaStoreContext.Medias.ReplaceOneAsync(
+                x => x.Id == media.Id,
+                media,
+                options: new ReplaceOptions(),
                 cancellationToken);
         }
 

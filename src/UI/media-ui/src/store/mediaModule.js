@@ -4,8 +4,19 @@ import {
   getById,
   getFolderTree,
   getSearchFacets,
+  moveMedia,
   searchMedia
 } from "../services/mediaService";
+
+/* eslint-disable no-debugger */
+
+const getMediaIdsFromIndexes = state => {
+  const ids = [];
+  for (let i = 0; i < state.selectedIndexes.length; i++) {
+    ids.push(state.list[state.selectedIndexes[i]].id);
+  }
+  return ids;
+};
 
 const mediaModule = {
   namespaced: true,
@@ -27,10 +38,10 @@ const mediaModule = {
     selectedIndexes: [],
     hasMore: true,
     isEditMode: false,
+    thumbnailSize: "M",
     filter: {
       pageNr: 0,
       pageSize: 200,
-      thumbnailSize: "M",
       countries: [],
       cities: [],
       persons: []
@@ -55,13 +66,12 @@ const mediaModule = {
       state.current = Object.assign({}, media);
     },
     FOLDER_TREE_LOADED(state, tree) {
-      console.log(tree);
       state.folderTree = Object.assign({}, tree);
     },
     FILTER_THUMBNAIL_SIZE_SET(state, size) {
       state.list = [];
       state.filter.pageNr = 0;
-      state.filter.thumbnailSize = size;
+      state.thumbnailSize = size;
       state.selectedIndexes = [];
     },
     FILTER_PERSONS_SET(state, persons) {
@@ -79,33 +89,33 @@ const mediaModule = {
     PAGE_NR_INC(state) {
       state.filter.pageNr++;
     },
-    UPLOAD_DIALOG_TOGGLED: function (state, open) {
+    UPLOAD_DIALOG_TOGGLED: function(state, open) {
       state.uploadDialog.open = open;
     },
-    SET_MEDIALIST_LOADING: function (state, isloading) {
+    SET_MEDIALIST_LOADING: function(state, isloading) {
       state.listLoading = isloading;
     },
-    SEARCH_FACETS_LOADED: function (state, facets) {
+    SEARCH_FACETS_LOADED: function(state, facets) {
       Vue.set(state, "facets", facets);
     },
-    RESET_FILTER: function (state) {
+    RESET_FILTER: function(state) {
       state.list = [];
       state.filter.pageNr = 0;
       state.totalLoaded = 0;
       state.totalCount = 0;
       state.selectedIndexes = [];
     },
-    MEDIA_CLOSED: function (state) {
+    MEDIA_CLOSED: function(state) {
       state.currentMediaId = null;
       state.current = null;
     },
-    EDIT_MODE_TOGGLE: function (state, value) {
+    EDIT_MODE_TOGGLE: function(state, value) {
       state.isEditMode = value;
       if (!value) {
         state.selectedIndexes = [];
       }
     },
-    SELECTED: function (state, idx) {
+    SELECTED: function(state, idx) {
       const current = [...state.selectedIndexes];
       const i = current.indexOf(idx);
       if (i > -1) {
@@ -116,8 +126,20 @@ const mediaModule = {
 
       Vue.set(state, "selectedIndexes", current);
     },
-    ALL_SELECTED: function (state) {
+    ALL_SELECTED: function(state) {
       state.selectedIndexes = [...Array(state.list.length).keys()];
+    },
+    OPERATION_COMMITED: function(state, id) {
+      var mediaIds = getMediaIdsFromIndexes(state);
+
+      const current = [...state.list];
+      for (let i = 0; i < mediaIds.length; i++) {
+        var idx = current.findIndex(x => x.id === mediaIds[i]);
+        current.splice(idx, 1);
+      }
+      state.selectedIndexes = [];
+      Vue.set(state, "list", current);
+      console.log("OPID", id);
     }
   },
   actions: {
@@ -125,7 +147,7 @@ const mediaModule = {
       try {
         commit("SET_MEDIALIST_LOADING", true);
 
-        const res = await searchMedia(state.filter);
+        const res = await searchMedia(state.filter, state.thumbnailSize);
         commit("MEDIAITEMS_LOADED", res.data.searchMedia);
       } catch (ex) {
         this.$magic.snack("Error loading", "ERROR");
@@ -150,6 +172,32 @@ const mediaModule = {
         const res = await getFolderTree();
         commit("FOLDER_TREE_LOADED", res.data.folderTree);
       } catch (ex) {
+        this.$magic.snack("Error loading", "ERROR");
+      }
+    },
+    async moveSelected({ commit, state, dispatch }, newLocation) {
+      try {
+        const ids = getMediaIdsFromIndexes(state);
+        const res = await moveMedia({
+          ids,
+          newLocation
+        });
+
+        commit("OPERATION_COMMITED", res.data.moveMedia.operationId);
+
+        dispatch(
+          "snackbar/operationStarted",
+          {
+            id: res.data.moveMedia.operationId,
+            type: "INFO",
+            title: "Move media",
+            totalCount: ids.length,
+            text: "Move media"
+          },
+          { root: true }
+        );
+      } catch (ex) {
+        console.error(ex);
         this.$magic.snack("Error loading", "ERROR");
       }
     },
@@ -196,16 +244,16 @@ const mediaModule = {
         console.error(ex);
       }
     },
-    toggleUploadDialog: function ({ commit }, open) {
+    toggleUploadDialog: function({ commit }, open) {
       commit("UPLOAD_DIALOG_TOGGLED", open);
     },
-    toggleEditMode: function ({ commit }, value) {
+    toggleEditMode: function({ commit }, value) {
       commit("EDIT_MODE_TOGGLE", value);
     },
-    select: function ({ commit }, id) {
+    select: function({ commit }, id) {
       commit("SELECTED", id);
     },
-    selectAll: function ({ commit }) {
+    selectAll: function({ commit }) {
       commit("ALL_SELECTED");
     }
   },

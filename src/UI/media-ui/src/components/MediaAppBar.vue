@@ -42,7 +42,12 @@
         >
       </template>
       <v-list dense>
-        <v-list-item v-for="action in mediaActions" :key="action.text">
+        <v-list-item
+          v-for="action in mediaActions"
+          v-show="selectedCount > 0"
+          :key="action.text"
+          @click="onClickAction(action.action)"
+        >
           <v-list-item-title> {{ action.text }}</v-list-item-title>
         </v-list-item>
         <v-divider></v-divider>
@@ -68,20 +73,29 @@
     <v-icon color="white" class="mr-2" @click="openUpload">
       mdi-cloud-upload-outline
     </v-icon>
+    <NotificationMenu></NotificationMenu>
+
     <Upload :show="showUpload"></Upload>
+    <MoveMediaDialog
+      :show="showMove"
+      @close="showMove = false"
+    ></MoveMediaDialog>
   </v-app-bar>
 </template>
 
 <script>
 import Upload from "./Upload";
+import MoveMediaDialog from "./MoveMediaDialog";
 import AppBarNavMenu from "./AppBarNavMenu";
+import NotificationMenu from "./Common/NotificationMenu";
 
 export default {
   name: "App",
-  components: { Upload, AppBarNavMenu },
+  components: { Upload, AppBarNavMenu, MoveMediaDialog, NotificationMenu },
 
   data: () => ({
     dialog: true,
+    showMove: false,
     sizes: [
       {
         text: "Square XS",
@@ -97,10 +111,10 @@ export default {
   computed: {
     mediaActions: function () {
       return [
-        { text: "Add to album" },
-        { text: "Move" },
-        { text: "Edit" },
-        { text: "Delete" },
+        { text: "Add to album", action: "ADD_TO_ALBUM" },
+        { text: "Move", action: "MOVE" },
+        { text: "Edit", action: "EDIT" },
+        { text: "Delete", acion: "DELETE" },
       ];
     },
     editModeText: function () {
@@ -131,6 +145,10 @@ export default {
     },
     selectAll: function () {
       this.$store.dispatch("media/selectAll");
+    },
+    onClickAction: function (action) {
+      console.log(action);
+      this.showMove = true;
     },
   },
 };

@@ -15,6 +15,11 @@ module.exports = {
         ws: true,
         changeOrigin: true,
         target: process.env.API_BASE_URL
+      },
+      "/signalr": {
+        ws: true,
+        changeOrigin: true,
+        target: process.env.API_BASE_URL
       }
     }
   }

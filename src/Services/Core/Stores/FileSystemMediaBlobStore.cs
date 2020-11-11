@@ -33,12 +33,37 @@ namespace MagicMedia.Stores
             var filename = GetFilename(data);
             var file = new FileInfo(filename);
 
-            if (!file.Directory.Exists)
+            if (!file.Directory!.Exists)
             {
                 Directory.CreateDirectory(file.Directory.FullName);
             }
 
             await File.WriteAllBytesAsync(filename, data.Data, cancellationToken);
+        }
+
+        public Task MoveAsync(
+            MediaBlobData request,
+            string newLocation,
+            CancellationToken cancellationToken)
+        {
+            //MediaBlobData file = await GetAsync(request, cancellationToken);
+            var filename =  GetFilename(request);
+
+            var newPathFragments = new List<string> { _options.RootDirectory };
+            newPathFragments.AddRange(newLocation.Split('/'));
+
+            var newDir = Path.Combine(newPathFragments.ToArray());
+
+            if (!Directory.Exists(newDir))
+            {
+                Directory.CreateDirectory(newDir);
+            }
+
+            var newFilename = Path.Combine(newDir, Path.GetFileName(filename));
+
+            File.Move(filename, newFilename, true);
+
+            return Task.CompletedTask;
         }
 
         private string GetFilename(MediaBlobData data)

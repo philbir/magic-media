@@ -1,5 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
+using HotChocolate;
 using HotChocolate.Types;
 
 namespace MagicMedia.GraphQL.SearchFacets
@@ -7,9 +8,12 @@ namespace MagicMedia.GraphQL.SearchFacets
     [ExtendObjectType(Name = "Query")]
     public class SearchFacetQueries
     {
-        public async Task<SearchFacets> GetFacets(CancellationToken cancellationToken)
+        static readonly object NoOp = new object();
+
+        [GraphQLType(typeof(SearchFacetType))]
+        public object GetFacets(CancellationToken cancellationToken)
         {
-            return new SearchFacets();
+            return NoOp;
         }
     }
 }

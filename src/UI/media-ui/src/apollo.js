@@ -1,25 +1,28 @@
-import { ApolloClient } from 'apollo-client';
-import { HttpLink } from 'apollo-link-http';
-import { InMemoryCache } from 'apollo-cache-inmemory';
+import { InMemoryCache } from "apollo-cache-inmemory";
+import { ApolloClient } from "apollo-client";
+import { HttpLink } from "apollo-link-http";
 
 const defaultOptions = {
   watchQuery: {
-    fetchPolicy: 'network-only',
-    errorPolicy: 'ignore',
+    fetchPolicy: "network-only",
+    errorPolicy: "ignore"
   },
   query: {
-    fetchPolicy: 'network-only',
-    errorPolicy: 'all',
-  },
-}
+    fetchPolicy: "network-only",
+    errorPolicy: "all"
+  }
+};
+
+const httpLink = new HttpLink({
+  uri: "/graphql"
+});
 
 export default new ApolloClient({
-  // Provide the URL to the API server.
-  link: new HttpLink({ uri: '/graphql' }),
-  // Using a cache for blazingly
-  // fast subsequent queries.
+  link: httpLink,
   cache: new InMemoryCache({
     resultCaching: false
   }),
-  defaultOptions: defaultOptions,
+  defaultOptions: defaultOptions
 });
+
+

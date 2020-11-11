@@ -1,13 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using MagicMedia.Massaging.Consumers;
 using MagicMedia.Messaging;
 using MassTransit;
-using MassTransit.Azure.ServiceBus.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -25,13 +19,16 @@ namespace MagicMedia.Massaging
             services.AddMassTransit(s =>
             {
                 s.AddConsumer<FaceUpdatedConsumer>();
+                s.AddConsumer<MoveMediaConsumer>();
+                s.AddConsumer<MoveMediaCompletedConsumer>();
+                s.AddConsumer<MoveMediaRequestCompletedConsumer>();
 
                 if (options.Transport == MessagingTransport.InMemory)
                 {
                     s.AddBus(provider => Bus.Factory.CreateUsingInMemory(cfg => {
                        cfg.ReceiveEndpoint(e =>
                        {
-                           e.ConfigureConsumers();
+                           e.ConfigureConsumers(provider);
                        });
                     }));
                 }
@@ -42,7 +39,7 @@ namespace MagicMedia.Massaging
                         cfg.Host(options.ServiceBus.ConnectionString);
                         cfg.ReceiveEndpoint(options.ServiceBus.ReceiveQueueName, e =>
                         {
-                            e.ConfigureConsumers();
+                            e.ConfigureConsumers(provider);
                         });
                     }));
                 };
@@ -52,9 +49,15 @@ namespace MagicMedia.Massaging
             return services;
         }
 
-        public static void ConfigureConsumers(this IReceiveEndpointConfigurator e)
+        public static void ConfigureConsumers(
+            this IReceiveEndpointConfigurator e,
+            IServiceCollection services,
+            IServiceProvider serviceProvider)
         {
-            e.Consumer<FaceUpdatedConsumer>();
+            services.AddSingleton<FaceUpdatedConsumer>();
+            
+
+            e.Consumer<FaceUpdatedConsumer>(serviceProvider);
         }
     }
 }

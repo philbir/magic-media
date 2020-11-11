@@ -53,15 +53,13 @@ export default {
 
     this.containerWith =
       window.innerWidth - (this.$vuetify.breakpoint.mobile ? 0 : 264);
-    console.log(this.$vuetify);
     this.onScroll = debounce(this.onScroll, 100);
   },
 
   computed: {
     layout: function () {
       const items = this.$store.state.media.list;
-      const viewMap =
-        mediaListViewMap[this.$store.state.media.filter.thumbnailSize];
+      const viewMap = mediaListViewMap[this.$store.state.media.thumbnailSize];
       const ratios = [];
       items.forEach((item) => {
         ratios.push(

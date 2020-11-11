@@ -29,13 +29,5 @@ namespace MagicMedia.Store.MongoDb
             return services;
         }
 
-        public static IServiceCollection AddMongoDbGeoCache(
-            this IServiceCollection services,
-            Func<IGeoDecoderService> geoDecoderResolver)
-        {
-            services.AddSingleton(c => new GeoDecoderCacheStore(c.GetRequiredService<MediaStoreContext>(), geoDecoderResolver()));
-
-            return services;
-        }
     }
 }

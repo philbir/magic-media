@@ -1,5 +1,6 @@
 using MagicMedia.Face;
 using MagicMedia.Metadata;
+using MagicMedia.Operations;
 using MagicMedia.Processing;
 using MagicMedia.Thumbnail;
 using Microsoft.Extensions.Configuration;
@@ -39,6 +40,9 @@ namespace MagicMedia
 
             services.AddSingleton<ISearchFacetService, SearchFacetService>();
             services.AddSingleton<IFolderTreeService, FolderTreeService>();
+
+            services.AddSingleton<IMediaOperationsService, MediaOperationsService>();
+            services.AddSingleton<IMoveMediaHandler, MoveMediaHandler>();
 
             return services;
         }

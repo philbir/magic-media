@@ -1,5 +1,4 @@
 using HotChocolate.Execution.Configuration;
-using HotChocolate.Types;
 using MagicMedia.GraphQL;
 using MagicMedia.GraphQL.DataLoaders;
 using MagicMedia.GraphQL.Face;
@@ -21,6 +20,7 @@ namespace MagicMedia
                 .AddType<SearchFacetQueries>()
                 .AddMutationType(d => d.Name("Mutation"))
                 .AddType<FaceMutations>()
+                .AddType<MediaMutations>()
                 .AddType<MediaType>()
                 .AddType<FaceType>()
                 .AddType<ThumbnailType>()
@@ -28,6 +28,7 @@ namespace MagicMedia
                 .AddDataLoader<CameraByIdDataLoader>()
                 .AddDataLoader<ThumbnailByMediaIdDataLoader>()
                 .AddDataLoader<MediaByIdDataLoader>()
+                .AddInMemorySubscriptions()
                 .AddAuthorization();
 
             return builder;
