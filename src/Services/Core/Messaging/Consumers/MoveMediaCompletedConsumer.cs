@@ -1,11 +1,10 @@
 using System.Linq;
 using System.Threading.Tasks;
 using MagicMedia.Hubs;
-using MagicMedia.Messaging;
 using MassTransit;
 using Microsoft.AspNetCore.SignalR;
 
-namespace MagicMedia.Massaging.Consumers
+namespace MagicMedia.Messaging.Consumers
 {
     public class MoveMediaCompletedConsumer : IConsumer<MoveMediaCompletedMessage>
     {

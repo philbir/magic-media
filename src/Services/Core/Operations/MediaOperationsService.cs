@@ -38,7 +38,7 @@ namespace MagicMedia.Operations
 
             await _mediaStore.UpdateAsync(media, cancellationToken);
 
-            await _bus.Publish(new FavoriteToggledMessage(id, isFavorite));
+            await _bus.Publish(new FavoriteMediaToggledMessage(id, isFavorite));
         }
     }
 }

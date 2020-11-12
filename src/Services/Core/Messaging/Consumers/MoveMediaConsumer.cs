@@ -7,7 +7,7 @@ using MagicMedia.Messaging;
 using MagicMedia.Operations;
 using MassTransit;
 
-namespace MagicMedia.Massaging.Consumers
+namespace MagicMedia.Messaging.Consumers
 {
     public class MoveMediaConsumer : IConsumer<MoveMediaMessage>
     {

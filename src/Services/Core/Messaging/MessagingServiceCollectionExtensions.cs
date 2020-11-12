@@ -1,11 +1,11 @@
 using System;
-using MagicMedia.Massaging.Consumers;
+using MagicMedia.Messaging.Consumers;
 using MagicMedia.Messaging;
 using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace MagicMedia.Massaging
+namespace MagicMedia.Messaging
 {
     public static class MessagingServiceCollectionExtensions
     {
@@ -22,6 +22,7 @@ namespace MagicMedia.Massaging
                 s.AddConsumer<MoveMediaConsumer>();
                 s.AddConsumer<MoveMediaCompletedConsumer>();
                 s.AddConsumer<MoveMediaRequestCompletedConsumer>();
+                s.AddConsumer<FavoriteMediaToggledConsumer>();
 
                 if (options.Transport == MessagingTransport.InMemory)
                 {

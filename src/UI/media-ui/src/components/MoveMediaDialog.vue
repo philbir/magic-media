@@ -84,7 +84,6 @@ export default {
         return this.show;
       },
       set(val) {
-        console.log(val);
         this.$emit("close", val);
       },
     },

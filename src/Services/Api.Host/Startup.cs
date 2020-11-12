@@ -1,6 +1,6 @@
 using MagicMedia.BingMaps;
 using MagicMedia.Hubs;
-using MagicMedia.Massaging;
+using MagicMedia.Messaging;
 using MagicMedia.Store.MongoDb;
 using MagicMedia.Stores;
 using MassTransit;
