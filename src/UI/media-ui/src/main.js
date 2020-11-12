@@ -6,7 +6,7 @@ import vuetify from "./plugins/vuetify";
 import router from "./router";
 import signalrHub from "./signalrHub";
 import store from "./store";
-
+import VueMask from 'v-mask'
 
 Vue.config.productionTip = false;
 
@@ -26,6 +26,7 @@ const magicPlugin = {
 
 Vue.use(magicPlugin);
 Vue.use(signalrHub)
+Vue.use(VueMask);
 
 Vue.filter("dateformat", function (value, format = "DATE_SHORT") {
   if (!value) return "";

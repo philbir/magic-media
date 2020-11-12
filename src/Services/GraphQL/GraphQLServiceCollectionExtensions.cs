@@ -21,6 +21,7 @@ namespace MagicMedia
                 .AddMutationType(d => d.Name("Mutation"))
                 .AddType<FaceMutations>()
                 .AddType<MediaMutations>()
+                .AddType<PersonMutations>()
                 .AddType<MediaType>()
                 .AddType<FaceType>()
                 .AddType<ThumbnailType>()

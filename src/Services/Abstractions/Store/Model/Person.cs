@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace MagicMedia.Store
 {
@@ -10,8 +11,10 @@ namespace MagicMedia.Store
 
         public string Name { get; set; }
 
-        public string? Group { get; set; }
+        public IEnumerable<string>? Group { get; set; }
 
         public DateTime? DateOfBirth { get; set; }
+
+        public Guid? ProfileFaceId { get; set; }
     }
 }
