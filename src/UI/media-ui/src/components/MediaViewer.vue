@@ -6,13 +6,13 @@
       <div class="media-nav">
         <v-row>
           <v-col class="ma-4">
-            <v-icon large color="grey darken-1" @click="handlePrevious">
+            <v-icon large color="grey lighten-2" @click="handlePrevious">
               mdi-chevron-left-circle
             </v-icon>
           </v-col>
           <v-spacer></v-spacer>
           <v-col justify="end" align="right" class="ma-3">
-            <v-icon large color="grey darken-1" @click="handleNext">
+            <v-icon large color="grey lighten-2" @click="handleNext">
               mdi-chevron-right-circle
             </v-icon>
           </v-col>
@@ -24,8 +24,15 @@
             <v-icon @click="handleHome" color="white"> mdi-home </v-icon>
             {{ media.dateTaken | dateformat("DATETIME_MED") }}
           </v-col>
-          <v-spacer></v-spacer>
           <v-col class="mr-4" align="right">
+            <v-icon
+              :color="media.isFavorite ? 'red' : 'white'"
+              class="mr-4"
+              @click="toggleFavorite(media)"
+            >
+              mdi-heart
+            </v-icon>
+
             <v-icon color="white"> mdi-cog-outline </v-icon>
           </v-col>
         </v-row>
@@ -181,6 +188,10 @@ export default {
     },
     onMouseMove: function (e) {
       this.showStripe = e.clientY > 300;
+    },
+    toggleFavorite: function (media) {
+      console.log(media);
+      this.$store.dispatch("media/toggleFavorite", media);
     },
     keyPressed: function (e) {
       switch (e.event.keyCode) {

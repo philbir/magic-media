@@ -42,12 +42,26 @@ namespace MagicMedia.Store.MongoDb
             CancellationToken cancellationToken)
         {
             FilterDefinition<Media> filter = Builders<Media>.Filter.Empty;
-          
+
             if (!string.IsNullOrEmpty(request.Folder))
             {
-                filter &= Builders<Media>.Filter.Regex(
-                    x => x.Folder,
-                    new BsonRegularExpression("^" + Regex.Escape(request.Folder), "i"));
+                if (request.Folder.StartsWith("SPECIAL"))
+                {
+                    var special = request.Folder.Split(':').LastOrDefault();
+
+                    switch (special.ToUpper())
+                    {
+                        case "FAVORITES":
+                            filter &= Builders<Media>.Filter.Eq(x => x.IsFavorite, true);
+                            break;
+                    }
+                }
+                else
+                {
+                    filter &= Builders<Media>.Filter.Regex(
+                        x => x.Folder,
+                        new BsonRegularExpression("^" + Regex.Escape(request.Folder), "i"));
+                }
             }
 
             if (request.Persons is { } persons && persons.Any())

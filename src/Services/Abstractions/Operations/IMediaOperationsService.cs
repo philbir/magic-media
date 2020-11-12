@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Messaging;
@@ -10,5 +11,6 @@ namespace MagicMedia
         Task MoveMediaAsync(
             MoveMediaRequest request,
             CancellationToken cancellationToken);
+        Task ToogleFavoriteAsync(Guid id, bool isFavorite, CancellationToken cancellationToken);
     }
 }

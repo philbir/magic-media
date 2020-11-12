@@ -5,6 +5,7 @@ query search($request: SearchMediaRequestInput!, $size: ThumbnailSizeName) {
       filename
       dateTaken
       cameraId
+      isFavorite
       camera {
         id
         model
