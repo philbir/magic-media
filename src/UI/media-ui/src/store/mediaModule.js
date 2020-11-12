@@ -5,7 +5,8 @@ import {
   getFolderTree,
   getSearchFacets,
   moveMedia,
-  searchMedia
+  searchMedia,
+  toggleFavorite
 } from "../services/mediaService";
 
 /* eslint-disable no-debugger */
@@ -140,6 +141,9 @@ const mediaModule = {
       state.selectedIndexes = [];
       Vue.set(state, "list", current);
       console.log("OPID", id);
+    },
+    FAVORITE_TOGGLED: function(state) {
+      state.current.isFavorite = !state.current.isFavorite;
     }
   },
   actions: {
@@ -255,6 +259,11 @@ const mediaModule = {
     },
     selectAll: function({ commit }) {
       commit("ALL_SELECTED");
+    },
+    async toggleFavorite({ commit }, media) {
+      const res = await toggleFavorite(media.id, !media.isFavorite);
+      console.log(res);
+      commit("FAVORITE_TOGGLED", media);
     }
   },
   getters: {

@@ -18,4 +18,6 @@ namespace MagicMedia.Messaging
             Action = action;
         }
     }
+
+    public record FavoriteToggledMessage(Guid Id, bool IsFavorite);
 }

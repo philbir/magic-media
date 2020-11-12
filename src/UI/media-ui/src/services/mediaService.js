@@ -5,6 +5,7 @@ import MUTATION_MOVE_MEDIA from "../graphql/MoveMedia.gql";
 import QUERY_SEARCH_FACETS from "../graphql/SearchFacets.gql";
 import QUERY_SEARCH from "../graphql/SearchMedia.gql";
 import SUBSCRIPTION_OPERATION_COMPLETED from "../graphql/SubscribeOperationCompleted.gql";
+import MUTATION_TOGGLE_FAVORITE from "../graphql/ToggleFavorite.gql";
 
 /* eslint-disable no-debugger */
 export const searchMedia = async (request, size) => {
@@ -49,6 +50,17 @@ export const moveMedia = async request => {
   });
 };
 
+export const toggleFavorite = async (id, isFavorite) => {
+  return await apollo.mutate({
+    mutation: MUTATION_TOGGLE_FAVORITE,
+    variables: {
+      input: {
+        id: id,
+        isFavorite: isFavorite
+      }
+    }
+  });
+};
 
 export const subscribeOperationCompleted = async id => {
   console.log(id);
@@ -67,7 +79,7 @@ export const subscribeOperationCompleted = async id => {
         console.log(err);
       },
       complete(c) {
-        console.log(c)
+        console.log(c);
       }
-    })
+    });
 };

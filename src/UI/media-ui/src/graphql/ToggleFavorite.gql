@@ -1,0 +1,11 @@
+#import "./UserErrorFragment.gql"
+
+mutation toggleFavorite($input: ToggleMediaFavoriteInput!) {
+  toggleMediaFavorite(input: $input) {
+    id
+    isFavorite
+    errors {
+      ...userError
+    }
+  }
+}

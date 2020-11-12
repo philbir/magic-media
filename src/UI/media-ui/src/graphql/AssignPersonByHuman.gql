@@ -1,3 +1,5 @@
+#import "./UserErrorFragment.gql"
+
 mutation assignPersonByHuman($input: AssignPersonByHumanInput!) {
   assignPersonByHuman(input: $input) {
     face {
@@ -21,8 +23,7 @@ mutation assignPersonByHuman($input: AssignPersonByHumanInput!) {
       }
     }
     errors {
-      code
-      message
+      ...userError
     }
   }
 }

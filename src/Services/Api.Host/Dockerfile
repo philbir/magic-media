@@ -15,7 +15,6 @@ COPY ["Core/Core.csproj", "Core/"]
 COPY ["GraphQL/GraphQL.csproj", "GraphQL/"]
 COPY ["Store.MongoDb/Store.MongoDb.csproj", "Store.MongoDb/"]
 
-
 RUN dotnet restore "Api.Host/Api.Host.csproj"
 
 COPY . .
