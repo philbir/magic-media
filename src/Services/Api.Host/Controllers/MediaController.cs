@@ -70,6 +70,14 @@ namespace MagicMedia.Api.Controllers
                     Id = file.FileName,
                     Source = MediaDiscoverySource.WebUpload
                 }
+                ,Options = new MediaProcessingOptions
+                {
+                    SaveMedia = new SaveMediaFileOptions
+                    {
+                        SaveMode = SaveMediaMode.CreateNew,
+                        SourceAction = SaveMediaSourceAction.Keep
+                    }
+                }
             }, cancellationToken);
 
             return Ok();

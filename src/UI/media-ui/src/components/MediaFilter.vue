@@ -46,7 +46,9 @@
             class="list-country"
             :style="{
               'background-image':
-                'url(https://www.countryflags.io/' + 'de' + '/shiny/64.png',
+                'url(https://www.countryflags.io/' +
+                item.value +
+                '/shiny/64.png',
             }"
             >{{ item.display }}</v-list-item-title
           >
