@@ -79,5 +79,6 @@ namespace MagicMedia.Store.MongoDb
 
             return person;
         }
+
     }
 }

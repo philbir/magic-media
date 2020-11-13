@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using MagicMedia.Messaging;
 using MagicMedia.Search;
 using MagicMedia.Store;
+using MagicMedia.Store.MongoDb;
 using MassTransit;
 using MassTransit.Saga;
 
@@ -15,17 +16,20 @@ namespace MagicMedia
     public class PersonService : IPersonService
     {
         private readonly IPersonStore _personStore;
+        private readonly IGroupService _groupService;
         private readonly IFaceStore _faceStore;
         private readonly IThumbnailBlobStore _thumbnailBlob;
         private readonly IBus _bus;
 
         public PersonService(
             IPersonStore personStore,
+            IGroupService groupService,
             IFaceStore faceStore,
             IThumbnailBlobStore thumbnailBlob,
             IBus bus)
         {
             _personStore = personStore;
+            _groupService = groupService;
             _faceStore = faceStore;
             _thumbnailBlob = thumbnailBlob;
             _bus = bus;
@@ -55,12 +59,23 @@ namespace MagicMedia
             UpdatePersonRequest request,
             CancellationToken cancellationToken)
         {
+            List<Guid> userGroups = request.Groups?.ToList() ?? new List<Guid>();
+
+            if (request.NewGroups is { } newGroupNames && newGroupNames.Any())
+            {
+                foreach ( var newGroup in newGroupNames)
+                {
+                    Group? group = await _groupService.AddAsync(newGroup, cancellationToken);
+                    userGroups.Add(group.Id);
+                }
+            }
+
             Person person = await _personStore.GetByIdAsnc(request.Id, cancellationToken);
 
             person.Name = request.Name;
-            person.Groups = request.Groups;
+            person.Groups = userGroups;
             person.ProfileFaceId = request.ProfileFaceId;
-            person.DateOfBirth = request.DateOfBirth;
+            person.DateOfBirth = request.DateOfBirth?.Date;
 
             await _personStore.UpdateAsync(person, cancellationToken);
 

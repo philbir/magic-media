@@ -7,10 +7,10 @@ const snackbarModule = {
     notifications: []
   }),
   mutations: {
-    SNACK_ADDED: function(state, snack) {
+    SNACK_ADDED: function (state, snack) {
       state.snacks.push(snack);
     },
-    OPERATION_ADDED: function(state, operation) {
+    OPERATION_ADDED: function (state, operation) {
       state.notifications.push({
         id: operation.id,
         type: operation.type,
@@ -22,7 +22,7 @@ const snackbarModule = {
         active: true
       });
     },
-    OPERATION_UPDATED: function(state, operation) {
+    OPERATION_UPDATED: function (state, operation) {
       const idx = state.notifications.findIndex(x => x.id === operation.id);
       if (idx > -1) {
         state.notifications[idx] = operation;
@@ -30,18 +30,17 @@ const snackbarModule = {
     }
   },
   actions: {
-    addSnack: function({ commit }, snack) {
+    addSnack: function ({ commit }, snack) {
       snack.show = true;
       commit("SNACK_ADDED", snack);
     },
-    addNotification: function({ commit }, notification) {
+    addNotification: function ({ commit }, notification) {
       commit("NOTIFICATION_ADDED", notification);
     },
-    operationStarted: function({ commit }, operation) {
-      console.log(operation);
+    operationStarted: function ({ commit }, operation) {
       commit("OPERATION_ADDED", operation);
     },
-    moveMediaCompleted: function({ state, commit }, operation) {
+    moveMediaCompleted: function ({ state, commit }, operation) {
       const ntf = state.notifications.find(x => x.id === operation.operationId);
       if (ntf) {
         if (operation.isSuccess) {
@@ -57,7 +56,7 @@ const snackbarModule = {
         commit("OPERATION_UPDATED", ntf);
       }
     },
-    moveMediaRequestCompleted: function({ state, commit }, operation) {
+    moveMediaRequestCompleted: function ({ state, commit }, operation) {
       const ntf = state.notifications.find(x => x.id === operation.operationId);
       if (ntf) {
         if (operation.errorCount === 0) {

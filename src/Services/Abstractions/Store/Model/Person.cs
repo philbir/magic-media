@@ -11,9 +11,7 @@ namespace MagicMedia.Store
 
         public string Name { get; set; }
 
-        public string? Group { get; set; }
-
-        public IEnumerable<string>? Groups { get; set; }
+        public IEnumerable<Guid>? Groups { get; set; }
 
         public DateTime? DateOfBirth { get; set; }
 

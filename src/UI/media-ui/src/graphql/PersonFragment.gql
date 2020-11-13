@@ -2,6 +2,9 @@ fragment person on Person {
   id
   name
   dateOfBirth
-  groups
+  groups{
+    id
+    name
+  }
   profileFaceId
 }

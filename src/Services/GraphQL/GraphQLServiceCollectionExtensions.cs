@@ -24,6 +24,7 @@ namespace MagicMedia
                 .AddType<PersonMutations>()
                 .AddType<MediaType>()
                 .AddType<FaceType>()
+                .AddType<PersonType>()
                 .AddType<ThumbnailType>()
                 .AddType<SearchFacetType>()
                 .AddDataLoader<CameraByIdDataLoader>()

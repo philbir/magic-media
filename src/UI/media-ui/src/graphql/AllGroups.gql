@@ -1,0 +1,6 @@
+query groups {
+  groups {
+    id
+    name
+  }
+}

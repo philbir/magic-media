@@ -1,17 +1,17 @@
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
 using MongoDB.Extensions.Context;
 
 namespace MagicMedia.Store.MongoDb.Configuration
 {
-    internal class PersonCollectionConfiguration :
-        IMongoCollectionConfiguration<Person>
+    internal class GroupCollectionConfiguration :
+        IMongoCollectionConfiguration<Group>
     {
         public void OnConfiguring(
-            IMongoCollectionBuilder<Person> builder)
+            IMongoCollectionBuilder<Group> builder)
         {
             builder
-                .WithCollectionName(CollectionNames.Person)
-                .AddBsonClassMap<Person>(cm =>
+                .WithCollectionName(CollectionNames.Group)
+                .AddBsonClassMap<Group>(cm =>
                 {
                     cm.AutoMap();
                     cm.MapIdMember(c => c.Id);

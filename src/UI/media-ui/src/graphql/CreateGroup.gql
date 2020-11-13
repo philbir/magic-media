@@ -1,0 +1,13 @@
+#import "./UserErrorFragment.gql"
+
+mutation createGroup($name: String!) {
+  createGroup(name: $name) {
+    group {
+      id
+      name
+    }
+    errors {
+        ... userError
+    }
+  }
+}

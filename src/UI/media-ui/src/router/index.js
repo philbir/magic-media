@@ -8,6 +8,7 @@ import MediaAppBar from "../components/MediaAppBar"
 import FaceAppBar from "../components/FaceAppBar"
 import DefaultAppBar from "../components/DefaultAppBar"
 import FaceFilter from "../components/FaceFilter"
+import PersonFilter from "../components/PersonFilter"
 
 Vue.use(VueRouter);
 
@@ -35,7 +36,7 @@ const routes = [
     name: "Persons",
     components: {
       default: PersonList,
-      left: null,
+      left: PersonFilter,
       appbar: DefaultAppBar
     }
   },

@@ -38,7 +38,6 @@ query mediaDetails($id: Uuid!) {
         id
         name
         dateOfBirth
-        group
       }
       personId,
       recognitionType,

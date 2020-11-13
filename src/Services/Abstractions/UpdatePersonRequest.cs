@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace MagicMedia
@@ -9,10 +9,12 @@ namespace MagicMedia
 
         public string Name { get; set; }
 
-        public DateTime? DateOfBirth { get; set; }
+        public DateTimeOffset? DateOfBirth { get; set; }
 
-        public IEnumerable<string> Groups { get; set; }
+        public IEnumerable<Guid> Groups { get; set; }
 
         public Guid? ProfileFaceId { get; set; }
+
+        public IEnumerable<string>? NewGroups { get; set; }
     }
 }

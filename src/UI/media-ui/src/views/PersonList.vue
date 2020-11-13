@@ -2,7 +2,7 @@
   <div>
     <v-container>
       <v-row style="overflow-x: auto; height: 600px">
-        <v-col v-for="person in persons" :key="person.id" sm="4" lg="6">
+        <v-col v-for="person in persons" :key="person.id" sm="3" lg="4">
           <v-card width="400">
             <v-card-title class="font-weight-bold">
               <v-avatar size="56">
@@ -13,7 +13,11 @@
               </p>
             </v-card-title>
 
-            <v-card-text> </v-card-text>
+            <v-card-text>
+              <p>
+                {{ person.dateOfBirth | dateformat("DATE_SHORT") }}
+              </p>
+            </v-card-text>
 
             <v-card-actions>
               <v-spacer></v-spacer>
@@ -39,6 +43,7 @@
 
 <script>
 import EditPersonDialog from "../components/EditPersonDialog";
+/* eslint-disable no-debugger */
 
 export default {
   components: {
@@ -52,9 +57,19 @@ export default {
     };
   },
   computed: {
+    filters: function () {
+      return this.$store.state.person.filter;
+    },
     persons: function () {
-      console.log(this.$store.state.person.persons);
-      return this.$store.state.person.persons;
+      return this.$store.state.person.persons.filter((x) => {
+        if (this.filters.searchText === "") {
+          return true;
+        } else {
+          return x.name
+            .toLowerCase()
+            .includes(this.filters.searchText.toLowerCase());
+        }
+      });
     },
   },
   methods: {

@@ -1,4 +1,4 @@
-import { DateTime, Settings } from "luxon";
+import { DateTime } from "luxon";
 import VueMask from "v-mask";
 import Vue from "vue";
 
@@ -14,7 +14,7 @@ const magicPlugin = {
   install: Vue => {
     Vue.prototype.$magic = {
       self: this,
-      snack: function(text, type = "INFO") {
+      snack: function (text, type = "INFO") {
         store.dispatch("snackbar/addSnack", {
           text,
           type
@@ -28,7 +28,7 @@ Vue.use(magicPlugin);
 Vue.use(signalrHub);
 Vue.use(VueMask);
 
-Vue.filter("dateformat", function(value, format = "DATE_SHORT") {
+Vue.filter("dateformat", function (value, format = "DATE_SHORT") {
   if (!value) return "";
 
   var date = DateTime.fromISO(value);
@@ -38,7 +38,6 @@ Vue.filter("dateformat", function(value, format = "DATE_SHORT") {
   return "";
 });
 
-Settings.defaultLocale = "de";
 
 new Vue({
   vuetify,
