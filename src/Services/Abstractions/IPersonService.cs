@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,6 +10,7 @@ namespace MagicMedia
     {
         Task<IEnumerable<Person>> GetAllAsync(CancellationToken cancellationToken);
         Task<Person> GetOrCreatePersonAsync(string name, CancellationToken cancellationToken);
-        Task<IEnumerable<Person>> GetPersonsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken);
+        Task<MediaThumbnail?> TryGetFaceThumbnailAsync(Guid personId, CancellationToken cancellationToken);
+        Task<Person> UpdatePersonAsync(UpdatePersonRequest request, CancellationToken cancellationToken);
     }
 }

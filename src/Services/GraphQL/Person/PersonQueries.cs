@@ -36,18 +36,15 @@ namespace MagicMedia.GraphQL
         }
 
         public async Task<UpdatePersonPayload> UpdatePersonAsync(
-            UpdatePersonInput input,
+            UpdatePersonRequest input,
             CancellationToken cancellationToken)
         {
-            return new UpdatePersonPayload(new Person());
+            Person person = await _personService.UpdatePersonAsync(input, cancellationToken);
+
+            return new UpdatePersonPayload(person);
         }
     }
 
-    public record UpdatePersonInput(
-        Guid Id,
-        string Name,
-        DateTime? DateOfBirth,
-        IEnumerable<string>? Groups);
 
     public class UpdatePersonPayload : Payload
     {

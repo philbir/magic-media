@@ -1,15 +1,12 @@
 <template>
   <div>
     <v-container>
-      <v-row style="overflow-x: auto">
-        <v-col v-for="person in persons" :key="person.id" sm="4">
+      <v-row style="overflow-x: auto; height: 600px">
+        <v-col v-for="person in persons" :key="person.id" sm="4" lg="6">
           <v-card width="400">
             <v-card-title class="font-weight-bold">
               <v-avatar size="56">
-                <img
-                  alt="user"
-                  src="https://cdn.pixabay.com/photo/2020/06/24/19/12/cabbage-5337431_1280.jpg"
-                />
+                <img alt="user" :src="`/api/person/thumbnail/${person.id}`" />
               </v-avatar>
               <p class="ml-3">
                 {{ person.name }}
@@ -47,6 +44,7 @@ export default {
   components: {
     EditPersonDialog,
   },
+
   data() {
     return {
       showEditDialog: false,
@@ -55,6 +53,7 @@ export default {
   },
   computed: {
     persons: function () {
+      console.log(this.$store.state.person.persons);
       return this.$store.state.person.persons;
     },
   },

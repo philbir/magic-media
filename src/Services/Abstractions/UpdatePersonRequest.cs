@@ -1,21 +1,17 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
-namespace MagicMedia.Store
+namespace MagicMedia
 {
-    public class Person
+    public class UpdatePersonRequest
     {
         public Guid Id { get; set; }
 
-        public Guid? UserId { get; set; }
-
         public string Name { get; set; }
 
-        public string? Group { get; set; }
-
-        public IEnumerable<string>? Groups { get; set; }
-
         public DateTime? DateOfBirth { get; set; }
+
+        public IEnumerable<string> Groups { get; set; }
 
         public Guid? ProfileFaceId { get; set; }
     }

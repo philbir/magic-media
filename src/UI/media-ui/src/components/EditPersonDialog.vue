@@ -1,7 +1,15 @@
 <template>
   <v-dialog width="500" v-model="isOpen">
     <v-card elevation="2" v-if="person">
-      <v-card-title> Edit {{ person.name }}</v-card-title>
+      <v-card-title class="font-weight-bold">
+        <v-avatar size="56">
+          <img alt="user" :src="`/api/person/thumbnail/${person.id}`" />
+        </v-avatar>
+        <p class="ml-3">
+          {{ person.name }}
+        </p>
+      </v-card-title>
+
       <v-card-text>
         <v-form v-model="valid">
           <v-container>
@@ -60,6 +68,9 @@
   </v-dialog>
 </template>
 <script>
+import { DateTime } from "luxon";
+/* eslint-disable no-debugger */
+
 export default {
   props: {
     show: {
@@ -84,6 +95,15 @@ export default {
           (x) => x.id === newValue
         );
 
+        debugger;
+        if (person.dateOfBirth) {
+          var date = DateTime.fromISO(person.dateOfBirth);
+
+          if (DateTime.isDateTime(date)) {
+            person.dateOfBirth = date.toLocaleString("DATE_SHORT");
+          }
+        }
+
         this.person = { ...person };
       } else {
         this.person = {};
@@ -102,8 +122,7 @@ export default {
   },
   methods: {
     save: function () {
-      console.log(this.person);
-
+      this.$store.dispatch("person/update", this.person);
       this.isOpen = false;
     },
     cancel: function () {

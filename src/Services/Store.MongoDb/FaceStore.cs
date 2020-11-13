@@ -34,7 +34,7 @@ namespace MagicMedia.Store.MongoDb
             {
                 filter = filter & Builders<MediaFace>.Filter.In(x => x.RecognitionType, types);
             }
-            if ( request.Persons is { } persons && persons.Any())
+            if (request.Persons is { } persons && persons.Any())
             {
                 filter = filter & Builders<MediaFace>.Filter.In(nameof(MediaFace.PersonId), persons);
             }
@@ -48,7 +48,7 @@ namespace MagicMedia.Store.MongoDb
                 .Limit(request.PageSize)
                 .ToListAsync();
 
-            return new SearchResult<MediaFace>(faces, (int) totalCount);
+            return new SearchResult<MediaFace>(faces, (int)totalCount);
         }
 
         public async Task<IEnumerable<MediaFace>> GetFacesByMediaAsync(

@@ -1,0 +1,7 @@
+fragment person on Person {
+  id
+  name
+  dateOfBirth
+  groups
+  profileFaceId
+}
