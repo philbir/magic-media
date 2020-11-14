@@ -44,6 +44,8 @@ namespace MagicMedia.Store
         public int? ObjectCount { get; set; }
     }
 
+    public record MediaHeaderData(Guid Id, string Filename, DateTimeOffset? DateTaken);
+
     public enum FaceRecognitionType
     {
         None,

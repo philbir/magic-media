@@ -18,7 +18,7 @@ namespace MagicMedia.Tests.Core
             Mock<IPersonStore> storeMock = CreatePersonStoreMock();
             Mock<IBus> busMock = CreateBusMock();
 
-            var service = new PersonService(storeMock.Object, busMock.Object);
+            var service = new PersonService(storeMock.Object, null, null, null, busMock.Object);
 
             string name = "Bart";
 

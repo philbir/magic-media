@@ -9,10 +9,12 @@ fragment face on MediaFace {
       }
       recognitionType
       state
+      age
       personId
       person {
         id
         name
+        dateOfBirth
       },
         thumbnail {
         id

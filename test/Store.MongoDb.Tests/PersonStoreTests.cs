@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -37,7 +38,7 @@ namespace MagicMedia.Store.MongoDb.Tests
                 Id = Guid.NewGuid(),
                 Name = "Bart",
                 DateOfBirth = new DateTime(1980, 4, 2),
-                Group = "Family"
+                Groups = new List<Guid>() { Guid.NewGuid() }
             };
 
             // Act
@@ -50,7 +51,6 @@ namespace MagicMedia.Store.MongoDb.Tests
                 .FirstOrDefaultAsync();
 
             cratedPerson.Name.Should().Be(person.Name);
-            cratedPerson.Group.Should().Be(person.Group);
         }
     }
 }

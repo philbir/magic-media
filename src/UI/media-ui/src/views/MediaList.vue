@@ -53,7 +53,7 @@ export default {
 
     this.containerWith =
       window.innerWidth - (this.$vuetify.breakpoint.mobile ? 0 : 264);
-    this.onScroll = debounce(this.onScroll, 100);
+    this.onScroll = debounce(this.onScroll, 50);
   },
 
   computed: {
@@ -187,6 +187,6 @@ export default {
 }
 
 .visible {
-  transition: opacity 250ms ease-in;
+  transition: opacity 100ms ease-in;
 }
 </style>

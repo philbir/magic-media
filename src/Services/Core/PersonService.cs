@@ -79,6 +79,8 @@ namespace MagicMedia
 
             await _personStore.UpdateAsync(person, cancellationToken);
 
+            await _bus.Publish(new PersonUpdatedMessage(person.Id, "Update"));
+
             return person;
         }
 

@@ -9,6 +9,7 @@ namespace MagicMedia.Store
 {
     public interface IFaceStore
     {
+        Task BulkUpdateAgesAsync(IEnumerable<UpdateAgeRequest> updates, CancellationToken cancellationToken);
         Task DeleteAsync(Guid id, CancellationToken cancellationToken);
 
         Task<MediaFace> GetByIdAsync(Guid id, CancellationToken cancellationToken);
@@ -16,7 +17,7 @@ namespace MagicMedia.Store
         Task<IEnumerable<MediaFace>> GetFacesByMediaAsync(
             Guid mediaId,
             CancellationToken cancellationToken);
-
+        Task<IEnumerable<MediaFace>> GetFacesByPersonAsync(Guid personId, CancellationToken cancellationToken);
         Task<IEnumerable<PersonEncodingData>> GetPersonEncodingsAsync(
             CancellationToken cancellationToken);
 

@@ -23,6 +23,7 @@ namespace MagicMedia.Messaging
                 s.AddConsumer<MoveMediaCompletedConsumer>();
                 s.AddConsumer<MoveMediaRequestCompletedConsumer>();
                 s.AddConsumer<FavoriteMediaToggledConsumer>();
+                s.AddConsumer<PersonUpdatedConsumer>();
 
                 if (options.Transport == MessagingTransport.InMemory)
                 {

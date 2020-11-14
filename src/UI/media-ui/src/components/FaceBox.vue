@@ -26,11 +26,7 @@
         <v-card-title>
           <v-row dense>
             <v-col sm="9">
-              <span>
-                {{
-                  faceData.person ? faceData.person.name : "Unknown person"
-                }}</span
-              ></v-col
+              <span> {{ faceTitle }}</span></v-col
             >
             <v-spacer></v-spacer>
             <v-col sm="3">
@@ -153,6 +149,17 @@ export default {
   computed: {
     personNames: function () {
       return this.$store.state.person.persons.map((item) => item.name);
+    },
+    faceTitle: function () {
+      let name = "Unknown";
+      if (this.faceData.person) {
+        name = this.faceData.person.name;
+
+        if (this.faceData.age) {
+          name += ` (${Math.floor(this.faceData.age / 12)})`;
+        }
+      }
+      return name;
     },
     showApproved: function () {
       return (
