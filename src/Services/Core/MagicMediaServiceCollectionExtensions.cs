@@ -42,6 +42,7 @@ namespace MagicMedia
             services.AddSingleton<ISearchFacetService, SearchFacetService>();
             services.AddSingleton<IFolderTreeService, FolderTreeService>();
             services.AddSingleton<IAgeOperationsService, AgeOperationsService>();
+            services.AddSingleton<IAlbumService, AlbumService>();
 
             services.AddSingleton<IMediaOperationsService, MediaOperationsService>();
             services.AddSingleton<IMoveMediaHandler, MoveMediaHandler>();
