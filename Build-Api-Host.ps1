@@ -16,6 +16,8 @@ Remove-Item .\src\Services\Directory.Build.props
 Remove-Item .\src\Services\Versions.props
 Remove-Item .\src\Services\global.json
 
+Remove-Item .\src\services\Api.Host\wwwroot\ -Recurse -Force
+
 #docker build -t magic-media-face:dev -f  .
 
 #docker tag magic-media-face:dev skycontainers.azurecr.io/magic-media-face:v1
