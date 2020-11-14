@@ -1,0 +1,10 @@
+fragment person on Person {
+  id
+  name
+  dateOfBirth
+  groups{
+    id
+    name
+  }
+  profileFaceId
+}

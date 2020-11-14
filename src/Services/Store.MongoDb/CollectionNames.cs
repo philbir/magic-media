@@ -12,6 +12,7 @@ namespace MagicMedia.Store.MongoDb
         public static readonly string Face = "face";
         public static readonly string Camera = "camera";
         public static readonly string Person = "person";
+        public static readonly string Group = "group";
         public static readonly string GeoAddressCache = "geoAddressCache";
         public static readonly string MediaOperation = "operation";
     }

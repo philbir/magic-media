@@ -13,6 +13,7 @@ query searchFaces($request: SearchFacesRequestInput!) {
       recognitionType
       state
       distanceThreshold
+      age
       thumbnail {
         id
         dataUrl

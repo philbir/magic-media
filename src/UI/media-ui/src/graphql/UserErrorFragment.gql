@@ -1,4 +1,4 @@
-fragment userError on UserError{
+fragment userError on UserError {
   code
   message
 }

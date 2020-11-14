@@ -16,5 +16,6 @@ namespace MagicMedia.Store
             CancellationToken cancellationToken);
 
         Task<Person> TryGetByNameAsync(string name, CancellationToken cancellationToken);
+        Task<Person> UpdateAsync(Person person, CancellationToken cancellationToken);
     }
 }

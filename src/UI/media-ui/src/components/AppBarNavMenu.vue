@@ -12,7 +12,6 @@
       <v-list-item
         v-for="item in navMenuItems"
         :key="item.text"
-        link
         :to="{ name: item.route }"
       >
         <v-list-item-icon>

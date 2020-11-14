@@ -66,5 +66,19 @@ namespace MagicMedia.Store.MongoDb
 
             return person;
         }
+
+        public async Task<Person> UpdateAsync(
+            Person person,
+            CancellationToken cancellationToken)
+        {
+            await _mediaStoreContext.Persons.ReplaceOneAsync(
+                x => x.Id == person.Id,
+                person,
+                options: new ReplaceOptions(),
+                cancellationToken);
+
+            return person;
+        }
+
     }
 }

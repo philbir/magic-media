@@ -130,7 +130,7 @@ const mediaModule = {
     ALL_SELECTED: function (state) {
       state.selectedIndexes = [...Array(state.list.length).keys()];
     },
-    OPERATION_COMMITED: function (state, id) {
+    OPERATION_COMMITED: function (state) {
       var mediaIds = getMediaIdsFromIndexes(state);
 
       const current = [...state.list];
@@ -140,7 +140,6 @@ const mediaModule = {
       }
       state.selectedIndexes = [];
       Vue.set(state, "list", current);
-      console.log("OPID", id);
     },
     FAVORITE_TOGGLED: function (state) {
 
@@ -266,8 +265,7 @@ const mediaModule = {
       commit("ALL_SELECTED");
     },
     async toggleFavorite({ commit }, media) {
-      const res = await toggleFavorite(media.id, !media.isFavorite);
-      console.log(res);
+      await toggleFavorite(media.id, !media.isFavorite);
       commit("FAVORITE_TOGGLED", media);
     }
   },

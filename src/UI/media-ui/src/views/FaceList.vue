@@ -33,7 +33,7 @@
               }"
             ></div>
             <div class="face-item-title">
-              {{ face.person ? face.person.name : "" }}
+              {{ face.title }}
             </div>
           </div>
         </div>
@@ -71,6 +71,7 @@ export default {
       const items = this.$store.state.face.list.map((item, i) => {
         item.color = getFaceColor(item);
         item.idx = i;
+        item.title = getTitle(item);
         return item;
       });
       const width = 112;
@@ -157,6 +158,19 @@ export default {
       }
     },
   },
+};
+
+const getTitle = (face) => {
+  if (face.person) {
+    let name = face.person.name;
+
+    if (face.age) {
+      name += ` (${Math.floor(face.age / 12)})`;
+    }
+
+    return name;
+  }
+  return null;
 };
 </script>
 

@@ -1,0 +1,13 @@
+#import "./UserErrorFragment.gql"
+#import "./PersonFragment.gql"
+
+mutation updatePerson($input: UpdatePersonRequestInput!) {
+  updatePerson(input: $input) {
+    person {
+      ...person
+    }
+    errors {
+      ...userError
+    }
+  }
+}

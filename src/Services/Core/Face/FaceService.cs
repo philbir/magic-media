@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Messaging;
@@ -12,18 +13,24 @@ namespace MagicMedia.Face
     {
         private readonly IFaceStore _faceStore;
         private readonly IPersonService _personService;
+        private readonly IMediaStore _mediaStore;
         private readonly IFaceDetectionService _faceDetectionService;
+        private readonly IAgeOperationsService _ageOperationsService;
         private readonly IBus _bus;
 
         public FaceService(
             IFaceStore faceStore,
             IPersonService personStore,
+            IMediaStore mediaStore,
             IFaceDetectionService faceDetectionService,
+            IAgeOperationsService ageOperationsService,
             IBus bus)
         {
             _faceStore = faceStore;
             _personService = personStore;
+            _mediaStore = mediaStore;
             _faceDetectionService = faceDetectionService;
+            _ageOperationsService = ageOperationsService;
             _bus = bus;
         }
 
@@ -42,11 +49,41 @@ namespace MagicMedia.Face
             face.State = FaceState.Validated;
             face.RecognitionType = FaceRecognitionType.Human;
 
+            await UpdateAgeAsync(face, person, cancellationToken);
             await _faceStore.UpdateAsync(face, cancellationToken);
 
             await _bus.Publish(new FaceUpdatedMessage(face.Id, person.Id, "ASSIGN_BY_HUMAN"));
 
             return face;
+        }
+
+        private async Task UpdateAgeAsync(
+            MediaFace face,
+            Guid personId,
+            CancellationToken cancellationToken)
+        {
+            Person person = await _mediaStore.Persons.GetByIdAsnc(personId, cancellationToken);
+
+            await UpdateAgeAsync(face, person, cancellationToken);
+        }
+
+        private async Task UpdateAgeAsync(
+        MediaFace face,
+        Person person,
+        CancellationToken cancellationToken)
+        {
+            if (person.DateOfBirth.HasValue)
+            {
+                Media media = await _mediaStore.GetByIdAsync(face.MediaId, cancellationToken);
+
+                face.Age = _ageOperationsService.CalculateAge(
+                    media.DateTaken,
+                    person.DateOfBirth.Value);
+            }
+            else
+            {
+                face.Age = null;
+            }
         }
 
         public async Task<(MediaFace face, bool hasMatch)> PredictPersonAsync(
@@ -87,6 +124,7 @@ namespace MagicMedia.Face
             face.State = FaceState.Predicted;
             face.DistanceThreshold = distance;
 
+            await UpdateAgeAsync(face, personId, cancellationToken);
             await _faceStore.UpdateAsync(face, cancellationToken);
             await _bus.Publish(new FaceUpdatedMessage(face.Id, personId, "ASSIGN_BY_COMPUTER"));
 
@@ -112,6 +150,7 @@ namespace MagicMedia.Face
                 face.PersonId = null;
                 face.State = FaceState.New;
                 face.RecognitionType = FaceRecognitionType.None;
+                face.Age = null;
 
                 await _faceStore.UpdateAsync(face, cancellationToken);
                 await _bus.Publish(new FaceUpdatedMessage(
@@ -157,5 +196,7 @@ namespace MagicMedia.Face
 
             await _bus.Publish(new FaceUpdatedMessage(id, "DELETED"));
         }
+
+
     }
 }

@@ -34,7 +34,7 @@ namespace MagicMedia.Store.MongoDb
             {
                 filter = filter & Builders<MediaFace>.Filter.In(x => x.RecognitionType, types);
             }
-            if ( request.Persons is { } persons && persons.Any())
+            if (request.Persons is { } persons && persons.Any())
             {
                 filter = filter & Builders<MediaFace>.Filter.In(nameof(MediaFace.PersonId), persons);
             }
@@ -48,7 +48,7 @@ namespace MagicMedia.Store.MongoDb
                 .Limit(request.PageSize)
                 .ToListAsync();
 
-            return new SearchResult<MediaFace>(faces, (int) totalCount);
+            return new SearchResult<MediaFace>(faces, (int)totalCount);
         }
 
         public async Task<IEnumerable<MediaFace>> GetFacesByMediaAsync(
@@ -57,6 +57,15 @@ namespace MagicMedia.Store.MongoDb
         {
             return await _mediaStoreContext.Faces.AsQueryable()
                 .Where(x => x.MediaId == mediaId)
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<IEnumerable<MediaFace>> GetFacesByPersonAsync(
+            Guid personId,
+            CancellationToken cancellationToken)
+        {
+            return await _mediaStoreContext.Faces.AsQueryable()
+                .Where(x => x.PersonId == personId)
                 .ToListAsync(cancellationToken);
         }
 
@@ -96,6 +105,28 @@ namespace MagicMedia.Store.MongoDb
             await _mediaStoreContext.Faces.DeleteOneAsync(
                 x => x.Id == id,
                 options: new DeleteOptions(),
+                cancellationToken);
+        }
+
+        public async Task BulkUpdateAgesAsync(
+            IEnumerable<UpdateAgeRequest> updates,
+            CancellationToken cancellationToken)
+        {
+            List<UpdateOneModel<MediaFace>> bulkUpdates = new ();
+            foreach (UpdateAgeRequest upd in updates)
+            {
+                FilterDefinition<MediaFace>? filter = Builders<MediaFace>.Filter
+                    .Eq(x => x.Id, upd.Id);
+
+                UpdateDefinition<MediaFace>? update = Builders<MediaFace>.Update
+                    .Set(x => x.Age, upd.Age);
+
+                bulkUpdates.Add(new UpdateOneModel<MediaFace>(filter, update));
+            }
+
+            await _mediaStoreContext.Faces.BulkWriteAsync(
+                bulkUpdates,
+                options: null,
                 cancellationToken);
         }
     }

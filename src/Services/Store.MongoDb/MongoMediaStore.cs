@@ -8,7 +8,7 @@ using MagicMedia.Search;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
-using SixLabors.ImageSharp.ColorSpaces;
+
 
 namespace MagicMedia.Store.MongoDb
 {
@@ -248,6 +248,16 @@ namespace MagicMedia.Store.MongoDb
             }
         }
 
+        public async Task<IEnumerable<MediaHeaderData>> GetHeaderDataAsync(
+            IEnumerable<Guid> ids,
+            CancellationToken cancellationToken)
+        {
+            return await _mediaStoreContext.Medias.AsQueryable()
+                .Where(x => ids.Contains(x.Id))
+                .Select(x => new MediaHeaderData(x.Id, x.Filename, x.DateTaken))
+                .ToListAsync(cancellationToken);
+        }
+
         public async Task<IEnumerable<string>> GetAllFoldersAsync(CancellationToken cancellationToken)
         {
             return await _mediaStoreContext.Medias.AsQueryable()
@@ -320,4 +330,5 @@ namespace MagicMedia.Store.MongoDb
             return result.OrderByDescending(x => x.Count);
         }
     }
+
 }

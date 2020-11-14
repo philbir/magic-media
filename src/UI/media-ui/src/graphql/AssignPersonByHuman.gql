@@ -6,6 +6,7 @@ mutation assignPersonByHuman($input: AssignPersonByHumanInput!) {
       id
       recognitionType
       state
+      age
       box {
         left
         top
@@ -16,7 +17,6 @@ mutation assignPersonByHuman($input: AssignPersonByHumanInput!) {
         id
         name
         dateOfBirth
-        group
       }
       thumbnail {
         id

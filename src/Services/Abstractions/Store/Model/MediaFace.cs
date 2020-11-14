@@ -27,4 +27,7 @@ namespace MagicMedia.Store
 
         public int? Age { get; set; }
     }
+
+    public record UpdateAgeRequest(Guid Id, int? Age);
+
 }

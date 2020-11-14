@@ -12,10 +12,13 @@ namespace MagicMedia.Store
     {
         IFaceStore Faces { get; }
 
+        IPersonStore Persons { get; }
+
         Task<IEnumerable<string>> GetAllFoldersAsync(CancellationToken cancellationToken);
         Task<Media> GetByIdAsync(Guid id, CancellationToken cancellationToken);
         Task<IEnumerable<SearchFacetItem>> GetGroupedCitiesAsync(CancellationToken cancellationToken);
         Task<IEnumerable<SearchFacetItem>> GetGroupedCountriesAsync(CancellationToken cancellationToken);
+        Task<IEnumerable<MediaHeaderData>> GetHeaderDataAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken);
         Task<IEnumerable<Media>> GetManyAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken);
         Task<IReadOnlyDictionary<Guid, MediaThumbnail>> GetThumbnailsByMediaIdsAsync(
             IEnumerable<Guid> mediaIds,

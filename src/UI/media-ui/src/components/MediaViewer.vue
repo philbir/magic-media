@@ -190,7 +190,6 @@ export default {
       this.showStripe = e.clientY > 300;
     },
     toggleFavorite: function (media) {
-      console.log(media);
       this.$store.dispatch("media/toggleFavorite", media);
     },
     keyPressed: function (e) {

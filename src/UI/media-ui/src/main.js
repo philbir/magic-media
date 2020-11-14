@@ -1,4 +1,5 @@
 import { DateTime } from "luxon";
+import VueMask from "v-mask";
 import Vue from "vue";
 
 import App from "./App.vue";
@@ -6,7 +7,6 @@ import vuetify from "./plugins/vuetify";
 import router from "./router";
 import signalrHub from "./signalrHub";
 import store from "./store";
-
 
 Vue.config.productionTip = false;
 
@@ -25,7 +25,8 @@ const magicPlugin = {
 };
 
 Vue.use(magicPlugin);
-Vue.use(signalrHub)
+Vue.use(signalrHub);
+Vue.use(VueMask);
 
 Vue.filter("dateformat", function (value, format = "DATE_SHORT") {
   if (!value) return "";
@@ -36,6 +37,7 @@ Vue.filter("dateformat", function (value, format = "DATE_SHORT") {
   }
   return "";
 });
+
 
 new Vue({
   vuetify,
