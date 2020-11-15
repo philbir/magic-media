@@ -1,8 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MagicMedia.Store
 {
@@ -16,7 +13,7 @@ namespace MagicMedia.Store
 
         public List<string>? Tags { get; set; }
 
-        public string? CoverPhotoId { get; set; }
+        public Guid? CoverMediaId { get; set; }
 
         public List<AlbumInclude> Includes { get; set; } = new List<AlbumInclude>();
 
@@ -24,22 +21,41 @@ namespace MagicMedia.Store
 
         public DateTimeOffset? EndDate { get; set; }
 
-        public List<AlbumPerson>? Persons { get; set; }
+        public IEnumerable<AlbumPerson> Persons { get; set; } = new List<AlbumPerson>();
 
-        public int PhotoCount { get; set; }
+        public IEnumerable<AlbumCountry> Countries { get; set; } = new List<AlbumCountry>();
+
+        public int ImageCount { get; set; }
 
         public int VideoCount { get; set; }
     }
 
     public class AlbumPerson
     {
-        public string PersonId { get; set; }
+        public Guid PersonId { get; set; }
 
         public string Name { get; set; }
 
         public int Count { get; set; }
 
-        public string FaceId { get; set; }
+        public Guid FaceId { get; set; }
+    }
+
+    public class AlbumCountry
+    {
+        public string? Name { get; set; }
+
+        public int Count { get; set; }
+
+        public IEnumerable<AlbumCity> Cities { get; set; } = new List<AlbumCity>();
+        public string? Code { get; set; }
+    }
+
+    public class AlbumCity
+    {
+        public string Name { get; set; }
+
+        public int Count { get; set; }
     }
 
     public enum AlbumIncludeType
@@ -58,6 +74,5 @@ namespace MagicMedia.Store
         public List<string>? Folders { get; set; } = new List<string>();
 
         public string? SerializedQuery { get; set; }
-
     }
 }

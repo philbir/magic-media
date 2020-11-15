@@ -45,7 +45,8 @@ const mediaModule = {
       pageSize: 200,
       countries: [],
       cities: [],
-      persons: []
+      persons: [],
+      albumId: null
     }
   }),
   mutations: {
@@ -86,6 +87,9 @@ const mediaModule = {
     },
     FILTER_FOLDER_SET(state, folder) {
       state.filter.folder = folder;
+    },
+    FILTER_ALBUM_SET(state, albumId) {
+      state.filter.albumId = albumId;
     },
     PAGE_NR_INC(state) {
       state.filter.pageNr++;
@@ -129,6 +133,9 @@ const mediaModule = {
     },
     ALL_SELECTED: function (state) {
       state.selectedIndexes = [...Array(state.list.length).keys()];
+    },
+    CLEAR_SELECTED: function (state) {
+      state.selectedIndexes = [];
     },
     OPERATION_COMMITED: function (state) {
       var mediaIds = getMediaIdsFromIndexes(state);
@@ -236,6 +243,12 @@ const mediaModule = {
       commit("FILTER_FOLDER_SET", folder);
       dispatch("search");
     },
+    setAlbumFilter({ dispatch, commit }, albumId) {
+      commit("RESET_FILTER");
+      commit("FILTER_ALBUM_SET", albumId);
+      dispatch("search");
+    },
+
     async loadDetails({ commit }, id) {
       try {
         const res = await getById(id);
@@ -264,6 +277,9 @@ const mediaModule = {
     selectAll: function ({ commit }) {
       commit("ALL_SELECTED");
     },
+    clearSelected: function ({ commit }) {
+      commit("CLEAR_SELECTED");
+    },
     async toggleFavorite({ commit }, media) {
       await toggleFavorite(media.id, !media.isFavorite);
       commit("FAVORITE_TOGGLED", media);
@@ -280,7 +296,10 @@ const mediaModule = {
       }
 
       return null;
-    }
+    },
+    selectedMediaIds: state => {
+      return getMediaIdsFromIndexes(state);
+    },
   }
 };
 

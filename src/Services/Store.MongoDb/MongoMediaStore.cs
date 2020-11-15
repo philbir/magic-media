@@ -21,17 +21,21 @@ namespace MagicMedia.Store.MongoDb
             MediaStoreContext mediaStoreContext,
             IThumbnailBlobStore thumbnailBlobStore,
             IFaceStore faceStore,
+            IAlbumStore albumStore,
             ICameraStore cameraStore,
             IPersonStore personStore)
         {
             _mediaStoreContext = mediaStoreContext;
             _thumbnailBlobStore = thumbnailBlobStore;
             Faces = faceStore;
+            Albums = albumStore;
             Cameras = cameraStore;
             Persons = personStore;
         }
 
         public IFaceStore Faces { get; }
+
+        public IAlbumStore Albums { get; }
 
         public ICameraStore Cameras { get; }
 

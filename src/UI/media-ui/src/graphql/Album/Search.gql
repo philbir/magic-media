@@ -1,0 +1,30 @@
+query searchAlbums($input: SearchAlbumRequestInput!) {
+  searchAlbums(input: $input) {
+    items {
+      id
+      title
+      videoCount
+      imageCount
+      thumbnail {
+        dataUrl
+      }
+      startDate
+      endDate
+      persons {
+        personId
+        faceId
+        name
+        count
+      }
+      countries {
+        name
+        code
+        count
+        cities {
+          name
+          count
+        }
+      }
+    }
+  }
+}
