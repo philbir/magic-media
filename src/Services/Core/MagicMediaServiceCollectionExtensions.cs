@@ -47,6 +47,7 @@ namespace MagicMedia
 
             services.AddSingleton<IMediaOperationsService, MediaOperationsService>();
             services.AddSingleton<IMoveMediaHandler, MoveMediaHandler>();
+            services.AddSingleton<IMediaSearchService, MediaSearchService>();
 
             return services;
         }

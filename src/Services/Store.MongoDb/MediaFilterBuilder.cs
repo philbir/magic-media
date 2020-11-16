@@ -1,0 +1,148 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
+using MongoDB.Bson;
+using MongoDB.Driver;
+using MongoDB.Driver.Linq;
+
+
+namespace MagicMedia.Store.MongoDb
+{
+    public class MediaFilterBuilder
+    {
+        private readonly MediaStoreContext _dbContext;
+        private readonly Func<Guid, CancellationToken, Task<IEnumerable<Guid>>> _albumMediaResolver;
+        private readonly CancellationToken _cancellationToken;
+        private FilterDefinition<Media> _filter;
+        private List<Task> _tasks;
+
+        public MediaFilterBuilder(
+            MediaStoreContext dbContext,
+            Func<Guid, CancellationToken, Task<IEnumerable<Guid>>> albumMediaResolver,
+            CancellationToken cancellationToken)
+        {
+            _filter = Builders<Media>.Filter.Empty;
+            _tasks = new();
+            _dbContext = dbContext;
+            _albumMediaResolver = albumMediaResolver;
+            _cancellationToken = cancellationToken;
+        }
+
+        public MediaFilterBuilder AddFolder(string? folder)
+        {
+            if (!string.IsNullOrEmpty(folder))
+            {
+                if (folder.StartsWith("SPECIAL"))
+                {
+                    var special = folder.Split(':').LastOrDefault();
+
+                    switch (special!.ToUpper())
+                    {
+                        case "FAVORITES":
+                            _filter &= Builders<Media>.Filter.Eq(x => x.IsFavorite, true);
+                            break;
+                    }
+                }
+                else
+                {
+                    _filter &= Builders<Media>.Filter.Regex(
+                        x => x.Folder,
+                        new BsonRegularExpression("^" + Regex.Escape(folder), "i"));
+                }
+            }
+
+            return this;
+        }
+
+        public MediaFilterBuilder AddPersons(IEnumerable<Guid>? persons)
+        {
+            if (persons is { } p && p.Any())
+            {
+                _tasks.Add(CreatePersonFilter(p));
+            }
+
+            return this;
+        }
+
+        public MediaFilterBuilder AddCities(IEnumerable<string>? cities)
+        {
+            if (cities is { } c && c.Any())
+            {
+                _filter &= Builders<Media>.Filter.In(
+                    x => x.GeoLocation.Address.City,
+                    c);
+            }
+
+            return this;
+        }
+
+        public MediaFilterBuilder AddCountries(IEnumerable<string>? countries)
+        {
+            if (countries is { } c && c.Any())
+            {
+                _filter &= Builders<Media>.Filter.In(
+                    x => x.GeoLocation.Address.CountryCode,
+                    c);
+            }
+
+            return this;
+        }
+
+        public MediaFilterBuilder AddAlbum(Guid? albumId)
+        {
+            if (albumId.HasValue)
+            {
+                _tasks.Add(CreateAlbumFilter(albumId.Value));
+            }
+
+            return this;
+        }
+
+        private async Task CreateAlbumFilter(Guid id)
+        {
+            IEnumerable<Guid>? mediaIds = await _albumMediaResolver(id, _cancellationToken);
+
+            if (mediaIds.Any())
+            {
+                _filter &= Builders<Media>.Filter.In(x => x.Id, mediaIds);
+            }
+        }
+
+        private async Task CreatePersonFilter(
+            IEnumerable<Guid> persons)
+        {
+            IEnumerable<Guid> mediaIds = await GetMediaIdsByPersons(
+                persons,
+                _cancellationToken);
+
+            if (mediaIds.Any())
+            {
+                _filter &= Builders<Media>.Filter.In(x => x.Id, mediaIds);
+            }
+        }
+
+
+        private async Task<IEnumerable<Guid>> GetMediaIdsByPersons(
+            IEnumerable<Guid> persons,
+            CancellationToken cancellationToken)
+        {
+            List<Guid> ids = await _dbContext.Faces.AsQueryable()
+                .Where(x => x.PersonId.HasValue)
+                .Where(x => persons.ToList().Contains(x.PersonId.Value))
+                .Select(x => x.MediaId)
+                .ToListAsync(cancellationToken);
+
+            return ids;
+        }
+
+        public async Task<FilterDefinition<Media>> BuildAsync()
+        {
+            await Task.WhenAll(_tasks);
+
+            return _filter;
+        }
+    }
+}

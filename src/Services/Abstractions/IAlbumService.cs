@@ -17,7 +17,7 @@ namespace MagicMedia
         Task<IEnumerable<Album>> GetAllAsync(CancellationToken cancellationToken);
         Task<Album> GetByIdAsync(Guid id, CancellationToken cancellationToken);
         Task<IEnumerable<Guid>> GetMediaIdsAsync(Album album, CancellationToken cancellationToken);
-
+        Task<IEnumerable<Guid>> GetMediaIdsAsync(Guid id, CancellationToken cancellationToken);
         Task<MediaThumbnail?> GetThumbnailAsync(
             Album album,
             ThumbnailSizeName size,
@@ -25,6 +25,10 @@ namespace MagicMedia
 
         Task<SearchResult<Album>> SearchAsync(
             SearchAlbumRequest request,
+            CancellationToken cancellationToken);
+
+        Task<Album> UpdateAlbumAsync(
+            UpdateAlbumRequest request,
             CancellationToken cancellationToken);
     }
 }

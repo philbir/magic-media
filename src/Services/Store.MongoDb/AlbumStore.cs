@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -66,6 +67,14 @@ namespace MagicMedia.Store.MongoDb
                 filter &= Builders<Album>.Filter.Regex(
                     x => x.Title,
                     new BsonRegularExpression($".*{Regex.Escape(request.SearchText)}.*" , "i"));
+            }
+
+            if ( request.Persons is { } persons && persons.Any())
+            {
+                FilterDefinition<AlbumPerson> personFilter = Builders<AlbumPerson>.Filter
+                    .In(x => x.PersonId, persons);
+
+                filter &= Builders<Album>.Filter.ElemMatch(x => x.Persons, personFilter);
             }
 
             IFindFluent<Album, Album>? cursor = _mediaStoreContext.Albums.Find(filter);

@@ -17,7 +17,7 @@ namespace MagicMedia.Face
         Task DeleteAsync(Guid id, CancellationToken cancellationToken);
 
         Task<MediaFace> GetByIdAsync(Guid id, CancellationToken cancellationToken);
-
+        Task<MediaThumbnail> GetThumbnailAsync(Guid id, CancellationToken cancellationToken);
         Task<(MediaFace face, bool hasMatch)> PredictPersonAsync(
             Guid faceId,
             double? distance,

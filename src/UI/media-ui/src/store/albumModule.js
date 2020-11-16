@@ -1,4 +1,5 @@
-import { addItems, getAllAlbums, searchAlbums } from "../services/albumService";
+import { addItems, getAllAlbums, searchAlbums, updateAlbum } from "../services/albumService";
+import Vue from "vue";
 /* eslint-disable no-debugger */
 
 const albumModule = {
@@ -17,13 +18,27 @@ const albumModule = {
       const albums = state.allAlbums.filter(x => x.id == album.id);
       if (albums.length === 0) state.allAlbums.push(album);
     },
+    ALBUM_UPDATED(state, album) {
+      debugger;
+      let idx = state.allAlbums.findIndex(x => x.id == album.id);
+      if (idx > -1) {
+        state.allAlbums[idx].title = album.title;
+      }
+      idx = state.albums.findIndex(x => x.id == album.id);
+      if (idx > -1) {
+        state.albums[idx].title = album.title;
+      }
+    },
     ALL_ALBUMS_LOADED(state, albums) {
       state.allAlbums = [...albums];
-
     },
     SEARCH_ITEMS_LOADED(state, result) {
-      state.albums = [...result.items];
+      console.log(result)
 
+      Vue.set(state, "albums", [...result.items]);
+    },
+    FILTER_SET(state, filter) {
+      state.filter = { ... this.state.filter, ...filter }
     }
   },
   actions: {
@@ -34,6 +49,21 @@ const albumModule = {
 
         dispatch('snackbar/addSnack', {
           text: `Media aded to: Album ${res.data.addItemsToAlbum.album.title}`,
+          type: 'SUCCESS'
+        }, { root: true });
+
+      } catch (ex) {
+        console.error(ex);
+      }
+    },
+    async update({ commit, dispatch }, input) {
+      try {
+        const res = await updateAlbum(input);
+
+        commit("ALBUM_UPDATED", res.data.updateAlbum.album);
+
+        dispatch('snackbar/addSnack', {
+          text: `Album saved: ${res.data.updateAlbum.album.title}`,
           type: 'SUCCESS'
         }, { root: true });
 
@@ -56,6 +86,10 @@ const albumModule = {
       } catch (ex) {
         console.error(ex);
       }
+    },
+    filter: function ({ commit, dispatch }, filter) {
+      commit('FILTER_SET', filter)
+      dispatch("search");
     }
   },
   getters: {}

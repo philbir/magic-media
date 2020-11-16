@@ -123,9 +123,18 @@ namespace MagicMedia
             return await _mediaStore.Albums.SearchAsync(request, cancellationToken);
         }
 
-        public Task<IEnumerable<Guid>> GetMediaIdsAsync(
-            Album album,
+        public async Task<IEnumerable<Guid>> GetMediaIdsAsync(
+            Guid id,
             CancellationToken cancellationToken)
+        {
+            Album? album = await GetByIdAsync(id, cancellationToken);
+
+            return await GetMediaIdsAsync(album, cancellationToken);
+        }
+
+        public Task<IEnumerable<Guid>> GetMediaIdsAsync(
+        Album album,
+        CancellationToken cancellationToken)
         {
             HashSet<Guid> ids = new();
 
@@ -142,6 +151,17 @@ namespace MagicMedia
             return Task.FromResult((IEnumerable<Guid>)ids);
         }
 
+        public async Task<Album> UpdateAlbumAsync(
+            UpdateAlbumRequest request,
+            CancellationToken cancellationToken)
+        {
+            Album album = await GetByIdAsync(request.Id, cancellationToken);
+            album.Title = request.Title;
+
+            await _mediaStore.Albums.UpdateAsync(album, cancellationToken);
+
+            return album;
+        }
     }
 
     record AlbumData(

@@ -1,0 +1,18 @@
+query GetAlbumMedia($albumId: Uuid!) {
+  searchMedia(request: {
+    pageNr: 0,
+    pageSize: 250,
+    albumId: $albumId
+  }) {
+    items {
+      id
+      filename
+      dateTaken
+      thumbnail(size: S) {
+        size
+        dataUrl
+      }
+    }
+    totalCount
+  }
+}

@@ -11,7 +11,7 @@
                 <img
                   v-for="(country, i) in album.countries"
                   :key="i"
-                  :src="`https://www.countryflags.io/${country.code}/shiny/24.png`"
+                  :src="flagUrl(country)"
                 />
               </div>
               <h4>{{ album.title }}</h4>
@@ -37,7 +37,7 @@
       :show="showEditDialog"
       @close="
         showEditDialog = false;
-        editalbumId = null;
+        editAlbumId = null;
       "
     />
   </div>
@@ -46,6 +46,7 @@
 <script>
 /* eslint-disable no-debugger */
 import EditAlbumDialog from "./EditAlbumDialog";
+import { getFlagUrl } from "../../services/countryFlags";
 
 export default {
   components: { EditAlbumDialog },
@@ -63,21 +64,16 @@ export default {
       return this.$store.state.album.filter;
     },
     albums: function () {
-      return this.$store.state.album.albums.filter((x) => {
-        if (this.filters.searchText === "") {
-          return true;
-        } else {
-          return x.name
-            .toLowerCase()
-            .includes(this.filters.searchText.toLowerCase());
-        }
-      });
+      return this.$store.state.album.albums;
     },
   },
   methods: {
     editClick: function (id) {
       this.editAlbumId = id;
       this.showEditDialog = true;
+    },
+    flagUrl: function (country) {
+      return getFlagUrl(country.code);
     },
   },
 };

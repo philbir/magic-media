@@ -75,12 +75,12 @@ namespace MagicMedia
                     Name = country.Key,
                     Code = country.FirstOrDefault()?.GeoLocation?.Address.CountryCode,
                     Count = country.Count(),
-                    Cities = GetCities(country.ToList())
-                };
+                    Cities = GetCities(country.ToList()).OrderByDescending(x => x.Count)
+            };
                 albumCountries.Add(ab);
             }
 
-            return albumCountries;
+            return albumCountries.OrderByDescending(x => x.Count);
         }
 
         private IEnumerable<AlbumPerson> GetPersons(AlbumData data)
@@ -90,6 +90,7 @@ namespace MagicMedia
             IEnumerable<IGrouping<Guid, MediaFace>>? groupedFaces = data.Faces
                 .Where(x => x.PersonId.HasValue)
                 .GroupBy(x => x.PersonId!.Value);
+
             var albumPersons = new List<AlbumPerson>();
 
             foreach (IGrouping<Guid, MediaFace>? group in groupedFaces)
@@ -111,7 +112,7 @@ namespace MagicMedia
                 }
             }
 
-            return albumPersons;
+            return albumPersons.OrderByDescending(x => x.Count);
         }
 
         private IEnumerable<AlbumCity> GetCities(List<Media> medias)
