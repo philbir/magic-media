@@ -1,0 +1,6 @@
+query allAlbums {
+  allAlbums {
+    id
+    title
+  }
+}

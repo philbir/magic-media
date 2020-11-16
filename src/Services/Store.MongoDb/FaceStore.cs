@@ -60,6 +60,15 @@ namespace MagicMedia.Store.MongoDb
                 .ToListAsync(cancellationToken);
         }
 
+        public async Task<IEnumerable<MediaFace>> GetManyByMediaAsync(
+            IEnumerable<Guid> mediaIds,
+            CancellationToken cancellationToken)
+        {
+            return await _mediaStoreContext.Faces.AsQueryable()
+                .Where(x => mediaIds.Contains(x.MediaId))
+                .ToListAsync(cancellationToken);
+        }
+
         public async Task<IEnumerable<MediaFace>> GetFacesByPersonAsync(
             Guid personId,
             CancellationToken cancellationToken)

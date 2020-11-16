@@ -80,6 +80,11 @@
       :show="showMove"
       @close="showMove = false"
     ></MoveMediaDialog>
+
+    <AddToAlbumDialog
+      :show="showAddToAlbum"
+      @close="showAddToAlbum = false"
+    ></AddToAlbumDialog>
   </v-app-bar>
 </template>
 
@@ -88,14 +93,22 @@ import Upload from "./Upload";
 import MoveMediaDialog from "./MoveMediaDialog";
 import AppBarNavMenu from "./AppBarNavMenu";
 import NotificationMenu from "./Common/NotificationMenu";
+import AddToAlbumDialog from "./Album/AddToAlbumDialog";
 
 export default {
   name: "App",
-  components: { Upload, AppBarNavMenu, MoveMediaDialog, NotificationMenu },
+  components: {
+    Upload,
+    AppBarNavMenu,
+    MoveMediaDialog,
+    NotificationMenu,
+    AddToAlbumDialog,
+  },
 
   data: () => ({
     dialog: true,
     showMove: false,
+    showAddToAlbum: false,
     sizes: [
       {
         text: "Square XS",
@@ -148,7 +161,16 @@ export default {
     },
     onClickAction: function (action) {
       console.log(action);
-      this.showMove = true;
+      switch (action) {
+        case "MOVE":
+          this.showMove = true;
+
+          break;
+        case "ADD_TO_ALBUM":
+          this.showAddToAlbum = true;
+
+          break;
+      }
     },
   },
 };

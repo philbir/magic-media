@@ -21,7 +21,11 @@
         width="250"
         class="overflow-y-auto"
       >
-        <v-list-item-group v-model="selected" @change="onChange" multiple>
+        <v-list-item-group
+          v-model="selected"
+          @change="onChange"
+          :multiple="multiple"
+        >
           <v-list-item
             v-for="item in filtered"
             v-show="item.visible"
@@ -54,6 +58,10 @@
 export default {
   props: {
     items: Array,
+    multiple: {
+      type: Boolean,
+      default: true,
+    },
     maxHeight: {
       type: [String, Number],
     },

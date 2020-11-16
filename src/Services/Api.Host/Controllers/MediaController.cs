@@ -4,7 +4,9 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Discovery;
+using MagicMedia.Face;
 using MagicMedia.Processing;
+using MagicMedia.Store;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,15 +17,18 @@ namespace MagicMedia.Api.Controllers
     {
         private readonly IMediaBlobStore _mediaBlobStore;
         private readonly IThumbnailBlobStore _thumbnailBlobStore;
+        private readonly IFaceService _faceService;
         private readonly IMediaProcessorFlowFactory _processorFlowFactory;
 
         public MediaController(
             IMediaBlobStore mediaBlobStore,
             IThumbnailBlobStore thumbnailBlobStore,
+            IFaceService faceService,
             IMediaProcessorFlowFactory processorFlowFactory)
         {
             _mediaBlobStore = mediaBlobStore;
             _thumbnailBlobStore = thumbnailBlobStore;
+            _faceService = faceService;
             _processorFlowFactory = processorFlowFactory;
         }
 
@@ -49,6 +54,18 @@ namespace MagicMedia.Api.Controllers
             byte[] data = await _thumbnailBlobStore.GetAsync(id, cancellationToken);
 
             return new FileContentResult(data, "image/jpg");
+        }
+
+
+        [HttpGet]
+        [Route("thumbnail/face/{faceId}")]
+        public async Task<IActionResult> ThumbnailByFaceAsync(
+            Guid faceId,
+            CancellationToken cancellationToken)
+        {
+            MediaThumbnail thumb = await _faceService.GetThumbnailAsync(faceId, cancellationToken);
+
+            return new FileContentResult(thumb.Data, $"image/{thumb.Format}".ToLower());
         }
 
         [HttpPost]

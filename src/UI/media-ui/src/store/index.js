@@ -1,33 +1,27 @@
 import Vue from "vue";
 import Vuex from "vuex";
 
-import mediaModule from "./mediaModule";
+import router from "../router";
+import albumModule from "./albumModule";
 import faceModule from "./faceModule";
+import mediaModule from "./mediaModule";
 import personModule from "./personModule";
 import snackbarModule from "./snackbarModule";
-import router from '../router'
 
 /* eslint-disable no-debugger */
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-  state: {
-  },
-  mutations: {
-
-  },
-  actions: {
-
-  },
+  state: {},
+  mutations: {},
+  actions: {},
   getters: {
     next: (state, getters, rootState, rootGetters) => step => {
-      if (router.currentRoute.name === 'Faces') {
-        return rootGetters['face/next'](step);
-      }
-      else {
-        return rootGetters['media/next'](step);
-
+      if (router.currentRoute.name === "Faces") {
+        return rootGetters["face/next"](step);
+      } else {
+        return rootGetters["media/next"](step);
       }
     }
   },
@@ -35,6 +29,7 @@ export default new Vuex.Store({
     snackbar: snackbarModule,
     media: mediaModule,
     face: faceModule,
-    person: personModule
+    person: personModule,
+    album: albumModule
   }
 });

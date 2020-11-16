@@ -1,0 +1,14 @@
+#import "../UserErrorFragment.gql"
+
+
+mutation addToAlbum($input: AddItemToAlbumRequestInput!) {
+  addItemsToAlbum(input: $input) {
+    album {
+      id
+      title
+    }
+    errors {
+      ...userError
+    }
+  }
+}

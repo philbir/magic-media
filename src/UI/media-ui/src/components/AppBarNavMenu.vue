@@ -48,7 +48,7 @@ export default {
           route: "Persons",
         },
         {
-          text: "Album",
+          text: "Albums",
           icon: "mdi-image-album",
           route: "Albums",
         },

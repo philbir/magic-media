@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Search;
+using MagicMedia.Store.MongoDb;
 
 namespace MagicMedia.Store
 {
@@ -13,6 +14,9 @@ namespace MagicMedia.Store
         IFaceStore Faces { get; }
 
         IPersonStore Persons { get; }
+
+        IAlbumStore Albums { get; }
+        IThumbnailBlobStore Thumbnails { get; }
 
         Task<IEnumerable<string>> GetAllFoldersAsync(CancellationToken cancellationToken);
         Task<Media> GetByIdAsync(Guid id, CancellationToken cancellationToken);
@@ -31,7 +35,11 @@ namespace MagicMedia.Store
             CancellationToken cancellationToken);
         Task SaveFacesAsync(Guid mediaId, IEnumerable<MediaFace> faces, CancellationToken cancellationToken);
 
-        Task<SearchResult<Media>> SearchAsync(SearchMediaRequest request, CancellationToken cancellationToken);
+        Task<SearchResult<Media>> SearchAsync(
+            SearchMediaRequest request,
+            Func<Guid, CancellationToken, Task<IEnumerable<Guid>>> albumMediaResolver,
+            CancellationToken cancellationToken);
+
         Task UpdateAsync(Media media, CancellationToken cancellationToken);
     }
 }

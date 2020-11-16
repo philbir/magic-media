@@ -197,6 +197,17 @@ namespace MagicMedia.Face
             await _bus.Publish(new FaceUpdatedMessage(id, "DELETED"));
         }
 
+        public async Task<MediaThumbnail> GetThumbnailAsync(
+            Guid id,
+            CancellationToken cancellationToken)
+        {
+            MediaFace face = await GetByIdAsync(id, cancellationToken);
 
+            face.Thumbnail.Data = await _mediaStore.Thumbnails.GetAsync(
+                face.Thumbnail.Id,
+                cancellationToken);
+
+            return face.Thumbnail;
+        }
     }
 }

@@ -61,6 +61,17 @@
         @change="onSelectCity"
       ></FilterList>
     </div>
+    <div v-if="activeTabId == 'other'">
+      <FilterList
+        :multiple="false"
+        :items="albums"
+        title="Albums"
+        max-height="250"
+        value-field="id"
+        text-field="title"
+        @change="onSelectAlbum"
+      ></FilterList>
+    </div>
   </div>
 </template>
 
@@ -127,6 +138,9 @@ export default {
     cities: function () {
       return this.$store.state.media.facets.city;
     },
+    albums: function () {
+      return this.$store.state.album.allAlbums;
+    },
   },
   methods: {
     select: function (tab) {
@@ -143,6 +157,9 @@ export default {
     onSelectCountry: function (countries) {
       const selected = countries.map((x) => x.value);
       this.$store.dispatch("media/setCountryFilter", selected);
+    },
+    onSelectAlbum: function (album) {
+      this.$store.dispatch("media/setAlbumFilter", album ? album.id : null);
     },
   },
 };

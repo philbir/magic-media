@@ -17,5 +17,7 @@ namespace MagicMedia.Store
         public IEnumerable<string>? Cities { get; set; }
 
         public string? Folder { get; set; }
+
+        public Guid? AlbumId { get; set; }
     }
 }

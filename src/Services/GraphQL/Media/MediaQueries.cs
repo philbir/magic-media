@@ -13,18 +13,23 @@ namespace MagicMedia.GraphQL
     {
         private readonly IMediaStore _mediaStore;
         private readonly IFolderTreeService _folderTreeService;
+        private readonly IMediaSearchService _mediaSearchService;
 
-        public MediaQueries(IMediaStore mediaStore, IFolderTreeService folderTreeService)
+        public MediaQueries(
+            IMediaStore mediaStore,
+            IFolderTreeService folderTreeService,
+            IMediaSearchService mediaSearchService)
         {
             _mediaStore = mediaStore;
             _folderTreeService = folderTreeService;
+            _mediaSearchService = mediaSearchService;
         }
 
         public async Task<SearchResult<Media>> SearchMediaAsync(
             SearchMediaRequest request,
             CancellationToken cancellationToken)
         {
-            return await _mediaStore.SearchAsync(request, cancellationToken);
+            return await _mediaSearchService.SearchAsync(request, cancellationToken);
         }
 
         public async Task<Media> GetMediaByIdAsync(

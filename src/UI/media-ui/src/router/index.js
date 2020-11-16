@@ -9,6 +9,8 @@ import FaceAppBar from "../components/FaceAppBar"
 import DefaultAppBar from "../components/DefaultAppBar"
 import FaceFilter from "../components/FaceFilter"
 import PersonFilter from "../components/PersonFilter"
+import AlbumList from "../components/Album/AlbumList"
+import AlbumFilter from "../components/Album/AlbumFilter"
 
 Vue.use(VueRouter);
 
@@ -37,6 +39,15 @@ const routes = [
     components: {
       default: PersonList,
       left: PersonFilter,
+      appbar: DefaultAppBar
+    }
+  },
+  {
+    path: "/albums",
+    name: "Albums",
+    components: {
+      default: AlbumList,
+      left: AlbumFilter,
       appbar: DefaultAppBar
     }
   },

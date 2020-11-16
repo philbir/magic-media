@@ -26,6 +26,7 @@ namespace MagicMedia.Store.MongoDb
             services.AddSingleton<ICameraStore, CameraStore>();
             services.AddSingleton<IPersonStore, PersonStore>();
             services.AddSingleton<IGroupStore, GroupStore>();
+            services.AddSingleton<IAlbumStore, AlbumStore>();
 
             return services;
         }

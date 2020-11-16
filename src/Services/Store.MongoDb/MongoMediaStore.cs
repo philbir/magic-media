@@ -15,80 +15,48 @@ namespace MagicMedia.Store.MongoDb
     public class MongoMediaStore : IMediaStore
     {
         private readonly MediaStoreContext _mediaStoreContext;
-        private readonly IThumbnailBlobStore _thumbnailBlobStore;
 
         public MongoMediaStore(
             MediaStoreContext mediaStoreContext,
             IThumbnailBlobStore thumbnailBlobStore,
             IFaceStore faceStore,
+            IAlbumStore albumStore,
             ICameraStore cameraStore,
             IPersonStore personStore)
         {
             _mediaStoreContext = mediaStoreContext;
-            _thumbnailBlobStore = thumbnailBlobStore;
+            Thumbnails = thumbnailBlobStore;
             Faces = faceStore;
+            Albums = albumStore;
             Cameras = cameraStore;
             Persons = personStore;
         }
 
         public IFaceStore Faces { get; }
 
+        public IAlbumStore Albums { get; }
+
         public ICameraStore Cameras { get; }
 
         public IPersonStore Persons { get; }
 
+        public IThumbnailBlobStore Thumbnails { get; }
+
         public async Task<SearchResult<Media>> SearchAsync(
             SearchMediaRequest request,
+            Func<Guid, CancellationToken, Task<IEnumerable<Guid>>> albumMediaResolver,
             CancellationToken cancellationToken)
         {
-            FilterDefinition<Media> filter = Builders<Media>.Filter.Empty;
-
-            if (!string.IsNullOrEmpty(request.Folder))
-            {
-                if (request.Folder.StartsWith("SPECIAL"))
-                {
-                    var special = request.Folder.Split(':').LastOrDefault();
-
-                    switch (special.ToUpper())
-                    {
-                        case "FAVORITES":
-                            filter &= Builders<Media>.Filter.Eq(x => x.IsFavorite, true);
-                            break;
-                    }
-                }
-                else
-                {
-                    filter &= Builders<Media>.Filter.Regex(
-                        x => x.Folder,
-                        new BsonRegularExpression("^" + Regex.Escape(request.Folder), "i"));
-                }
-            }
-
-            if (request.Persons is { } persons && persons.Any())
-            {
-                IEnumerable<Guid> mediaIds = await GetMediaIdsByPersons(
-                    persons,
-                    cancellationToken);
-
-                if (mediaIds.Any())
-                {
-                    filter &= Builders<Media>.Filter.In(x => x.Id, mediaIds);
-                }
-            }
-
-            if (request.Cities is { } cities && cities.Any())
-            {
-                filter &= Builders<Media>.Filter.In(
-                    x => x.GeoLocation.Address.City,
-                    cities);
-            }
-
-            if (request.Countries is { } countries && countries.Any())
-            {
-                filter &= Builders<Media>.Filter.In(
-                    x => x.GeoLocation.Address.CountryCode,
-                    countries);
-            }
+            FilterDefinition<Media>? filter = await new MediaFilterBuilder(
+                _mediaStoreContext,
+                albumMediaResolver,
+                cancellationToken)
+                .AddFolder(request.Folder)
+                .AddPersons(request.Persons)
+                .AddCities(request.Cities)
+                .AddCountries(request.Countries)
+                .AddAlbum(request.AlbumId)
+                .BuildAsync();
 
             IFindFluent<Media, Media>? cursor = _mediaStoreContext.Medias.Find(filter);
             long totalCount = await cursor.CountDocumentsAsync(cancellationToken);
@@ -159,7 +127,7 @@ namespace MagicMedia.Store.MongoDb
                 MediaThumbnail thumb = media.Thumbnails.Where(x => x.Size == size).FirstOrDefault();
                 if (thumb != null)
                 {
-                    thumb.Data = await _thumbnailBlobStore.GetAsync(thumb.Id, cancellationToken);
+                    thumb.Data = await Thumbnails.GetAsync(thumb.Id, cancellationToken);
                     result.Add(media.Id, thumb);
                 }
             }
@@ -176,7 +144,7 @@ namespace MagicMedia.Store.MongoDb
             {
                 foreach (MediaFace face in faces)
                 {
-                    await _thumbnailBlobStore.StoreAsync(
+                    await Thumbnails.StoreAsync(
                         new ThumbnailData(face.Thumbnail.Id, face.Thumbnail.Data),
                         cancellationToken);
 
@@ -215,7 +183,7 @@ namespace MagicMedia.Store.MongoDb
         {
             foreach (MediaThumbnail thumb in media.Thumbnails)
             {
-                await _thumbnailBlobStore.StoreAsync(
+                await Thumbnails.StoreAsync(
                     new ThumbnailData(thumb.Id, thumb.Data),
                     cancellationToken);
 
@@ -231,7 +199,7 @@ namespace MagicMedia.Store.MongoDb
             {
                 foreach (MediaFace face in faces)
                 {
-                    await _thumbnailBlobStore.StoreAsync(
+                    await Thumbnails.StoreAsync(
                         new ThumbnailData(face.Thumbnail.Id, face.Thumbnail.Data),
                         cancellationToken);
 

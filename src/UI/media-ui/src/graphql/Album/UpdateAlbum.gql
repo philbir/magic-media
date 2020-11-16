@@ -1,0 +1,12 @@
+mutation updateAlbum($input: UpdateAlbumRequestInput!) {
+  updateAlbum(input: $input) {
+    album {
+      id
+      title
+    }
+    errors {
+      code
+      message
+    }
+  }
+}
