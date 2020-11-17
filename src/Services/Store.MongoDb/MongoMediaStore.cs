@@ -297,6 +297,39 @@ namespace MagicMedia.Store.MongoDb
 
             return result.OrderByDescending(x => x.Count);
         }
+
+        public async Task<IEnumerable<MediaGeoLocation>> FindMediaInGeoBoxAsync(GeoBox box, CancellationToken cancellation)
+        {
+            FilterDefinition<Media> filter = Builders<Media>.Filter.GeoWithinBox(x =>
+               x.GeoLocation.Point,
+               box.SouthWest.Longitude,
+               box.SouthWest.Latitude,
+               box.NorthEast.Longitude,
+               box.NorthEast.Latitude);
+
+            var medias = await _mediaStoreContext.Medias.Find(filter)
+                .Limit(100)
+                .Project(p => new
+                {
+                    p.Id,
+                    p.GeoLocation!.Point.Coordinates,
+                    p.GeoLocation!.GeoHash
+                })
+                .ToListAsync(cancellation);
+
+            IEnumerable<MediaGeoLocation> locs = medias.Select(x => new MediaGeoLocation
+            {
+                Id = x.Id,
+                Coordinates = new GeoCoordinate
+                {
+                    Longitude = x.Coordinates[0],
+                    Latitude = x.Coordinates[1]
+                },
+                GeoHash = x.GeoHash
+            });
+
+            return locs;
+        }
     }
 
 }

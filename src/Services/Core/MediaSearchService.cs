@@ -29,5 +29,16 @@ namespace MagicMedia
                 _albumService.GetMediaIdsAsync,
                 cancellationToken);
         }
+
+        public async Task<IEnumerable<MediaGeoLocation>> GetMediaInGeoBox(GeoBox box, CancellationToken cancellation)
+        {
+
+
+
+
+        }
+
+
+
     }
 }
