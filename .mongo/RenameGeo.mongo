@@ -1,0 +1,7 @@
+
+db.getCollection('media').updateMany({ "GeoLocation.Point.Type": {$exists: true}}, 
+{ $rename: {"GeoLocation.Point.Type": "GeoLocation.Point.type"}} )
+
+
+db.getCollection('media').updateMany({ "GeoLocation.Point.Coordinates": {$exists: true}}, 
+{ $rename: {"GeoLocation.Point.Coordinates": "GeoLocation.Point.coordinates"}} )

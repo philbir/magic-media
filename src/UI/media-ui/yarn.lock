@@ -11518,7 +11518,15 @@ vue-template-es2015-compiler@^1.9.0:
   resolved "https://registry.npm.taobao.org/vue-template-es2015-compiler/download/vue-template-es2015-compiler-1.9.1.tgz#1ee3bc9a16ecbf5118be334bb15f9c46f82f5825"
   integrity sha1-HuO8mhbsv1EYvjNLsV+cRvgvWCU=
 
-vue@^2.6.11:
+vue2-gmap-custom-marker@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/vue2-gmap-custom-marker/-/vue2-gmap-custom-marker-6.0.0.tgz#ccb443b9223396726252c0bf10daf80cd6549f10"
+  integrity sha512-vaFhqeJNEu3PwFMnhzfdNa3o/ehKoYoRz/fMe7zXMjPu6LSVWH8/vCAwU3beWcFM6UcQUF9jMHbw4UG+MEk5Gw==
+  dependencies:
+    gmap-vue "^1.5.0"
+    vue "^2.x"
+
+vue@^2.6.11, vue@^2.x:
   version "2.6.12"
   resolved "https://registry.npm.taobao.org/vue/download/vue-2.6.12.tgz#f5ebd4fa6bd2869403e29a896aed4904456c9123"
   integrity sha1-9evU+mvShpQD4pqJau1JBEVskSM=

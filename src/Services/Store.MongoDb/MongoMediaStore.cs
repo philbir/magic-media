@@ -298,7 +298,10 @@ namespace MagicMedia.Store.MongoDb
             return result.OrderByDescending(x => x.Count);
         }
 
-        public async Task<IEnumerable<MediaGeoLocation>> FindMediaInGeoBoxAsync(GeoBox box, CancellationToken cancellation)
+        public async Task<IEnumerable<MediaGeoLocation>> FindMediaInGeoBoxAsync(
+            GeoBox box,
+            int limit,
+            CancellationToken cancellation)
         {
             FilterDefinition<Media> filter = Builders<Media>.Filter.GeoWithinBox(x =>
                x.GeoLocation.Point,
@@ -308,7 +311,7 @@ namespace MagicMedia.Store.MongoDb
                box.NorthEast.Latitude);
 
             var medias = await _mediaStoreContext.Medias.Find(filter)
-                .Limit(100)
+                .Limit(limit)
                 .Project(p => new
                 {
                     p.Id,

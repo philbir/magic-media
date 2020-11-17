@@ -7,6 +7,8 @@ import DefaultAppBar from "../components/DefaultAppBar";
 import FaceAppBar from "../components/FaceAppBar";
 import FaceFilter from "../components/FaceFilter";
 import MapView from "../components/Map/MapView";
+import MapAppBar from "../components/Map/MapAppBar";
+import MapFilter from "../components/Map/MapFilter";
 import MediaAppBar from "../components/MediaAppBar";
 import MediaFilter from "../components/MediaFilter";
 import PersonFilter from "../components/PersonFilter";
@@ -58,8 +60,8 @@ const routes = [
     name: "Map",
     components: {
       default: MapView,
-      left: null,
-      appbar: DefaultAppBar
+      left: MapFilter,
+      appbar: MapAppBar
     }
   }
 ];

@@ -22,11 +22,32 @@ namespace MagicMedia.Store.MongoDb.Configuration
                     cm.AutoMap();
                     cm.UnmapMember(x => x.Data);
                 })
+                .AddBsonClassMap<GeoPoint>(cm =>
+                {
+                    cm.MapMember(x => x.Type)
+                        .SetElementName("type");
+
+                    cm.MapMember(x => x.Coordinates)
+                        .SetElementName("coordinates");
+                })
                 .WithCollectionSettings(s => s.ReadConcern = ReadConcern.Majority)
                 .WithCollectionSettings(s => s.ReadPreference = ReadPreference.Nearest)
-                .WithCollectionConfiguration(collection =>
+                .WithCollectionConfiguration(async collection =>
                 {
+                    var geoIndex = new CreateIndexModel<Media>(
+                        Builders<Media>.IndexKeys
+                            .Geo2DSphere(x => x.GeoLocation.Point),
+                        new CreateIndexOptions { Unique = false });
 
+                    collection.Indexes.CreateOne(geoIndex);
+
+                    var folderIndex = new CreateIndexModel<Media>(
+                        Builders<Media>.IndexKeys
+                            .Ascending(c => c.Folder)
+                            .Descending(c => c.DateTaken),
+                        new CreateIndexOptions { Unique = false });
+
+                    collection.Indexes.CreateOne(folderIndex);
                 });
         }
     }

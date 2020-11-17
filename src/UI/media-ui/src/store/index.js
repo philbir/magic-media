@@ -4,6 +4,7 @@ import Vuex from "vuex";
 import router from "../router";
 import albumModule from "./albumModule";
 import faceModule from "./faceModule";
+import mapModule from "./mapModule";
 import mediaModule from "./mediaModule";
 import personModule from "./personModule";
 import snackbarModule from "./snackbarModule";
@@ -30,6 +31,7 @@ export default new Vuex.Store({
     media: mediaModule,
     face: faceModule,
     person: personModule,
-    album: albumModule
+    album: albumModule,
+    map: mapModule
   }
 });

@@ -1,4 +1,4 @@
-﻿namespace MagicMedia
+namespace MagicMedia
 {
     public enum MediaOrientation
     {
