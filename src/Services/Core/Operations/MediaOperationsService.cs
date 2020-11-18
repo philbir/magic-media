@@ -31,7 +31,7 @@ namespace MagicMedia.Operations
             await _bus.Publish(message, cancellationToken);
         }
 
-        public async Task ToogleFavoriteAsync(Guid id, bool isFavorite, CancellationToken cancellationToken)
+        public async Task ToggleFavoriteAsync(Guid id, bool isFavorite, CancellationToken cancellationToken)
         {
             Media media = await _mediaStore.GetByIdAsync(id, cancellationToken);
             media.IsFavorite = isFavorite;
@@ -39,6 +39,18 @@ namespace MagicMedia.Operations
             await _mediaStore.UpdateAsync(media, cancellationToken);
 
             await _bus.Publish(new FavoriteMediaToggledMessage(id, isFavorite));
+        }
+
+        public async Task RecycleAsync(
+            RecycleMediaRequest request,
+            CancellationToken cancellationToken)
+        {
+            var message = new RecycleMediaMessage(request.Ids)
+            {
+                OperationId = request.OperationId
+            };
+
+            await _bus.Publish(message, cancellationToken);
         }
     }
 }

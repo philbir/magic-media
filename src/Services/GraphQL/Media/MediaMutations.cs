@@ -26,11 +26,29 @@ namespace MagicMedia.GraphQL
             return new MediaOperationPayload(request.OperationId);
         }
 
-        public async Task<ToggleMediaFavoritePayload> ToggleMediaFavoriteAsync(ToggleMediaFavoriteInput input, CancellationToken cancellationToken)
+        public async Task<ToggleMediaFavoritePayload> ToggleMediaFavoriteAsync(
+            ToggleMediaFavoriteInput input, CancellationToken cancellationToken)
         {
-            await _operationsService.ToogleFavoriteAsync(input.Id, input.IsFavorite, cancellationToken);
+            await _operationsService.ToggleFavoriteAsync(
+                input.Id,
+                input.IsFavorite,
+                cancellationToken);
 
             return new ToggleMediaFavoritePayload(input.Id, input.IsFavorite);
+        }
+
+        public async Task<MediaOperationPayload> RecycleMediaAsync(
+            RecycleMediaRequest input,
+            CancellationToken cancellationToken)
+        {
+            RecycleMediaRequest request = input with
+            {
+                OperationId = input.OperationId ?? Guid.NewGuid().ToString("N")
+            };
+
+            await _operationsService.RecycleAsync(request, cancellationToken);
+
+            return new MediaOperationPayload(request.OperationId);
         }
     }
 

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace MagicMedia.Messaging.Consumers
 {
-    public class MoveMediaCompletedConsumer : IConsumer<MoveMediaCompletedMessage>
+    public class MoveMediaCompletedConsumer : IConsumer<MediaOperationCompletedMessage>
     {
         private readonly IHubContext<MediaHub> _hubContext;
 
@@ -14,7 +14,7 @@ namespace MagicMedia.Messaging.Consumers
         {
             _hubContext = hubContext;
         }
-        public async Task Consume(ConsumeContext<MoveMediaCompletedMessage> context)
+        public async Task Consume(ConsumeContext<MediaOperationCompletedMessage> context)
         {
             await _hubContext.Clients.All.SendAsync(
                 "moveMediaCompleted",
@@ -23,7 +23,7 @@ namespace MagicMedia.Messaging.Consumers
         }
     }
 
-    public class MoveMediaRequestCompletedConsumer : IConsumer<MoveMediaRequestCompletedMessage>
+    public class MoveMediaRequestCompletedConsumer : IConsumer<MediaOperationRequestCompletedMessage>
     {
         private readonly IHubContext<MediaHub> _hubContext;
 
@@ -32,7 +32,7 @@ namespace MagicMedia.Messaging.Consumers
             _hubContext = hubContext;
         }
 
-        public async Task Consume(ConsumeContext<MoveMediaRequestCompletedMessage> context)
+        public async Task Consume(ConsumeContext<MediaOperationRequestCompletedMessage> context)
         {
             await _hubContext.Clients.All.SendAsync(
                 "moveMediaRequestCompleted",

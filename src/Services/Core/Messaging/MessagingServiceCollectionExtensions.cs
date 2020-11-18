@@ -25,6 +25,7 @@ namespace MagicMedia.Messaging
                 s.AddConsumer<FavoriteMediaToggledConsumer>();
                 s.AddConsumer<PersonUpdatedConsumer>();
                 s.AddConsumer<ItemsAddedToAlbumConsumer>();
+                s.AddConsumer<RecycleMediaConsumer>();
 
                 if (options.Transport == MessagingTransport.InMemory)
                 {

@@ -48,10 +48,17 @@
           :key="action.text"
           @click="onClickAction(action.action)"
         >
+          <v-list-item-icon>
+            <v-icon v-text="action.icon"></v-icon>
+          </v-list-item-icon>
           <v-list-item-title> {{ action.text }}</v-list-item-title>
         </v-list-item>
         <v-divider></v-divider>
         <v-list-item @click="selectAll">
+          <v-list-item-icon>
+            <v-icon>mdi-select-all</v-icon>
+          </v-list-item-icon>
+
           <v-list-item-title>Select all</v-list-item-title>
         </v-list-item>
       </v-list>
@@ -124,10 +131,10 @@ export default {
   computed: {
     mediaActions: function () {
       return [
-        { text: "Add to album", action: "ADD_TO_ALBUM" },
-        { text: "Move", action: "MOVE" },
-        { text: "Edit", action: "EDIT" },
-        { text: "Delete", acion: "DELETE" },
+        { text: "Add to album", action: "ADD_TO_ALBUM", icon: "mdi-plus" },
+        { text: "Move", action: "MOVE", icon: "mdi-file-move-outline" },
+        { text: "Edit", action: "EDIT", icon: "mdi-pencil" },
+        { text: "Recycle", action: "RECYCLE", icon: "mdi-recycle" },
       ];
     },
     editModeText: function () {
@@ -164,11 +171,12 @@ export default {
       switch (action) {
         case "MOVE":
           this.showMove = true;
-
           break;
         case "ADD_TO_ALBUM":
           this.showAddToAlbum = true;
-
+          break;
+        case "RECYCLE":
+          this.$store.dispatch("media/recycleSelected");
           break;
       }
     },

@@ -1,4 +1,4 @@
-﻿using System.Threading;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MagicMedia
@@ -14,6 +14,11 @@ namespace MagicMedia
         Task MoveAsync(
             MediaBlobData request,
             string newLocation,
+            CancellationToken cancellationToken);
+
+        Task MoveToSpecialFolderAsync(
+            MediaBlobData request,
+            MediaBlobType mediaBlobType,
             CancellationToken cancellationToken);
     }
 }
