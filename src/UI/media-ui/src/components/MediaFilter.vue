@@ -40,7 +40,7 @@
         :zoom="7"
         :options="mapOptions"
         ref="mapRef"
-        map-type-id="terrain"
+        map-type-id="roadmap"
         style="width: 100%; height: 200px"
         @click="clickMap"
       >
@@ -52,6 +52,7 @@
         v-model="mapRadius"
         label="Radius"
         suffix="km"
+        @change="onRadiusChange"
         prepend-inner-icon="mdi-map-marker-radius-outline"
       ></v-text-field>
       <FilterList
@@ -140,7 +141,7 @@ export default {
         disableDefaultUi: false,
       },
       mapMarker: null,
-      mapRadius: 5,
+      mapRadius: 10,
     };
   },
   computed: {
@@ -199,7 +200,22 @@ export default {
         lat: loc.latLng.lat(),
         lng: loc.latLng.lng(),
       };
-      console.log(loc);
+
+      this.setSearchFilter();
+    },
+    onRadiusChange: function () {
+      this.setSearchFilter();
+    },
+    setSearchFilter: function () {
+      if (this.mapMarker) {
+        const geoFilter = {
+          latitude: this.mapMarker.lat,
+          longitude: this.mapMarker.lng,
+          distance: +this.mapRadius,
+        };
+
+        this.$store.dispatch("media/setGeoFilter", geoFilter);
+      }
     },
   },
 };

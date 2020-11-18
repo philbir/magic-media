@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Search;
@@ -60,28 +59,16 @@ namespace MagicMedia.Store.MongoDb
                 .BuildAsync();
 
             IFindFluent<Media, Media>? cursor = _mediaStoreContext.Medias.Find(filter);
-            long totalCount = await cursor.CountDocumentsAsync(cancellationToken);
 
             List<Media> medias = await cursor
                 .SortByDescending(x => x.Source.ImportedAt)
                 .Skip(request.PageNr * request.PageSize)
-                .Limit(request.PageSize)
+                .Limit(request.PageSize + 1)
                 .ToListAsync();
 
-            return new SearchResult<Media>(medias, (int)totalCount);
-        }
-
-        private async Task<IEnumerable<Guid>> GetMediaIdsByPersons(
-            IEnumerable<Guid> persons,
-            CancellationToken cancellationToken)
-        {
-            List<Guid> ids = await _mediaStoreContext.Faces.AsQueryable()
-                .Where(x => x.PersonId.HasValue)
-                .Where(x => persons.ToList().Contains(x.PersonId.Value))
-                .Select(x => x.MediaId)
-                .ToListAsync(cancellationToken);
-
-            return ids;
+            return new SearchResult<Media>(
+                medias.Take(request.PageSize),
+                medias.Count() > request.PageSize);
         }
 
         public async Task<Media> GetByIdAsync(
