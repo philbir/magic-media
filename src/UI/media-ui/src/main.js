@@ -1,3 +1,4 @@
+import * as GmapVue from "gmap-vue";
 import { DateTime } from "luxon";
 import VueMask from "v-mask";
 import Vue from "vue";
@@ -14,7 +15,7 @@ const magicPlugin = {
   install: Vue => {
     Vue.prototype.$magic = {
       self: this,
-      snack: function (text, type = "INFO") {
+      snack: function(text, type = "INFO") {
         store.dispatch("snackbar/addSnack", {
           text,
           type
@@ -27,8 +28,16 @@ const magicPlugin = {
 Vue.use(magicPlugin);
 Vue.use(signalrHub);
 Vue.use(VueMask);
+Vue.use(GmapVue, {
+  load: {
+    key: "AIzaSyDScX2p_g7Qqj1pFzQkA999SevEOi6u1c8",
+    libraries: "places" // This is required if you use the Autocomplete plugin
+  },
 
-Vue.filter("dateformat", function (value, format = "DATE_SHORT") {
+  installComponents: true
+});
+
+Vue.filter("dateformat", function(value, format = "DATE_SHORT") {
   if (!value) return "";
 
   var date = DateTime.fromISO(value);
@@ -37,7 +46,6 @@ Vue.filter("dateformat", function (value, format = "DATE_SHORT") {
   }
   return "";
 });
-
 
 new Vue({
   vuetify,

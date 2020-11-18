@@ -1,0 +1,11 @@
+query geoLocationClusters($input: GetGeoLocationClustersRequestInput!) {
+  geoLocationClusters(input: $input) {
+    id
+    count
+    hash
+    coordinates {
+      latitude
+      longitude
+    }
+  }
+}

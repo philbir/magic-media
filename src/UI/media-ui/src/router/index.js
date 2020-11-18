@@ -1,16 +1,20 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import MediaList from "../views/MediaList.vue";
+
+import AlbumFilter from "../components/Album/AlbumFilter";
+import AlbumList from "../components/Album/AlbumList";
+import DefaultAppBar from "../components/DefaultAppBar";
+import FaceAppBar from "../components/FaceAppBar";
+import FaceFilter from "../components/FaceFilter";
+import MapView from "../components/Map/MapView";
+import MapAppBar from "../components/Map/MapAppBar";
+import MapFilter from "../components/Map/MapFilter";
+import MediaAppBar from "../components/MediaAppBar";
+import MediaFilter from "../components/MediaFilter";
+import PersonFilter from "../components/PersonFilter";
 import FaceList from "../views/FaceList.vue";
+import MediaList from "../views/MediaList.vue";
 import PersonList from "../views/PersonList";
-import MediaFilter from "../components/MediaFilter"
-import MediaAppBar from "../components/MediaAppBar"
-import FaceAppBar from "../components/FaceAppBar"
-import DefaultAppBar from "../components/DefaultAppBar"
-import FaceFilter from "../components/FaceFilter"
-import PersonFilter from "../components/PersonFilter"
-import AlbumList from "../components/Album/AlbumList"
-import AlbumFilter from "../components/Album/AlbumFilter"
 
 Vue.use(VueRouter);
 
@@ -51,6 +55,15 @@ const routes = [
       appbar: DefaultAppBar
     }
   },
+  {
+    path: "/map",
+    name: "Map",
+    components: {
+      default: MapView,
+      left: MapFilter,
+      appbar: MapAppBar
+    }
+  }
 ];
 
 const router = new VueRouter({

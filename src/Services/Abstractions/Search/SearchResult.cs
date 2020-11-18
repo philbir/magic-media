@@ -8,10 +8,18 @@ namespace MagicMedia.Search
 
         public IEnumerable<TItem> Items { get; init; }
 
+        public bool HasMore { get; }
+
         public SearchResult(IEnumerable<TItem> items, int totalCount)
         {
             TotalCount = totalCount;
             Items = items;
+        }
+
+        public SearchResult(IEnumerable<TItem> items, bool hasMore)
+        {
+            Items = items;
+            HasMore = hasMore;
         }
     }
 }

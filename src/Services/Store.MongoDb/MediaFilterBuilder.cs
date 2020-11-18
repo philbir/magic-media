@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using MongoDB.Driver.GeoJsonObjectModel;
 using MongoDB.Driver.Linq;
 
 
@@ -96,6 +97,25 @@ namespace MagicMedia.Store.MongoDb
             if (albumId.HasValue)
             {
                 _tasks.Add(CreateAlbumFilter(albumId.Value));
+            }
+
+            return this;
+        }
+
+        public MediaFilterBuilder AddGeoRadius(GeoRadiusFilter? geoRadius)
+        {
+            if (geoRadius != null)
+            {
+                GeoJsonPoint<GeoJson2DGeographicCoordinates>? point = GeoJson.Point(
+                    GeoJson.Geographic(
+                        geoRadius.Longitude,
+                        geoRadius.Latitude));
+
+                _filter &= Builders<Media>.Filter.NearSphere(x =>
+                       x.GeoLocation.Point,
+                        point,
+                        maxDistance: geoRadius.Distance * 1000
+                        );
             }
 
             return this;

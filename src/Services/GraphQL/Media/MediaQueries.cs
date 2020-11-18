@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using HotChocolate;
@@ -37,6 +38,13 @@ namespace MagicMedia.GraphQL
             CancellationToken cancellationToken)
         {
             return await _mediaStore.GetByIdAsync(id, cancellationToken);
+        }
+
+        public async Task<IEnumerable<GeoClusterLocation>> GetGeoLocationClustersAsync(
+            GetGeoLocationClustersRequest input,
+            CancellationToken cancellationToken)
+        {
+            return await _mediaSearchService.GetGeoLocationClustersAsync(input, cancellationToken);
         }
 
         public async Task<FolderItem> GetFolderTreeAsync(CancellationToken cancellationToken)

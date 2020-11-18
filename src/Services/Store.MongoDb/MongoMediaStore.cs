@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Search;
@@ -56,31 +55,20 @@ namespace MagicMedia.Store.MongoDb
                 .AddCities(request.Cities)
                 .AddCountries(request.Countries)
                 .AddAlbum(request.AlbumId)
+                .AddGeoRadius(request.GeoRadius)
                 .BuildAsync();
 
             IFindFluent<Media, Media>? cursor = _mediaStoreContext.Medias.Find(filter);
-            long totalCount = await cursor.CountDocumentsAsync(cancellationToken);
 
             List<Media> medias = await cursor
                 .SortByDescending(x => x.Source.ImportedAt)
                 .Skip(request.PageNr * request.PageSize)
-                .Limit(request.PageSize)
+                .Limit(request.PageSize + 1)
                 .ToListAsync();
 
-            return new SearchResult<Media>(medias, (int)totalCount);
-        }
-
-        private async Task<IEnumerable<Guid>> GetMediaIdsByPersons(
-            IEnumerable<Guid> persons,
-            CancellationToken cancellationToken)
-        {
-            List<Guid> ids = await _mediaStoreContext.Faces.AsQueryable()
-                .Where(x => x.PersonId.HasValue)
-                .Where(x => persons.ToList().Contains(x.PersonId.Value))
-                .Select(x => x.MediaId)
-                .ToListAsync(cancellationToken);
-
-            return ids;
+            return new SearchResult<Media>(
+                medias.Take(request.PageSize),
+                medias.Count() > request.PageSize);
         }
 
         public async Task<Media> GetByIdAsync(
@@ -296,6 +284,42 @@ namespace MagicMedia.Store.MongoDb
             }
 
             return result.OrderByDescending(x => x.Count);
+        }
+
+        public async Task<IEnumerable<MediaGeoLocation>> FindMediaInGeoBoxAsync(
+            GeoBox box,
+            int limit,
+            CancellationToken cancellation)
+        {
+            FilterDefinition<Media> filter = Builders<Media>.Filter.GeoWithinBox(x =>
+               x.GeoLocation.Point,
+               box.SouthWest.Longitude,
+               box.SouthWest.Latitude,
+               box.NorthEast.Longitude,
+               box.NorthEast.Latitude);
+
+            var medias = await _mediaStoreContext.Medias.Find(filter)
+                .Limit(limit)
+                .Project(p => new
+                {
+                    p.Id,
+                    p.GeoLocation!.Point.Coordinates,
+                    p.GeoLocation!.GeoHash
+                })
+                .ToListAsync(cancellation);
+
+            IEnumerable<MediaGeoLocation> locs = medias.Select(x => new MediaGeoLocation
+            {
+                Id = x.Id,
+                Coordinates = new GeoCoordinate
+                {
+                    Longitude = x.Coordinates[0],
+                    Latitude = x.Coordinates[1]
+                },
+                GeoHash = x.GeoHash
+            });
+
+            return locs;
         }
     }
 

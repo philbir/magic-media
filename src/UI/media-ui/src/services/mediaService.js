@@ -4,6 +4,7 @@ import QUERY_GETBYID from "../graphql/GetMediaDetails.gql";
 import MUTATION_MOVE_MEDIA from "../graphql/MoveMedia.gql";
 import QUERY_SEARCH_FACETS from "../graphql/SearchFacets.gql";
 import QUERY_SEARCH from "../graphql/SearchMedia.gql";
+import QUERY_GEO_LOCATION_CLUSTERS from "../graphql/Media/geoLocationClusters.gql";
 import MUTATION_TOGGLE_FAVORITE from "../graphql/ToggleFavorite.gql";
 
 /* eslint-disable no-debugger */
@@ -22,6 +23,15 @@ export const getById = async id => {
     query: QUERY_GETBYID,
     variables: {
       id: id
+    }
+  });
+};
+
+export const getGeoLocationClusters = async input => {
+  return await apollo.query({
+    query: QUERY_GEO_LOCATION_CLUSTERS,
+    variables: {
+      input: input
     }
   });
 };

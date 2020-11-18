@@ -1070,6 +1070,11 @@
     ts-node "^8"
     tslib "^1"
 
+"@google/markerclustererplus@^5.1.0":
+  version "5.1.3"
+  resolved "https://registry.yarnpkg.com/@google/markerclustererplus/-/markerclustererplus-5.1.3.tgz#dd7ddbb2a17c977e0b0252c3d8e61fcf502b1bf2"
+  integrity sha512-2wQGO6GGbKPC2tNmTz8ei1zBa64zV3QBBvgLHiPvYqUA63230qNqfQpN+nzsrl1RM40NJtty4Y1CEQKxq6MBGg==
+
 "@graphql-tools/batch-delegate@^6.2.4":
   version "6.2.4"
   resolved "https://registry.npm.taobao.org/@graphql-tools/batch-delegate/download/@graphql-tools/batch-delegate-6.2.4.tgz#8aab19ff69939c1a8bd3bebb4b1a3ff13c933559"
@@ -6185,6 +6190,13 @@ globule@^1.0.0:
     glob "~7.1.1"
     lodash "~4.17.10"
     minimatch "~3.0.2"
+
+gmap-vue@^1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/gmap-vue/-/gmap-vue-1.5.0.tgz#43de7cba85c61280bfa65e6450b9d55657e9a82f"
+  integrity sha512-WE0VnSM1EsaTFVsnq53WGnre9cP1Q9DPCr0IiPmaoqsQioAKtTNBNyomrEvg0NIsVuxrdC2qvbgZPXCa8v/mBA==
+  dependencies:
+    "@google/markerclustererplus" "^5.1.0"
 
 got@^9.6.0:
   version "9.6.0"
@@ -11506,7 +11518,15 @@ vue-template-es2015-compiler@^1.9.0:
   resolved "https://registry.npm.taobao.org/vue-template-es2015-compiler/download/vue-template-es2015-compiler-1.9.1.tgz#1ee3bc9a16ecbf5118be334bb15f9c46f82f5825"
   integrity sha1-HuO8mhbsv1EYvjNLsV+cRvgvWCU=
 
-vue@^2.6.11:
+vue2-gmap-custom-marker@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/vue2-gmap-custom-marker/-/vue2-gmap-custom-marker-6.0.0.tgz#ccb443b9223396726252c0bf10daf80cd6549f10"
+  integrity sha512-vaFhqeJNEu3PwFMnhzfdNa3o/ehKoYoRz/fMe7zXMjPu6LSVWH8/vCAwU3beWcFM6UcQUF9jMHbw4UG+MEk5Gw==
+  dependencies:
+    gmap-vue "^1.5.0"
+    vue "^2.x"
+
+vue@^2.6.11, vue@^2.x:
   version "2.6.12"
   resolved "https://registry.npm.taobao.org/vue/download/vue-2.6.12.tgz#f5ebd4fa6bd2869403e29a896aed4904456c9123"
   integrity sha1-9evU+mvShpQD4pqJau1JBEVskSM=

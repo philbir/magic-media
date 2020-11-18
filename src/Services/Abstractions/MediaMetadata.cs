@@ -13,61 +13,26 @@ namespace MagicMedia
         public DateTime? DateTaken { get; set; }
     }
 
-    public class MediaDimension
+    public class MediaGeoLocation
     {
-        public int Height { get; set; }
-        public int Width { get; set; }
-    }
+        public Guid Id { get; set; }
 
-    public class CameraData
-    {
-        public string Model { get; set; }
-
-        public string Make { get; set; }
-    }
-
-    public class GeoLocation
-    {
-        public GeoPoint Point { get; set; }
-
-        public int Altitude { get; set; }
-
-        public string Type { get; set; }
+        public GeoCoordinate Coordinates { get; set; }
 
         public string GeoHash { get; set; }
-        public GeoAddress Address { get; set; }
     }
 
-    public class GeoPoint
+    public class GeoBox
     {
-        public string Type { get; set; } = "Point";
-
-        public double[] Coordinates { get; set; }
-
-        public static GeoPoint Create(double lat, double lon)
-        {
-            return new GeoPoint()
-            {
-                Coordinates = new[] { lon, lat }
-            };
-        }
+        public GeoCoordinate NorthEast { get; set; }
+        public GeoCoordinate SouthWest { get; set; }
     }
 
-    public class GeoAddress
-    {
-        public string Name { get; set; }
-        public string City { get; set; }
-        public string CountryCode { get; set; }
-        public string Country { get; set; }
-        public string Address { get; set; }
-        public string Distric1 { get; set; }
-        public string Distric2 { get; set; }
-        public string EntityType { get; set; }
-    }
 
-    public enum MediaOrientation
+    public class GeoCoordinate
     {
-        Landscape,
-        Portrait
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
+
     }
 }

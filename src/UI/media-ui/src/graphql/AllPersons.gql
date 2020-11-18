@@ -3,8 +3,7 @@ query allPersons {
     id
     name
     dateOfBirth
-    groups
-    {
+    groups {
       id
       name
     }
