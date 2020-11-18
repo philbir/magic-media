@@ -35,6 +35,25 @@
       ></FilterList>
     </div>
     <div v-if="activeTabId == 'geo'">
+      <GmapMap
+        :center="mapCenter"
+        :zoom="7"
+        :options="mapOptions"
+        ref="mapRef"
+        map-type-id="terrain"
+        style="width: 100%; height: 200px"
+        @click="clickMap"
+      >
+        <GmapMarker v-if="mapMarker" :position="mapMarker"
+      /></GmapMap>
+
+      <v-text-field
+        class="ml-4 mr-4"
+        v-model="mapRadius"
+        label="Radius"
+        suffix="km"
+        prepend-inner-icon="mdi-map-marker-radius-outline"
+      ></v-text-field>
       <FilterList
         :items="countries"
         title="Countries"
@@ -111,6 +130,17 @@ export default {
           icon: " mdi-dots-horizontal",
         },
       ],
+      mapOptions: {
+        zoomControl: false,
+        mapTypeControl: false,
+        scaleControl: false,
+        streetViewControl: false,
+        rotateControl: false,
+        fullscreenControl: false,
+        disableDefaultUi: false,
+      },
+      mapMarker: null,
+      mapRadius: 5,
     };
   },
   computed: {
@@ -123,6 +153,9 @@ export default {
         }
         return tab;
       });
+    },
+    mapCenter: function () {
+      return { lat: 47.28752423541094, lng: 8.533110649108862 };
     },
     persons: function () {
       return this.$store.state.person.persons.map((p) => {
@@ -160,6 +193,13 @@ export default {
     },
     onSelectAlbum: function (album) {
       this.$store.dispatch("media/setAlbumFilter", album ? album.id : null);
+    },
+    clickMap: function (loc) {
+      this.mapMarker = {
+        lat: loc.latLng.lat(),
+        lng: loc.latLng.lng(),
+      };
+      console.log(loc);
     },
   },
 };

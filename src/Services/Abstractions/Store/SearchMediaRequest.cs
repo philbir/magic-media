@@ -19,5 +19,14 @@ namespace MagicMedia.Store
         public string? Folder { get; set; }
 
         public Guid? AlbumId { get; set; }
+
+        public GeoRadiusFilter? GeoRadius { get; set; }
+    }
+
+    public class GeoRadiusFilter
+    {
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
+        public double? Distance { get; set; }
     }
 }
