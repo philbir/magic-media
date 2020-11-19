@@ -20,8 +20,8 @@ namespace MagicMedia.Messaging
             {
                 s.AddConsumer<FaceUpdatedConsumer>();
                 s.AddConsumer<MoveMediaConsumer>();
-                s.AddConsumer<MoveMediaCompletedConsumer>();
-                s.AddConsumer<MoveMediaRequestCompletedConsumer>();
+                s.AddConsumer<MediaOperationCompletedConsumer>();
+                s.AddConsumer<MediaOperationRequestCompletedConsumer>();
                 s.AddConsumer<FavoriteMediaToggledConsumer>();
                 s.AddConsumer<PersonUpdatedConsumer>();
                 s.AddConsumer<ItemsAddedToAlbumConsumer>();

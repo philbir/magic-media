@@ -229,7 +229,7 @@ const mediaModule = {
         dispatch(
           "snackbar/operationStarted",
           {
-            id: res.data.moveMedia.operationId,
+            id: res.data.recycleMedia.operationId,
             type: "INFO",
             title: "Recycle media",
             totalCount: ids.length,
