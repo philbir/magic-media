@@ -302,3 +302,4 @@ src/Face/models/
 *.pyc
 **/*.Api.Host/wwwroot
 src/Services/Api.Host/wwwroot/
+appsettings.local.json
