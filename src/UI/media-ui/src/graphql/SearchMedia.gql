@@ -6,6 +6,10 @@ query search($request: SearchMediaRequestInput!, $size: ThumbnailSizeName) {
       dateTaken
       cameraId
       isFavorite
+      mediaType
+      videoInfo {
+        duration
+      }
       camera {
         id
         model

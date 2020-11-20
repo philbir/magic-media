@@ -21,7 +21,7 @@ namespace MagicMedia
             Stream stream = _mediaStore.Blob.GetStreamAsync(new MediaBlobData
             {
                 Type = MediaBlobType.VideoPreview,
-                Filename = $"{id.ToString("N")}.gif"
+                Filename = $"{id}.gif"
             });
 
             return new MediaStream(stream, "image/gif");

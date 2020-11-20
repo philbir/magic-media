@@ -40,7 +40,13 @@
       <div class="foot">
         {{ geoLocation }}
       </div>
-      <img :src="imageSrc" @load="onImgLoaded" ref="img" />
+      <img
+        :src="imageSrc"
+        @load="onImgLoaded"
+        ref="img"
+        v-if="media.mediaType === 'IMAGE'"
+      />
+      <div v-else class="text-color--white">This is a video</div>
       <div v-show="image.loaded">
         <template v-for="face in media.faces">
           <FaceBox :key="face.id" :face="face" :image="image"></FaceBox>

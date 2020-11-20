@@ -20,15 +20,18 @@
           class="media-item"
           :class="{ selected: isSelected(box.media.idx) }"
           v-on:click="selectMedia(box.media)"
+          @mouseover="hover(true, box.media.idx)"
+          @mouseleave="hover(false, box.media.idx)"
           :style="{
             left: box.left + 'px',
             height: box.height + 'px',
             width: box.width + 'px',
-            'background-image': 'url(' + thumbSrc(box.media) + ')',
+            'background-image': 'url(' + box.media.imageUrl + ')',
           }"
         >
-          <span v-if="media.type === 2"></span>
-          Time
+          <div v-if="box.media.mediaType === 'VIDEO'" class="duration">
+            {{ box.media.videoInfo.duration }}
+          </div>
         </div>
       </div>
       <div
@@ -37,7 +40,7 @@
         :style="{ top: row.top + 'px', height: row.boxes[0].height + 'px' }"
         class="media-row"
       >
-        <h1 class="white--text">ss</h1>
+        &nbsp;
       </div>
     </template>
   </div>
@@ -81,6 +84,7 @@ export default {
       layout.clientHeight = window.innerHeight - 50;
       layout.boxes.forEach((box, i) => {
         box.media = items[i];
+        box.media.imageUrl = this.thumbSrc(items[i]);
         box.media.idx = i;
       });
       layout.rows = [];
@@ -112,6 +116,7 @@ export default {
         start: 0,
         end: window.innerHeight,
       },
+      hoveredIndex: -1,
     };
   },
   methods: {
@@ -125,6 +130,9 @@ export default {
       return false;
     },
     thumbSrc: function (media) {
+      if (media.mediaType === "VIDEO" && this.hoveredIndex === media.idx) {
+        return "/api/video/preview/" + media.id;
+      }
       return media.thumbnail.dataUrl;
     },
     handleUpload: function () {
@@ -145,6 +153,15 @@ export default {
     },
     selectAll: function () {
       this.$store.dispatch("media/selectAll");
+    },
+    hover: function (isHover, index) {
+      if (isHover) {
+        this.hoveredIndex = index;
+      } else {
+        this.hoveredIndex = -1;
+      }
+
+      console.log(isHover, index);
     },
     onScroll: function (e) {
       const elm = e.target;
@@ -191,5 +208,10 @@ export default {
 
 .visible {
   transition: opacity 100ms ease-in;
+}
+
+.duration {
+  color: #fff;
+  margin-left: 4px;
 }
 </style>

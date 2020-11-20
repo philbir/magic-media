@@ -25,6 +25,7 @@ namespace MagicMedia
                 .AddType<PersonMutations>()
                 .AddType<AlbumMutations>()
                 .AddType<MediaType>()
+                .AddType<VideoInfoType>()
                 .AddType<FaceType>()
                 .AddType<PersonType>()
                 .AddType<AlbumType>()
