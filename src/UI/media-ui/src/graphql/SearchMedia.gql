@@ -28,6 +28,6 @@ query search($request: SearchMediaRequestInput!, $size: ThumbnailSizeName) {
         type
       }
     }
-    totalCount
+    hasMore
   }
 }

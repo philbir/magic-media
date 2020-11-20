@@ -74,7 +74,7 @@
       v-show="loading"
     ></v-progress-circular>
     <h4 class="white--text mr-4" v-if="totalLoaded > 0">
-      {{ totalLoaded }} / {{ totalCount }}
+      {{ totalLoaded }}
     </h4>
 
     <v-icon color="white" class="mr-2" @click="openUpload">

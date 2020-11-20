@@ -19,6 +19,7 @@ namespace MagicMedia.Store.MongoDb
         private readonly CancellationToken _cancellationToken;
         private FilterDefinition<Media> _filter;
         private List<Task> _tasks;
+        bool _showRecycled = false;
 
         public MediaFilterBuilder(
             MediaStoreContext dbContext,
@@ -30,6 +31,7 @@ namespace MagicMedia.Store.MongoDb
             _dbContext = dbContext;
             _albumMediaResolver = albumMediaResolver;
             _cancellationToken = cancellationToken;
+
         }
 
         public MediaFilterBuilder AddFolder(string? folder)
@@ -44,6 +46,13 @@ namespace MagicMedia.Store.MongoDb
                     {
                         case "FAVORITES":
                             _filter &= Builders<Media>.Filter.Eq(x => x.IsFavorite, true);
+                            break;
+                        case "RECYCLED":
+                            _showRecycled = true;
+                            break;
+                        case "RECENTLY_ADDED":
+                            _filter &= Builders<Media>.Filter
+                                .Lt(x => x.Source.ImportedAt, DateTime.Now.AddDays(5));
                             break;
                     }
                 }
@@ -160,6 +169,18 @@ namespace MagicMedia.Store.MongoDb
 
         public async Task<FilterDefinition<Media>> BuildAsync()
         {
+            FilterDefinition<Media> recycledFilter = Builders<Media>.Filter
+                .Eq(x => x.State, MediaState.Recycled);
+
+            if ( _showRecycled)
+            {
+                _filter &= recycledFilter;
+            }
+            else
+            {
+                _filter &= Builders<Media>.Filter.Not(recycledFilter);
+            }
+
             await Task.WhenAll(_tasks);
 
             return _filter;

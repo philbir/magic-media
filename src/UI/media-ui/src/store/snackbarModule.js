@@ -1,5 +1,7 @@
 /* eslint-disable no-debugger */
 
+import { mediaOperationTypeMap } from "../services/mediaOperationService"
+
 const snackbarModule = {
   namespaced: true,
   state: () => ({
@@ -40,7 +42,7 @@ const snackbarModule = {
     operationStarted: function ({ commit }, operation) {
       commit("OPERATION_ADDED", operation);
     },
-    moveMediaCompleted: function ({ state, commit }, operation) {
+    mediaOperationCompleted: function ({ state, commit }, operation) {
       const ntf = state.notifications.find(x => x.id === operation.operationId);
       if (ntf) {
         if (operation.isSuccess) {
@@ -49,14 +51,18 @@ const snackbarModule = {
           ntf.errorCount++;
         }
 
-        ntf.text = `${ntf.successCount} of ${ntf.totalCount} moved`;
+        debugger;
+        var opType = mediaOperationTypeMap[operation.type];
+
+
+        ntf.text = `${ntf.successCount} of ${ntf.totalCount} ${opType.verb}`;
         if (ntf.errorCount > 0) {
           ntf.text += ` (${ntf.errorCount} errors)`;
         }
         commit("OPERATION_UPDATED", ntf);
       }
     },
-    moveMediaRequestCompleted: function ({ state, commit }, operation) {
+    mediaOperationRequestCompleted: function ({ state, commit }, operation) {
       const ntf = state.notifications.find(x => x.id === operation.operationId);
       if (ntf) {
         if (operation.errorCount === 0) {
@@ -64,9 +70,11 @@ const snackbarModule = {
         } else {
           ntf.type = "warning";
         }
+        var opType = mediaOperationTypeMap[operation.type];
+
         ntf.successCount = operation.successCount;
         ntf.errorCount = operation.errorCount;
-        ntf.text = `${ntf.successCount} of ${ntf.totalCount} moved`;
+        ntf.text = `${ntf.successCount} of ${ntf.totalCount} ${opType.verb}.`;
         commit("OPERATION_UPDATED", ntf);
       }
     }

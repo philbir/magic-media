@@ -61,6 +61,8 @@ const mediaModule = {
       Vue.set(state, "list", [...current, ...result.items]);
       state.listLoading = false;
       state.totalLoaded = state.totalLoaded + result.items.length;
+
+      console.log(result)
       state.hasMore = result.hasMore;
     },
     DETAILS_LOADED(state, media) {
