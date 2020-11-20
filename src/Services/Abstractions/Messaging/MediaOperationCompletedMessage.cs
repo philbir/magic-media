@@ -1,32 +1,38 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MagicMedia.Messaging
 {
-    public class MoveMediaCompletedMessage
+    public class MediaOperationCompletedMessage
     {
+        public MediaOperationType Type { get; set; }
+
         public string OperationId { get; set; }
 
         public Guid MediaId { get; set; }
 
-        public string OldFolder { get; set; }
-
-        public string NewFolder { get; set; }
+        public Dictionary<string, string> Data { get; set; }
 
         public bool IsSuccess { get; set; }
 
         public string Message { get; set; }
     }
 
-    public class MoveMediaRequestCompletedMessage
+
+    public class MediaOperationRequestCompletedMessage
     {
+        public MediaOperationType Type { get; set; }
+
         public string OperationId { get; set; }
 
         public int ErrorCount { get; set; }
 
         public int SuccessCount { get; set; }
+    }
+
+    public enum MediaOperationType
+    {
+        Move,
+        Recycle
     }
 }

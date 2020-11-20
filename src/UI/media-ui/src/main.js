@@ -15,7 +15,7 @@ const magicPlugin = {
   install: Vue => {
     Vue.prototype.$magic = {
       self: this,
-      snack: function(text, type = "INFO") {
+      snack: function (text, type = "INFO") {
         store.dispatch("snackbar/addSnack", {
           text,
           type
@@ -31,13 +31,13 @@ Vue.use(VueMask);
 Vue.use(GmapVue, {
   load: {
     key: "AIzaSyDScX2p_g7Qqj1pFzQkA999SevEOi6u1c8",
-    libraries: "places" // This is required if you use the Autocomplete plugin
+    libraries: "places"
   },
 
   installComponents: true
 });
 
-Vue.filter("dateformat", function(value, format = "DATE_SHORT") {
+Vue.filter("dateformat", function (value, format = "DATE_SHORT") {
   if (!value) return "";
 
   var date = DateTime.fromISO(value);

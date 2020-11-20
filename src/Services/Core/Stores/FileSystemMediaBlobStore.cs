@@ -46,7 +46,6 @@ namespace MagicMedia.Stores
             string newLocation,
             CancellationToken cancellationToken)
         {
-            //MediaBlobData file = await GetAsync(request, cancellationToken);
             var filename =  GetFilename(request);
 
             var newPathFragments = new List<string> { _options.RootDirectory };
@@ -62,6 +61,31 @@ namespace MagicMedia.Stores
             var newFilename = Path.Combine(newDir, Path.GetFileName(filename));
 
             File.Move(filename, newFilename, true);
+
+            return Task.CompletedTask;
+        }
+
+        public Task MoveToSpecialFolderAsync(
+            MediaBlobData request,
+            MediaBlobType mediaBlobType,
+            CancellationToken cancellationToken)
+        {
+            var filname = GetFilename(request);
+
+            var newDir = GetDirectory(new MediaBlobData
+            {
+                Type = mediaBlobType
+            });
+
+           
+            if (!Directory.Exists(newDir))
+            {
+                Directory.CreateDirectory(newDir);
+            }
+
+            var newFilename = Path.Combine(newDir, Path.GetFileName(filname));
+
+            File.Move(filname, newFilename, true);
 
             return Task.CompletedTask;
         }
@@ -119,7 +143,7 @@ namespace MagicMedia.Stores
             return new Dictionary<MediaBlobType, string>
             {
                 [MediaBlobType.Media] = "/",
-                [MediaBlobType.Deleted] = "System/Deleted",
+                [MediaBlobType.Recycled] = "System/Deleted",
                 [MediaBlobType.Duplicate] = "System/Duplicate",
                 [MediaBlobType.Imported] = "System/Imported",
                 [MediaBlobType.Inbox] = "System/Inbox",

@@ -11,6 +11,7 @@ namespace MagicMedia
         Task MoveMediaAsync(
             MoveMediaRequest request,
             CancellationToken cancellationToken);
-        Task ToogleFavoriteAsync(Guid id, bool isFavorite, CancellationToken cancellationToken);
+        Task RecycleAsync(RecycleMediaRequest request, CancellationToken cancellationToken);
+        Task ToggleFavoriteAsync(Guid id, bool isFavorite, CancellationToken cancellationToken);
     }
 }

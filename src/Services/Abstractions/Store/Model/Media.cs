@@ -9,6 +9,8 @@ namespace MagicMedia.Store
 
         public MediaType MediaType { get; set; }
 
+        public MediaState State { get; set; }
+
         public string Filename { get; set; }
 
         public long Size { get; set; }
@@ -31,7 +33,7 @@ namespace MagicMedia.Store
 
         public IEnumerable<MediaThumbnail> Thumbnails { get; set; }
 
-        public string Folder { get; set; }
+        public string? Folder { get; set; }
 
         public bool IsFavorite { get; set; }
 
@@ -57,6 +59,13 @@ namespace MagicMedia.Store
     {
         New,
         Predicted,
-        Validated
+        Validated,
+        Recycled
+    }
+
+    public enum MediaState
+    {
+        Active,
+        Recycled
     }
 }

@@ -217,7 +217,8 @@ namespace MagicMedia.Store.MongoDb
         public async Task<IEnumerable<string>> GetAllFoldersAsync(CancellationToken cancellationToken)
         {
             return await _mediaStoreContext.Medias.AsQueryable()
-                .Select(x => x.Folder)
+                .Where(x => x.Folder != null)
+                .Select(x => x.Folder!)
                 .Distinct()
                 .ToListAsync(cancellationToken);
         }

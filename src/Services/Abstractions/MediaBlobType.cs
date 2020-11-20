@@ -11,7 +11,7 @@ namespace MagicMedia
         Media,
         VideoPreview,
         Web,
-        Deleted,
+        Recycled,
         Duplicate,
         Imported,
         Inbox

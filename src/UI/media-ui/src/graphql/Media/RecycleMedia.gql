@@ -1,0 +1,9 @@
+mutation recycleMedia($input: RecycleMediaRequestInput!) {
+  recycleMedia(input: $input) {
+    operationId
+    errors {
+      code
+      message
+    }
+  }
+}

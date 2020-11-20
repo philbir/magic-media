@@ -2,6 +2,7 @@ import apollo from "../apollo";
 import QUERY_FOLDER_TREE from "../graphql/GetFolderTree.gql";
 import QUERY_GETBYID from "../graphql/GetMediaDetails.gql";
 import MUTATION_MOVE_MEDIA from "../graphql/MoveMedia.gql";
+import MUTATION_RECYCLE_MEDIA from "../graphql/Media/RecycleMedia.gql";
 import QUERY_SEARCH_FACETS from "../graphql/SearchFacets.gql";
 import QUERY_SEARCH from "../graphql/SearchMedia.gql";
 import QUERY_GEO_LOCATION_CLUSTERS from "../graphql/Media/geoLocationClusters.gql";
@@ -58,6 +59,16 @@ export const moveMedia = async request => {
     }
   });
 };
+
+export const recycleMedia = async input => {
+  return await apollo.mutate({
+    mutation: MUTATION_RECYCLE_MEDIA,
+    variables: {
+      input: input
+    }
+  });
+};
+
 
 export const toggleFavorite = async (id, isFavorite) => {
   return await apollo.mutate({

@@ -82,7 +82,10 @@ namespace MagicMedia.Store.MongoDb
             CancellationToken cancellationToken)
         {
             return await _mediaStoreContext.Faces.AsQueryable()
-                .Where(x => x.State == FaceState.Validated && x.PersonId != null)
+                .Where(x => x.State == FaceState.Validated &&
+                            x.PersonId != null &&
+                            x.Encoding != null)
+
                 .Select(x => new PersonEncodingData
                 {
                     PersonId = x.PersonId.Value,

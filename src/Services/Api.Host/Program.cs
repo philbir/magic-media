@@ -19,6 +19,13 @@ namespace MagicMedia.Api
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration( builder =>
+                {
+                    builder.AddJsonFile("appsettings.json");
+                    builder.AddUserSecrets<Program>(optional: true);
+                    builder.AddJsonFile("appsettings.local.json");
+                    builder.AddEnvironmentVariables();
+                })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();

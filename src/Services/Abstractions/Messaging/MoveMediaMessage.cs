@@ -1,8 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MagicMedia.Messaging
 {
@@ -14,4 +11,5 @@ namespace MagicMedia.Messaging
 
         public string OperationId { get; set; }
     }
+
 }

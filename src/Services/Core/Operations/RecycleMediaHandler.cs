@@ -9,13 +9,13 @@ using MassTransit;
 
 namespace MagicMedia.Operations
 {
-    public class MoveMediaHandler : IMoveMediaHandler
+    public class RecycleMediaHandler : IRecycleMediaHandler
     {
         private readonly IMediaStore _mediaStore;
         private readonly IMediaBlobStore _mediaBlobStore;
         private readonly IBus _bus;
 
-        public MoveMediaHandler(
+        public RecycleMediaHandler(
             IMediaStore _mediaStore,
             IMediaBlobStore mediaBlobStore,
             IBus bus)
@@ -28,16 +28,15 @@ namespace MagicMedia.Operations
         public Guid MediaId { get; private set; }
 
         public async Task ExecuteAsync(
-            MoveMediaMessage message,
+            RecycleMediaMessage message,
             CancellationToken cancellationToken)
         {
             var messages = new List<MediaOperationCompletedMessage>();
 
             foreach (Guid mediaId in message.Ids)
             {
-                MediaOperationCompletedMessage msg = await MoveMediaAsync(
+                MediaOperationCompletedMessage msg = await RecycleAsync(
                     mediaId,
-                    message.NewLocation,
                     cancellationToken);
 
                 msg.OperationId = message.OperationId;
@@ -48,6 +47,7 @@ namespace MagicMedia.Operations
 
             var completedmsg = new MediaOperationRequestCompletedMessage
             {
+                Type = MediaOperationType.Recycle,
                 OperationId = message.OperationId,
                 SuccessCount = messages.Where(x => x.IsSuccess).Count(),
                 ErrorCount = messages.Where(x => !x.IsSuccess).Count(),
@@ -56,34 +56,36 @@ namespace MagicMedia.Operations
             await _bus.Publish(completedmsg, cancellationToken);
         }
 
-        private async Task<MediaOperationCompletedMessage> MoveMediaAsync(
+        private async Task<MediaOperationCompletedMessage> RecycleAsync(
             Guid id,
-            string newLocation,
             CancellationToken cancellationToken)
         {
             Media media = await _mediaStore.GetByIdAsync(id, cancellationToken);
 
             MediaOperationCompletedMessage msg = new MediaOperationCompletedMessage
             {
+                Type = MediaOperationType.Recycle,
                 MediaId = id,
-                Data = new() { ["OldFolder"] = media.Folder, ["NewFolder"] = newLocation },
             };
             try
             {
-                await _mediaBlobStore.MoveAsync(
+                await _mediaBlobStore.MoveToSpecialFolderAsync(
                     new MediaBlobData
                     {
                         Directory = media.Folder,
-                        Filename = media.Filename
+                        Filename = media.Filename,
+                        Type = MediaBlobType.Media
                     },
-                    newLocation,
+                    MediaBlobType.Recycled,
                     cancellationToken);
 
-                media.Folder = newLocation;
+                media.Folder = null;
+                media.State = MediaState.Recycled;
 
                 await _mediaStore.UpdateAsync(media, cancellationToken);
-                msg.Message = $"{media.Filename} moved from " +
-                    $"{msg.Data["OldFolder"]} to {media.Folder}";
+                msg.Message = $"{media.Filename} Recycled";
+
+                await RecycleFacesAsync(media.Id, cancellationToken);
 
                 msg.IsSuccess = true;
             }
@@ -94,6 +96,20 @@ namespace MagicMedia.Operations
             }
 
             return msg;
+        }
+
+        private async Task RecycleFacesAsync(Guid mediaId, CancellationToken cancellationToken)
+        {
+            IEnumerable<MediaFace> faces = await _mediaStore.Faces.GetFacesByMediaAsync(
+                mediaId,
+                cancellationToken);
+
+            foreach (MediaFace face in faces)
+            {
+                face.State = FaceState.Recycled;
+
+                await _mediaStore.Faces.UpdateAsync(face, cancellationToken);
+            }
         }
     }
 }

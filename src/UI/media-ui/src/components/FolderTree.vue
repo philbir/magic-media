@@ -44,20 +44,20 @@ export default {
     specialFolders: [
       {
         name: "Favorites",
-        path: "SPECIAL:Favorites",
+        path: "SPECIAL:FAVORITES",
         icon: "mdi-heart",
         color: "red",
       },
       {
-        name: "Deleted",
-        path: "SPECIAL:Deleted",
-        icon: "mdi-trash-can-outline",
+        name: "Recently added",
+        path: "SPECIAL:RECENTLY_ADDED",
+        icon: "mdi-history",
         color: "black",
       },
       {
-        name: "Recently added",
-        path: "SPECIAL:RecentAdded",
-        icon: "mdi-history",
+        name: "Recycle Bin",
+        path: "SPECIAL:RECYCLED",
+        icon: "mdi-trash-can-outline",
         color: "black",
       },
     ],
