@@ -26,7 +26,10 @@
             width: box.width + 'px',
             'background-image': 'url(' + thumbSrc(box.media) + ')',
           }"
-        ></div>
+        >
+          <span v-if="media.type === 2"></span>
+          Time
+        </div>
       </div>
       <div
         :key="i"

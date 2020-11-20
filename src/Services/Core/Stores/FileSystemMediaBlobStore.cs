@@ -28,6 +28,14 @@ namespace MagicMedia.Stores
             return request with { Data = data };
         }
 
+        public Stream GetStreamAsync(
+            MediaBlobData request)
+        {
+            var filename = GetFilename(request);
+
+            return new FileStream(filename, FileMode.Open);
+        }
+
         public async Task StoreAsync(MediaBlobData data, CancellationToken cancellationToken)
         {
             var filename = GetFilename(data);

@@ -18,6 +18,7 @@ namespace MagicMedia.Store.MongoDb
         public MongoMediaStore(
             MediaStoreContext mediaStoreContext,
             IThumbnailBlobStore thumbnailBlobStore,
+            IMediaBlobStore blobStore,
             IFaceStore faceStore,
             IAlbumStore albumStore,
             ICameraStore cameraStore,
@@ -25,6 +26,7 @@ namespace MagicMedia.Store.MongoDb
         {
             _mediaStoreContext = mediaStoreContext;
             Thumbnails = thumbnailBlobStore;
+            Blob = blobStore;
             Faces = faceStore;
             Albums = albumStore;
             Cameras = cameraStore;
@@ -40,6 +42,8 @@ namespace MagicMedia.Store.MongoDb
         public IPersonStore Persons { get; }
 
         public IThumbnailBlobStore Thumbnails { get; }
+
+        public IMediaBlobStore Blob { get; }
 
         public async Task<SearchResult<Media>> SearchAsync(
             SearchMediaRequest request,
