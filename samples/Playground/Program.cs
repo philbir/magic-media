@@ -22,6 +22,11 @@ namespace Playground
 
             DiscoverySample discovery = sp.GetService<DiscoverySample>();
             FaceScanner faceScanner = sp.GetService<FaceScanner>();
+            VideoConverter videoConverter = sp.GetService<VideoConverter>();
+
+            await videoConverter.GenerateVideosAsync(default);
+
+            return;
 
             await discovery.ScanExistingAsync(new FileSystemDiscoveryOptions
             {
@@ -61,6 +66,7 @@ namespace Playground
             services.AddSingleton<ImportSample>();
             services.AddSingleton<DiscoverySample>();
             services.AddSingleton<FaceScanner>();
+            services.AddSingleton<VideoConverter>();
             services.AddFileSystemDiscovery();
 
             return services.BuildServiceProvider();

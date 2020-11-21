@@ -28,6 +28,7 @@ namespace MagicMedia.Stores
             return request with { Data = data };
         }
 
+
         public Stream GetStreamAsync(
             MediaBlobData request)
         {
@@ -98,9 +99,10 @@ namespace MagicMedia.Stores
             return Task.CompletedTask;
         }
 
-        private string GetFilename(MediaBlobData data)
+        public string GetFilename(MediaBlobData data)
         {
-            var directory = GetDirectory(data);
+            string? directory = GetDirectory(data);
+
             return Path.Combine(directory, data.Filename);
         }
 
