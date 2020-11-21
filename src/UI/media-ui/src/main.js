@@ -2,6 +2,9 @@ import * as GmapVue from "gmap-vue";
 import { DateTime } from "luxon";
 import VueMask from "v-mask";
 import Vue from "vue";
+import VueCoreVideoPlayer from 'vue-core-video-player'
+import VuePlyr from 'vue-plyr'
+import 'vue-plyr/dist/vue-plyr.css'
 
 import App from "./App.vue";
 import vuetify from "./plugins/vuetify";
@@ -25,6 +28,10 @@ const magicPlugin = {
   }
 };
 
+Vue.use(VuePlyr, {
+  plyr: {}
+})
+Vue.use(VueCoreVideoPlayer)
 Vue.use(magicPlugin);
 Vue.use(signalrHub);
 Vue.use(VueMask);

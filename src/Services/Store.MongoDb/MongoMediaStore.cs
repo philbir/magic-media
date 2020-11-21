@@ -116,7 +116,11 @@ namespace MagicMedia.Store.MongoDb
 
             foreach (Media media in medias)
             {
-                MediaThumbnail thumb = media.Thumbnails.Where(x => x.Size == size).FirstOrDefault();
+                MediaThumbnail? thumb = media!.Thumbnails!.Where(x =>
+                    x.Size == size &&
+                    x.Format == "webp")
+                    .FirstOrDefault();
+
                 if (thumb != null)
                 {
                     thumb.Data = await Thumbnails.GetAsync(thumb.Id, cancellationToken);

@@ -160,8 +160,6 @@ export default {
       } else {
         this.hoveredIndex = -1;
       }
-
-      console.log(isHover, index);
     },
     onScroll: function (e) {
       const elm = e.target;
@@ -172,7 +170,7 @@ export default {
         end: elm.scrollTop + elm.offsetHeight + offset,
       };
 
-      if (!this.loading && percent > 0.7) {
+      if (!this.loading && percent > 0.85) {
         this.loadMore();
       }
     },

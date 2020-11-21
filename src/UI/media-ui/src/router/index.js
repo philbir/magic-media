@@ -15,6 +15,7 @@ import PersonFilter from "../components/PersonFilter";
 import FaceList from "../views/FaceList.vue";
 import MediaList from "../views/MediaList.vue";
 import PersonList from "../views/PersonList";
+import Playground from "../views/Playground";
 
 Vue.use(VueRouter);
 
@@ -62,6 +63,15 @@ const routes = [
       default: MapView,
       left: MapFilter,
       appbar: MapAppBar
+    }
+  },
+  {
+    path: "/playground",
+    name: "Playground",
+    components: {
+      default: Playground,
+      left: null,
+      appbar: DefaultAppBar
     }
   }
 ];

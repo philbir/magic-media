@@ -34,6 +34,7 @@ namespace MagicMedia
                 .AddDataLoader<CameraByIdDataLoader>()
                 .AddDataLoader<ThumbnailByMediaIdDataLoader>()
                 .AddDataLoader<MediaByIdDataLoader>()
+                .AddDataLoader<ThumbnailDataDataLoader>()
                 .AddInMemorySubscriptions()
                 .AddAuthorization();
 

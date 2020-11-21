@@ -5,6 +5,10 @@ query mediaDetails($id: Uuid!) {
     dateTaken
     cameraId
     isFavorite
+    mediaType
+    videoInfo{
+      duration
+    }
     dimension {
       height
       width

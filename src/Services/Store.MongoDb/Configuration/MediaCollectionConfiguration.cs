@@ -43,6 +43,7 @@ namespace MagicMedia.Store.MongoDb.Configuration
 
                     var folderIndex = new CreateIndexModel<Media>(
                         Builders<Media>.IndexKeys
+                            .Ascending(x => x.State)
                             .Ascending(c => c.Folder)
                             .Descending(c => c.DateTaken),
                         new CreateIndexOptions { Unique = false });

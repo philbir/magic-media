@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using MagicMedia.GraphQL.DataLoaders;
 using MagicMedia.Extensions;
 using MagicMedia.Store;
+using System.Linq;
 
 namespace MagicMedia.GraphQL
 {
@@ -30,15 +31,23 @@ namespace MagicMedia.GraphQL
             return thumbnail.Data.ToDataUrl(thumbnail.Format);
         }
 
-        public async Task<MediaThumbnail> GetThumbnailAsync(
+        public async Task<MediaThumbnail?> GetThumbnailAsync(
             Media media,
-            ThumbnailByMediaIdDataLoader thumbnailLoader,
+            ThumbnailDataDataLoader thumbnailLoader,
             ThumbnailSizeName size,
             CancellationToken cancellationToken)
         {
-            return await thumbnailLoader.LoadAsync(
-                new Tuple<Guid, ThumbnailSizeName>(media.Id, size),
-                cancellationToken);
+            MediaThumbnail? thumb = media.Thumbnails.Where(x =>
+                x.Size == size &&
+                x.Format == "webp")
+                .FirstOrDefault();
+
+            if ( thumb != null)
+            {
+                return await thumbnailLoader.LoadAsync(thumb, cancellationToken);
+            }
+
+            return null;
         }
     }
 }

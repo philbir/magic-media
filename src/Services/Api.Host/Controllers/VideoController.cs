@@ -32,7 +32,7 @@ namespace MagicMedia.Api.Controllers
         {
             MediaStream? mediaStream = await _videoPlayerService.GetVideoAsync(id, cancellationToken);
 
-            return new FileStreamResult(mediaStream.Stream, mediaStream.MimeType);
+            return new FileStreamResult(mediaStream.Stream, $"video/{mediaStream.MimeType}");
         }
     }
 }
