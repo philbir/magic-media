@@ -23,20 +23,19 @@ namespace Playground
             DiscoverySample discovery = sp.GetService<DiscoverySample>();
             FaceScanner faceScanner = sp.GetService<FaceScanner>();
 
-            await discovery.ScanExistingAsync( new FileSystemDiscoveryOptions
+            await discovery.ScanExistingAsync(new FileSystemDiscoveryOptions
             {
                 Locations = new List<FileDiscoveryLocation>
                 {
                     new FileDiscoveryLocation
                     {
-                         Filter = "*.jpg",
-                         Path = @"Family\2019",
-                         Root = @"P:\Moments\",
+                         Path = @"Video",
+                         Root = @"C:\MagicMedia",
                     }
                 }
             }, default);
 
-            await faceScanner.RunAsync(default);
+            //await faceScanner.RunAsync(default);
         }
 
         private static IServiceProvider BuildServiceProvider()

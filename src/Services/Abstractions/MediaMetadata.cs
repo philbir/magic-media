@@ -6,7 +6,7 @@ namespace MagicMedia
     public class MediaMetadata
     {
         public MediaDimension Dimension { get; set; }
-        public GeoLocation GeoLocation { get; set; }
+        public GeoLocation? GeoLocation { get; set; }
         public string Orientation { get; set; }
         public CameraData Camera { get; set; }
         public string ImageId { get; set; }

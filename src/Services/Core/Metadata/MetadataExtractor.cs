@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Threading;
@@ -41,7 +42,7 @@ namespace MagicMedia
 
             ExifProfile? exifProfile = image.Metadata.ExifProfile;
 
-            if ( exifProfile != null)
+            if (exifProfile != null)
             {
                 metadata.GeoLocation = await GetGeoLocationDataAsync(exifProfile, cancellationToken);
                 metadata.Camera = GetCameraData(exifProfile);

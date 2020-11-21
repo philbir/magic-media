@@ -3,6 +3,7 @@ using MagicMedia.Metadata;
 using MagicMedia.Operations;
 using MagicMedia.Processing;
 using MagicMedia.Thumbnail;
+using MagicMedia.Video;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -34,6 +35,7 @@ namespace MagicMedia
             services.AddSingleton<IMediaProcesserTask, SaveMediaTask>();
             services.AddSingleton<IMediaProcesserTask, PredictPersonsTask>();
             services.AddSingleton<IMediaProcesserTask, SaveFaceDataAsync>();
+            services.AddSingleton<IMediaProcesserTask, ExtractVideoDataTask>();
 
             services.AddSingleton<IMediaProcesserTaskFactory, MediaProcesserTaskFactory>();
             services.AddSingleton<IMediaProcessorFlowFactory, MediaProcessorFlowFactory>();
@@ -50,6 +52,7 @@ namespace MagicMedia
             services.AddSingleton<IRecycleMediaHandler, RecycleMediaHandler>();
             services.AddSingleton<IMediaSearchService, MediaSearchService>();
             services.AddSingleton<IVideoPlayerService, VideoPlayerService>();
+            services.AddSingleton<IVideoProcessingService, VideoProcessingService>();
 
             return services;
         }

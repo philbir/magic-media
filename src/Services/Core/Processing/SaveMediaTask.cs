@@ -67,15 +67,16 @@ namespace MagicMedia.Processing
             var media = new Media
             {
                 Id = Guid.NewGuid(),
-                MediaType = MediaType.Image,
+                MediaType = context.MediaType,
                 DateTaken = context.Metadata.DateTaken,
                 ImageUniqueId = context.Metadata.ImageId,
                 GeoLocation = context.Metadata.GeoLocation,
-                Size = context.OriginalData.Length,
+                Size = GetSize(context),
                 Folder = GetFolder(context),
                 Filename = Path.GetFileName(context.File.Id),
                 Dimension = context.Metadata.Dimension,
-                OriginalHash = ComputeHash(context.OriginalData),
+                VideoInfo = context.VideoInfo,
+                OriginalHash = ComputeHash(context),
                 CameraId = await GetCameraIdAsync(context, cancellationToken),
                 Source = new MediaSource
                 {
@@ -158,6 +159,18 @@ namespace MagicMedia.Processing
             }
         }
 
+        private long GetSize(MediaProcessorContext context)
+        {
+            if (context.Size > 0)
+            {
+                return context.Size;
+            }
+            else
+            {
+                return context.OriginalData!.Length;
+            }
+        }
+
         private async Task<Guid?> GetCameraIdAsync(MediaProcessorContext context, CancellationToken cancellationToken)
         {
             if (context.Metadata.Camera is { })
@@ -173,10 +186,29 @@ namespace MagicMedia.Processing
             return null;
         }
 
+        private string ComputeHash(MediaProcessorContext context)
+        {
+            if (context.OriginalData != null)
+            {
+                return ComputeHash(context.OriginalData);
+            }
+
+            return ComputeHash(context.File.Id);
+        }
+
         public string ComputeHash(byte[] data)
         {
             var sha = new SHA256Managed();
             byte[] checksum = sha.ComputeHash(data);
+            return BitConverter.ToString(checksum).Replace("-", string.Empty);
+        }
+
+        public string ComputeHash(string filename)
+        {
+            var sha = new SHA256Managed();
+            using var stream = new FileStream(filename, FileMode.Open);
+
+            byte[] checksum = sha.ComputeHash(stream);
             return BitConverter.ToString(checksum).Replace("-", string.Empty);
         }
     }
