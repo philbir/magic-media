@@ -25,6 +25,7 @@ namespace MagicMedia
                 .AddType<PersonMutations>()
                 .AddType<AlbumMutations>()
                 .AddType<MediaType>()
+                .AddType<VideoInfoType>()
                 .AddType<FaceType>()
                 .AddType<PersonType>()
                 .AddType<AlbumType>()
@@ -33,6 +34,7 @@ namespace MagicMedia
                 .AddDataLoader<CameraByIdDataLoader>()
                 .AddDataLoader<ThumbnailByMediaIdDataLoader>()
                 .AddDataLoader<MediaByIdDataLoader>()
+                .AddDataLoader<ThumbnailDataDataLoader>()
                 .AddInMemorySubscriptions()
                 .AddAuthorization();
 

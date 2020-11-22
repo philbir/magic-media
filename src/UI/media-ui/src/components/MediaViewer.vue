@@ -1,7 +1,7 @@
 <template>
   <div v-resize="onResize">
     <v-progress-linear v-if="loading" indeterminate color="blue" top />
-    <div v-else class="media-wrapper" @mousemove="onMouseMove">
+    <div v-else class="media-wrapper">
       <Keypress key-event="keyup" @success="keyPressed" />
       <div class="media-nav">
         <v-row>
@@ -10,7 +10,7 @@
               mdi-chevron-left-circle
             </v-icon>
           </v-col>
-          <v-spacer></v-spacer>
+          <v-spacer style="z-index: -1"></v-spacer>
           <v-col justify="end" align="right" class="ma-3">
             <v-icon large color="grey lighten-2" @click="handleNext">
               mdi-chevron-right-circle
@@ -20,11 +20,20 @@
       </div>
       <div class="head">
         <v-row>
-          <v-col class="ml-2">
-            <v-icon @click="handleHome" color="white"> mdi-home </v-icon>
-            {{ media.dateTaken | dateformat("DATETIME_MED") }}
+          <v-col class="ml-2" sm="9">
+            <v-icon @click="handleHome" color="white" class="mr-2">
+              mdi-home
+            </v-icon>
+            <span class="path" v-for="(path, i) in pathInfo" :key="path.path"
+              >{{ path.name }}
+              <span v-if="i < pathInfo.length - 1"> | </span>
+            </span>
+            <span class="path" v-if="media.dateTaken">
+              @ {{ media.dateTaken | dateformat("DATE_MED") }}
+            </span>
           </v-col>
-          <v-col class="mr-4" align="right">
+          <v-spacer></v-spacer>
+          <v-col class="mr-4" sm="2" align="right">
             <v-icon
               :color="media.isFavorite ? 'red' : 'white'"
               class="mr-4"
@@ -40,7 +49,18 @@
       <div class="foot">
         {{ geoLocation }}
       </div>
-      <img :src="imageSrc" @load="onImgLoaded" ref="img" />
+      <img
+        :src="imageSrc"
+        @load="onImgLoaded"
+        ref="img"
+        v-if="media.mediaType === 'IMAGE'"
+      />
+      <div v-else class="video-wrapper">
+        <vue-core-video-player
+          :src="video.src"
+          :muted="false"
+        ></vue-core-video-player>
+      </div>
       <div v-show="image.loaded">
         <template v-for="face in media.faces">
           <FaceBox :key="face.id" :face="face" :image="image"></FaceBox>
@@ -57,6 +77,7 @@
 import FaceBox from "./FaceBox";
 import FilmStripe from "./FilmStripe.vue";
 //import debounce from "lodash";
+import { parsePath } from "../services/mediaService";
 
 export default {
   data() {
@@ -68,6 +89,7 @@ export default {
         offsetLeft: 0,
         offsetTop: 0,
       },
+
       showStripe: false,
       keyboardKeys: [
         {
@@ -87,7 +109,11 @@ export default {
       windowWidth: window.innerWidth,
     };
   },
-  components: { FaceBox, Keypress: () => import("vue-keypress"), FilmStripe },
+  components: {
+    FaceBox,
+    Keypress: () => import("vue-keypress"),
+    FilmStripe,
+  },
   created() {
     //this.onResize = debounce(this.onResize, 1000);
     //this.onMouseMove = debounce(this.onMouseMove, 500);
@@ -106,7 +132,15 @@ export default {
 
       return null;
     },
+    pathInfo: function () {
+      return parsePath(this.media.folder);
+    },
 
+    video: function () {
+      return {
+        src: "/api/video/" + this.media.id,
+      };
+    },
     imageSrc: function () {
       return "/api/media/webimage/" + this.media.id;
     },
@@ -187,7 +221,9 @@ export default {
       this.$store.dispatch("media/close");
     },
     onMouseMove: function (e) {
-      this.showStripe = e.clientY > 300;
+      if (this.media.mediaType === "IMAGE") {
+        this.showStripe = e.clientY > 300;
+      }
     },
     toggleFavorite: function (media) {
       this.$store.dispatch("media/toggleFavorite", media);
@@ -243,7 +279,7 @@ export default {
   top: 0;
   background-color: #000;
   opacity: 0.5;
-  z-index: 10;
+  z-index: 100;
   height: 48px;
 }
 
@@ -266,6 +302,24 @@ export default {
   bottom: 50px;
   width: 100%;
   z-index: 10;
+  z-index: 10;
+}
+
+.video-wrapper {
+  height: 94vh;
+  z-index: 50;
+}
+
+.path {
+  cursor: pointer;
+  color: #c0c0c0;
+  transition: color 300ms ease-in;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.path:hover {
+  color: #fff;
 }
 </style>
 

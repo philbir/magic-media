@@ -1,3 +1,4 @@
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,5 +21,7 @@ namespace MagicMedia
             MediaBlobData request,
             MediaBlobType mediaBlobType,
             CancellationToken cancellationToken);
+        Stream GetStreamAsync(MediaBlobData request);
+        string GetFilename(MediaBlobData data);
     }
 }

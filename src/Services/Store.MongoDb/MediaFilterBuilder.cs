@@ -89,6 +89,17 @@ namespace MagicMedia.Store.MongoDb
             return this;
         }
 
+        public MediaFilterBuilder AddMediaTypes(IEnumerable<MediaType>? mediaTypes)
+        {
+            if (mediaTypes is { } types && types.Any() && types.Count() < 2)
+            {
+                _filter &= Builders<Media>.Filter.In(
+                    x => x.MediaType, types);
+            }
+
+            return this;
+        }
+
         public MediaFilterBuilder AddCountries(IEnumerable<string>? countries)
         {
             if (countries is { } c && c.Any())

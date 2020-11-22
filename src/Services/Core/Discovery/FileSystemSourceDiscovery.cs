@@ -24,7 +24,7 @@ namespace MagicMedia.Discovery
 
                 string[] files = Directory.GetFiles(
                     filePath,
-                    location.Filter,
+                    location.Filter ?? "*.*",
                     SearchOption.AllDirectories);
 
                 result.AddRange(files.Select(x =>

@@ -23,7 +23,7 @@ namespace MagicMedia.Store.MongoDb
             double longitude,
             CancellationToken cancellationToken)
         {
-            string id = $"{latitude}_{latitude}";
+            string id = $"{latitude}_{longitude}";
 
             GeoAddressCache cached = await _mediaStoreContext.GeoAddressCache.AsQueryable()
                 .Where(x => x.Id == id)

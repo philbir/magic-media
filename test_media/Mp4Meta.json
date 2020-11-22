@@ -1,0 +1,602 @@
+[
+    {
+        "Name": "QuickTime File Type",
+        "Parent": null,
+        "IsEmpty": false,
+        "Tags": [
+            {
+                "Type": 1,
+                "TagType": 1,
+                "Description": "mp42",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "Major Brand",
+                "TagName": "Major Brand",
+                "DirectoryName": "QuickTime File Type"
+            },
+            {
+                "Type": 2,
+                "TagType": 2,
+                "Description": "0",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "Minor Version",
+                "TagName": "Minor Version",
+                "DirectoryName": "QuickTime File Type"
+            },
+            {
+                "Type": 3,
+                "TagType": 3,
+                "Description": "isom, mp42",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "Compatible Brands",
+                "TagName": "Compatible Brands",
+                "DirectoryName": "QuickTime File Type"
+            }
+        ],
+        "TagCount": 3,
+        "HasError": false,
+        "Errors": []
+    },
+    {
+        "Name": "QuickTime Movie Header",
+        "Parent": null,
+        "IsEmpty": false,
+        "Tags": [
+            {
+                "Type": 1,
+                "TagType": 1,
+                "Description": "0",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "Version",
+                "TagName": "Version",
+                "DirectoryName": "QuickTime Movie Header"
+            },
+            {
+                "Type": 2,
+                "TagType": 2,
+                "Description": "0 0 0",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "Flags",
+                "TagName": "Flags",
+                "DirectoryName": "QuickTime Movie Header"
+            },
+            {
+                "Type": 3,
+                "TagType": 3,
+                "Description": "Sa. Nov. 14 21:08:53 2020",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "Created",
+                "TagName": "Created",
+                "DirectoryName": "QuickTime Movie Header"
+            },
+            {
+                "Type": 4,
+                "TagType": 4,
+                "Description": "Sa. Nov. 14 21:08:53 2020",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "Modified",
+                "TagName": "Modified",
+                "DirectoryName": "QuickTime Movie Header"
+            },
+            {
+                "Type": 5,
+                "TagType": 5,
+                "Description": "1000",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "TrackId",
+                "TagName": "TrackId",
+                "DirectoryName": "QuickTime Movie Header"
+            },
+            {
+                "Type": 6,
+                "TagType": 6,
+                "Description": "00:00:18.4790000",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "Duration",
+                "TagName": "Duration",
+                "DirectoryName": "QuickTime Movie Header"
+            },
+            {
+                "Type": 7,
+                "TagType": 7,
+                "Description": "1",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "Preferred Rate",
+                "TagName": "Preferred Rate",
+                "DirectoryName": "QuickTime Movie Header"
+            },
+            {
+                "Type": 8,
+                "TagType": 8,
+                "Description": "1",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "Preferred Volume",
+                "TagName": "Preferred Volume",
+                "DirectoryName": "QuickTime Movie Header"
+            },
+            {
+                "Type": 9,
+                "TagType": 9,
+                "Description": "[36 values]",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "Matrix",
+                "TagName": "Matrix",
+                "DirectoryName": "QuickTime Movie Header"
+            },
+            {
+                "Type": 10,
+                "TagType": 10,
+                "Description": "0",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "Preview Time",
+                "TagName": "Preview Time",
+                "DirectoryName": "QuickTime Movie Header"
+            },
+            {
+                "Type": 11,
+                "TagType": 11,
+                "Description": "0",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "Preview Duration",
+                "TagName": "Preview Duration",
+                "DirectoryName": "QuickTime Movie Header"
+            },
+            {
+                "Type": 12,
+                "TagType": 12,
+                "Description": "0",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "Poster Time",
+                "TagName": "Poster Time",
+                "DirectoryName": "QuickTime Movie Header"
+            },
+            {
+                "Type": 13,
+                "TagType": 13,
+                "Description": "0",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "Selection Time",
+                "TagName": "Selection Time",
+                "DirectoryName": "QuickTime Movie Header"
+            },
+            {
+                "Type": 14,
+                "TagType": 14,
+                "Description": "0",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "Selection Duration",
+                "TagName": "Selection Duration",
+                "DirectoryName": "QuickTime Movie Header"
+            },
+            {
+                "Type": 15,
+                "TagType": 15,
+                "Description": "0",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "Current Time",
+                "TagName": "Current Time",
+                "DirectoryName": "QuickTime Movie Header"
+            },
+            {
+                "Type": 16,
+                "TagType": 16,
+                "Description": "3",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "Next Track Id",
+                "TagName": "Next Track Id",
+                "DirectoryName": "QuickTime Movie Header"
+            }
+        ],
+        "TagCount": 16,
+        "HasError": false,
+        "Errors": []
+    },
+    {
+        "Name": "QuickTime Metadata Header",
+        "Parent": null,
+        "IsEmpty": false,
+        "Tags": [
+            {
+                "Type": 14,
+                "TagType": 14,
+                "Description": "+47.2808+008.5401/",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "GPS Location",
+                "TagName": "GPS Location",
+                "DirectoryName": "QuickTime Metadata Header"
+            },
+            {
+                "Type": 34,
+                "TagType": 34,
+                "Description": "10",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "Android Version",
+                "TagName": "Android Version",
+                "DirectoryName": "QuickTime Metadata Header"
+            }
+        ],
+        "TagCount": 2,
+        "HasError": false,
+        "Errors": []
+    },
+    {
+        "Name": "QuickTime Track Header",
+        "Parent": null,
+        "IsEmpty": false,
+        "Tags": [
+            {
+                "Type": 1,
+                "TagType": 1,
+                "Description": "0",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "Version",
+                "TagName": "Version",
+                "DirectoryName": "QuickTime Track Header"
+            },
+            {
+                "Type": 2,
+                "TagType": 2,
+                "Description": "0 0 7",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "Flags",
+                "TagName": "Flags",
+                "DirectoryName": "QuickTime Track Header"
+            },
+            {
+                "Type": 3,
+                "TagType": 3,
+                "Description": "Sa. Nov. 14 21:08:53 2020",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "Created",
+                "TagName": "Created",
+                "DirectoryName": "QuickTime Track Header"
+            },
+            {
+                "Type": 4,
+                "TagType": 4,
+                "Description": "Sa. Nov. 14 21:08:53 2020",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "Modified",
+                "TagName": "Modified",
+                "DirectoryName": "QuickTime Track Header"
+            },
+            {
+                "Type": 5,
+                "TagType": 5,
+                "Description": "1",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "TrackId",
+                "TagName": "TrackId",
+                "DirectoryName": "QuickTime Track Header"
+            },
+            {
+                "Type": 6,
+                "TagType": 6,
+                "Description": "18393",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "Duration",
+                "TagName": "Duration",
+                "DirectoryName": "QuickTime Track Header"
+            },
+            {
+                "Type": 7,
+                "TagType": 7,
+                "Description": "0",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "Layer",
+                "TagName": "Layer",
+                "DirectoryName": "QuickTime Track Header"
+            },
+            {
+                "Type": 8,
+                "TagType": 8,
+                "Description": "0",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "Alternate Group",
+                "TagName": "Alternate Group",
+                "DirectoryName": "QuickTime Track Header"
+            },
+            {
+                "Type": 9,
+                "TagType": 9,
+                "Description": "0",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "Volume",
+                "TagName": "Volume",
+                "DirectoryName": "QuickTime Track Header"
+            },
+            {
+                "Type": 12,
+                "TagType": 12,
+                "Description": "1 0 0 0 1 0 0 0 1",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "Matrix",
+                "TagName": "Matrix",
+                "DirectoryName": "QuickTime Track Header"
+            },
+            {
+                "Type": 10,
+                "TagType": 10,
+                "Description": "3840",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "Width",
+                "TagName": "Width",
+                "DirectoryName": "QuickTime Track Header"
+            },
+            {
+                "Type": 11,
+                "TagType": 11,
+                "Description": "2160",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "Height",
+                "TagName": "Height",
+                "DirectoryName": "QuickTime Track Header"
+            },
+            {
+                "Type": 13,
+                "TagType": 13,
+                "Description": "0",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "Rotation",
+                "TagName": "Rotation",
+                "DirectoryName": "QuickTime Track Header"
+            }
+        ],
+        "TagCount": 13,
+        "HasError": false,
+        "Errors": []
+    },
+    {
+        "Name": "QuickTime Track Header",
+        "Parent": null,
+        "IsEmpty": false,
+        "Tags": [
+            {
+                "Type": 1,
+                "TagType": 1,
+                "Description": "0",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "Version",
+                "TagName": "Version",
+                "DirectoryName": "QuickTime Track Header"
+            },
+            {
+                "Type": 2,
+                "TagType": 2,
+                "Description": "0 0 7",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "Flags",
+                "TagName": "Flags",
+                "DirectoryName": "QuickTime Track Header"
+            },
+            {
+                "Type": 3,
+                "TagType": 3,
+                "Description": "Sa. Nov. 14 21:08:53 2020",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "Created",
+                "TagName": "Created",
+                "DirectoryName": "QuickTime Track Header"
+            },
+            {
+                "Type": 4,
+                "TagType": 4,
+                "Description": "Sa. Nov. 14 21:08:53 2020",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "Modified",
+                "TagName": "Modified",
+                "DirectoryName": "QuickTime Track Header"
+            },
+            {
+                "Type": 5,
+                "TagType": 5,
+                "Description": "2",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "TrackId",
+                "TagName": "TrackId",
+                "DirectoryName": "QuickTime Track Header"
+            },
+            {
+                "Type": 6,
+                "TagType": 6,
+                "Description": "18479",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "Duration",
+                "TagName": "Duration",
+                "DirectoryName": "QuickTime Track Header"
+            },
+            {
+                "Type": 7,
+                "TagType": 7,
+                "Description": "0",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "Layer",
+                "TagName": "Layer",
+                "DirectoryName": "QuickTime Track Header"
+            },
+            {
+                "Type": 8,
+                "TagType": 8,
+                "Description": "0",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "Alternate Group",
+                "TagName": "Alternate Group",
+                "DirectoryName": "QuickTime Track Header"
+            },
+            {
+                "Type": 9,
+                "TagType": 9,
+                "Description": "1",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "Volume",
+                "TagName": "Volume",
+                "DirectoryName": "QuickTime Track Header"
+            },
+            {
+                "Type": 12,
+                "TagType": 12,
+                "Description": "1 0 0 0 1 0 0 0 1",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "Matrix",
+                "TagName": "Matrix",
+                "DirectoryName": "QuickTime Track Header"
+            },
+            {
+                "Type": 10,
+                "TagType": 10,
+                "Description": "0",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "Width",
+                "TagName": "Width",
+                "DirectoryName": "QuickTime Track Header"
+            },
+            {
+                "Type": 11,
+                "TagType": 11,
+                "Description": "0",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "Height",
+                "TagName": "Height",
+                "DirectoryName": "QuickTime Track Header"
+            }
+        ],
+        "TagCount": 12,
+        "HasError": false,
+        "Errors": []
+    },
+    {
+        "Name": "File Type",
+        "Parent": null,
+        "IsEmpty": false,
+        "Tags": [
+            {
+                "Type": 1,
+                "TagType": 1,
+                "Description": "MP4",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "Detected File Type Name",
+                "TagName": "Detected File Type Name",
+                "DirectoryName": "File Type"
+            },
+            {
+                "Type": 2,
+                "TagType": 2,
+                "Description": "MPEG-4 Part 14",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "Detected File Type Long Name",
+                "TagName": "Detected File Type Long Name",
+                "DirectoryName": "File Type"
+            },
+            {
+                "Type": 3,
+                "TagType": 3,
+                "Description": "video/mp4",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "Detected MIME Type",
+                "TagName": "Detected MIME Type",
+                "DirectoryName": "File Type"
+            },
+            {
+                "Type": 4,
+                "TagType": 4,
+                "Description": "mp4",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "Expected File Name Extension",
+                "TagName": "Expected File Name Extension",
+                "DirectoryName": "File Type"
+            }
+        ],
+        "TagCount": 4,
+        "HasError": false,
+        "Errors": []
+    },
+    {
+        "Name": "File",
+        "Parent": null,
+        "IsEmpty": false,
+        "Tags": [
+            {
+                "Type": 1,
+                "TagType": 1,
+                "Description": "VID_20201114_220833.mp4",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "File Name",
+                "TagName": "File Name",
+                "DirectoryName": "File"
+            },
+            {
+                "Type": 2,
+                "TagType": 2,
+                "Description": "97799881 bytes",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "File Size",
+                "TagName": "File Size",
+                "DirectoryName": "File"
+            },
+            {
+                "Type": 3,
+                "TagType": 3,
+                "Description": "Sa. Nov. 14 22:08:53 +01:00 2020",
+                "HasName": true,
+                "HasTagName": true,
+                "Name": "File Modified Date",
+                "TagName": "File Modified Date",
+                "DirectoryName": "File"
+            }
+        ],
+        "TagCount": 3,
+        "HasError": false,
+        "Errors": []
+    }
+]

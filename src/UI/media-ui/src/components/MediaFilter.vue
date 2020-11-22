@@ -91,6 +91,28 @@
         text-field="title"
         @change="onSelectAlbum"
       ></FilterList>
+
+      <v-card flat>
+        <v-card-text>
+          <v-row align="center">
+            <v-subheader>Media Type</v-subheader>
+          </v-row>
+          <v-row>
+            <v-btn-toggle
+              v-model="selectedMediaTypes"
+              multiple
+              @change="onSelectMediaType"
+            >
+              <v-btn small value="IMAGE">
+                <v-icon>mdi-image</v-icon>
+              </v-btn>
+              <v-btn small value="VIDEO">
+                <v-icon>mdi-video</v-icon>
+              </v-btn>
+            </v-btn-toggle>
+          </v-row>
+        </v-card-text>
+      </v-card>
     </div>
   </div>
 </template>
@@ -107,6 +129,7 @@ export default {
   data() {
     return {
       selectedPersons: [],
+      selectedMediaTypes: ["IMAGE", "VIDEO"],
       activeTabId: "folder",
       dates: null,
       tabDef: [
@@ -194,6 +217,10 @@ export default {
     },
     onSelectAlbum: function (album) {
       this.$store.dispatch("media/setAlbumFilter", album ? album.id : null);
+    },
+    onSelectMediaType: function (types) {
+      console.log(types);
+      this.$store.dispatch("media/setMediaTypeFilter", types);
     },
     clickMap: function (loc) {
       this.mapMarker = {

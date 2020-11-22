@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -41,7 +42,8 @@ namespace MagicMedia.Playground
                 todo.AddRange(identifiers);
             }
 
-            IMediaProcessorFlow flow = _flowFactory.CreateFlow("ImportImageNoFace");
+            IMediaProcessorFlow imageFlow = _flowFactory.CreateFlow("ImportImageNoFace");
+            IMediaProcessorFlow videoFlow = _flowFactory.CreateFlow("ImportVideo");
 
             var processionOptions = new MediaProcessingOptions
             {
@@ -57,22 +59,46 @@ namespace MagicMedia.Playground
             {
                 IMediaSourceDiscovery src = _discoveryFactory.GetSource(file.Source);
 
-                byte[] data = await src.GetMediaDataAsync(file.Id, default);
+                var extension = Path.GetExtension(file.Id);
 
-                var context = new MediaProcessorContext
+                if (extension == ".mp4")
                 {
-                    OriginalData = data,
-                    File = file,
-                    Options = processionOptions
-                };
-                try
-                {
-                    Console.WriteLine($"Importing: {file.Id}");
-                    await flow.ExecuteAsync(context, default);
+                    var context = new MediaProcessorContext
+                    {
+                        File = file,
+                        Options = processionOptions,
+                        MediaType = MediaType.Video
+                    };
+                    try
+                    {
+                        Console.WriteLine($"Importing vide: {file.Id}");
+                        await videoFlow.ExecuteAsync(context, default);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
                 }
-                catch (Exception ex)
+                else
                 {
-                    Console.WriteLine(ex.Message);
+                    byte[] data = await src.GetMediaDataAsync(file.Id, default);
+
+                    var context = new MediaProcessorContext
+                    {
+                        OriginalData = data,
+                        File = file,
+                        Options = processionOptions,
+                        MediaType = MediaType.Image
+                    };
+                    try
+                    {
+                        Console.WriteLine($"Importing: {file.Id}");
+                        await imageFlow.ExecuteAsync(context, default);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
                 }
             }
         }
@@ -110,7 +136,7 @@ namespace MagicMedia.Playground
                     Console.WriteLine($"Importing: {file.Id}");
                     await flow.ExecuteAsync(context, default);
                 }
-                catch ( Exception ex)
+                catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
                 }

@@ -46,13 +46,15 @@ const mediaModule = {
       countries: [],
       cities: [],
       persons: [],
+      mediaTypes: [],
+      cameras: [],
       albumId: null,
       geoRadius: null
     }
   }),
   mutations: {
     MEDIAITEMS_LOADED(state, result) {
-      const max = 600;
+      const max = 1000;
       const current = [...state.list];
       if (current.length > max) {
         current.splice(0, state.filter.pageSize);
@@ -62,7 +64,7 @@ const mediaModule = {
       state.listLoading = false;
       state.totalLoaded = state.totalLoaded + result.items.length;
 
-      console.log(result)
+      console.log(result);
       state.hasMore = result.hasMore;
     },
     DETAILS_LOADED(state, media) {
@@ -76,6 +78,7 @@ const mediaModule = {
       state.list = [];
       state.filter.pageNr = 0;
       state.thumbnailSize = size;
+      state.totalLoaded = 0;
       state.selectedIndexes = [];
     },
     FILTER_PERSONS_SET(state, persons) {
@@ -92,6 +95,12 @@ const mediaModule = {
     },
     FILTER_ALBUM_SET(state, albumId) {
       state.filter.albumId = albumId;
+    },
+    FILTER_CAMERA_SET(state, ids) {
+      state.filter.cameras = ids;
+    },
+    FILTER_MEDIATYPES_SET(state, types) {
+      state.filter.mediaTypes = types;
     },
     FILTER_GEO_SET(state, geo) {
       state.filter.geoRadius = geo;
@@ -223,7 +232,7 @@ const mediaModule = {
       try {
         const ids = getMediaIdsFromIndexes(state);
         const res = await recycleMedia({
-          ids,
+          ids
         });
 
         commit("OPERATION_COMMITED", res.data.recycleMedia.operationId);
@@ -281,6 +290,17 @@ const mediaModule = {
       commit("FILTER_GEO_SET", geo);
       dispatch("search");
     },
+    setMediaTypeFilter({ dispatch, commit }, types) {
+      commit("RESET_FILTER");
+      commit("FILTER_MEDIATYPES_SET", types);
+      dispatch("search");
+    },
+    setCamaraFilter({ dispatch, commit }, cameras) {
+      commit("RESET_FILTER");
+      commit("FILTER_CAMERA_SET", cameras);
+      dispatch("search");
+    },
+
     async loadDetails({ commit }, id) {
       try {
         const res = await getById(id);

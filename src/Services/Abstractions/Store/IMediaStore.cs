@@ -16,7 +16,9 @@ namespace MagicMedia.Store
         IPersonStore Persons { get; }
 
         IAlbumStore Albums { get; }
+
         IThumbnailBlobStore Thumbnails { get; }
+        IMediaBlobStore Blob { get; }
 
         Task<IEnumerable<MediaGeoLocation>> FindMediaInGeoBoxAsync(
             GeoBox box,

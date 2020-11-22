@@ -18,6 +18,7 @@ namespace MagicMedia.Store.MongoDb
         public MongoMediaStore(
             MediaStoreContext mediaStoreContext,
             IThumbnailBlobStore thumbnailBlobStore,
+            IMediaBlobStore blobStore,
             IFaceStore faceStore,
             IAlbumStore albumStore,
             ICameraStore cameraStore,
@@ -25,6 +26,7 @@ namespace MagicMedia.Store.MongoDb
         {
             _mediaStoreContext = mediaStoreContext;
             Thumbnails = thumbnailBlobStore;
+            Blob = blobStore;
             Faces = faceStore;
             Albums = albumStore;
             Cameras = cameraStore;
@@ -41,6 +43,8 @@ namespace MagicMedia.Store.MongoDb
 
         public IThumbnailBlobStore Thumbnails { get; }
 
+        public IMediaBlobStore Blob { get; }
+
         public async Task<SearchResult<Media>> SearchAsync(
             SearchMediaRequest request,
             Func<Guid, CancellationToken, Task<IEnumerable<Guid>>> albumMediaResolver,
@@ -54,6 +58,7 @@ namespace MagicMedia.Store.MongoDb
                 .AddPersons(request.Persons)
                 .AddCities(request.Cities)
                 .AddCountries(request.Countries)
+                .AddMediaTypes(request.MediaTypes)
                 .AddAlbum(request.AlbumId)
                 .AddGeoRadius(request.GeoRadius)
                 .BuildAsync();
@@ -112,7 +117,11 @@ namespace MagicMedia.Store.MongoDb
 
             foreach (Media media in medias)
             {
-                MediaThumbnail thumb = media.Thumbnails.Where(x => x.Size == size).FirstOrDefault();
+                MediaThumbnail? thumb = media!.Thumbnails!.Where(x =>
+                    x.Size == size &&
+                    x.Format == "webp")
+                    .FirstOrDefault();
+
                 if (thumb != null)
                 {
                     thumb.Data = await Thumbnails.GetAsync(thumb.Id, cancellationToken);
