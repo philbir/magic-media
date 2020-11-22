@@ -50,6 +50,12 @@ const mediaModule = {
       cameras: [],
       albumId: null,
       geoRadius: null
+    },
+    viewer: {
+      showFaceBox: true,
+      showFaceList: true,
+      showFilmStripe: false,
+      showObjects: false,
     }
   }),
   mutations: {
@@ -167,6 +173,9 @@ const mediaModule = {
       if (idx > -1) {
         state.list[idx].isFavorite = state.current.isFavorite;
       }
+    },
+    VIEWER_OPTIONS_SET: function (state, options) {
+      state.viewer = options;
     }
   },
   actions: {
@@ -300,7 +309,9 @@ const mediaModule = {
       commit("FILTER_CAMERA_SET", cameras);
       dispatch("search");
     },
-
+    setViewerOptions({ commit }, options) {
+      commit('VIEWER_OPTIONS_SET', options)
+    },
     async loadDetails({ commit }, id) {
       try {
         const res = await getById(id);

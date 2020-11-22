@@ -42,7 +42,100 @@
               mdi-heart
             </v-icon>
 
-            <v-icon color="white"> mdi-cog-outline </v-icon>
+            <v-menu
+              :close-on-content-click="false"
+              open-on-hover
+              bottom
+              offset-y
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-icon v-bind="attrs" v-on="on" color="white">
+                  mdi-cog-outline
+                </v-icon>
+              </template>
+
+              <v-list>
+                <v-list-group prepend-icon="mdi-face-recognition">
+                  <template v-slot:activator>
+                    <v-list-item>
+                      <v-list-item-content>
+                        <v-list-item-title>Faces</v-list-item-title>
+                      </v-list-item-content>
+                    </v-list-item>
+                  </template>
+
+                  <template v-for="item in settingsMenu.face.items">
+                    <v-list-item :key="item.title">
+                      <v-list-item-icon>
+                        <v-icon v-text="item.icon"></v-icon>
+                      </v-list-item-icon>
+                      <v-list-item-content>
+                        <v-list-item-title
+                          v-text="item.title"
+                        ></v-list-item-title>
+                      </v-list-item-content>
+                    </v-list-item>
+                  </template>
+                </v-list-group>
+                <v-list-group prepend-icon="mdi-image-edit">
+                  <template v-slot:activator>
+                    <v-list-item>
+                      <v-list-item-content>
+                        <v-list-item-title>Actions</v-list-item-title>
+                      </v-list-item-content>
+                    </v-list-item>
+                  </template>
+
+                  <template v-for="item in settingsMenu.actions.items">
+                    <v-list-item :key="item.title">
+                      <v-list-item-icon>
+                        <v-icon v-text="item.icon"></v-icon>
+                      </v-list-item-icon>
+                      <v-list-item-content>
+                        <v-list-item-title
+                          v-text="item.title"
+                        ></v-list-item-title>
+                      </v-list-item-content>
+                    </v-list-item>
+                  </template>
+                </v-list-group>
+
+                <v-list-group prepend-icon="mdi-eye-settings-outline">
+                  <template v-slot:activator>
+                    <v-list-item>
+                      <v-list-item-content>
+                        <v-list-item-title>View settings</v-list-item-title>
+                      </v-list-item-content>
+                    </v-list-item>
+                  </template>
+                  <v-list-item-group
+                    v-model="settingsMenu.viewer.selected"
+                    @change="onViewOptionsChange"
+                    multiple
+                  >
+                    <template v-for="item in settingsMenu.viewer.items">
+                      <v-list-item :key="item.title" :value="item.value">
+                        <template v-slot:default="{ active }">
+                          <v-list-item-content>
+                            <v-list-item-title
+                              v-text="item.title"
+                            ></v-list-item-title>
+                          </v-list-item-content>
+
+                          <v-list-item-action>
+                            <v-list-item-action-text
+                              v-text="item.action"
+                            ></v-list-item-action-text>
+
+                            <v-switch :input-value="active"></v-switch>
+                          </v-list-item-action>
+                        </template>
+                      </v-list-item>
+                    </template>
+                  </v-list-item-group>
+                </v-list-group>
+              </v-list>
+            </v-menu>
           </v-col>
         </v-row>
       </div>
@@ -61,10 +154,13 @@
           :muted="false"
         ></vue-core-video-player>
       </div>
-      <div v-show="image.loaded">
+      <div v-if="image.loaded && showFaceBox">
         <template v-for="face in media.faces">
           <FaceBox :key="face.id" :face="face" :image="image"></FaceBox>
         </template>
+      </div>
+      <div v-if="showQuickInfo" class="quick-info">
+        <media-quick-info :faces="media.faces"></media-quick-info>
       </div>
     </div>
     <div class="filmstripe" v-show="showStripe">
@@ -78,6 +174,7 @@ import FaceBox from "./FaceBox";
 import FilmStripe from "./FilmStripe.vue";
 //import debounce from "lodash";
 import { parsePath } from "../services/mediaService";
+import MediaQuickInfo from "./Media/MediaQuickInfo.vue";
 
 export default {
   data() {
@@ -89,7 +186,34 @@ export default {
         offsetLeft: 0,
         offsetTop: 0,
       },
-
+      settingsMenu: {
+        viewer: {
+          selected: ["SHOW_FACE_LIST"],
+          items: [
+            { title: "Face boxes", value: "SHOW_FACE_BOXES" },
+            { title: "Face list", value: "SHOW_FACE_LIST" },
+            { title: "Film stripe", value: "SHOW_FILM_STRIPE" },
+            { title: "Objects", value: "SHOW_OBJECTS" },
+          ],
+        },
+        face: {
+          selected: [],
+          items: [
+            { title: "Approve all", icon: "mdi-check-all" },
+            { title: "Unassign predicted", icon: "mdi-close-outline" },
+            { title: "Remove unassigned", icon: "mdi-trash-can-outline" },
+          ],
+        },
+        actions: {
+          selected: [],
+          items: [
+            { title: "Move", icon: "mdi-file-move-outline" },
+            { title: "Edit", icon: "mdi-pencil" },
+            { title: "Delete", icon: "mdi-recycle" },
+            { title: "Add to Album", icon: "mdi-plus" },
+          ],
+        },
+      },
       showStripe: false,
       keyboardKeys: [
         {
@@ -113,6 +237,7 @@ export default {
     FaceBox,
     Keypress: () => import("vue-keypress"),
     FilmStripe,
+    MediaQuickInfo,
   },
   created() {
     //this.onResize = debounce(this.onResize, 1000);
@@ -149,6 +274,12 @@ export default {
     },
     media: function () {
       return this.$store.state.media.current;
+    },
+    showFaceBox: function () {
+      return this.$store.state.media.viewer.showFaceBox;
+    },
+    showQuickInfo: function () {
+      return this.$store.state.media.viewer.showFaceList;
     },
     geoLocation: function () {
       if (this.media.geoLocation && this.media.geoLocation.address) {
@@ -244,6 +375,22 @@ export default {
     onResize() {
       this.setImage();
     },
+    onViewOptionsChange: function () {
+      var options = {
+        showFaceBox: this.settingsMenu.viewer.selected.includes(
+          "SHOW_FACE_BOXES"
+        ),
+        showFaceList: this.settingsMenu.viewer.selected.includes(
+          "SHOW_FACE_LIST"
+        ),
+        showFilmStripe: this.settingsMenu.viewer.selected.includes(
+          "SHOW_FILM_STRIPE"
+        ),
+        showObjects: this.settingsMenu.viewer.selected.includes("SHOW_OBJECTS"),
+      };
+
+      this.$store.dispatch("media/setViewerOptions", options);
+    },
   },
 };
 </script>
@@ -320,6 +467,12 @@ export default {
 
 .path:hover {
   color: #fff;
+}
+
+.quick-info {
+  position: absolute;
+  top: 50px;
+  right: 40px;
 }
 </style>
 
