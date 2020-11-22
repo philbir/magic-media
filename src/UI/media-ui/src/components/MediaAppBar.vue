@@ -92,6 +92,11 @@
       :show="showAddToAlbum"
       @close="showAddToAlbum = false"
     ></AddToAlbumDialog>
+
+    <update-media-dialog
+      :show="showEditDialog"
+      @close="showEditDialog = false"
+    ></update-media-dialog>
   </v-app-bar>
 </template>
 
@@ -101,6 +106,7 @@ import MoveMediaDialog from "./MoveMediaDialog";
 import AppBarNavMenu from "./AppBarNavMenu";
 import NotificationMenu from "./Common/NotificationMenu";
 import AddToAlbumDialog from "./Album/AddToAlbumDialog";
+import UpdateMediaDialog from "./Media/UpdateMediaDialog";
 
 export default {
   name: "App",
@@ -110,12 +116,14 @@ export default {
     MoveMediaDialog,
     NotificationMenu,
     AddToAlbumDialog,
+    UpdateMediaDialog,
   },
 
   data: () => ({
     dialog: true,
     showMove: false,
     showAddToAlbum: false,
+    showEditDialog: false,
     sizes: [
       {
         text: "Square XS",
@@ -174,6 +182,9 @@ export default {
           break;
         case "ADD_TO_ALBUM":
           this.showAddToAlbum = true;
+          break;
+        case "EDIT":
+          this.showEditDialog = true;
           break;
         case "RECYCLE":
           this.$store.dispatch("media/recycleSelected");
