@@ -81,3 +81,21 @@ export const toggleFavorite = async (id, isFavorite) => {
     }
   });
 };
+
+export const parsePath = path => {
+  const parts = path.split("/");
+  const len = parts.length - 1;
+  const pathInfo = [];
+  let fullPath = "";
+  for (let i = 0; i < len; i++) {
+    if (parts[i].length > 0) {
+      fullPath += "/" + parts[i];
+      pathInfo.push({
+        path: fullPath.substr(1),
+        name: parts[i]
+      });
+    }
+  }
+
+  return pathInfo;
+};

@@ -46,6 +46,8 @@ const mediaModule = {
       countries: [],
       cities: [],
       persons: [],
+      mediaTypes: [],
+      cameras: [],
       albumId: null,
       geoRadius: null
     }
@@ -93,6 +95,12 @@ const mediaModule = {
     },
     FILTER_ALBUM_SET(state, albumId) {
       state.filter.albumId = albumId;
+    },
+    FILTER_CAMERA_SET(state, ids) {
+      state.filter.cameras = ids;
+    },
+    FILTER_MEDIATYPES_SET(state, types) {
+      state.filter.mediaTypes = types;
     },
     FILTER_GEO_SET(state, geo) {
       state.filter.geoRadius = geo;
@@ -282,6 +290,17 @@ const mediaModule = {
       commit("FILTER_GEO_SET", geo);
       dispatch("search");
     },
+    setMediaTypeFilter({ dispatch, commit }, types) {
+      commit("RESET_FILTER");
+      commit("FILTER_MEDIATYPES_SET", types);
+      dispatch("search");
+    },
+    setCamaraFilter({ dispatch, commit }, cameras) {
+      commit("RESET_FILTER");
+      commit("FILTER_CAMERA_SET", cameras);
+      dispatch("search");
+    },
+
     async loadDetails({ commit }, id) {
       try {
         const res = await getById(id);

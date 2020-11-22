@@ -58,6 +58,7 @@ namespace MagicMedia.Store.MongoDb
                 .AddPersons(request.Persons)
                 .AddCities(request.Cities)
                 .AddCountries(request.Countries)
+                .AddMediaTypes(request.MediaTypes)
                 .AddAlbum(request.AlbumId)
                 .AddGeoRadius(request.GeoRadius)
                 .BuildAsync();

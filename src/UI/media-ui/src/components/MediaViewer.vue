@@ -20,11 +20,20 @@
       </div>
       <div class="head">
         <v-row>
-          <v-col class="ml-2">
-            <v-icon @click="handleHome" color="white"> mdi-home </v-icon>
-            {{ media.dateTaken | dateformat("DATETIME_MED") }}
+          <v-col class="ml-2" sm="9">
+            <v-icon @click="handleHome" color="white" class="mr-2">
+              mdi-home
+            </v-icon>
+            <span class="path" v-for="(path, i) in pathInfo" :key="path.path"
+              >{{ path.name }}
+              <span v-if="i < pathInfo.length - 1"> | </span>
+            </span>
+            <span class="path" v-if="media.dateTaken">
+              @ {{ media.dateTaken | dateformat("DATE_MED") }}
+            </span>
           </v-col>
-          <v-col class="mr-4" align="right">
+          <v-spacer></v-spacer>
+          <v-col class="mr-4" sm="2" align="right">
             <v-icon
               :color="media.isFavorite ? 'red' : 'white'"
               class="mr-4"
@@ -49,7 +58,7 @@
       <div v-else class="video-wrapper">
         <vue-core-video-player
           :src="video.src"
-          :muted="true"
+          :muted="false"
         ></vue-core-video-player>
       </div>
       <div v-show="image.loaded">
@@ -68,6 +77,7 @@
 import FaceBox from "./FaceBox";
 import FilmStripe from "./FilmStripe.vue";
 //import debounce from "lodash";
+import { parsePath } from "../services/mediaService";
 
 export default {
   data() {
@@ -122,6 +132,10 @@ export default {
 
       return null;
     },
+    pathInfo: function () {
+      return parsePath(this.media.folder);
+    },
+
     video: function () {
       return {
         src: "/api/video/" + this.media.id,
@@ -294,6 +308,18 @@ export default {
 .video-wrapper {
   height: 94vh;
   z-index: 50;
+}
+
+.path {
+  cursor: pointer;
+  color: #c0c0c0;
+  transition: color 300ms ease-in;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.path:hover {
+  color: #fff;
 }
 </style>
 

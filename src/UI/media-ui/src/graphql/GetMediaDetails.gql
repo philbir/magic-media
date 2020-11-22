@@ -6,6 +6,7 @@ query mediaDetails($id: Uuid!) {
     cameraId
     isFavorite
     mediaType
+    folder
     videoInfo{
       duration
     }
