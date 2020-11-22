@@ -1,9 +1,10 @@
-#import "./UserErrorFragment.gql"
+#import "../UserErrorFragment.gql"
 
 mutation assignPersonByHuman($input: AssignPersonByHumanInput!) {
   assignPersonByHuman(input: $input) {
     face {
       id
+      mediaId
       recognitionType
       state
       age

@@ -5,6 +5,8 @@ using MagicMedia.GraphQL.DataLoaders;
 using MagicMedia.Extensions;
 using MagicMedia.Store;
 using System.Linq;
+using System.Collections.Generic;
+using SixLabors.ImageSharp.ColorSpaces;
 
 namespace MagicMedia.GraphQL
 {
@@ -37,10 +39,12 @@ namespace MagicMedia.GraphQL
             ThumbnailSizeName size,
             CancellationToken cancellationToken)
         {
-            MediaThumbnail? thumb = media.Thumbnails.Where(x =>
-                x.Size == size &&
-                x.Format == "webp")
-                .FirstOrDefault();
+            IEnumerable<MediaThumbnail>? thumbs = media.Thumbnails
+                .Where(x => x.Size == size);
+
+
+            MediaThumbnail? thumb = thumbs.Where(x => x.Format == "webp").FirstOrDefault() ??
+                thumbs.FirstOrDefault();
 
             if ( thumb != null)
             {

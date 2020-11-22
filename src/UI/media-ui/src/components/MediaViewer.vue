@@ -156,7 +156,7 @@
       </div>
       <div v-if="image.loaded && showFaceBox">
         <template v-for="face in media.faces">
-          <FaceBox :key="face.id" :face="face" :image="image"></FaceBox>
+          <face-box :key="face.id" :face="face" :image="image"></face-box>
         </template>
       </div>
       <div v-if="showQuickInfo" class="quick-info">
@@ -170,11 +170,11 @@
 </template>
 
 <script>
-import FaceBox from "./FaceBox";
 import FilmStripe from "./FilmStripe.vue";
 //import debounce from "lodash";
 import { parsePath } from "../services/mediaService";
 import MediaQuickInfo from "./Media/MediaQuickInfo.vue";
+import FaceBox from "./FaceBox.vue";
 
 export default {
   data() {

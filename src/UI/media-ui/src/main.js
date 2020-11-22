@@ -2,9 +2,7 @@ import * as GmapVue from "gmap-vue";
 import { DateTime } from "luxon";
 import VueMask from "v-mask";
 import Vue from "vue";
-import VueCoreVideoPlayer from 'vue-core-video-player'
-import VuePlyr from 'vue-plyr'
-import 'vue-plyr/dist/vue-plyr.css'
+import VueCoreVideoPlayer from "vue-core-video-player";
 
 import App from "./App.vue";
 import vuetify from "./plugins/vuetify";
@@ -18,7 +16,7 @@ const magicPlugin = {
   install: Vue => {
     Vue.prototype.$magic = {
       self: this,
-      snack: function (text, type = "INFO") {
+      snack: function(text, type = "INFO") {
         store.dispatch("snackbar/addSnack", {
           text,
           type
@@ -28,10 +26,7 @@ const magicPlugin = {
   }
 };
 
-Vue.use(VuePlyr, {
-  plyr: {}
-})
-Vue.use(VueCoreVideoPlayer)
+Vue.use(VueCoreVideoPlayer);
 Vue.use(magicPlugin);
 Vue.use(signalrHub);
 Vue.use(VueMask);
@@ -44,7 +39,7 @@ Vue.use(GmapVue, {
   installComponents: true
 });
 
-Vue.filter("dateformat", function (value, format = "DATE_SHORT") {
+Vue.filter("dateformat", function(value, format = "DATE_SHORT") {
   if (!value) return "";
 
   var date = DateTime.fromISO(value);

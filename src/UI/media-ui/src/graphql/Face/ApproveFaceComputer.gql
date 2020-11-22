@@ -1,0 +1,30 @@
+#import "../UserErrorFragment.gql"
+
+mutation approveFaceComputer($id: Uuid!) {
+  approveFaceComputer(id: $id) {
+    face {
+      id
+      mediaId
+      recognitionType
+      state
+      age
+      box {
+        left
+        top
+        right
+        bottom
+      }
+      person {
+        id
+        name
+        dateOfBirth
+      }
+      thumbnail {
+        id
+      }
+    }
+    errors {
+      ...userError
+    }
+  }
+}

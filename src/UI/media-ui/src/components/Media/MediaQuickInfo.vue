@@ -4,6 +4,7 @@
       v-for="face in faces"
       :key="face.id"
       class="face-row"
+      @click="editFace(face)"
       :style="{ 'border-left-color': faceColor(face) }"
     >
       <v-col cols="4" class="pa-0 ma-0">
@@ -56,7 +57,9 @@ export default {
     faceColor: function (face) {
       return getFaceColor(face);
     },
-    approve: function () {},
+    editFace: function (face) {
+      this.$store.dispatch("face/openEdit", face);
+    },
   },
 };
 </script>

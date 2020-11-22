@@ -1,12 +1,13 @@
-import apollo from '../apollo'
-import MUTATION_ASSIGN_PERSON from "../graphql/AssignPersonByHuman.gql";
-import MUTATION_UNASSIGN_PERSON from "../graphql/UnassignPersonFromFace.gql";
-import MUTATION_DELETE_FACE from "../graphql/DeleteFace.gql";
-import MUTATION_PREDICT_PERSON from "../graphql/PredictPerson.gql";
-import MUTATION_BUILD_PERSON_MODEL from "../graphql/BuildPersonModel.gql";
-import QUERY_SEARCH_FACES from "../graphql/SearchFaces.gql";
+import apollo from "../apollo";
+import MUTATION_APPROVE_FACE from "../graphql/Face/ApproveFaceComputer.gql";
+import MUTATION_ASSIGN_PERSON from "../graphql/Face/AssignPersonByHuman.gql";
+import MUTATION_BUILD_PERSON_MODEL from "../graphql/Face/BuildPersonModel.gql";
+import MUTATION_DELETE_FACE from "../graphql/Face/DeleteFace.gql";
+import MUTATION_PREDICT_PERSON from "../graphql/Face/PredictPerson.gql";
+import QUERY_SEARCH_FACES from "../graphql/Face/SearchFaces.gql";
+import MUTATION_UNASSIGN_PERSON from "../graphql/Face/UnassignPersonFromFace.gql";
 
-export const searchFaces = async (request) => {
+export const searchFaces = async request => {
   return await apollo.query({
     query: QUERY_SEARCH_FACES,
     variables: {
@@ -21,45 +22,53 @@ export const assignPerson = async (faceId, personName) => {
     variables: {
       input: {
         faceId: faceId,
-        personName: personName,
-      },
-    },
+        personName: personName
+      }
+    }
   });
 };
 
-export const unAssignPerson = async (id) => {
+export const unAssignPerson = async id => {
   return await apollo.mutate({
     mutation: MUTATION_UNASSIGN_PERSON,
     variables: {
       id: id
-    },
+    }
   });
 };
 
-export const deleteFace = async (id) => {
+export const approveFace = async id => {
+  return await apollo.mutate({
+    mutation: MUTATION_APPROVE_FACE,
+    variables: {
+      id: id
+    }
+  });
+};
+
+export const deleteFace = async id => {
   return await apollo.mutate({
     mutation: MUTATION_DELETE_FACE,
     variables: {
       id: id
-    },
+    }
   });
 };
 
-export const predictPerson = async (faceId) => {
+export const predictPerson = async faceId => {
   return await apollo.mutate({
     mutation: MUTATION_PREDICT_PERSON,
     variables: {
       input: {
         faceId: faceId
       }
-    },
+    }
   });
 };
 
 export const buildPersonModel = async () => {
   return await apollo.mutate({
     mutation: MUTATION_BUILD_PERSON_MODEL,
-    variables: {
-    },
+    variables: {}
   });
 };
