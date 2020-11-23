@@ -48,6 +48,15 @@ Vue.filter("dateformat", function(value, format = "DATE_SHORT") {
   }
   return "";
 });
+Vue.filter("toISODate", function(value) {
+  if (!value) return "";
+
+  var date = DateTime.fromISO(value);
+  if (DateTime.isDateTime(date)) {
+    return date.toISODate();
+  }
+  return "";
+});
 
 new Vue({
   vuetify,

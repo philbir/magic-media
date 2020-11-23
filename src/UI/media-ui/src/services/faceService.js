@@ -1,4 +1,5 @@
 import apollo from "../apollo";
+import MUTATION_APPROVE_ALL_BY_MEDIA from "../graphql/Face/ApproveAllFacesByMedia.gql";
 import MUTATION_APPROVE_FACE from "../graphql/Face/ApproveFaceComputer.gql";
 import MUTATION_ASSIGN_PERSON from "../graphql/Face/AssignPersonByHuman.gql";
 import MUTATION_BUILD_PERSON_MODEL from "../graphql/Face/BuildPersonModel.gql";
@@ -42,6 +43,15 @@ export const approveFace = async id => {
     mutation: MUTATION_APPROVE_FACE,
     variables: {
       id: id
+    }
+  });
+};
+
+export const approveAllByMedia = async mediaId => {
+  return await apollo.mutate({
+    mutation: MUTATION_APPROVE_ALL_BY_MEDIA,
+    variables: {
+      mediaId
     }
   });
 };

@@ -1,0 +1,13 @@
+#import "../UserErrorFragment.gql"
+#import "./FaceFragment.gql"
+
+mutation approveAllFacesByMedia($mediaId: Uuid!) {
+  approveAllFacesByMedia(mediaId: $mediaId) {
+    faces {
+      ...face
+    }
+    errors {
+      ...userError
+    }
+  }
+}

@@ -7,10 +7,9 @@ import {
   moveMedia,
   recycleMedia,
   searchMedia,
-  toggleFavorite
+  toggleFavorite,
+  updateMetadata
 } from "../services/mediaService";
-
-/* eslint-disable no-debugger */
 
 const getMediaIdsFromIndexes = state => {
   const ids = [];
@@ -70,7 +69,6 @@ const mediaModule = {
       state.listLoading = false;
       state.totalLoaded = state.totalLoaded + result.items.length;
 
-      console.log(result);
       state.hasMore = result.hasMore;
     },
     DETAILS_LOADED(state, media) {
@@ -197,6 +195,7 @@ const mediaModule = {
     },
     async show({ commit }, id) {
       try {
+        console.log("SHOW", id);
         const res = await getById(id);
         commit("DETAILS_LOADED", res.data.mediaById);
       } catch (ex) {
@@ -254,6 +253,28 @@ const mediaModule = {
             title: "Recycle media",
             totalCount: ids.length,
             text: "Recycle media"
+          },
+          { root: true }
+        );
+      } catch (ex) {
+        console.error(ex);
+        this.$magic.snack("Error loading", "ERROR");
+      }
+    },
+    async updateMetadata({ commit, dispatch }, input) {
+      try {
+        const res = await updateMetadata(input);
+
+        commit("OPERATION_COMMITED", res.data.updateMediaMetadata.operationId);
+
+        dispatch(
+          "snackbar/operationStarted",
+          {
+            id: res.data.updateMediaMetadata.operationId,
+            type: "INFO",
+            title: "Update metadata",
+            totalCount: input.ids.length,
+            text: "Update metadata"
           },
           { root: true }
         );

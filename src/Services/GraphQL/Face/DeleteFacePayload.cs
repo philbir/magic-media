@@ -17,4 +17,19 @@ namespace MagicMedia.GraphQL.Face
         {
         }
     }
+
+    public class DeleteFacesPayload : Payload
+    {
+        public IEnumerable<Guid>? Ids { get; }
+
+        public DeleteFacesPayload(IEnumerable<Guid> ids)
+        {
+            Ids = ids;
+        }
+
+        public DeleteFacesPayload(IReadOnlyList<UserError>? errors = null)
+            : base(errors)
+        {
+        }
+    }
 }

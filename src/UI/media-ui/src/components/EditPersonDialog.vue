@@ -81,7 +81,6 @@
 </template>
 <script>
 import { DateTime } from "luxon";
-/* eslint-disable no-debugger */
 export default {
   props: {
     show: {

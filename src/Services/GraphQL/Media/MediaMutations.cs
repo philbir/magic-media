@@ -51,19 +51,15 @@ namespace MagicMedia.GraphQL
             return new MediaOperationPayload(request.OperationId);
         }
 
-        //public async Task<MediaOperationPayload> UpdateMediaMetadataAsync(
-        //    UpdateMediaMetadataRequest input,
-        //    CancellationToken cancellationToken)
-        //{
-        //    UpdateMediaMetadataRequest request = input with
-        //    {
-        //        OperationId = input.OperationId ?? Guid.NewGuid().ToString("N")
-        //    };
+        public async Task<MediaOperationPayload> UpdateMediaMetadataAsync(
+            UpdateMediaMetadataRequest input,
+            CancellationToken cancellationToken)
+        {
+            input.OperationId = input.OperationId ?? Guid.NewGuid().ToString("N");
+            await _operationsService.UpdateMetadataAsync(input, cancellationToken);
 
-        //    await _operationsService.RecycleAsync(request, cancellationToken);
-
-        //    return new MediaOperationPayload(request.OperationId);
-        //}
+            return new MediaOperationPayload(input.OperationId);
+        }
     }
 
     public record ToggleMediaFavoriteInput(Guid Id, bool IsFavorite);

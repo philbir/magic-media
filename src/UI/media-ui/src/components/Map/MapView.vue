@@ -20,7 +20,6 @@
 </template>
 
 <script>
-/* eslint-disable no-debugger */
 import zoomMap from "../../services/zoomMap";
 import GmapCustomMarker from "vue2-gmap-custom-marker";
 import { debounce } from "lodash";

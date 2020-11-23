@@ -1,0 +1,8 @@
+mutation updateMediaMetadata($input: UpdateMediaMetadataRequestInput!) {
+  updateMediaMetadata(input: $input) {
+    operationId
+    errors {
+      code
+    }
+  }
+}

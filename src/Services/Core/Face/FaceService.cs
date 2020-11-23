@@ -131,12 +131,20 @@ namespace MagicMedia.Face
             return face;
         }
 
+
         public async Task<MediaFace> UnAssignPersonAsync(
-        Guid id,
-        CancellationToken cancellationToken)
+            Guid id,
+            CancellationToken cancellationToken)
         {
             MediaFace face = await _faceStore.GetByIdAsync(id, cancellationToken);
 
+            return await UnAssignPersonAsync(face, cancellationToken);
+        }
+
+        private async Task<MediaFace> UnAssignPersonAsync(
+            MediaFace face,
+            CancellationToken cancellationToken)
+        {
             if (face.PersonId.HasValue)
             {
                 Guid currentPersonId = face.PersonId.Value;
@@ -168,6 +176,70 @@ namespace MagicMedia.Face
         {
             MediaFace face = await _faceStore.GetByIdAsync(id, cancellationToken);
 
+            return await ApproveComputerAsync(face, cancellationToken);
+        }
+
+        public async Task<IEnumerable<MediaFace>> ApproveAllByMediaAsync(
+            Guid mediaId,
+            CancellationToken cancellationToken)
+        {
+            IEnumerable<MediaFace> faces = await _faceStore.GetFacesByMediaAsync(mediaId, cancellationToken);
+
+            IEnumerable<MediaFace> filtered = faces
+                .Where(x => x.PersonId.HasValue && x.RecognitionType == FaceRecognitionType.Computer);
+
+            foreach (MediaFace face in filtered)
+            {
+                await ApproveComputerAsync(face, cancellationToken);
+            }
+
+            return filtered;
+        }
+
+        public async Task<IEnumerable<MediaFace>> UnassignAllPredictedByMediaAsync(
+            Guid mediaId,
+            CancellationToken cancellationToken)
+        {
+            IEnumerable<MediaFace> faces = await _faceStore.GetFacesByMediaAsync(mediaId, cancellationToken);
+
+            IEnumerable<MediaFace> filtered = faces
+                .Where(x =>
+                    x.PersonId.HasValue &&
+                    x.RecognitionType == FaceRecognitionType.Computer &&
+                    x.State == FaceState.Predicted);
+
+
+            foreach (MediaFace face in filtered)
+            {
+                await ApproveComputerAsync(face, cancellationToken);
+            }
+
+            return filtered;
+        }
+
+        public async Task<IEnumerable<Guid>> DeleteUnassingedByMediaAsync(
+            Guid mediaId,
+            CancellationToken cancellationToken)
+        {
+            IEnumerable<MediaFace> faces = await _faceStore.GetFacesByMediaAsync(mediaId, cancellationToken);
+
+            IEnumerable<MediaFace> filtered = faces
+                .Where(x =>
+                    x.PersonId.HasValue == false && 
+                    x.State == FaceState.New);
+
+            foreach (MediaFace face in filtered)
+            {
+                await DeleteAsync(face.Id, cancellationToken);
+            }
+
+            return filtered.Select(x => x.Id);
+        }
+
+        private async Task<MediaFace> ApproveComputerAsync(
+            MediaFace face,
+            CancellationToken cancellationToken)
+        {
             if (face.RecognitionType == FaceRecognitionType.Computer &&
                 face.PersonId.HasValue)
             {

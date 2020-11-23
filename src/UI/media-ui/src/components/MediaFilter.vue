@@ -219,7 +219,6 @@ export default {
       this.$store.dispatch("media/setAlbumFilter", album ? album.id : null);
     },
     onSelectMediaType: function (types) {
-      console.log(types);
       this.$store.dispatch("media/setMediaTypeFilter", types);
     },
     clickMap: function (loc) {

@@ -24,8 +24,6 @@
 </template>
 
 <script>
-/* eslint-disable no-debugger */
-
 import { getFaceColor } from "../services/faceColor";
 
 export default {

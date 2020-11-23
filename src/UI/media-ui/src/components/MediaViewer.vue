@@ -65,7 +65,10 @@
                   </template>
 
                   <template v-for="item in settingsMenu.face.items">
-                    <v-list-item :key="item.title">
+                    <v-list-item
+                      :key="item.title"
+                      @click="onClickFaceAction(item.value)"
+                    >
                       <v-list-item-icon>
                         <v-icon v-text="item.icon"></v-icon>
                       </v-list-item-icon>
@@ -199,9 +202,21 @@ export default {
         face: {
           selected: [],
           items: [
-            { title: "Approve all", icon: "mdi-check-all" },
-            { title: "Unassign predicted", icon: "mdi-close-outline" },
-            { title: "Remove unassigned", icon: "mdi-trash-can-outline" },
+            {
+              title: "Approve all",
+              icon: "mdi-check-all",
+              value: "APPROVE_ALL",
+            },
+            {
+              title: "Unassign predicted",
+              icon: "mdi-close-outline",
+              value: "UNASIGN_PREDICTED",
+            },
+            {
+              title: "Remove unassigned",
+              icon: "mdi-trash-can-outline",
+              value: "REMOVE_UNASSINGNED",
+            },
           ],
         },
         actions: {
@@ -390,6 +405,16 @@ export default {
       };
 
       this.$store.dispatch("media/setViewerOptions", options);
+    },
+    onClickFaceAction: function (action) {
+      switch (action) {
+        case "APPROVE_ALL":
+          this.$store.dispatch(
+            "face/approveAllByMedia",
+            this.$store.state.media.current.id
+          );
+          break;
+      }
     },
   },
 };

@@ -2,10 +2,11 @@
   <div class="container" v-if="medias.length > 0">
     <img
       class="thumb"
-      v-for="media in medias"
-      :key="media.id"
-      :src="media.thumbnail.dataUrl"
-      :ref="'img' + media.id"
+      v-for="id in medias"
+      :key="id"
+      :src="`/api/media/thumbnail/media/${id}/S`"
+      :ref="'img' + id"
+      @click="onClick(id)"
     />
   </div>
   <v-progress-linear v-else indeterminate></v-progress-linear>
@@ -14,17 +15,21 @@
 <script>
 export default {
   props: {
-    items: Array,
+    ids: Array,
   },
   data() {
     return {};
   },
   computed: {
     medias: function () {
-      return this.items;
+      return this.ids;
     },
   },
-  methods: {},
+  methods: {
+    onClick: function (id) {
+      this.$emit("select", id);
+    },
+  },
 };
 </script>
 

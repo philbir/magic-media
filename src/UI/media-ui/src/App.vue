@@ -30,11 +30,7 @@
         </template>
       </v-snackbar>
     </v-app>
-    <v-dialog
-      v-model="mediaViewerOpen"
-      fullscreen
-      transition="scale-transition"
-    >
+    <v-dialog v-model="mediaViewerOpen" :transition="false" fullscreen>
       <MediaViewer v-if="mediaViewerOpen"></MediaViewer>
     </v-dialog>
 

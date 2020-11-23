@@ -93,10 +93,10 @@
       @close="showAddToAlbum = false"
     ></AddToAlbumDialog>
 
-    <update-media-dialog
+    <edit-media-dialog
       :show="showEditDialog"
       @close="showEditDialog = false"
-    ></update-media-dialog>
+    ></edit-media-dialog>
   </v-app-bar>
 </template>
 
@@ -106,7 +106,7 @@ import MoveMediaDialog from "./MoveMediaDialog";
 import AppBarNavMenu from "./AppBarNavMenu";
 import NotificationMenu from "./Common/NotificationMenu";
 import AddToAlbumDialog from "./Album/AddToAlbumDialog";
-import UpdateMediaDialog from "./Media/UpdateMediaDialog";
+import EditMediaDialog from "./Media/EditMediaDialog";
 
 export default {
   name: "App",
@@ -116,7 +116,7 @@ export default {
     MoveMediaDialog,
     NotificationMenu,
     AddToAlbumDialog,
-    UpdateMediaDialog,
+    EditMediaDialog,
   },
 
   data: () => ({
@@ -175,7 +175,6 @@ export default {
       this.$store.dispatch("media/selectAll");
     },
     onClickAction: function (action) {
-      console.log(action);
       switch (action) {
         case "MOVE":
           this.showMove = true;

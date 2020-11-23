@@ -123,7 +123,6 @@
   </v-dialog>
 </template>
 <script>
-/* eslint-disable no-debugger */
 import { getFlagUrl } from "../../services/countryFlags";
 import { getAlbumMedia } from "../../services/albumService";
 import AlbumMedia from "./AlbumMedia.vue";

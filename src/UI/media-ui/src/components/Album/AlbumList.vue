@@ -44,7 +44,6 @@
 </template>
 
 <script>
-/* eslint-disable no-debugger */
 import EditAlbumDialog from "./EditAlbumDialog";
 import { getFlagUrl } from "../../services/countryFlags";
 

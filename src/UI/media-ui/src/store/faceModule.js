@@ -1,6 +1,7 @@
 import Vue from "vue";
 
 import {
+  approveAllByMedia,
   approveFace,
   assignPerson,
   deleteFace,
@@ -8,8 +9,6 @@ import {
   searchFaces,
   unAssignPerson
 } from "../services/faceService";
-
-/* eslint-disable no-debugger */
 
 const faceModule = {
   namespaced: true,
@@ -38,13 +37,12 @@ const faceModule = {
       if (current.length > max) {
         current.splice(0, state.filter.pageSize);
       }
-
       Vue.set(state, "list", [...current, ...result.items]);
       state.listLoading = false;
       state.totalCount = result.totalCount;
 
       Vue.set(state, "totalLoaded", state.totalLoaded + result.items.length);
-      state.hasMore = result.totalCount < state.totalLoaded;
+      state.hasMore = result.totalCount > state.totalLoaded;
     },
     FILTER_PERSONS_SET(state, persons) {
       state.filter.persons = persons;
@@ -118,7 +116,6 @@ const faceModule = {
         const res = await searchFaces(state.filter);
         commit("LIST_LOADED", res.data.searchFaces);
       } catch (ex) {
-        debugger;
         this.$magic.snack("Error loading", "ERROR");
       }
     },
@@ -153,7 +150,6 @@ const faceModule = {
       commit("ALL_SELECTED");
     },
     openEdit: function({ commit }, face) {
-      console.log(face);
       commit("FACE_EDIT_OPENED", face);
     },
     closeEdit: function({ commit }) {
@@ -185,6 +181,19 @@ const faceModule = {
 
       commit("FACE_UPDATED", face);
       dispatch("media/faceUpdated", face, {
+        root: true
+      });
+    },
+    async approveAllByMedia({ commit, dispatch }, mediaId) {
+      const result = await approveAllByMedia(mediaId);
+      const { faces } = result.data.approveAllFacesByMedia;
+
+      faces.forEach(face => {
+        commit("FACE_UPDATED", face);
+      });
+
+      //TODO: Better patch currentDetails
+      dispatch("media/loadDetails", mediaId, {
         root: true
       });
     },

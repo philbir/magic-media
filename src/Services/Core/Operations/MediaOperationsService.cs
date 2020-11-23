@@ -17,6 +17,7 @@ namespace MagicMedia.Operations
             _bus = bus;
             _mediaStore = mediaStore;
         }
+
         public async Task MoveMediaAsync(
             MoveMediaRequest request,
             CancellationToken cancellationToken)
@@ -45,9 +46,23 @@ namespace MagicMedia.Operations
             RecycleMediaRequest request,
             CancellationToken cancellationToken)
         {
-            var message = new RecycleMediaMessage(request.Ids)
+            RecycleMediaMessage message = new (request.Ids)
             {
                 OperationId = request.OperationId
+            };
+
+            await _bus.Publish(message, cancellationToken);
+        }
+
+        public async Task UpdateMetadataAsync(
+            UpdateMediaMetadataRequest request,
+            CancellationToken cancellationToken)
+        {
+            UpdateMediaMetadataMessage message = new (request.Ids)
+            {
+                OperationId = request.OperationId,
+                DateTaken = request.DateTaken,
+                GeoLocation = request.GeoLocation
             };
 
             await _bus.Publish(message, cancellationToken);

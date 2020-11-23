@@ -94,8 +94,6 @@
 </template>
 
 <script>
-/* eslint-disable no-debugger */
-
 export default {
   created() {
     this.faceData = this.face;
@@ -110,9 +108,7 @@ export default {
     };
   },
   watch: {
-    faceId: function (newValue, oldValue) {
-      console.log("FACEID", newValue, oldValue);
-
+    faceId: function (newValue) {
       if (newValue) {
         this.dialog = true;
       }

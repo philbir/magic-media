@@ -31,11 +31,17 @@ namespace MagicMedia
         {
             Media? video = await _mediaStore.GetByIdAsync(id, cancellationToken);
 
+            //Stream stream = _mediaStore.Blob.GetStreamAsync(new MediaBlobData
+            //{
+            //    Type = MediaBlobType.Media,
+            //    Filename = video.Filename,
+            //    Directory = video.Folder!
+            //});
+
             Stream stream = _mediaStore.Blob.GetStreamAsync(new MediaBlobData
             {
-                Type = MediaBlobType.Media,
-                Filename = video.Filename,
-                Directory = video.Folder!
+                Type = MediaBlobType.VideoPreview,
+                Filename = $"720P_{id}.mp4"
             });
 
             return new MediaStream(stream, video.Filename.Split('.').Last());

@@ -9,8 +9,6 @@ import mediaModule from "./mediaModule";
 import personModule from "./personModule";
 import snackbarModule from "./snackbarModule";
 
-/* eslint-disable no-debugger */
-
 Vue.use(Vuex);
 
 export default new Vuex.Store({
