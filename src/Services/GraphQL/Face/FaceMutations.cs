@@ -93,7 +93,7 @@ namespace MagicMedia.GraphQL.Face
             return new DeleteFacePayload(id);
         }
 
-        public async Task<DeleteFacesPayload> DeleteAssignedFacesByMediaAsync(
+        public async Task<DeleteFacesPayload> DeleteUnassignedFacesByMediaAsync(
             Guid mediaId,
             CancellationToken cancellationToken)
         {

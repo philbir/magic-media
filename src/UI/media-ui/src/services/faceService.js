@@ -4,9 +4,11 @@ import MUTATION_APPROVE_FACE from "../graphql/Face/ApproveFaceComputer.gql";
 import MUTATION_ASSIGN_PERSON from "../graphql/Face/AssignPersonByHuman.gql";
 import MUTATION_BUILD_PERSON_MODEL from "../graphql/Face/BuildPersonModel.gql";
 import MUTATION_DELETE_FACE from "../graphql/Face/DeleteFace.gql";
+import MUTATION_DELETE_UNASSIGNED_BY_MEDIA from "../graphql/Face/DeleteUnassignedFacesByMedia.gql";
 import MUTATION_PREDICT_PERSON from "../graphql/Face/PredictPerson.gql";
 import QUERY_SEARCH_FACES from "../graphql/Face/SearchFaces.gql";
 import MUTATION_UNASSIGN_PERSON from "../graphql/Face/UnassignPersonFromFace.gql";
+import MUTATION_UNASSIGN_PREDICTED_BY_MEDIA from "../graphql/Face/UnassignAllPredictedByMedia.gql"
 
 export const searchFaces = async request => {
   return await apollo.query({
@@ -38,6 +40,16 @@ export const unAssignPerson = async id => {
   });
 };
 
+export const unAssignAllPrecictedByMedia = async mediaId => {
+  return await apollo.mutate({
+    mutation: MUTATION_UNASSIGN_PREDICTED_BY_MEDIA,
+    variables: {
+      mediaId
+    }
+  });
+};
+
+
 export const approveFace = async id => {
   return await apollo.mutate({
     mutation: MUTATION_APPROVE_FACE,
@@ -61,6 +73,15 @@ export const deleteFace = async id => {
     mutation: MUTATION_DELETE_FACE,
     variables: {
       id: id
+    }
+  });
+};
+
+export const deleteUnassignedByMedia = async mediaId => {
+  return await apollo.mutate({
+    mutation: MUTATION_DELETE_UNASSIGNED_BY_MEDIA,
+    variables: {
+      mediaId
     }
   });
 };

@@ -5,8 +5,10 @@ import {
   approveFace,
   assignPerson,
   deleteFace,
+  deleteUnassignedByMedia,
   predictPerson,
   searchFaces,
+  unAssignAllPrecictedByMedia,
   unAssignPerson
 } from "../services/faceService";
 
@@ -56,16 +58,16 @@ const faceModule = {
     PAGE_NR_INC(state) {
       state.filter.pageNr++;
     },
-    RESET_FILTER: function(state) {
+    RESET_FILTER: function (state) {
       state.list = [];
       state.filter.pageNr = 0;
       state.totalLoaded = 0;
       state.selectedIndexes = [];
     },
-    SET_LIST_LOADING: function(state, isloading) {
+    SET_LIST_LOADING: function (state, isloading) {
       state.listLoading = isloading;
     },
-    SELECTED: function(state, idx) {
+    SELECTED: function (state, idx) {
       const current = [...state.selectedIndexes];
       const i = current.indexOf(idx);
       if (i > -1) {
@@ -76,24 +78,24 @@ const faceModule = {
 
       Vue.set(state, "selectedIndexes", current);
     },
-    EDIT_MODE_TOGGLE: function(state, value) {
+    EDIT_MODE_TOGGLE: function (state, value) {
       state.isEditMode = value;
       if (!value) {
         state.selectedIndexes = [];
       }
     },
-    ALL_SELECTED: function(state) {
+    ALL_SELECTED: function (state) {
       state.selectedIndexes = [...Array(state.list.length).keys()];
     },
-    FACE_EDIT_OPENED: function(state, face) {
+    FACE_EDIT_OPENED: function (state, face) {
       state.editFaceId = face.id;
       state.editFace = face;
     },
-    FACE_EDIT_CLOSED: function(state) {
+    FACE_EDIT_CLOSED: function (state) {
       state.editFaceId = null;
       state.editFace = null;
     },
-    FACE_UPDATED: function(state, face) {
+    FACE_UPDATED: function (state, face) {
       state.editFace = face;
 
       const listIdx = state.list.findIndex(x => x.id == face.id);
@@ -101,7 +103,7 @@ const faceModule = {
         state.list[listIdx] = face;
       }
     },
-    FACE_DELETED: function(state, id) {
+    FACE_DELETED: function (state, id) {
       const listIdx = state.list.findIndex(x => x.id == id);
       if (listIdx > -1) {
         state.list.splice(listIdx, 1);
@@ -140,19 +142,19 @@ const faceModule = {
       commit("FILTER_STATE_SET", states);
       dispatch("search");
     },
-    toggleEditMode: function({ commit }, value) {
+    toggleEditMode: function ({ commit }, value) {
       commit("EDIT_MODE_TOGGLE", value);
     },
-    select: function({ commit }, id) {
+    select: function ({ commit }, id) {
       commit("SELECTED", id);
     },
-    selectAll: function({ commit }) {
+    selectAll: function ({ commit }) {
       commit("ALL_SELECTED");
     },
-    openEdit: function({ commit }, face) {
+    openEdit: function ({ commit }, face) {
       commit("FACE_EDIT_OPENED", face);
     },
-    closeEdit: function({ commit }) {
+    closeEdit: function ({ commit }) {
       commit("FACE_EDIT_CLOSED");
     },
     async setName({ commit, dispatch }, data) {
@@ -197,6 +199,19 @@ const faceModule = {
         root: true
       });
     },
+    async unAssignPredictedByMedia({ commit, dispatch }, mediaId) {
+      const result = await unAssignAllPrecictedByMedia(mediaId);
+      const { faces } = result.data.unAssignAllPredictedPersonsByMedia;
+
+      faces.forEach(face => {
+        commit("FACE_UPDATED", face);
+      });
+
+      //TODO: Better patch currentDetails
+      dispatch("media/loadDetails", mediaId, {
+        root: true
+      });
+    },
     async predictPerson({ commit, dispatch }, id) {
       const result = await predictPerson(id);
       const { face, hasMatch } = result.data.predictPerson;
@@ -231,6 +246,20 @@ const faceModule = {
           root: true
         }
       );
+    },
+    async deleteUnassignedByMedia({ commit, dispatch }, mediaId) {
+      const res = await deleteUnassignedByMedia(mediaId);
+
+      const faceIds = res.data.deleteUnassignedFacesByMedia.ids;
+
+      faceIds.forEach(id => {
+        commit("FACE_DELETED", id);
+      });
+
+      //TODO: Better patch currentDetails
+      dispatch("media/loadDetails", mediaId, {
+        root: true
+      });
     }
   },
   getters: {

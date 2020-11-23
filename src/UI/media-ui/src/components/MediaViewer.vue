@@ -203,19 +203,19 @@ export default {
           selected: [],
           items: [
             {
-              title: "Approve all",
+              title: "Approve all [a]",
               icon: "mdi-check-all",
               value: "APPROVE_ALL",
             },
             {
-              title: "Unassign predicted",
+              title: "Unassign predicted [u]",
               icon: "mdi-close-outline",
               value: "UNASIGN_PREDICTED",
             },
             {
-              title: "Remove unassigned",
+              title: "Remove unassigned  [r]",
               icon: "mdi-trash-can-outline",
-              value: "REMOVE_UNASSINGNED",
+              value: "DELETED_UNASSINGNED",
             },
           ],
         },
@@ -385,6 +385,18 @@ export default {
         case 27:
           this.handleHome();
           break;
+        case 65: //a
+          this.approveAll();
+          break;
+        case 82: //r
+          this.deleteUnassigned();
+          break;
+        case 85: //u
+          this.unassignPredicted();
+          break;
+        default:
+          console.log(e.event.keyCode);
+          break;
       }
     },
     onResize() {
@@ -409,12 +421,33 @@ export default {
     onClickFaceAction: function (action) {
       switch (action) {
         case "APPROVE_ALL":
-          this.$store.dispatch(
-            "face/approveAllByMedia",
-            this.$store.state.media.current.id
-          );
+          this.approveAll();
+          break;
+        case "UNASIGN_PREDICTED":
+          this.unassignPredicted();
+          break;
+        case "DELETED_UNASSINGNED":
+          this.deleteUnassigned();
           break;
       }
+    },
+    approveAll: function () {
+      this.$store.dispatch(
+        "face/approveAllByMedia",
+        this.$store.state.media.current.id
+      );
+    },
+    unassignPredicted: function () {
+      this.$store.dispatch(
+        "face/unAssignPredictedByMedia",
+        this.$store.state.media.current.id
+      );
+    },
+    deleteUnassigned: function () {
+      this.$store.dispatch(
+        "face/deleteUnassignedByMedia",
+        this.$store.state.media.current.id
+      );
     },
   },
 };

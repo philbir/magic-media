@@ -211,7 +211,7 @@ namespace MagicMedia.Face
 
             foreach (MediaFace face in filtered)
             {
-                await ApproveComputerAsync(face, cancellationToken);
+                await UnAssignPersonAsync(face, cancellationToken);
             }
 
             return filtered;
