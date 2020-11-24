@@ -16,17 +16,20 @@ namespace MagicMedia.Api.Controllers
     public class MediaController : Controller
     {
         private readonly IMediaBlobStore _mediaBlobStore;
+        private readonly IMediaService _mediaService;
         private readonly IThumbnailBlobStore _thumbnailBlobStore;
         private readonly IFaceService _faceService;
         private readonly IMediaProcessorFlowFactory _processorFlowFactory;
 
         public MediaController(
             IMediaBlobStore mediaBlobStore,
+            IMediaService mediaService,
             IThumbnailBlobStore thumbnailBlobStore,
             IFaceService faceService,
             IMediaProcessorFlowFactory processorFlowFactory)
         {
             _mediaBlobStore = mediaBlobStore;
+            _mediaService = mediaService;
             _thumbnailBlobStore = thumbnailBlobStore;
             _faceService = faceService;
             _processorFlowFactory = processorFlowFactory;
@@ -54,6 +57,23 @@ namespace MagicMedia.Api.Controllers
             byte[] data = await _thumbnailBlobStore.GetAsync(id, cancellationToken);
 
             return new FileContentResult(data, "image/jpg");
+        }
+
+        [HttpGet]
+        [Route("thumbnail/media/{id}/{size?}")]
+        public async Task<IActionResult> ThumbnailByMediaAsync(
+            Guid id,
+            ThumbnailSizeName size = ThumbnailSizeName.M,
+            CancellationToken cancellationToken = default)
+        {
+            MediaThumbnail? thumb = await _mediaService.GetThumbnailAsync(id, size, cancellationToken);
+
+            if (thumb == null)
+            {
+                return NotFound();
+            }
+
+            return new FileContentResult(thumb?.Data, "image/jpg");
         }
 
 
@@ -87,7 +107,8 @@ namespace MagicMedia.Api.Controllers
                     Id = file.FileName,
                     Source = MediaDiscoverySource.WebUpload
                 }
-                ,Options = new MediaProcessingOptions
+                ,
+                Options = new MediaProcessingOptions
                 {
                     SaveMedia = new SaveMediaFileOptions
                     {

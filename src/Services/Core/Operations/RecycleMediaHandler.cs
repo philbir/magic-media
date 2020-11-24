@@ -67,6 +67,7 @@ namespace MagicMedia.Operations
                 Type = MediaOperationType.Recycle,
                 MediaId = id,
             };
+
             try
             {
                 await _mediaBlobStore.MoveToSpecialFolderAsync(

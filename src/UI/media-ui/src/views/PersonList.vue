@@ -43,7 +43,6 @@
 
 <script>
 import EditPersonDialog from "../components/EditPersonDialog";
-/* eslint-disable no-debugger */
 
 export default {
   components: {

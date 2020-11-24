@@ -1,9 +1,9 @@
 <template>
-  <div v-if="faceData && box">
+  <div v-if="face && box">
     <div
       v-if="image.loaded"
       class="face-box"
-      @click="this.openDialog"
+      @click="this.editFace"
       :style="{
         left: box.left + 'px',
         top: box.top + 'px',
@@ -17,134 +17,22 @@
         class="face-name"
         :style="{ 'background-color': box.color }"
       >
-        {{ faceData.person.name }}
+        {{ face.person.name }}
       </div>
     </div>
-
-    <v-dialog v-model="dialog" width="400">
-      <v-card elevation="2" outlined>
-        <v-card-title>
-          <v-row dense>
-            <v-col sm="9">
-              <span> {{ faceTitle }}</span></v-col
-            >
-            <v-spacer></v-spacer>
-            <v-col sm="3">
-              <img
-                :src="'/api/media/thumbnail/' + faceData.thumbnail.id"
-                class="dialog-face-image"
-              />
-            </v-col>
-          </v-row>
-        </v-card-title>
-        <v-card-text>
-          <v-container>
-            <v-row dense>
-              <v-col cols="12" sm="12">
-                <v-combobox
-                  ref="combo"
-                  dense
-                  clearable
-                  :value="faceData.person ? faceData.person.name : null"
-                  :items="personNames"
-                  label="Name"
-                  v-on:change="setName"
-                ></v-combobox>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col>
-                <v-btn
-                  v-show="showApproved"
-                  depressed
-                  elevation="2"
-                  large
-                  color="green"
-                  class="ma-1"
-                  icon
-                >
-                  <v-icon dark> mdi-emoticon-happy </v-icon></v-btn
-                >
-                <v-btn
-                  v-show="showUnassign"
-                  @click="unAssignPerson"
-                  depressed
-                  elevation="2"
-                  large
-                  color="red"
-                  class="ma-1"
-                  icon
-                >
-                  <v-icon dark> mdi-emoticon-sad </v-icon></v-btn
-                >
-                <v-btn
-                  @click="deleteFace"
-                  depressed
-                  elevation="2"
-                  large
-                  color="grey"
-                  class="ma-1"
-                  icon
-                >
-                  <v-icon dark> mdi-trash-can</v-icon></v-btn
-                >
-                <v-btn
-                  v-if="showPredict"
-                  @click="predictPerson"
-                  depressed
-                  elevation="2"
-                  large
-                  color="blue"
-                  class="ma-1"
-                  icon
-                >
-                  <v-icon dark> mdi-auto-fix</v-icon></v-btn
-                >
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-card-text>
-        <v-card-actions class="pa-1">
-          <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="dialog = false">
-            Close
-          </v-btn>
-        </v-card-actions>
-        <v-progress-linear
-          v-if="inProgress"
-          indeterminate
-          color="blue"
-          top
-        ></v-progress-linear>
-      </v-card>
-    </v-dialog>
   </div>
 </template>
 
 <script>
-/* eslint-disable no-debugger */
-import {
-  assignPerson,
-  unAssignPerson,
-  deleteFace,
-  predictPerson,
-} from "../services/faceService";
 import { getFaceColor } from "../services/faceColor";
 
 export default {
-  created() {
-    this.faceData = this.face;
-  },
   mounted() {
     this.$nextTick(() => {});
   },
   props: ["face", "image"],
   data() {
-    return {
-      dialog: false,
-      faceData: this.face,
-      inProgress: false,
-    };
+    return {};
   },
   computed: {
     personNames: function () {
@@ -152,98 +40,40 @@ export default {
     },
     faceTitle: function () {
       let name = "Unknown";
-      if (this.faceData.person) {
-        name = this.faceData.person.name;
+      if (this.face.person) {
+        name = this.face.person.name;
 
-        if (this.faceData.age) {
-          name += ` (${Math.floor(this.faceData.age / 12)})`;
+        if (this.face.age) {
+          name += ` (${Math.floor(this.face.age / 12)})`;
         }
       }
       return name;
-    },
-    showApproved: function () {
-      return (
-        this.faceData.recognitionType === "COMPUTER" &&
-        this.faceData.state !== "VALIDATED"
-      );
-    },
-    showUnassign: function () {
-      return this.faceData.person !== null;
-    },
-    showPredict: function () {
-      return this.faceData.person === null;
     },
     box: function () {
       const box = {};
 
       const ratio = this.image.naturalWidth / this.image.width;
-      box.left =
-        Math.round(this.faceData.box.left / ratio) + this.image.offsetLeft;
-      box.top =
-        Math.round(this.faceData.box.top / ratio) + this.image.offsetTop;
+      box.left = Math.round(this.face.box.left / ratio) + this.image.offsetLeft;
+      box.top = Math.round(this.face.box.top / ratio) + this.image.offsetTop;
       box.width = Math.round(
-        (this.faceData.box.right - this.faceData.box.left) / ratio
+        (this.face.box.right - this.face.box.left) / ratio
       );
       box.height = Math.round(
-        (this.faceData.box.bottom - this.faceData.box.top) / ratio
+        (this.face.box.bottom - this.face.box.top) / ratio
       );
-      box.showName = box.width > 30 && this.faceData.person;
+      box.showName = box.width > 30 && this.face.person;
       if (box.showName) {
         box.height = box.height + 12;
         box.top = box.top - 12;
       }
-      box.color = getFaceColor(this.faceData);
+      box.color = getFaceColor(this.face);
 
       return box;
     },
   },
   methods: {
-    accept() {},
-    async setName(name) {
-      if (name) {
-        const result = await assignPerson(this.faceData.id, name);
-        this.faceData = result.data.assignPersonByHuman.face;
-        this.$store.commit("person/PERSON_ADDED", this.faceData.person);
-
-        this.dialog = false;
-      }
-    },
-    async unAssignPerson() {
-      const result = await unAssignPerson(this.faceData.id);
-      this.faceData = result.data.unAssignPersonFromFace.face;
-    },
-    async deleteFace() {
-      await deleteFace(this.faceData.id);
-
-      this.$magic.snack("Face deleted", "SUCCESS");
-
-      this.faceData = null;
-    },
-    async predictPerson() {
-      this.inProgress = true;
-      const result = await predictPerson(this.faceData.id);
-
-      if (result.data.predictPerson.hasMatch) {
-        this.$magic.snack(
-          result.data.predictPerson.face.person.name + " found.",
-          "SUCCESS"
-        );
-      } else {
-        this.$magic.snack("No person found.", "INFO");
-      }
-
-      this.faceData = result.data.predictPerson.face;
-
-      this.inProgress = false;
-    },
-    openDialog() {
-      this.dialog = true;
-      this.$nextTick(() => {
-        this.setFocus();
-      });
-    },
-    setFocus() {
-      if (this.faceData.person === null) this.$refs.combo.$refs.input.focus();
+    editFace() {
+      this.$store.dispatch("face/openEdit", this.face);
     },
   },
 };
@@ -270,10 +100,5 @@ export default {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-}
-.dialog-face-image {
-  height: 74px;
-  width: 74px;
-  border-radius: 100%;
 }
 </style>

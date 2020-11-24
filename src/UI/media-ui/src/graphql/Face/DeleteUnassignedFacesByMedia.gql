@@ -1,0 +1,11 @@
+
+#import "../UserErrorFragment.gql"
+
+mutation deleteUnassignedFacesByMedia($mediaId: Uuid!) {
+  deleteUnassignedFacesByMedia(mediaId: $mediaId) {
+    ids
+    errors {
+      ...userError
+    }
+  }
+}

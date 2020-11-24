@@ -1,6 +1,11 @@
-import { addItems, getAllAlbums, searchAlbums, updateAlbum } from "../services/albumService";
 import Vue from "vue";
-/* eslint-disable no-debugger */
+
+import {
+  addItems,
+  getAllAlbums,
+  searchAlbums,
+  updateAlbum
+} from "../services/albumService";
 
 const albumModule = {
   namespaced: true,
@@ -11,7 +16,7 @@ const albumModule = {
       searchText: "",
       pageSize: 25,
       pageNr: 0
-    },
+    }
   }),
   mutations: {
     ITEM_ADDED(state, album) {
@@ -19,7 +24,6 @@ const albumModule = {
       if (albums.length === 0) state.allAlbums.push(album);
     },
     ALBUM_UPDATED(state, album) {
-      debugger;
       let idx = state.allAlbums.findIndex(x => x.id == album.id);
       if (idx > -1) {
         state.allAlbums[idx].title = album.title;
@@ -33,12 +37,10 @@ const albumModule = {
       state.allAlbums = [...albums];
     },
     SEARCH_ITEMS_LOADED(state, result) {
-      console.log(result)
-
       Vue.set(state, "albums", [...result.items]);
     },
     FILTER_SET(state, filter) {
-      state.filter = { ... this.state.filter, ...filter }
+      state.filter = { ...this.state.filter, ...filter };
     }
   },
   actions: {
@@ -47,11 +49,14 @@ const albumModule = {
         const res = await addItems(input);
         commit("ITEM_ADDED", res.data.addItemsToAlbum.album);
 
-        dispatch('snackbar/addSnack', {
-          text: `Media aded to: Album ${res.data.addItemsToAlbum.album.title}`,
-          type: 'SUCCESS'
-        }, { root: true });
-
+        dispatch(
+          "snackbar/addSnack",
+          {
+            text: `Media aded to: Album ${res.data.addItemsToAlbum.album.title}`,
+            type: "SUCCESS"
+          },
+          { root: true }
+        );
       } catch (ex) {
         console.error(ex);
       }
@@ -62,11 +67,14 @@ const albumModule = {
 
         commit("ALBUM_UPDATED", res.data.updateAlbum.album);
 
-        dispatch('snackbar/addSnack', {
-          text: `Album saved: ${res.data.updateAlbum.album.title}`,
-          type: 'SUCCESS'
-        }, { root: true });
-
+        dispatch(
+          "snackbar/addSnack",
+          {
+            text: `Album saved: ${res.data.updateAlbum.album.title}`,
+            type: "SUCCESS"
+          },
+          { root: true }
+        );
       } catch (ex) {
         console.error(ex);
       }
@@ -87,8 +95,8 @@ const albumModule = {
         console.error(ex);
       }
     },
-    filter: function ({ commit, dispatch }, filter) {
-      commit('FILTER_SET', filter)
+    filter: function({ commit, dispatch }, filter) {
+      commit("FILTER_SET", filter);
       dispatch("search");
     }
   },

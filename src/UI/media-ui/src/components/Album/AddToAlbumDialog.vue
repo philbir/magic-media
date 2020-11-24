@@ -78,8 +78,6 @@
   </v-dialog>
 </template>
 <script>
-/* eslint-disable no-debugger */
-
 export default {
   props: {
     show: {

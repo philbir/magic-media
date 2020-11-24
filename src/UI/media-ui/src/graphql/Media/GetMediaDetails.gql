@@ -7,7 +7,7 @@ query mediaDetails($id: Uuid!) {
     isFavorite
     mediaType
     folder
-    videoInfo{
+    videoInfo {
       duration
     }
     dimension {
@@ -19,8 +19,8 @@ query mediaDetails($id: Uuid!) {
       model
       make
     }
-    geoLocation{
-      address{
+    geoLocation {
+      address {
         name
         address
         city
@@ -30,6 +30,7 @@ query mediaDetails($id: Uuid!) {
     }
     faces {
       id
+      mediaId
       box {
         left
         top

@@ -46,7 +46,6 @@ namespace MagicMedia
 
             ILookup<Guid, MediaHeaderData>? mediaLookup = medias.ToLookup(x => x.Id);
 
-
             List<UpdateAgeRequest> updates = new();
 
             foreach (MediaFace? face in faces)
@@ -57,6 +56,34 @@ namespace MagicMedia
             }
 
             await _mediaStore.Faces.BulkUpdateAgesAsync(updates, cancellationToken);
+        }
+
+        public async Task UpdateAgesByMediaAsync(Media media, CancellationToken cancellationToken)
+        {
+            IEnumerable<MediaFace> faces = await _mediaStore.Faces.GetFacesByMediaAsync(media.Id, cancellationToken);
+            IEnumerable<MediaFace>? withPerson = faces.Where(x => x.PersonId.HasValue);
+
+            if (withPerson.Any())
+            {
+                IEnumerable<Person> persons = await _mediaStore.Persons.GetPersonsAsync(withPerson.Select(x => x.PersonId!.Value), cancellationToken);
+                List<UpdateAgeRequest> updates = new();
+
+                foreach (MediaFace face in faces)
+                {
+                    Person? person = persons.FirstOrDefault(x => x.Id == face.PersonId!.Value && x.DateOfBirth.HasValue );
+
+                    if (person != null)
+                    {
+                        var age = CalculateAge(media.DateTaken, person.DateOfBirth!.Value);
+                        updates.Add(new UpdateAgeRequest(face.Id, age));
+                    }
+                }
+
+                if ( updates.Count > 0)
+                {
+                    await _mediaStore.Faces.BulkUpdateAgesAsync(updates, cancellationToken);
+                }
+            }
         }
 
         public int? CalculateAge(DateTimeOffset? dateTaken, DateTime dateOfBirth)

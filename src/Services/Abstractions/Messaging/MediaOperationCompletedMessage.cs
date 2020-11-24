@@ -33,6 +33,7 @@ namespace MagicMedia.Messaging
     public enum MediaOperationType
     {
         Move,
-        Recycle
+        Recycle,
+        UpdateMetadata
     }
 }

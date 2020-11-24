@@ -23,12 +23,12 @@
             :class="{ selected: isSelected(face.idx) }"
             v-for="(face, i) in row.faces"
             :key="i"
-            v-on:click="clickFace(face)"
+            v-on:click="clickFace(face, $event)"
           >
             <div
               class="face-item-image"
               :style="{
-                'background-image': 'url(' + face.thumbnail.dataUrl + ')',
+                'background-image': 'url(' + thumbSrc(face) + ')',
                 'border-color': face.color,
               }"
             ></div>
@@ -74,8 +74,8 @@ export default {
         item.title = getTitle(item);
         return item;
       });
-      const width = 112;
-      const height = 130;
+      const width = 132;
+      const height = 150;
       const itemsPerRow = Math.floor(this.containerWith / width);
 
       const chunks = chunk(items, itemsPerRow);
@@ -121,17 +121,25 @@ export default {
       }
       return false;
     },
-    thumbSrc: function (media) {
-      return media.thumbnail.dataUrl;
+    thumbSrc: function (face) {
+      if (face.thumbnail.dataUrl) {
+        return face.thumbnail.dataUrl;
+      } else {
+        return `/api/thumbnail/face/${face.id}`;
+      }
     },
     color: function (face) {
       return getFaceColor(face);
     },
-    clickFace: function (face) {
+    clickFace: function (face, e) {
       if (this.$store.state.face.isEditMode) {
         this.$store.dispatch("face/select", face.idx);
       } else {
-        this.$store.dispatch("media/show", face.media.id);
+        if (e.ctrlKey) {
+          this.$store.dispatch("face/openEdit", face);
+        } else {
+          this.$store.dispatch("media/show", face.media.id);
+        }
       }
     },
     handleRefresh: function () {
@@ -152,8 +160,7 @@ export default {
         start: elm.scrollTop - offset,
         end: elm.scrollTop + elm.offsetHeight + offset,
       };
-
-      if (!this.loading && percent > 0.7) {
+      if (!this.loading && percent > 0.85) {
         this.loadMore();
       }
     },
@@ -181,8 +188,8 @@ const getTitle = (face) => {
   overflow-x: hidden;
 }
 .face-item {
-  width: 112px;
-  height: 120px;
+  width: 132px;
+  height: 140px;
 }
 
 .face-item-image {
@@ -192,8 +199,8 @@ const getTitle = (face) => {
   border-radius: 100%;
   border-style: solid;
   border-width: 3px;
-  height: 100px;
-  width: 100px;
+  height: 120px;
+  width: 120px;
   margin: auto;
 }
 

@@ -1,19 +1,21 @@
-using System;
 using System.Threading;
 using System.Threading.Tasks;
-using MagicMedia.GraphQL.DataLoaders;
 using MagicMedia.Extensions;
+using MagicMedia.GraphQL.DataLoaders;
 using MagicMedia.Store;
-using System.Linq;
 
 namespace MagicMedia.GraphQL
 {
     internal class ThumbnailResolvers
     {
+        private readonly IMediaService _mediaService;
         private readonly IThumbnailBlobStore _thumbnailBlobStore;
 
-        public ThumbnailResolvers(IThumbnailBlobStore thumbnailBlobStore)
+        public ThumbnailResolvers(
+            IMediaService mediaService,
+            IThumbnailBlobStore thumbnailBlobStore)
         {
+            _mediaService = mediaService;
             _thumbnailBlobStore = thumbnailBlobStore;
         }
 
@@ -37,10 +39,7 @@ namespace MagicMedia.GraphQL
             ThumbnailSizeName size,
             CancellationToken cancellationToken)
         {
-            MediaThumbnail? thumb = media.Thumbnails.Where(x =>
-                x.Size == size &&
-                x.Format == "webp")
-                .FirstOrDefault();
+            MediaThumbnail? thumb = _mediaService.GetThumbnail(media, size);
 
             if ( thumb != null)
             {

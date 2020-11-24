@@ -1,14 +1,15 @@
 import apollo from "../apollo";
-import QUERY_FOLDER_TREE from "../graphql/GetFolderTree.gql";
-import QUERY_GETBYID from "../graphql/GetMediaDetails.gql";
-import MUTATION_MOVE_MEDIA from "../graphql/MoveMedia.gql";
+import QUERY_FOLDER_TREE from "../graphql/Media/GetFolderTree.gql";
+import QUERY_GETBYID from "../graphql/Media/GetMediaDetails.gql";
+import QUERY_METADATA from "../graphql/Media/MediaMetadata.gql";
+import MUTATION_MOVE_MEDIA from "../graphql/Media/MoveMedia.gql";
 import MUTATION_RECYCLE_MEDIA from "../graphql/Media/RecycleMedia.gql";
-import QUERY_SEARCH_FACETS from "../graphql/SearchFacets.gql";
-import QUERY_SEARCH from "../graphql/SearchMedia.gql";
+import QUERY_SEARCH from "../graphql/Media/SearchMedia.gql";
+import MUTATION_TOGGLE_FAVORITE from "../graphql/Media/ToggleFavorite.gql";
+import MUTATION_UPDATE_METADATA from "../graphql/Media/UpdateMediaMetadata.gql";
 import QUERY_GEO_LOCATION_CLUSTERS from "../graphql/Media/geoLocationClusters.gql";
-import MUTATION_TOGGLE_FAVORITE from "../graphql/ToggleFavorite.gql";
+import QUERY_SEARCH_FACETS from "../graphql/SearchFacets.gql";
 
-/* eslint-disable no-debugger */
 export const searchMedia = async (request, size) => {
   return await apollo.query({
     query: QUERY_SEARCH,
@@ -22,6 +23,15 @@ export const searchMedia = async (request, size) => {
 export const getById = async id => {
   return await apollo.query({
     query: QUERY_GETBYID,
+    variables: {
+      id: id
+    }
+  });
+};
+
+export const getMetadata = async id => {
+  return await apollo.query({
+    query: QUERY_METADATA,
     variables: {
       id: id
     }
@@ -68,7 +78,14 @@ export const recycleMedia = async input => {
     }
   });
 };
-
+export const updateMetadata = async input => {
+  return await apollo.mutate({
+    mutation: MUTATION_UPDATE_METADATA,
+    variables: {
+      input
+    }
+  });
+};
 
 export const toggleFavorite = async (id, isFavorite) => {
   return await apollo.mutate({

@@ -8,7 +8,6 @@ using MagicMedia.Store.MongoDb;
 using MagicMedia.Video;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
-using Xabe.FFmpeg;
 using Xabe.FFmpeg.Downloader;
 
 namespace MagicMedia.Playground
@@ -59,8 +58,14 @@ namespace MagicMedia.Playground
 
                     if (!File.Exists(outfile))
                     {
+                        var inputLength = new FileInfo(filename).Length / 1024 / 1024;
+
                         await _videoProcessing.ConvertTo720Async(filename, outfile, cancellationToken);
-                        Console.WriteLine($"{todo} -  Video created: {Path.GetFileName(outfile)}");
+                        Console.WriteLine($"{todo} - Video created: {Path.GetFileName(outfile)}");
+
+                        var outLength = new FileInfo(outfile).Length / 1024 / 1024;
+
+                        Console.WriteLine($"{inputLength} --> {outLength} (-{100.0 / inputLength * outLength}%)");
                     }
                 }
                 catch (Exception ex)

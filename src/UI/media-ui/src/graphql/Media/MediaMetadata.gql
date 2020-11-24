@@ -1,0 +1,41 @@
+query mediaMetadata($id: Uuid!) {
+  mediaById(id: $id) {
+    id
+    filename
+    dateTaken
+    cameraId
+    isFavorite
+    mediaType
+    folder
+    videoInfo {
+      duration
+    }
+    dimension {
+      height
+      width
+    }
+    camera {
+      id
+      model
+      make
+    }
+    geoLocation {
+      altitude
+      geoHash
+      point {
+        coordinates
+        type
+      }
+      type
+      address {
+        name
+        address
+        city
+        country
+        countryCode
+        distric1
+        distric2
+      }
+    }
+  }
+}

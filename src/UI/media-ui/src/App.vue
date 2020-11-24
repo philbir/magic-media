@@ -30,13 +30,11 @@
         </template>
       </v-snackbar>
     </v-app>
-    <v-dialog
-      v-model="mediaViewerOpen"
-      fullscreen
-      transition="scale-transition"
-    >
+    <v-dialog v-model="mediaViewerOpen" :transition="false" fullscreen>
       <MediaViewer v-if="mediaViewerOpen"></MediaViewer>
     </v-dialog>
+
+    <edit-face-dialog></edit-face-dialog>
   </AppPreLoader>
 </template>
 
@@ -47,12 +45,13 @@ import MediaViewer from "./components/MediaViewer";
 import VuePageTransition from "vue-page-transition";
 import Vue from "vue";
 import { mediaOperationTypeMap } from "./services/mediaOperationService";
+import EditFaceDialog from "./components/Face/EditFaceDialog.vue";
 
 Vue.use(VuePageTransition);
 
 export default {
   name: "App",
-  components: { AppPreLoader, Upload, MediaViewer },
+  components: { AppPreLoader, Upload, MediaViewer, EditFaceDialog },
   created() {
     const self = this;
     this.$socket.on("mediaOperationCompleted", (data) => {

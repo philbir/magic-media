@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using HotChocolate.Types;
@@ -47,6 +48,18 @@ namespace MagicMedia.GraphQL.Face
             return new UpdateFacePayload(face);
         }
 
+        public async Task<UpdateFacesPayload> ApproveAllFacesByMediaAsync(
+            Guid mediaId,
+            CancellationToken cancellationToken)
+        {
+            IEnumerable<MediaFace>? faces = await _faceService.ApproveAllByMediaAsync(
+                mediaId,
+                cancellationToken);
+
+            return new UpdateFacesPayload(faces);
+        }
+
+
         public async Task<UpdateFacePayload> UnAssignPersonFromFaceAsync(
             Guid id,
             CancellationToken cancellationToken)
@@ -58,6 +71,17 @@ namespace MagicMedia.GraphQL.Face
             return new UpdateFacePayload(face);
         }
 
+        public async Task<UpdateFacesPayload> UnAssignAllPredictedPersonsByMediaAsync(
+            Guid mediaId,
+            CancellationToken cancellationToken)
+        {
+            IEnumerable<MediaFace>? faces = await _faceService.UnassignAllPredictedByMediaAsync(
+                mediaId,
+                cancellationToken);
+
+            return new UpdateFacesPayload(faces);
+        }
+
         public async Task<DeleteFacePayload> DeleteFaceAsync(
             Guid id,
             CancellationToken cancellationToken)
@@ -67,6 +91,17 @@ namespace MagicMedia.GraphQL.Face
                 cancellationToken);
 
             return new DeleteFacePayload(id);
+        }
+
+        public async Task<DeleteFacesPayload> DeleteUnassignedFacesByMediaAsync(
+            Guid mediaId,
+            CancellationToken cancellationToken)
+        {
+            IEnumerable<Guid>? faceIds = await _faceService.DeleteUnassingedByMediaAsync(
+                mediaId,
+                cancellationToken);
+
+            return new DeleteFacesPayload(faceIds);
         }
 
         public async Task<BuildFaceModelPayload> BuildPersonModelAsync(CancellationToken cancellationToken)

@@ -50,7 +50,9 @@ namespace MagicMedia
             services.AddSingleton<IMediaOperationsService, MediaOperationsService>();
             services.AddSingleton<IMoveMediaHandler, MoveMediaHandler>();
             services.AddSingleton<IRecycleMediaHandler, RecycleMediaHandler>();
+            services.AddSingleton<IUpdateMediaMetadataHandler, UpdateMediaMetadataHandler>();
             services.AddSingleton<IMediaSearchService, MediaSearchService>();
+            services.AddSingleton<IMediaService, MediaService>();
             services.AddSingleton<IVideoPlayerService, VideoPlayerService>();
             services.AddSingleton<IVideoProcessingService, VideoProcessingService>();
 

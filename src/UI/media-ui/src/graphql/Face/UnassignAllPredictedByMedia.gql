@@ -1,0 +1,13 @@
+#import "../UserErrorFragment.gql"
+#import "./FaceFragment.gql"
+
+mutation unAssignAllPredictedByMedia($mediaId: Uuid!) {
+  unAssignAllPredictedPersonsByMedia(mediaId: $mediaId) {
+    faces {
+      ...face
+    }
+    errors {
+      ...userError
+    }
+  }
+}
