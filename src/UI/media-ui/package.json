@@ -22,7 +22,6 @@
     "vue-apollo": "^3.0.0-beta.11",
     "vue-core-video-player": "^0.2.0",
     "vue-global-events": "^1.2.1",
-    "vue-keypress": "^2.1.1",
     "vue-luxon": "^0.9.0",
     "vue-page-transition": "^0.2.2",
     "vue-router": "^3.2.0",
