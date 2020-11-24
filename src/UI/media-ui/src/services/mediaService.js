@@ -101,7 +101,7 @@ export const toggleFavorite = async (id, isFavorite) => {
 
 export const parsePath = path => {
   const parts = path.split("/");
-  const len = parts.length - 1;
+  const len = parts.length;
   const pathInfo = [];
   let fullPath = "";
   for (let i = 0; i < len; i++) {

@@ -147,9 +147,9 @@ namespace MagicMedia.Processing
 
             if (context.Options.SaveMedia.SourceAction == SaveMediaSourceAction.Delete)
             {
-                //TODO: Delete source
+                File.Delete(context.File.Id);
             }
-            else if (context.Options.SaveMedia.SourceAction == SaveMediaSourceAction.Delete)
+            else if (context.Options.SaveMedia.SourceAction == SaveMediaSourceAction.Move)
             {
                 //TODO: Move
             }

@@ -27,7 +27,6 @@ namespace MagicMedia.Playground
             _store = store;
         }
 
-
         public async Task ScanExistingAsync(
             FileSystemDiscoveryOptions options,
             CancellationToken cancellationToken)
@@ -102,7 +101,6 @@ namespace MagicMedia.Playground
                 }
             }
         }
-
 
         public async Task DiscoverAsync(
             FileSystemDiscoveryOptions options,
