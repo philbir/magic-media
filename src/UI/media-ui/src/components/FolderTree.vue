@@ -16,7 +16,7 @@
       :items="folderTree"
       :search="searchText"
       dense
-      item-key="name"
+      item-key="path"
       :return-object="true"
       :open-on-click="false"
       @update:active="onSelect"
