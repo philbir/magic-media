@@ -2,7 +2,13 @@
   <div v-resize="onResize">
     <v-progress-linear v-if="loading" indeterminate color="blue" top />
     <div v-else class="media-wrapper">
-      <Keypress key-event="keyup" @success="keyPressed" />
+      <GlobalEvents
+        @keydown="keyPressed"
+        :filter="
+          (event, handler, eventName) => event.target.tagName !== 'INPUT'
+        "
+      ></GlobalEvents>
+
       <div class="media-nav">
         <v-row>
           <v-col class="ma-4">
@@ -90,7 +96,10 @@
                   </template>
 
                   <template v-for="item in settingsMenu.actions.items">
-                    <v-list-item :key="item.title">
+                    <v-list-item
+                      :key="item.title"
+                      @change="onActionClick(item.action)"
+                    >
                       <v-list-item-icon>
                         <v-icon v-text="item.icon"></v-icon>
                       </v-list-item-icon>
@@ -178,6 +187,7 @@ import FilmStripe from "./FilmStripe.vue";
 import { parsePath } from "../services/mediaService";
 import MediaQuickInfo from "./Media/MediaQuickInfo.vue";
 import FaceBox from "./FaceBox.vue";
+import GlobalEvents from "vue-global-events";
 
 export default {
   data() {
@@ -222,36 +232,22 @@ export default {
         actions: {
           selected: [],
           items: [
-            { title: "Move", icon: "mdi-file-move-outline" },
-            { title: "Edit", icon: "mdi-pencil" },
-            { title: "Delete", icon: "mdi-recycle" },
-            { title: "Add to Album", icon: "mdi-plus" },
+            { title: "Move", icon: "mdi-file-move-outline", action: "MOVE" },
+            { title: "Edit", icon: "mdi-pencil", action: "EDIT" },
+            { title: "Delete", icon: "mdi-recycle", action: "RECYCLE" },
+            { title: "Add to Album", icon: "mdi-plus", action: "ADD_TO_ALBUM" },
           ],
         },
       },
       showStripe: false,
-      keyboardKeys: [
-        {
-          keyCode: 37, // Left
-          preventDefault: false,
-        },
-        {
-          keyCode: 39, // Right
-          preventDefault: false,
-        },
-        {
-          keyCode: 27, // ESC
-          preventDefault: false,
-        },
-      ],
       mediaId: this.$route.params.id,
       windowWidth: window.innerWidth,
     };
   },
   components: {
     FaceBox,
-    Keypress: () => import("vue-keypress"),
     FilmStripe,
+    GlobalEvents,
     MediaQuickInfo,
   },
   created() {
@@ -375,7 +371,7 @@ export default {
       this.$store.dispatch("media/toggleFavorite", media);
     },
     keyPressed: function (e) {
-      switch (e.event.keyCode) {
+      switch (e.which) {
         case 37:
           this.navigate(-1);
           break;
@@ -384,6 +380,9 @@ export default {
           break;
         case 27:
           this.handleHome();
+          break;
+        case 46:
+          this.recycle();
           break;
         case 65: //a
           this.approveAll();
@@ -431,23 +430,25 @@ export default {
           break;
       }
     },
+    onActionClick: function (action) {
+      switch (action) {
+        case "RECYCLE":
+          this.recycle();
+          break;
+      }
+    },
     approveAll: function () {
-      this.$store.dispatch(
-        "face/approveAllByMedia",
-        this.$store.state.media.current.id
-      );
+      this.$store.dispatch("face/approveAllByMedia", this.media.id);
     },
     unassignPredicted: function () {
-      this.$store.dispatch(
-        "face/unAssignPredictedByMedia",
-        this.$store.state.media.current.id
-      );
+      this.$store.dispatch("face/unAssignPredictedByMedia", this.media.id);
     },
     deleteUnassigned: function () {
-      this.$store.dispatch(
-        "face/deleteUnassignedByMedia",
-        this.$store.state.media.current.id
-      );
+      this.$store.dispatch("face/deleteUnassignedByMedia", this.media.id);
+    },
+    recycle() {
+      this.$store.dispatch("media/recycle", [this.media.id]);
+      this.navigate(1);
     },
   },
 };

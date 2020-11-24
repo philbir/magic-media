@@ -48,7 +48,8 @@ const mediaModule = {
       mediaTypes: [],
       cameras: [],
       albumId: null,
-      geoRadius: null
+      geoRadius: null,
+      folder: null
     },
     viewer: {
       showFaceBox: true,
@@ -126,6 +127,16 @@ const mediaModule = {
       state.filter.pageNr = 0;
       state.totalLoaded = 0;
       state.selectedIndexes = [];
+    },
+    RESET_FILTER_VALUES: function(state) {
+      state.filter.countries = [];
+      state.filter.cities = [];
+      state.filter.persons = [];
+      state.filter.mediaTypes = [];
+      state.filter.cameras = [];
+      state.filter.albumId = null;
+      state.filter.geoRadius = null;
+      state.filter.folder = null;
     },
     MEDIA_CLOSED: function(state) {
       state.currentMediaId = null;
@@ -236,9 +247,9 @@ const mediaModule = {
         this.$magic.snack("Error loading", "ERROR");
       }
     },
-    async recycleSelected({ commit, state, dispatch }) {
+    async recycle({ commit, state, dispatch }, ids) {
       try {
-        const ids = getMediaIdsFromIndexes(state);
+        ids = ids ?? getMediaIdsFromIndexes(state);
         const res = await recycleMedia({
           ids
         });
@@ -332,6 +343,11 @@ const mediaModule = {
     },
     setViewerOptions({ commit }, options) {
       commit("VIEWER_OPTIONS_SET", options);
+    },
+    resetAllFilters({ dispatch, commit }) {
+      commit("RESET_FILTER_VALUES");
+      commit("RESET_FILTER");
+      dispatch("search");
     },
     async loadDetails({ commit }, id) {
       try {

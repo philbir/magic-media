@@ -18,6 +18,10 @@
       </v-list>
     </v-menu>
 
+    <v-btn color="white" icon class="mr-4" @click="resetFilters">
+      <v-icon>mdi-cancel</v-icon>
+    </v-btn>
+
     <v-switch
       dense
       @change="toggleEditMode"
@@ -174,6 +178,9 @@ export default {
     selectAll: function () {
       this.$store.dispatch("media/selectAll");
     },
+    resetFilters: function () {
+      this.$store.dispatch("media/resetAllFilters");
+    },
     onClickAction: function (action) {
       switch (action) {
         case "MOVE":
@@ -186,7 +193,7 @@ export default {
           this.showEditDialog = true;
           break;
         case "RECYCLE":
-          this.$store.dispatch("media/recycleSelected");
+          this.$store.dispatch("media/recycle");
           break;
       }
     },
