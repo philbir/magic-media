@@ -1,4 +1,3 @@
-using MagicMedia.Configuration;
 using MagicMedia.Face;
 using MagicMedia.Metadata;
 using MagicMedia.Operations;
@@ -46,6 +45,7 @@ namespace MagicMedia
             services.AddSingleton<IMoveMediaHandler, MoveMediaHandler>();
             services.AddSingleton<IRecycleMediaHandler, RecycleMediaHandler>();
             services.AddSingleton<IUpdateMediaMetadataHandler, UpdateMediaMetadataHandler>();
+
             services.AddSingleton<IMediaSearchService, MediaSearchService>();
             services.AddSingleton<IMediaService, MediaService>();
             services.AddSingleton<IVideoPlayerService, VideoPlayerService>();
@@ -53,7 +53,6 @@ namespace MagicMedia
 
             return services;
         }
-
 
         public static IMagicMediaServerBuilder AddProcessingMediaServices(this IMagicMediaServerBuilder builder)
         {
@@ -72,6 +71,7 @@ namespace MagicMedia
             builder.Services.AddSingleton<IMediaProcessorFlowFactory, MediaProcessorFlowFactory>();
             builder.Services.AddSingleton<IMediaFaceScanner, MediaFaceScanner>();
             builder.Services.AddSingleton<IMediaSourceScanner, MediaSourceScanner>();
+            builder.Services.AddSingleton<IRescanFacesHandler, RescanFacesHandler>();
 
             return builder;
         }

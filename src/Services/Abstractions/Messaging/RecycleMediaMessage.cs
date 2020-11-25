@@ -9,6 +9,10 @@ namespace MagicMedia.Messaging
         public string? OperationId { get; init; }
     }
 
+    public record RescanFacesMessage(IEnumerable<Guid> Ids)
+    {
+        public string? OperationId { get; init; }
+    }
 
     public record UpdateMediaMetadataMessage(IEnumerable<Guid> Ids)
     {

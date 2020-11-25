@@ -34,6 +34,7 @@ namespace MagicMedia.Messaging
     {
         Move,
         Recycle,
-        UpdateMetadata
+        UpdateMetadata,
+        RescanFaces
     }
 }

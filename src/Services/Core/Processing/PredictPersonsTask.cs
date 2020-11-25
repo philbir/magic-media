@@ -27,19 +27,27 @@ namespace MagicMedia.Processing
 
                 foreach (FaceData face in context.FaceData)
                 {
-                    Guid? personId = await _faceDetectionService.PredictPersonAsync(
-                        new PredictPersonRequest
-                        {
-                            Distance = distance,
-                            Encoding = face.Encoding
-                        }, cancellationToken);
-
-                    if (personId.HasValue)
+                    try
                     {
-                        face.PersonId = personId;
-                        face.DistanceThreshold = distance;
-                        face.RecognitionType = FaceRecognitionType.Computer;
+                        Guid? personId = await _faceDetectionService.PredictPersonAsync(
+                            new PredictPersonRequest
+                            {
+                                Distance = distance,
+                                Encoding = face.Encoding
+                            }, cancellationToken);
+
+                        if (personId.HasValue)
+                        {
+                            face.PersonId = personId;
+                            face.DistanceThreshold = distance;
+                            face.RecognitionType = FaceRecognitionType.Computer;
+                        }
                     }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+
                 }
             }
         }

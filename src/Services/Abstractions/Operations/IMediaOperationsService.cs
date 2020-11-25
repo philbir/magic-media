@@ -12,6 +12,7 @@ namespace MagicMedia
             MoveMediaRequest request,
             CancellationToken cancellationToken);
         Task RecycleAsync(RecycleMediaRequest request, CancellationToken cancellationToken);
+        Task ReScanFacesAsync(RescanFacesRequest request, CancellationToken cancellationToken);
         Task ToggleFavoriteAsync(Guid id, bool isFavorite, CancellationToken cancellationToken);
         Task UpdateMetadataAsync(UpdateMediaMetadataRequest request, CancellationToken cancellationToken);
     }
