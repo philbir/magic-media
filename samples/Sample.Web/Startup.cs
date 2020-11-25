@@ -110,7 +110,7 @@ namespace Sample.Web
                     CheckSameSite(cookieContext.Context, cookieContext.CookieOptions);
             });
 
-            services.AddMagicMedia(Configuration);
+            services.AddCoreMediaServices(Configuration);
             services.AddFaceDetection(Configuration);
             BingMapsOptions bingOptions = Configuration.GetSection("MagicMedia:BingMaps")
                 .Get<BingMapsOptions>();

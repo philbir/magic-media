@@ -34,11 +34,13 @@ namespace MagicMedia.Processing
                         MediaProcessorTaskNames.GenerateThumbnails,
                         MediaProcessorTaskNames.GenerateWebImage,
                         MediaProcessorTaskNames.SaveMedia,
+                        MediaProcessorTaskNames.CleanUpSource
                     });
                 case "ScanFaces":
                     return new MediaProcessorFlow(_taskFactory, new[]
                     {
                         MediaProcessorTaskNames.BuildFaceData,
+                        MediaProcessorTaskNames.PredictPersons,
                         MediaProcessorTaskNames.SaveFaces,
                     });
                 case "ImportVideo":

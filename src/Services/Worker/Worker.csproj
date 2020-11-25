@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Worker">
 
   <PropertyGroup>
-    <UserSecretsId>dotnet-Worker-B804C236-67B2-4E3A-8D88-B4FE1FE2746F</UserSecretsId>
+    <UserSecretsId>75433c12-81ac-4dee-88de-ab9f3fbcbc40</UserSecretsId>
     <DockerfileContext>..\..</DockerfileContext>
     <AssemblyName>MagicMedia.Worker</AssemblyName>
   </PropertyGroup>

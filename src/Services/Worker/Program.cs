@@ -44,14 +44,14 @@ namespace Worker
                         }
                     });
 
-                    services.AddMongoDbStore(hostContext.Configuration);
-                    services.AddFileSystemStore(hostContext.Configuration);
-                    services.AddMagicMedia(hostContext.Configuration);
-                    services.AddBingMaps(bingOptions);
-                    services.Decorate<IGeoDecoderService, GeoDecoderCacheStore>();
-                    services.AddFileSystemDiscovery();
-                    services.AddMessaging(hostContext.Configuration);
-                    services.AddSignalRCore();
+                    services
+                        .AddMagicMediaServer(hostContext.Configuration)
+                        .AddProcessingMediaServices()
+                        .AddBingMaps()
+                        .AddMongoDbStore()
+                        .AddFileSystemStore()
+                        .AddFileSystemDiscovery()
+                        .AddWorkerMessaging();
 
                     services.AddHostedService<Worker>();
                 });

@@ -2,11 +2,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using GreenPipes;
 using MagicMedia.Discovery;
 using MagicMedia.Store;
 
 namespace MagicMedia.Processing
 {
+
     public class MediaSourceScanner : IMediaSourceScanner
     {
         private readonly IMediaSourceDiscoveryFactory _discoveryFactory;
@@ -92,7 +94,6 @@ namespace MagicMedia.Processing
                         context.OriginalData = await src.GetMediaDataAsync(
                             file.Id,
                             cancellationToken);
-
                         await _imageFlow.ExecuteAsync(context, cancellationToken);
                         break;
                     case MediaType.Video:

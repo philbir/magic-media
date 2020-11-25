@@ -40,7 +40,7 @@ namespace SampleDataSeeder
             services.AddMongoDbStore(config);
 
             services.AddFileSystemStore(config);
-            services.AddMagicMedia(config);
+            services.AddCoreMediaServices(config);
             services.AddBingMaps(bingOptions);
 
             services.AddDataSeaders();

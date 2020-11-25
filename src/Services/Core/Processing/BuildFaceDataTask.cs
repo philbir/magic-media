@@ -10,6 +10,10 @@ using SixLabors.ImageSharp;
 
 namespace MagicMedia.Processing
 {
+
+
+
+
     public class BuildFaceDataTask : IMediaProcesserTask
     {
         private readonly IFaceDetectionService _faceDetectionService;

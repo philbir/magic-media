@@ -175,7 +175,7 @@ namespace MagicMedia.Store.MongoDb
 
         public async Task InsertMediaAsync(
             Media media,
-            IEnumerable<MediaFace> faces,
+            IEnumerable<MediaFace>? faces,
             CancellationToken cancellationToken)
         {
             foreach (MediaThumbnail thumb in media.Thumbnails)

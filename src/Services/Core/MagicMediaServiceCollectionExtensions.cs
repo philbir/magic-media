@@ -1,3 +1,4 @@
+using MagicMedia.Configuration;
 using MagicMedia.Face;
 using MagicMedia.Metadata;
 using MagicMedia.Operations;
@@ -11,7 +12,15 @@ namespace MagicMedia
 {
     public static class MagicMediaServiceCollectionExtensions
     {
-        public static IServiceCollection AddMagicMedia(
+        public static IMagicMediaServerBuilder AddCoreMediaServices(
+            this IMagicMediaServerBuilder builder)
+        {
+            builder.Services.AddCoreMediaServices(builder.Configuration);
+
+            return builder;
+        }
+
+        public static IServiceCollection AddCoreMediaServices(
             this IServiceCollection services,
             IConfiguration configuration)
         {
@@ -26,21 +35,6 @@ namespace MagicMedia
             services.AddSingleton<IPersonService, PersonService>();
             services.AddSingleton<IGroupService, GroupService>();
             services.AddSingleton<IFaceService, FaceService>();
-
-            services.AddSingleton<IMediaProcesserTask, AutoOrientTask>();
-            services.AddSingleton<IMediaProcesserTask, ExtractMetadataTask>();
-            services.AddSingleton<IMediaProcesserTask, GenerateThumbnailsTask>();
-            services.AddSingleton<IMediaProcesserTask, BuildFaceDataTask>();
-            services.AddSingleton<IMediaProcesserTask, GenerateWebImageTask>();
-            services.AddSingleton<IMediaProcesserTask, SaveMediaTask>();
-            services.AddSingleton<IMediaProcesserTask, PredictPersonsTask>();
-            services.AddSingleton<IMediaProcesserTask, SaveFaceDataAsync>();
-            services.AddSingleton<IMediaProcesserTask, ExtractVideoDataTask>();
-            //services.AddSingleton<IMediaSourceScanner, MediaSourceScanner>();
-
-            services.AddSingleton<IMediaProcesserTaskFactory, MediaProcesserTaskFactory>();
-            services.AddSingleton<IMediaProcessorFlowFactory, MediaProcessorFlowFactory>();
-            services.AddSingleton<IMediaProcessorFlowFactory, MediaProcessorFlowFactory>();
 
             services.AddSingleton<ISearchFacetService, SearchFacetService>();
             services.AddSingleton<IFolderTreeService, FolderTreeService>();
@@ -58,6 +52,28 @@ namespace MagicMedia
             services.AddSingleton<IVideoProcessingService, VideoProcessingService>();
 
             return services;
+        }
+
+
+        public static IMagicMediaServerBuilder AddProcessingMediaServices(this IMagicMediaServerBuilder builder)
+        {
+            builder.Services.AddSingleton<IMediaProcesserTask, AutoOrientTask>();
+            builder.Services.AddSingleton<IMediaProcesserTask, ExtractMetadataTask>();
+            builder.Services.AddSingleton<IMediaProcesserTask, GenerateThumbnailsTask>();
+            builder.Services.AddSingleton<IMediaProcesserTask, BuildFaceDataTask>();
+            builder.Services.AddSingleton<IMediaProcesserTask, GenerateWebImageTask>();
+            builder.Services.AddSingleton<IMediaProcesserTask, SaveMediaTask>();
+            builder.Services.AddSingleton<IMediaProcesserTask, PredictPersonsTask>();
+            builder.Services.AddSingleton<IMediaProcesserTask, SaveFaceDataAsync>();
+            builder.Services.AddSingleton<IMediaProcesserTask, ExtractVideoDataTask>();
+            builder.Services.AddSingleton<IMediaProcesserTask, CleanUpSourceTask>();
+            builder.Services.AddSingleton<IMediaProcesserTaskFactory, MediaProcesserTaskFactory>();
+            builder.Services.AddSingleton<IMediaProcessorFlowFactory, MediaProcessorFlowFactory>();
+            builder.Services.AddSingleton<IMediaProcessorFlowFactory, MediaProcessorFlowFactory>();
+            builder.Services.AddSingleton<IMediaFaceScanner, MediaFaceScanner>();
+            builder.Services.AddSingleton<IMediaSourceScanner, MediaSourceScanner>();
+
+            return builder;
         }
     }
 }

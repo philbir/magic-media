@@ -19,20 +19,17 @@ namespace MagicMedia.Api.Controllers
         private readonly IMediaService _mediaService;
         private readonly IThumbnailBlobStore _thumbnailBlobStore;
         private readonly IFaceService _faceService;
-        private readonly IMediaProcessorFlowFactory _processorFlowFactory;
 
         public MediaController(
             IMediaBlobStore mediaBlobStore,
             IMediaService mediaService,
             IThumbnailBlobStore thumbnailBlobStore,
-            IFaceService faceService,
-            IMediaProcessorFlowFactory processorFlowFactory)
+            IFaceService faceService)
         {
             _mediaBlobStore = mediaBlobStore;
             _mediaService = mediaService;
             _thumbnailBlobStore = thumbnailBlobStore;
             _faceService = faceService;
-            _processorFlowFactory = processorFlowFactory;
         }
 
         [HttpGet]
@@ -97,26 +94,28 @@ namespace MagicMedia.Api.Controllers
             using var target = new MemoryStream();
             file.CopyTo(target);
 
-            IMediaProcessorFlow flow = _processorFlowFactory.CreateFlow("ImportImage");
+            //Use massaging to process file
 
-            await flow.ExecuteAsync(new MediaProcessorContext
-            {
-                OriginalData = target.ToArray(),
-                File = new MediaDiscoveryIdentifier
-                {
-                    Id = file.FileName,
-                    Source = MediaDiscoverySource.WebUpload
-                }
-                ,
-                Options = new MediaProcessingOptions
-                {
-                    SaveMedia = new SaveMediaFileOptions
-                    {
-                        SaveMode = SaveMediaMode.CreateNew,
-                        SourceAction = SaveMediaSourceAction.Keep
-                    }
-                }
-            }, cancellationToken);
+            //IMediaProcessorFlow flow = _processorFlowFactory.CreateFlow("ImportImage");
+
+            //await flow.ExecuteAsync(new MediaProcessorContext
+            //{
+            //    OriginalData = target.ToArray(),
+            //    File = new MediaDiscoveryIdentifier
+            //    {
+            //        Id = file.FileName,
+            //        Source = MediaDiscoverySource.WebUpload
+            //    }
+            //    ,
+            //    Options = new MediaProcessingOptions
+            //    {
+            //        SaveMedia = new SaveMediaFileOptions
+            //        {
+            //            SaveMode = SaveMediaMode.CreateNew,
+            //            SourceAction = SaveMediaSourceAction.Keep
+            //        }
+            //    }
+            //}, cancellationToken);
 
             return Ok();
         }

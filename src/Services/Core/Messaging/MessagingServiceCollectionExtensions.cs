@@ -1,68 +1,97 @@
-using System;
 using MagicMedia.Messaging.Consumers;
-using MagicMedia.Messaging;
 using MassTransit;
+using MassTransit.ExtensionsDependencyInjectionIntegration;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace MagicMedia.Messaging
 {
     public static class MessagingServiceCollectionExtensions
     {
-        public static IServiceCollection AddMessaging(
-            this IServiceCollection services,
-            IConfiguration configuration)
+        public static IMagicMediaServerBuilder AddWorkerMessaging(
+            this IMagicMediaServerBuilder builder)
         {
-            MessagingOptions options = configuration.GetSection("MagicMedia:Messaging")
-                .Get<MessagingOptions>();
+            MessagingOptions options = builder.GetOptions();
 
-            services.AddMassTransit(s =>
+            builder.Services.AddMassTransit(s =>
             {
-                s.AddConsumer<FaceUpdatedConsumer>();
-                s.AddConsumer<MoveMediaConsumer>();
-                s.AddConsumer<MediaOperationCompletedConsumer>();
-                s.AddConsumer<MediaOperationRequestCompletedConsumer>();
-                s.AddConsumer<FavoriteMediaToggledConsumer>();
-                s.AddConsumer<PersonUpdatedConsumer>();
-                s.AddConsumer<ItemsAddedToAlbumConsumer>();
-                s.AddConsumer<RecycleMediaConsumer>();
-                s.AddConsumer<UpdateMediaMetadataConsumer>();
-
-                if (options.Transport == MessagingTransport.InMemory)
-                {
-                    s.AddBus(provider => Bus.Factory.CreateUsingInMemory(cfg => {
-                       cfg.ReceiveEndpoint(e =>
-                       {
-                           e.ConfigureConsumers(provider);
-                       });
-                    }));
-                }
-                else
-                {
-                    s.AddBus(provider => Bus.Factory.CreateUsingAzureServiceBus(cfg =>
-                    {
-                        cfg.Host(options.ServiceBus.ConnectionString);
-                        cfg.ReceiveEndpoint(options.ServiceBus.ReceiveQueueName, e =>
-                        {
-                            e.ConfigureConsumers(provider);
-                        });
-                    }));
-                };
+                s.AddWorkerConsumers();
+                s.ConfigureBus(options.ServiceBus?.WorkerQueueName, options);
             });
 
-
-            return services;
+            return builder;
         }
 
-        public static void ConfigureConsumers(
-            this IReceiveEndpointConfigurator e,
-            IServiceCollection services,
-            IServiceProvider serviceProvider)
+        public static IMagicMediaServerBuilder AddApiMessaging(
+            this IMagicMediaServerBuilder builder)
         {
-            services.AddSingleton<FaceUpdatedConsumer>();
-            
+            MessagingOptions options = builder.GetOptions();
 
-            e.Consumer<FaceUpdatedConsumer>(serviceProvider);
+            builder.Services.AddMassTransit(s =>
+            {
+                s.AddApiConsumers();
+                s.ConfigureBus(options.ServiceBus?.ApiQueueName, options);
+            });
+
+            return builder;
+        }
+
+        private static MessagingOptions GetOptions(this IMagicMediaServerBuilder builder)
+        {
+            MessagingOptions options = builder.Configuration.GetSection("MagicMedia:Messaging")
+                .Get<MessagingOptions>();
+
+            return options;
+        }
+
+        private static void ConfigureBus(
+            this IServiceCollectionBusConfigurator busConfigurator,
+            string? queueName,
+            MessagingOptions options)
+        {
+            if (options.Transport == MessagingTransport.InMemory)
+            {
+                busConfigurator.AddBus(provider => Bus.Factory.CreateUsingInMemory(cfg =>
+                {
+                    cfg.ReceiveEndpoint(e =>
+                    {
+                        e.ConfigureConsumers(provider);
+                    });
+                }));
+            }
+            else
+            {
+                busConfigurator.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
+                {
+                    cfg.Host(options.ServiceBus.Host, c =>
+                    {
+                        c.Username(options.ServiceBus.Username);
+                        c.Password(options.ServiceBus.Password);
+                    });
+                    
+                    cfg.ReceiveEndpoint(queueName, e =>
+                    {
+                        e.ConfigureConsumers(provider);
+                    });
+                }));
+            };
+        }
+
+        private static void AddWorkerConsumers(this IServiceCollectionBusConfigurator busConfigurator)
+        {
+            busConfigurator.AddConsumer<FaceUpdatedConsumer>();
+            busConfigurator.AddConsumer<MoveMediaConsumer>();
+            busConfigurator.AddConsumer<FavoriteMediaToggledConsumer>();
+            busConfigurator.AddConsumer<PersonUpdatedConsumer>();
+            busConfigurator.AddConsumer<ItemsAddedToAlbumConsumer>();
+            busConfigurator.AddConsumer<RecycleMediaConsumer>();
+            busConfigurator.AddConsumer<UpdateMediaMetadataConsumer>();
+            busConfigurator.AddConsumer<NewMediaAddedConsumer>();
+        }
+
+        private static void AddApiConsumers(this IServiceCollectionBusConfigurator busConfigurator)
+        {
+            busConfigurator.AddConsumer<MediaOperationCompletedConsumer>();
+            busConfigurator.AddConsumer<MediaOperationRequestCompletedConsumer>();
         }
     }
 }

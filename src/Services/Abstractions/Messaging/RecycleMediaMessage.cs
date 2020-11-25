@@ -18,5 +18,4 @@ namespace MagicMedia.Messaging
 
         public UpdateMedataGeoLocation? GeoLocation { get; init; }
     }
-
 }

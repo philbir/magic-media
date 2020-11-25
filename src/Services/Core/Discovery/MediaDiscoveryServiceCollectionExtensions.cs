@@ -5,13 +5,13 @@ namespace MagicMedia.Discovery
 {
     public static class MediaDiscoveryServiceCollectionExtensions
     {
-        public static IServiceCollection AddFileSystemDiscovery(
-            this IServiceCollection services)
+        public static IMagicMediaServerBuilder AddFileSystemDiscovery(
+            this IMagicMediaServerBuilder builder)
         {
-            services.AddSingleton<IMediaSourceDiscovery, FileSystemSourceDiscovery>();
-            services.AddSingleton<IMediaSourceDiscoveryFactory, MediaSourceDiscoveryFactory>();
+            builder.Services.AddSingleton<IMediaSourceDiscovery, FileSystemSourceDiscovery>();
+            builder.Services.AddSingleton<IMediaSourceDiscoveryFactory, MediaSourceDiscoveryFactory>();
 
-            return services;
+            return builder;
         }
     }
 }
