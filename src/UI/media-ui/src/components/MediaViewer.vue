@@ -1,5 +1,11 @@
 <template>
-  <div v-resize="onResize">
+  <media-info
+    v-if="showInfoPage"
+    :media="media"
+    @back="showInfoPage = false"
+  ></media-info>
+
+  <div v-resize="onResize" v-else>
     <v-progress-linear v-if="loading" indeterminate color="blue" top />
     <div v-else class="media-wrapper">
       <GlobalEvents
@@ -46,6 +52,10 @@
               @click="toggleFavorite(media)"
             >
               mdi-heart
+            </v-icon>
+
+            <v-icon class="mr-4" color="white" @click="toggleInfo">
+              mdi-information-outline
             </v-icon>
 
             <v-menu
@@ -186,10 +196,18 @@ import FilmStripe from "./FilmStripe.vue";
 //import debounce from "lodash";
 import { parsePath } from "../services/mediaService";
 import MediaQuickInfo from "./Media/MediaQuickInfo.vue";
+import MediaInfo from "./Media/MediaInfo";
 import FaceBox from "./FaceBox.vue";
 import GlobalEvents from "vue-global-events";
 
 export default {
+  components: {
+    FaceBox,
+    FilmStripe,
+    GlobalEvents,
+    MediaQuickInfo,
+    MediaInfo,
+  },
   data() {
     return {
       image: {
@@ -199,6 +217,7 @@ export default {
         offsetLeft: 0,
         offsetTop: 0,
       },
+      showInfoPage: false,
       settingsMenu: {
         viewer: {
           selected: ["SHOW_FACE_LIST"],
@@ -244,12 +263,7 @@ export default {
       windowWidth: window.innerWidth,
     };
   },
-  components: {
-    FaceBox,
-    FilmStripe,
-    GlobalEvents,
-    MediaQuickInfo,
-  },
+
   created() {
     //this.onResize = debounce(this.onResize, 1000);
     //this.onMouseMove = debounce(this.onMouseMove, 500);
@@ -449,6 +463,9 @@ export default {
     recycle() {
       this.$store.dispatch("media/recycle", [this.media.id]);
       this.navigate(1);
+    },
+    toggleInfo: function () {
+      this.showInfoPage = !this.showInfoPage;
     },
   },
 };

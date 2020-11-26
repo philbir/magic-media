@@ -4,6 +4,7 @@ query mediaDetails($id: Uuid!) {
     filename
     dateTaken
     cameraId
+    size,
     isFavorite
     mediaType
     folder
@@ -20,6 +21,10 @@ query mediaDetails($id: Uuid!) {
       make
     }
     geoLocation {
+            point{
+        coordinates
+      }
+      altitude
       address {
         name
         address

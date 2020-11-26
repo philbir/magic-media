@@ -1,4 +1,4 @@
-﻿namespace MagicMedia
+namespace MagicMedia
 {
     public class GeoLocation
     {
@@ -9,6 +9,7 @@
         public string Type { get; set; }
 
         public string GeoHash { get; set; }
-        public GeoAddress Address { get; set; }
+
+        public GeoAddress? Address { get; set; }
     }
 }
