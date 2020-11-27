@@ -23,7 +23,7 @@ namespace MagicMedia.Api
                 {
                     builder.AddJsonFile("appsettings.json");
                     builder.AddUserSecrets<Program>(optional: true);
-                    builder.AddJsonFile("appsettings.local.json", optional: true);
+                    //builder.AddJsonFile("appsettings.local.json", optional: true);
                     builder.AddEnvironmentVariables();
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
