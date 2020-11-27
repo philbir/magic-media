@@ -381,8 +381,8 @@ export default {
         this.showStripe = e.clientY > 300;
       }
     },
-    toggleFavorite: function (media) {
-      this.$store.dispatch("media/toggleFavorite", media);
+    toggleFavorite: function () {
+      this.$store.dispatch("media/toggleFavorite", this.media);
     },
     keyPressed: function (e) {
       switch (e.which) {
@@ -407,8 +407,27 @@ export default {
         case 85: //u
           this.unassignPredicted();
           break;
+        case 70: //f
+          this.toggleFavorite();
+          break;
+        case 32: //space
+          this.$store.dispatch(
+            "media/setViewerOptions",
+            Object.assign({}, this.$store.state.media.viewer, {
+              showFaceBox: !this.$store.state.media.viewer.showFaceBox,
+            })
+          );
+          break;
+        case 66: //b
+          this.$store.dispatch(
+            "media/setViewerOptions",
+            Object.assign({}, this.$store.state.media.viewer, {
+              showFaceList: !this.$store.state.media.viewer.showFaceList,
+            })
+          );
+          break;
         default:
-          console.log(e.event.keyCode);
+          console.log(e.which);
           break;
       }
     },
