@@ -162,6 +162,11 @@ namespace MagicMedia
             }
         }
 
+        public string GetFilename(Media media, MediaFileType mediaFileType)
+        {
+            return _mediaBlobStore.GetFilename(GetBlobRequest(media, mediaFileType));
+        }
+
         public IEnumerable<MediaFileInfo> GetMediaFiles(
             Media media)
         {

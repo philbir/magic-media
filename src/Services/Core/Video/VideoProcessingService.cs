@@ -18,7 +18,8 @@ namespace MagicMedia.Video
         private const string QuickTimeDateFormat = "ddd MMM dd HH:mm:ss yyyy";
         private readonly IGeoDecoderService _geoDecoderService;
 
-        public VideoProcessingService(IGeoDecoderService geoDecoderService)
+        public VideoProcessingService(
+            IGeoDecoderService geoDecoderService)
         {
             _geoDecoderService = geoDecoderService;
         }

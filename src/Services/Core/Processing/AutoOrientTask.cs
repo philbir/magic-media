@@ -5,7 +5,7 @@ using SixLabors.ImageSharp;
 
 namespace MagicMedia.Processing
 {
-    public class AutoOrientTask : IMediaProcesserTask
+    public class AutoOrientTask : IMediaProcessorTask
     {
         private readonly IImageTransformService _imageTransformService;
 

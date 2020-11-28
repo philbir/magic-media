@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace MagicMedia.Processing
 {
-    public class CleanUpSourceTask : IMediaProcesserTask
+    public class CleanUpSourceTask : IMediaProcessorTask
     {
         public string Name => MediaProcessorTaskNames.CleanUpSource;
 

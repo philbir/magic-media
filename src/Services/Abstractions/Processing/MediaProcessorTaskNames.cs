@@ -14,5 +14,7 @@ namespace MagicMedia.Processing
         public static readonly string ParseDateTaken = "ParseDateTaken";
 
         public static readonly string ExtractVideoData = "ExtractVideoData";
+        public static readonly string BuildGifVideoPreview = "BuildGifVideoPreview";
+        public static readonly string BuildVideoPreview = "BuildVideoPreview";
     }
 }

@@ -5,7 +5,7 @@ using SixLabors.ImageSharp;
 
 namespace MagicMedia.Processing
 {
-    public class ExtractVideoDataTask : IMediaProcesserTask
+    public class ExtractVideoDataTask : IMediaProcessorTask
     {
         private readonly IVideoProcessingService _videoProcessingService;
 
@@ -26,7 +26,6 @@ namespace MagicMedia.Processing
             context.Metadata = videoData.Meta;
             context.VideoInfo = videoData.Info;
             context.Size = videoData.Size;
-
         }
     }
 }

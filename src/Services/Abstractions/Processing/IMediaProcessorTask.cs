@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace MagicMedia.Processing
 {
-    public interface IMediaProcesserTask
+    public interface IMediaProcessorTask
     {
         public string Name { get; }
 

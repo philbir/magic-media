@@ -4,7 +4,7 @@ using MagicMedia.Thumbnail;
 
 namespace MagicMedia.Processing
 {
-    public class GenerateThumbnailsTask : IMediaProcesserTask
+    public class GenerateThumbnailsTask : IMediaProcessorTask
     {
         private readonly IThumbnailService _thumbnailService;
 

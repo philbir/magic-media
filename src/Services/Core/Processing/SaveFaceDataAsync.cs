@@ -6,7 +6,7 @@ using MagicMedia.Store;
 
 namespace MagicMedia.Processing
 {
-    public class SaveFaceDataAsync : IMediaProcesserTask
+    public class SaveFaceDataAsync : IMediaProcessorTask
     {
         private readonly IMediaStore _mediaStore;
 

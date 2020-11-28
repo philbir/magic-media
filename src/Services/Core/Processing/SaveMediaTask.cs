@@ -10,7 +10,7 @@ using MagicMedia.Store;
 
 namespace MagicMedia.Processing
 {
-    public class SaveMediaTask : IMediaProcesserTask
+    public class SaveMediaTask : IMediaProcessorTask
     {
         private readonly IMediaStore _mediaStore;
         private readonly IMediaBlobStore _blobStore;

@@ -51,6 +51,14 @@ namespace MagicMedia.Processing
                         MediaProcessorTaskNames.GenerateWebImage,
                         MediaProcessorTaskNames.SaveMedia,
                     });
+                case "BuildPreviewVideos":
+                    return new MediaProcessorFlow(_taskFactory, new[]
+                    {
+                        MediaProcessorTaskNames.ExtractVideoData,
+                        MediaProcessorTaskNames.GenerateThumbnails,
+                        MediaProcessorTaskNames.GenerateWebImage,
+                        MediaProcessorTaskNames.SaveMedia,
+                    });
                 default:
                     throw new ArgumentException("Invalid flow", nameof(name));
             }

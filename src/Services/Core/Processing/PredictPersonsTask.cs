@@ -6,7 +6,7 @@ using MagicMedia.Store;
 
 namespace MagicMedia.Processing
 {
-    public class PredictPersonsTask : IMediaProcesserTask
+    public class PredictPersonsTask : IMediaProcessorTask
     {
         private readonly IFaceDetectionService _faceDetectionService;
 

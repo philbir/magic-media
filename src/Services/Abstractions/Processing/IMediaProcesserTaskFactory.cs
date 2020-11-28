@@ -2,6 +2,6 @@
 {
     public interface IMediaProcesserTaskFactory
     {
-        IMediaProcesserTask GetTask(string name);
+        IMediaProcessorTask GetTask(string name);
     }
 }

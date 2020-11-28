@@ -2,12 +2,17 @@ using System.Collections.Generic;
 using MagicMedia;
 using MagicMedia.BingMaps;
 using MagicMedia.Discovery;
+using MagicMedia.Jobs;
 using MagicMedia.Messaging;
+using MagicMedia.Scheduling;
 using MagicMedia.Store.MongoDb;
 using MagicMedia.Stores;
+using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Quartz;
+using Quartz.Impl;
 
 namespace Worker
 {
@@ -53,7 +58,10 @@ namespace Worker
                         .AddFileSystemDiscovery()
                         .AddWorkerMessaging();
 
-                    services.AddHostedService<Worker>();
+                    services.AddScheduler();
+                    services.AddSingleton<ImportNewMediaJob>();
+                    services.AddMassTransitHostedService();
+                    services.AddHostedService<JobWorker>();
                 });
     }
 }

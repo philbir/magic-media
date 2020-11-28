@@ -56,16 +56,18 @@ namespace MagicMedia
 
         public static IMagicMediaServerBuilder AddProcessingMediaServices(this IMagicMediaServerBuilder builder)
         {
-            builder.Services.AddSingleton<IMediaProcesserTask, AutoOrientTask>();
-            builder.Services.AddSingleton<IMediaProcesserTask, ExtractMetadataTask>();
-            builder.Services.AddSingleton<IMediaProcesserTask, GenerateThumbnailsTask>();
-            builder.Services.AddSingleton<IMediaProcesserTask, BuildFaceDataTask>();
-            builder.Services.AddSingleton<IMediaProcesserTask, GenerateWebImageTask>();
-            builder.Services.AddSingleton<IMediaProcesserTask, SaveMediaTask>();
-            builder.Services.AddSingleton<IMediaProcesserTask, PredictPersonsTask>();
-            builder.Services.AddSingleton<IMediaProcesserTask, SaveFaceDataAsync>();
-            builder.Services.AddSingleton<IMediaProcesserTask, ExtractVideoDataTask>();
-            builder.Services.AddSingleton<IMediaProcesserTask, CleanUpSourceTask>();
+            builder.Services.AddSingleton<IMediaProcessorTask, AutoOrientTask>();
+            builder.Services.AddSingleton<IMediaProcessorTask, ExtractMetadataTask>();
+            builder.Services.AddSingleton<IMediaProcessorTask, GenerateThumbnailsTask>();
+            builder.Services.AddSingleton<IMediaProcessorTask, BuildFaceDataTask>();
+            builder.Services.AddSingleton<IMediaProcessorTask, GenerateWebImageTask>();
+            builder.Services.AddSingleton<IMediaProcessorTask, SaveMediaTask>();
+            builder.Services.AddSingleton<IMediaProcessorTask, PredictPersonsTask>();
+            builder.Services.AddSingleton<IMediaProcessorTask, SaveFaceDataAsync>();
+            builder.Services.AddSingleton<IMediaProcessorTask, ExtractVideoDataTask>();
+            builder.Services.AddSingleton<IMediaProcessorTask, CleanUpSourceTask>();
+            builder.Services.AddSingleton<IMediaProcessorTask, BuildVideoPreviewTask>();
+            builder.Services.AddSingleton<IMediaProcessorTask, BuildGifVideoPreviewTask>();
             builder.Services.AddSingleton<IMediaProcesserTaskFactory, MediaProcesserTaskFactory>();
             builder.Services.AddSingleton<IMediaProcessorFlowFactory, MediaProcessorFlowFactory>();
             builder.Services.AddSingleton<IMediaProcessorFlowFactory, MediaProcessorFlowFactory>();
