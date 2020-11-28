@@ -19,6 +19,7 @@ namespace MagicMedia.Face
         Task DeleteAsync(Guid id, CancellationToken cancellationToken);
         Task<IEnumerable<Guid>> DeleteUnassingedByMediaAsync(Guid mediaId, CancellationToken cancellationToken);
         Task<MediaFace> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+        Task<IEnumerable<MediaFace>> GetFacesByMediaAsync(Guid mediaId, CancellationToken cancellationToken);
         Task<MediaThumbnail> GetThumbnailAsync(Guid id, CancellationToken cancellationToken);
         Task<(MediaFace face, bool hasMatch)> PredictPersonAsync(
             Guid faceId,

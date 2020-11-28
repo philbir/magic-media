@@ -11,7 +11,15 @@ namespace MagicMedia
 {
     public static class MagicMediaServiceCollectionExtensions
     {
-        public static IServiceCollection AddMagicMedia(
+        public static IMagicMediaServerBuilder AddCoreMediaServices(
+            this IMagicMediaServerBuilder builder)
+        {
+            builder.Services.AddCoreMediaServices(builder.Configuration);
+
+            return builder;
+        }
+
+        public static IServiceCollection AddCoreMediaServices(
             this IServiceCollection services,
             IConfiguration configuration)
         {
@@ -27,20 +35,6 @@ namespace MagicMedia
             services.AddSingleton<IGroupService, GroupService>();
             services.AddSingleton<IFaceService, FaceService>();
 
-            services.AddSingleton<IMediaProcesserTask, AutoOrientTask>();
-            services.AddSingleton<IMediaProcesserTask, ExtractMetadataTask>();
-            services.AddSingleton<IMediaProcesserTask, GenerateThumbnailsTask>();
-            services.AddSingleton<IMediaProcesserTask, BuildFaceDataTask>();
-            services.AddSingleton<IMediaProcesserTask, GenerateWebImageTask>();
-            services.AddSingleton<IMediaProcesserTask, SaveMediaTask>();
-            services.AddSingleton<IMediaProcesserTask, PredictPersonsTask>();
-            services.AddSingleton<IMediaProcesserTask, SaveFaceDataAsync>();
-            services.AddSingleton<IMediaProcesserTask, ExtractVideoDataTask>();
-
-            services.AddSingleton<IMediaProcesserTaskFactory, MediaProcesserTaskFactory>();
-            services.AddSingleton<IMediaProcessorFlowFactory, MediaProcessorFlowFactory>();
-            services.AddSingleton<IMediaProcessorFlowFactory, MediaProcessorFlowFactory>();
-
             services.AddSingleton<ISearchFacetService, SearchFacetService>();
             services.AddSingleton<IFolderTreeService, FolderTreeService>();
             services.AddSingleton<IAgeOperationsService, AgeOperationsService>();
@@ -51,12 +45,37 @@ namespace MagicMedia
             services.AddSingleton<IMoveMediaHandler, MoveMediaHandler>();
             services.AddSingleton<IRecycleMediaHandler, RecycleMediaHandler>();
             services.AddSingleton<IUpdateMediaMetadataHandler, UpdateMediaMetadataHandler>();
+
             services.AddSingleton<IMediaSearchService, MediaSearchService>();
             services.AddSingleton<IMediaService, MediaService>();
             services.AddSingleton<IVideoPlayerService, VideoPlayerService>();
             services.AddSingleton<IVideoProcessingService, VideoProcessingService>();
 
             return services;
+        }
+
+        public static IMagicMediaServerBuilder AddProcessingMediaServices(this IMagicMediaServerBuilder builder)
+        {
+            builder.Services.AddSingleton<IMediaProcessorTask, AutoOrientTask>();
+            builder.Services.AddSingleton<IMediaProcessorTask, ExtractMetadataTask>();
+            builder.Services.AddSingleton<IMediaProcessorTask, GenerateThumbnailsTask>();
+            builder.Services.AddSingleton<IMediaProcessorTask, BuildFaceDataTask>();
+            builder.Services.AddSingleton<IMediaProcessorTask, GenerateWebImageTask>();
+            builder.Services.AddSingleton<IMediaProcessorTask, SaveMediaTask>();
+            builder.Services.AddSingleton<IMediaProcessorTask, PredictPersonsTask>();
+            builder.Services.AddSingleton<IMediaProcessorTask, SaveFaceDataAsync>();
+            builder.Services.AddSingleton<IMediaProcessorTask, ExtractVideoDataTask>();
+            builder.Services.AddSingleton<IMediaProcessorTask, CleanUpSourceTask>();
+            builder.Services.AddSingleton<IMediaProcessorTask, BuildVideoPreviewTask>();
+            builder.Services.AddSingleton<IMediaProcessorTask, BuildGifVideoPreviewTask>();
+            builder.Services.AddSingleton<IMediaProcesserTaskFactory, MediaProcesserTaskFactory>();
+            builder.Services.AddSingleton<IMediaProcessorFlowFactory, MediaProcessorFlowFactory>();
+            builder.Services.AddSingleton<IMediaProcessorFlowFactory, MediaProcessorFlowFactory>();
+            builder.Services.AddSingleton<IMediaFaceScanner, MediaFaceScanner>();
+            builder.Services.AddSingleton<IMediaSourceScanner, MediaSourceScanner>();
+            builder.Services.AddSingleton<IRescanFacesHandler, RescanFacesHandler>();
+
+            return builder;
         }
     }
 }

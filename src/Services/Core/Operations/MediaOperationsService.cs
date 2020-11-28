@@ -46,7 +46,7 @@ namespace MagicMedia.Operations
             RecycleMediaRequest request,
             CancellationToken cancellationToken)
         {
-            RecycleMediaMessage message = new (request.Ids)
+            RecycleMediaMessage message = new(request.Ids)
             {
                 OperationId = request.OperationId
             };
@@ -58,11 +58,23 @@ namespace MagicMedia.Operations
             UpdateMediaMetadataRequest request,
             CancellationToken cancellationToken)
         {
-            UpdateMediaMetadataMessage message = new (request.Ids)
+            UpdateMediaMetadataMessage message = new(request.Ids)
             {
                 OperationId = request.OperationId,
                 DateTaken = request.DateTaken,
                 GeoLocation = request.GeoLocation
+            };
+
+            await _bus.Publish(message, cancellationToken);
+        }
+
+        public async Task ReScanFacesAsync(
+            RescanFacesRequest request,
+            CancellationToken cancellationToken)
+        {
+            RescanFacesMessage message = new(request.Ids)
+            {
+                OperationId = request.OperationId
             };
 
             await _bus.Publish(message, cancellationToken);

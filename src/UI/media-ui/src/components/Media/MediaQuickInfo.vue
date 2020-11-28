@@ -1,5 +1,5 @@
 <template>
-  <v-container class="ma-0 pa-0">
+  <div class="container">
     <v-row
       v-for="face in faces"
       :key="face.id"
@@ -7,24 +7,24 @@
       @click="editFace(face)"
       :style="{ 'border-left-color': faceColor(face) }"
     >
-      <v-col cols="4" class="pa-0 ma-0">
+      <v-col sm="5" class="pa-0 ma-0">
         <img
           class="face-image"
           :src="'/api/media/thumbnail/' + face.thumbnail.id"
         />
       </v-col>
-      <v-col class="pa-0">
+      <v-col sm="6" class="pa-0 ma-0">
         <v-row>
-          <v-col sm="12" class="pa-0"> {{ faceTitle(face) }}</v-col>
+          <v-col sm="12" class="pa-0 ma-0"> {{ faceTitle(face) }}</v-col>
         </v-row>
         <v-row>
-          <v-col class="pa-0">
+          <v-col class="pa-0 ma-0">
             <small>{{ age(face) }}</small>
           </v-col>
         </v-row>
       </v-col>
     </v-row>
-  </v-container>
+  </div>
 </template>
 
 <script>
@@ -65,20 +65,23 @@ export default {
 </script>
 
 <style scoped>
+.container {
+  max-height: 400px;
+  overflow-x: auto;
+}
 .face-image {
-  height: 60px;
+  height: 80px;
   object-fit: contain;
-  border-radius: 10px;
+  border-radius: 8px;
 }
 .face-row {
-  height: 64px;
+  height: 84px;
   color: #fff;
-  width: 230px;
+  width: 250px;
   border-left: #272727 solid 3px;
   margin-top: 4px;
   background-color: #272727;
-}
-
-.face-details {
+  border-radius: 8px;
+  opacity: 0.9;
 }
 </style>

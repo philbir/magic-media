@@ -8,25 +8,16 @@ namespace MagicMedia.Processing
     public class MediaProcessorContext
     {
         public byte[]? OriginalData { get; set; }
-
         public MediaMetadata? Metadata { get; set; }
-
         public IEnumerable<ThumbnailResult>? Thumbnails { get; set; }
-
         public IEnumerable<FaceData> FaceData { get; set; }
-
         public Image? Image { get; set; }
-
         public byte[]? WebImage { get; set; }
-
         public MediaDiscoveryIdentifier File { get; set; }
-
         public MediaProcessingOptions Options { get; set; }
         public Media Media { get; set; }
         public VideoInfo VideoInfo { get; set; }
-
         public MediaType MediaType { get; set; }
-
         public long Size { get; set; }
     }
 

@@ -15,7 +15,7 @@ namespace MagicMedia.Processing
         {
             switch (name)
             {
-                case "ImportImage":
+                case "ImportImageWithFace":
                     return new MediaProcessorFlow(_taskFactory, new[]
                     {
                         MediaProcessorTaskNames.AutoOrient,
@@ -26,7 +26,7 @@ namespace MagicMedia.Processing
                         MediaProcessorTaskNames.GenerateWebImage,
                         MediaProcessorTaskNames.SaveMedia,
                     });
-                case "ImportImageNoFace":
+                case "ImportImage":
                     return new MediaProcessorFlow(_taskFactory, new[]
                     {
                         MediaProcessorTaskNames.AutoOrient,
@@ -34,11 +34,13 @@ namespace MagicMedia.Processing
                         MediaProcessorTaskNames.GenerateThumbnails,
                         MediaProcessorTaskNames.GenerateWebImage,
                         MediaProcessorTaskNames.SaveMedia,
+                        MediaProcessorTaskNames.CleanUpSource
                     });
                 case "ScanFaces":
                     return new MediaProcessorFlow(_taskFactory, new[]
                     {
                         MediaProcessorTaskNames.BuildFaceData,
+                        MediaProcessorTaskNames.PredictPersons,
                         MediaProcessorTaskNames.SaveFaces,
                     });
                 case "ImportVideo":
@@ -48,6 +50,13 @@ namespace MagicMedia.Processing
                         MediaProcessorTaskNames.GenerateThumbnails,
                         MediaProcessorTaskNames.GenerateWebImage,
                         MediaProcessorTaskNames.SaveMedia,
+                        MediaProcessorTaskNames.CleanUpSource
+                    });
+                case "BuildPreviewVideos":
+                    return new MediaProcessorFlow(_taskFactory, new[]
+                    {
+                        MediaProcessorTaskNames.BuildGifVideoPreview,
+                        MediaProcessorTaskNames.BuildVideoPreview,
                     });
                 default:
                     throw new ArgumentException("Invalid flow", nameof(name));

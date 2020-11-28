@@ -5,7 +5,7 @@ using MagicMedia.Metadata;
 
 namespace MagicMedia.Processing
 {
-    public class DataTakenParserTask : IMediaProcesserTask
+    public class DataTakenParserTask : IMediaProcessorTask
     {
         private readonly IDateTakenParser _dateTakenParser;
 

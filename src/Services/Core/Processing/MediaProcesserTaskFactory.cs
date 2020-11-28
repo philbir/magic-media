@@ -6,16 +6,16 @@ namespace MagicMedia.Processing
 {
     public class MediaProcesserTaskFactory : IMediaProcesserTaskFactory
     {
-        private readonly IEnumerable<IMediaProcesserTask> _tasks;
+        private readonly IEnumerable<IMediaProcessorTask> _tasks;
 
-        public MediaProcesserTaskFactory(IEnumerable<IMediaProcesserTask> tasks)
+        public MediaProcesserTaskFactory(IEnumerable<IMediaProcessorTask> tasks)
         {
             _tasks = tasks;
         }
 
-        public IMediaProcesserTask GetTask(string name)
+        public IMediaProcessorTask GetTask(string name)
         {
-            IMediaProcesserTask? task = _tasks.FirstOrDefault(x => x.Name == name);
+            IMediaProcessorTask? task = _tasks.FirstOrDefault(x => x.Name == name);
 
             if ( task is null)
             {

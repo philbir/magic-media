@@ -23,6 +23,10 @@ namespace MagicMedia.GraphQL
             descriptor
                 .Field("faces")
                 .ResolveWith<MediaResolvers>(x => x.GetFacesByMediaAsync(default!, default!));
+
+            descriptor
+                .Field("files")
+                .ResolveWith<MediaResolvers>(x => x.GetFileInfos(default!));
         }
     }
 

@@ -303,3 +303,5 @@ src/Face/models/
 **/*.Api.Host/wwwroot
 src/Services/Api.Host/wwwroot/
 appsettings.local.json
+ffmpeg.exe
+ffprobe.exe

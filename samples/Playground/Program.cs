@@ -58,16 +58,12 @@ namespace Playground
             services.AddMongoDbStore(config);
 
             services.AddFileSystemStore(config);
-            services.AddMagicMedia(config);
-            services.AddBingMaps(bingOptions);
-
-            services.Decorate<IGeoDecoderService, GeoDecoderCacheStore>();
+            services.AddCoreMediaServices(config);
 
             services.AddSingleton<ImportSample>();
             services.AddSingleton<DiscoverySample>();
             services.AddSingleton<FaceScanner>();
             services.AddSingleton<VideoConverter>();
-            services.AddFileSystemDiscovery();
 
             return services.BuildServiceProvider();
         }

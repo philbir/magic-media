@@ -6,7 +6,7 @@ using SixLabors.ImageSharp;
 
 namespace MagicMedia.Processing
 {
-    public class GenerateWebImageTask : IMediaProcesserTask
+    public class GenerateWebImageTask : IMediaProcessorTask
     {
         private readonly IWebPImageConverter _webPImageConverter;
 

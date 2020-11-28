@@ -1,4 +1,5 @@
 using MagicMedia.BingMaps;
+using MagicMedia.Configuration;
 using MagicMedia.Hubs;
 using MagicMedia.Messaging;
 using MagicMedia.Store.MongoDb;
@@ -28,21 +29,17 @@ namespace MagicMedia.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddGraphQLServer()
-                .AddMagicMediaGrapQL();
-
-            BingMapsOptions bingOptions = Configuration.GetSection("MagicMedia:BingMaps")
-                .Get<BingMapsOptions>();
+            services
+                .AddMagicMediaServer(Configuration)
+                .AddGraphQLServer()
+                .AddBingMaps()
+                .AddMongoDbStore()
+                .AddFileSystemStore()
+                .AddApiMessaging();
 
             SecurityOptions secOptions = Configuration.GetSection("MagicMedia:Security")
                 .Get<SecurityOptions>();
 
-            services.AddMongoDbStore(Configuration);
-
-            services.AddFileSystemStore(Configuration);
-            services.AddMagicMedia(Configuration);
-            services.AddBingMaps(bingOptions);
-            services.AddMessaging(Configuration);
             services.AddMvc();
             services.AddSignalR();
 

@@ -9,7 +9,16 @@ namespace MagicMedia
 {
     public static class GrapQLServiceCollectionExtensions
     {
-        public static IRequestExecutorBuilder AddMagicMediaGrapQL(
+        public static IMagicMediaServerBuilder AddGraphQLServer(
+            this IMagicMediaServerBuilder builder)
+        {
+            builder.Services.AddGraphQLServer()
+                .AddMagicMediaGrapQL();
+
+            return builder;
+        }
+
+        private static IRequestExecutorBuilder AddMagicMediaGrapQL(
             this IRequestExecutorBuilder builder)
         {
             builder

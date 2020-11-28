@@ -60,6 +60,20 @@ namespace MagicMedia.GraphQL
 
             return new MediaOperationPayload(input.OperationId);
         }
+
+        public async Task<MediaOperationPayload> ReScanFacesAsync(
+            RescanFacesRequest input,
+            CancellationToken cancellationToken)
+        {
+            RescanFacesRequest request = input with
+            {
+                OperationId = input.OperationId ?? Guid.NewGuid().ToString("N")
+            };
+
+            await _operationsService.ReScanFacesAsync(request, cancellationToken);
+
+            return new MediaOperationPayload(request.OperationId);
+        }
     }
 
     public record ToggleMediaFavoriteInput(Guid Id, bool IsFavorite);

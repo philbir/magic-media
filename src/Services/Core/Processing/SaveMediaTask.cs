@@ -7,24 +7,26 @@ using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Store;
-using SixLabors.ImageSharp;
 
 namespace MagicMedia.Processing
 {
-    public class SaveMediaTask : IMediaProcesserTask
+    public class SaveMediaTask : IMediaProcessorTask
     {
         private readonly IMediaStore _mediaStore;
         private readonly IMediaBlobStore _blobStore;
         private readonly ICameraService _cameraService;
+        private readonly IMediaService _mediaService;
 
         public SaveMediaTask(
             IMediaStore mediaStore,
             IMediaBlobStore blobStore,
-            ICameraService cameraService)
+            ICameraService cameraService,
+            IMediaService mediaService)
         {
             _mediaStore = mediaStore;
             _blobStore = blobStore;
             _cameraService = cameraService;
+            _mediaService = mediaService;
         }
 
         public string Name => MediaProcessorTaskNames.SaveMedia;
@@ -97,6 +99,7 @@ namespace MagicMedia.Processing
                     Size = x.Size
                 }).ToList();
             }
+
             IEnumerable<MediaFace> faces = new List<MediaFace>();
 
             if (context.FaceData is { })
@@ -117,46 +120,14 @@ namespace MagicMedia.Processing
                 media.FaceCount = faces.Count();
             }
 
-            await _mediaStore.InsertMediaAsync(media, faces, default);
-
-            await _blobStore.StoreAsync(
-                new MediaBlobData
-                {
-                    Type = MediaBlobType.Web,
-                    Data = context.WebImage,
-                    Filename = $"{media.Id.ToString("N")}.webp",
-                },
-                cancellationToken);
-
-            if (context.Options.SaveMedia.SaveMode == SaveMediaMode.CreateNew)
+            await _mediaService.AddNewMediaAsync(new AddNewMediaRequest(media)
             {
-                MemoryStream stream = new MemoryStream();
-                await context.Image.SaveAsJpegAsync(stream, cancellationToken);
-                stream.Position = 0;
+                Faces = faces.ToList(),
+                Image = context.Image,
+                SaveMode = context.Options.SaveMedia.SaveMode,
+                WebImage = context.WebImage
+            }, cancellationToken);
 
-                await _blobStore.StoreAsync(
-                    new MediaBlobData
-                    {
-                        Type = MediaBlobType.Media,
-                        Data = stream.ToArray(),
-                        Directory = media.Folder,
-                        Filename = Path.GetFileName(context.File.Id)
-                    },
-                    cancellationToken);
-            }
-
-            if (context.Options.SaveMedia.SourceAction == SaveMediaSourceAction.Delete)
-            {
-                //TODO: Delete source
-            }
-            else if (context.Options.SaveMedia.SourceAction == SaveMediaSourceAction.Delete)
-            {
-                //TODO: Move
-            }
-            else if (context.Options.SaveMedia.SourceAction == SaveMediaSourceAction.Replace)
-            {
-                //TODO: Overwrite source
-            }
         }
 
         private long GetSize(MediaProcessorContext context)

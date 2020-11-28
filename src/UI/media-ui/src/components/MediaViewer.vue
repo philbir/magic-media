@@ -1,5 +1,11 @@
 <template>
-  <div v-resize="onResize">
+  <media-info
+    v-if="showInfoPage"
+    :mediaId="media.id"
+    @back="showInfoPage = false"
+  ></media-info>
+
+  <div v-resize="onResize" v-else>
     <v-progress-linear v-if="loading" indeterminate color="blue" top />
     <div v-else class="media-wrapper">
       <GlobalEvents
@@ -46,6 +52,10 @@
               @click="toggleFavorite(media)"
             >
               mdi-heart
+            </v-icon>
+
+            <v-icon class="mr-4" color="white" @click="toggleInfo">
+              mdi-information-outline
             </v-icon>
 
             <v-menu
@@ -186,10 +196,18 @@ import FilmStripe from "./FilmStripe.vue";
 //import debounce from "lodash";
 import { parsePath } from "../services/mediaService";
 import MediaQuickInfo from "./Media/MediaQuickInfo.vue";
+import MediaInfo from "./Media/MediaInfo";
 import FaceBox from "./FaceBox.vue";
 import GlobalEvents from "vue-global-events";
 
 export default {
+  components: {
+    FaceBox,
+    FilmStripe,
+    GlobalEvents,
+    MediaQuickInfo,
+    MediaInfo,
+  },
   data() {
     return {
       image: {
@@ -199,6 +217,7 @@ export default {
         offsetLeft: 0,
         offsetTop: 0,
       },
+      showInfoPage: false,
       settingsMenu: {
         viewer: {
           selected: ["SHOW_FACE_LIST"],
@@ -244,15 +263,16 @@ export default {
       windowWidth: window.innerWidth,
     };
   },
-  components: {
-    FaceBox,
-    FilmStripe,
-    GlobalEvents,
-    MediaQuickInfo,
-  },
+
   created() {
     //this.onResize = debounce(this.onResize, 1000);
     //this.onMouseMove = debounce(this.onMouseMove, 500);
+    this.setViewOptionsSelected(this.viewerOptions);
+  },
+  watch: {
+    viewerOptions: function (newValue) {
+      this.setViewOptionsSelected(newValue);
+    },
   },
   computed: {
     thumbnail: function () {
@@ -291,6 +311,9 @@ export default {
     },
     showQuickInfo: function () {
       return this.$store.state.media.viewer.showFaceList;
+    },
+    viewerOptions: function () {
+      return this.$store.state.media.viewer;
     },
     geoLocation: function () {
       if (this.media.geoLocation && this.media.geoLocation.address) {
@@ -367,8 +390,8 @@ export default {
         this.showStripe = e.clientY > 300;
       }
     },
-    toggleFavorite: function (media) {
-      this.$store.dispatch("media/toggleFavorite", media);
+    toggleFavorite: function () {
+      this.$store.dispatch("media/toggleFavorite", this.media);
     },
     keyPressed: function (e) {
       switch (e.which) {
@@ -393,13 +416,49 @@ export default {
         case 85: //u
           this.unassignPredicted();
           break;
+        case 70: //f
+          this.toggleFavorite();
+          break;
+        case 32: //space
+          this.$store.dispatch(
+            "media/setViewerOptions",
+            Object.assign({}, this.$store.state.media.viewer, {
+              showFaceBox: !this.$store.state.media.viewer.showFaceBox,
+            })
+          );
+          break;
+        case 66: //b
+          this.$store.dispatch(
+            "media/setViewerOptions",
+            Object.assign({}, this.$store.state.media.viewer, {
+              showFaceList: !this.$store.state.media.viewer.showFaceList,
+            })
+          );
+          break;
         default:
-          console.log(e.event.keyCode);
+          console.log(e.which);
           break;
       }
     },
     onResize() {
       this.setImage();
+    },
+    setViewOptionsSelected: function (options) {
+      var selected = [];
+      if (options.showFaceBox) {
+        selected.push("SHOW_FACE_BOXES");
+      }
+      if (options.showFaceList) {
+        selected.push("SHOW_FACE_LIST");
+      }
+      if (options.showFilmStripe) {
+        selected.push("SHOW_FILM_STRIPE");
+      }
+      if (options.showObjects) {
+        selected.push("SHOW_OBJECTS");
+      }
+
+      this.settingsMenu.viewer.selected = selected;
     },
     onViewOptionsChange: function () {
       var options = {
@@ -449,6 +508,9 @@ export default {
     recycle() {
       this.$store.dispatch("media/recycle", [this.media.id]);
       this.navigate(1);
+    },
+    toggleInfo: function () {
+      this.showInfoPage = !this.showInfoPage;
     },
   },
 };

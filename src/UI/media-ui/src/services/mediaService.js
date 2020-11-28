@@ -2,6 +2,7 @@ import apollo from "../apollo";
 import QUERY_FOLDER_TREE from "../graphql/Media/GetFolderTree.gql";
 import QUERY_GETBYID from "../graphql/Media/GetMediaDetails.gql";
 import QUERY_METADATA from "../graphql/Media/MediaMetadata.gql";
+import QUERY_INFO from "../graphql/Media/GetMediaInfo.gql";
 import MUTATION_MOVE_MEDIA from "../graphql/Media/MoveMedia.gql";
 import MUTATION_RECYCLE_MEDIA from "../graphql/Media/RecycleMedia.gql";
 import QUERY_SEARCH from "../graphql/Media/SearchMedia.gql";
@@ -28,6 +29,16 @@ export const getById = async id => {
     }
   });
 };
+
+export const getInfo = async id => {
+  return await apollo.query({
+    query: QUERY_INFO,
+    variables: {
+      id: id
+    }
+  });
+};
+
 
 export const getMetadata = async id => {
   return await apollo.query({
@@ -101,7 +112,7 @@ export const toggleFavorite = async (id, isFavorite) => {
 
 export const parsePath = path => {
   const parts = path.split("/");
-  const len = parts.length - 1;
+  const len = parts.length;
   const pathInfo = [];
   let fullPath = "";
   for (let i = 0; i < len; i++) {

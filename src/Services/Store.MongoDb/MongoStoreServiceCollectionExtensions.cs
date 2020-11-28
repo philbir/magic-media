@@ -7,6 +7,15 @@ namespace MagicMedia.Store.MongoDb
 {
     public static class MongoStoreServiceCollectionExtensions
     {
+        public static IMagicMediaServerBuilder AddMongoDbStore(
+            this IMagicMediaServerBuilder builder)
+        {
+
+            builder.Services.AddMongoDbStore(builder.Configuration);
+
+            return builder;
+        }
+
         public static IServiceCollection AddMongoDbStore(
             this IServiceCollection services,
             IConfiguration configuration)
@@ -30,6 +39,5 @@ namespace MagicMedia.Store.MongoDb
 
             return services;
         }
-
     }
 }

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace MagicMedia.Processing
 {
-    public class ExtractMetadataTask : IMediaProcesserTask
+    public class ExtractMetadataTask : IMediaProcessorTask
     {
         private readonly IMetadataExtractor _metadataExtractor;
 

@@ -1,23 +1,103 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MagicMedia.Messaging;
+using MagicMedia.Processing;
 using MagicMedia.Store;
+using MassTransit;
+using SixLabors.ImageSharp;
 
 namespace MagicMedia
 {
     public class MediaService : IMediaService
     {
         private readonly IMediaStore _mediaStore;
+        private readonly IMediaBlobStore _mediaBlobStore;
         private readonly IAgeOperationsService _ageOperationsService;
+        private readonly IBus _bus;
 
         public MediaService(
             IMediaStore mediaStore,
-            IAgeOperationsService ageOperationsService)
+            IMediaBlobStore mediaBlobStore,
+            IAgeOperationsService ageOperationsService,
+            IBus bus)
         {
             _mediaStore = mediaStore;
+            _mediaBlobStore = mediaBlobStore;
             _ageOperationsService = ageOperationsService;
+            _bus = bus;
+        }
+
+        public async Task<Media> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+        {
+            return await _mediaStore.GetByIdAsync(id, cancellationToken);
+        }
+
+        public async Task<MediaBlobData> GetMediaData(Media media, CancellationToken cancellationToken)
+        {
+            MediaBlobData blob = await _mediaBlobStore.GetAsync(media.ToBlobDataRequest(), cancellationToken);
+
+            return blob;
+        }
+
+        public Stream GetMediaStream(Media media)
+        {
+            Stream stream = _mediaBlobStore.GetStreamAsync(media.ToBlobDataRequest());
+
+            return stream;
+        }
+
+        public async Task AddNewMediaAsync(AddNewMediaRequest request, CancellationToken cancellationToken)
+        {
+            await _mediaStore.InsertMediaAsync(
+                request.Media,
+                request.Faces,
+                cancellationToken);
+
+            if (request.WebImage != null)
+            {
+                await _mediaBlobStore.StoreAsync(
+                  new MediaBlobData
+                  {
+                      Type = MediaBlobType.Web,
+                      Data = request.WebImage,
+                      Filename = $"{request.Media.Id.ToString("N")}.webp",
+                  },
+                  cancellationToken);
+            }
+
+
+            if (request.SaveMode == SaveMediaMode.CreateNew)
+            {
+                if (request.Media.MediaType == MediaType.Image)
+                {
+                    MemoryStream stream = new MemoryStream();
+                    await request.Image.SaveAsJpegAsync(stream, cancellationToken);
+                    stream.Position = 0;
+
+                    await _mediaBlobStore.StoreAsync(
+                        new MediaBlobData
+                        {
+                            Type = MediaBlobType.Media,
+                            Data = stream.ToArray(),
+                            Directory = request.Media.Folder,
+                            Filename = Path.GetFileName(request.Media.Filename)
+                        },
+                        cancellationToken);
+                }
+                else
+                {
+                    var newFileName = GetFilename(request.Media, MediaFileType.Original);
+                    File.Copy(request.Media.Source.Identifier, newFileName);
+                }
+            }
+
+
+
+            await _bus.Publish(new NewMediaAddedMessage(request.Media.Id));
         }
 
         public async Task<MediaThumbnail?> GetThumbnailAsync(Guid mediaId, ThumbnailSizeName size, CancellationToken cancellationToken)
@@ -62,6 +142,63 @@ namespace MagicMedia
             }
 
             return media;
+        }
+
+        public MediaBlobData GetBlobRequest(Media media, MediaFileType type)
+        {
+            switch (type)
+            {
+                case MediaFileType.Original:
+                    return media.ToBlobDataRequest();
+                case MediaFileType.WebPreview:
+                    return new MediaBlobData
+                    {
+                        Type = MediaBlobType.Web,
+                        Filename = $"{media.Id.ToString("N")}.webp"
+                    };
+                case MediaFileType.VideoGif:
+                    return new MediaBlobData
+                    {
+                        Type = MediaBlobType.VideoPreview,
+                        Filename = $"{media.Id}.gif"
+                    };
+                case MediaFileType.Video720:
+                    return new MediaBlobData
+                    {
+                        Type = MediaBlobType.VideoPreview,
+                        Filename = $"720P_{media.Id}.mp4"
+                    };
+                default:
+                    throw new ArgumentException($"Unknown type: {type}");
+            }
+        }
+
+        public string GetFilename(Media media, MediaFileType mediaFileType)
+        {
+            return _mediaBlobStore.GetFilename(GetBlobRequest(media, mediaFileType));
+        }
+
+        public IEnumerable<MediaFileInfo> GetMediaFiles(
+            Media media)
+        {
+            var infos = new List<MediaFileInfo>();
+
+            foreach (MediaFileType type in (MediaFileType[])Enum.GetValues(typeof(MediaFileType)))
+            {
+                MediaBlobData? request = GetBlobRequest(media, type);
+                var fileInfo = new FileInfo(_mediaBlobStore.GetFilename(request));
+
+                if (fileInfo.Exists)
+                {
+                    infos.Add(new MediaFileInfo(
+                        type,
+                        fileInfo.DirectoryName!,
+                        fileInfo.Name,
+                        fileInfo.Length));
+                }
+            }
+
+            return infos;
         }
     }
 }

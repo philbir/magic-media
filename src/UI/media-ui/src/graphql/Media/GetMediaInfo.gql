@@ -1,0 +1,75 @@
+query mediaInfo($id: Uuid!) {
+  mediaById(id: $id) {
+    id
+    filename
+    dateTaken
+    cameraId
+    size
+    isFavorite
+    mediaType
+    folder
+    source {
+      identifier
+      importedAt
+      type
+    }
+    videoInfo {
+      duration
+      bitrate
+      format
+      frameRate
+    }
+    dimension {
+      height
+      width
+    }
+    camera {
+      id
+      model
+      make
+    }
+    geoLocation {
+      point {
+        coordinates
+      }
+      altitude
+      address {
+        name
+        address
+        city
+        country
+        distric1
+        distric2
+        countryCode
+      }
+    }
+    faces {
+      id
+      mediaId
+      box {
+        left
+        top
+        right
+        bottom
+      }
+      thumbnail {
+        id
+      }
+      person {
+        id
+        name
+        dateOfBirth
+      }
+      personId
+      recognitionType
+      age
+      state
+    }
+    files {
+      filename
+      location
+      type
+      size
+    }
+  }
+}

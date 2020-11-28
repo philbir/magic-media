@@ -24,7 +24,7 @@ namespace MagicMedia.Processing
         {
             foreach (string taskName in Tasks)
             {
-                IMediaProcesserTask instance = _taskFactory.GetTask(taskName);
+                IMediaProcessorTask instance = _taskFactory.GetTask(taskName);
                 await instance.ExecuteAsync(context, cancellationToken);
             }
         }

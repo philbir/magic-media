@@ -52,7 +52,7 @@ namespace MagicMedia.Face
             await UpdateAgeAsync(face, person, cancellationToken);
             await _faceStore.UpdateAsync(face, cancellationToken);
 
-            await _bus.Publish(new FaceUpdatedMessage(face.Id, person.Id, "ASSIGN_BY_HUMAN"));
+            await _bus.Publish(new FaceUpdatedMessage(face.Id, "ASSIGN_BY_HUMAN") { PersonId = person.Id });
 
             return face;
         }
@@ -126,7 +126,7 @@ namespace MagicMedia.Face
 
             await UpdateAgeAsync(face, personId, cancellationToken);
             await _faceStore.UpdateAsync(face, cancellationToken);
-            await _bus.Publish(new FaceUpdatedMessage(face.Id, personId, "ASSIGN_BY_COMPUTER"));
+            await _bus.Publish(new FaceUpdatedMessage(face.Id, "ASSIGN_BY_COMPUTER") { PersonId = personId });
 
             return face;
         }
@@ -161,10 +161,8 @@ namespace MagicMedia.Face
                 face.Age = null;
 
                 await _faceStore.UpdateAsync(face, cancellationToken);
-                await _bus.Publish(new FaceUpdatedMessage(
-                    face.Id,
-                    currentPersonId,
-                    "UNASSIGN_PERSON"));
+                await _bus.Publish(new FaceUpdatedMessage(face.Id, "UNASSIGN_PERSON")
+                    { PersonId = currentPersonId });
             }
 
             return face;
@@ -246,10 +244,10 @@ namespace MagicMedia.Face
                 face.State = FaceState.Validated;
 
                 await _faceStore.UpdateAsync(face, cancellationToken);
-                await _bus.Publish(new FaceUpdatedMessage(
-                    face.Id,
-                    face.PersonId.Value,
-                    "APPROVE_COMPUTER"));
+                await _bus.Publish(new FaceUpdatedMessage(face.Id, "APPROVE_COMPUTER")
+                {
+                    PersonId = face.PersonId.Value
+                });
             }
 
             return face;
@@ -260,6 +258,13 @@ namespace MagicMedia.Face
             MediaFace face = await _faceStore.GetByIdAsync(id, cancellationToken);
 
             return face;
+        }
+
+        public async Task<IEnumerable<MediaFace>> GetFacesByMediaAsync(
+            Guid mediaId,
+            CancellationToken cancellationToken)
+        {
+            return await _faceStore.GetFacesByMediaAsync(mediaId, cancellationToken);
         }
 
         public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)

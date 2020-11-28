@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Search;
@@ -38,7 +36,7 @@ namespace MagicMedia.Store
 
         Task InsertMediaAsync(
             Media media,
-            IEnumerable<MediaFace> faces,
+            IEnumerable<MediaFace>? faces,
             CancellationToken cancellationToken);
         Task SaveFacesAsync(Guid mediaId, IEnumerable<MediaFace> faces, CancellationToken cancellationToken);
 

@@ -1,4 +1,4 @@
-﻿using MongoDB.Driver;
+using MongoDB.Driver;
 using MongoDB.Extensions.Context;
 
 namespace MagicMedia.Store.MongoDb.Configuration
@@ -20,7 +20,15 @@ namespace MagicMedia.Store.MongoDb.Configuration
                 .WithCollectionSettings(s => s.ReadPreference = ReadPreference.Nearest)
                 .WithCollectionConfiguration(collection =>
                 {
+                    var mediaIdIndex = new CreateIndexModel<MediaFace>(
+                         Builders<MediaFace>.IndexKeys
+                             .Ascending(c => c.MediaId),
+                         new CreateIndexOptions { Unique = false });
 
+                    var personIdIndex = new CreateIndexModel<MediaFace>(
+                         Builders<MediaFace>.IndexKeys
+                             .Descending(c => c.PersonId),
+                         new CreateIndexOptions { Unique = false });
                 });
         }
     }
