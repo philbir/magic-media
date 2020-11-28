@@ -1,7 +1,7 @@
 <template>
   <media-info
     v-if="showInfoPage"
-    :media="media"
+    :mediaId="media.id"
     @back="showInfoPage = false"
   ></media-info>
 
@@ -267,6 +267,12 @@ export default {
   created() {
     //this.onResize = debounce(this.onResize, 1000);
     //this.onMouseMove = debounce(this.onMouseMove, 500);
+    this.setViewOptionsSelected(this.viewerOptions);
+  },
+  watch: {
+    viewerOptions: function (newValue) {
+      this.setViewOptionsSelected(newValue);
+    },
   },
   computed: {
     thumbnail: function () {
@@ -305,6 +311,9 @@ export default {
     },
     showQuickInfo: function () {
       return this.$store.state.media.viewer.showFaceList;
+    },
+    viewerOptions: function () {
+      return this.$store.state.media.viewer;
     },
     geoLocation: function () {
       if (this.media.geoLocation && this.media.geoLocation.address) {
@@ -433,6 +442,23 @@ export default {
     },
     onResize() {
       this.setImage();
+    },
+    setViewOptionsSelected: function (options) {
+      var selected = [];
+      if (options.showFaceBox) {
+        selected.push("SHOW_FACE_BOXES");
+      }
+      if (options.showFaceList) {
+        selected.push("SHOW_FACE_LIST");
+      }
+      if (options.showFilmStripe) {
+        selected.push("SHOW_FILM_STRIPE");
+      }
+      if (options.showObjects) {
+        selected.push("SHOW_OBJECTS");
+      }
+
+      this.settingsMenu.viewer.selected = selected;
     },
     onViewOptionsChange: function () {
       var options = {

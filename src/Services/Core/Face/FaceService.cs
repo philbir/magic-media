@@ -262,6 +262,13 @@ namespace MagicMedia.Face
             return face;
         }
 
+        public async Task<IEnumerable<MediaFace>> GetFacesByMediaAsync(
+            Guid mediaId,
+            CancellationToken cancellationToken)
+        {
+            return await _faceStore.GetFacesByMediaAsync(mediaId, cancellationToken);
+        }
+
         public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
         {
             await _faceStore.DeleteAsync(id, cancellationToken);

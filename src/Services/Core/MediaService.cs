@@ -57,7 +57,7 @@ namespace MagicMedia
                 request.Faces,
                 cancellationToken);
 
-            if ( request.WebImage != null)
+            if (request.WebImage != null)
             {
                 await _mediaBlobStore.StoreAsync(
                   new MediaBlobData
@@ -131,6 +131,58 @@ namespace MagicMedia
             }
 
             return media;
+        }
+
+        public MediaBlobData GetBlobRequest(Media media, MediaFileType type)
+        {
+            switch (type)
+            {
+                case MediaFileType.Original:
+                    return media.ToBlobDataRequest();
+                case MediaFileType.WebPreview:
+                    return new MediaBlobData
+                    {
+                        Type = MediaBlobType.Web,
+                        Filename = $"{media.Id.ToString("N")}.webp"
+                    };
+                case MediaFileType.VideoGif:
+                    return new MediaBlobData
+                    {
+                        Type = MediaBlobType.VideoPreview,
+                        Filename = $"{media.Id}.gif"
+                    };
+                case MediaFileType.Video720:
+                    return new MediaBlobData
+                    {
+                        Type = MediaBlobType.VideoPreview,
+                        Filename = $"720P_{media.Id}.mp4"
+                    };
+                default:
+                    throw new ArgumentException($"Unknown type: {type}");
+            }
+        }
+
+        public IEnumerable<MediaFileInfo> GetMediaFiles(
+            Media media)
+        {
+            var infos = new List<MediaFileInfo>();
+
+            foreach (MediaFileType type in (MediaFileType[])Enum.GetValues(typeof(MediaFileType)))
+            {
+                MediaBlobData? request = GetBlobRequest(media, type);
+                var fileInfo = new FileInfo(_mediaBlobStore.GetFilename(request));
+
+                if (fileInfo.Exists)
+                {
+                    infos.Add(new MediaFileInfo(
+                        type,
+                        fileInfo.DirectoryName!,
+                        fileInfo.Name,
+                        fileInfo.Length));
+                }
+            }
+
+            return infos;
         }
     }
 }

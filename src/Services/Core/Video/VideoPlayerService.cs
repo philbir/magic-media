@@ -10,19 +10,23 @@ namespace MagicMedia
     public class VideoPlayerService : IVideoPlayerService
     {
         private readonly IMediaStore _mediaStore;
+        private readonly IMediaService _mediaService;
 
-        public VideoPlayerService(IMediaStore mediaStore)
+        public VideoPlayerService(
+            IMediaStore mediaStore,
+            IMediaService mediaService)
         {
             _mediaStore = mediaStore;
+            _mediaService = mediaService;
         }
 
         public MediaStream GetVideoPreview(Guid id, CancellationToken cancellationToken)
         {
-            Stream stream = _mediaStore.Blob.GetStreamAsync(new MediaBlobData
-            {
-                Type = MediaBlobType.VideoPreview,
-                Filename = $"{id}.gif"
-            });
+            MediaBlobData request = _mediaService.GetBlobRequest(
+                new Media { Id = id },
+                MediaFileType.VideoGif);
+
+            Stream stream = _mediaStore.Blob.GetStreamAsync(request);
 
             return new MediaStream(stream, "image/gif");
         }
@@ -31,18 +35,11 @@ namespace MagicMedia
         {
             Media? video = await _mediaStore.GetByIdAsync(id, cancellationToken);
 
-            //Stream stream = _mediaStore.Blob.GetStreamAsync(new MediaBlobData
-            //{
-            //    Type = MediaBlobType.Media,
-            //    Filename = video.Filename,
-            //    Directory = video.Folder!
-            //});
+            MediaBlobData request = _mediaService.GetBlobRequest(
+                video,
+                MediaFileType.Video720);
 
-            Stream stream = _mediaStore.Blob.GetStreamAsync(new MediaBlobData
-            {
-                Type = MediaBlobType.VideoPreview,
-                Filename = $"720P_{id}.mp4"
-            });
+            Stream stream = _mediaStore.Blob.GetStreamAsync(request);
 
             return new MediaStream(stream, video.Filename.Split('.').Last());
         }

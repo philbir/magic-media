@@ -117,7 +117,7 @@ namespace Sample.Web
 
             services.AddFileSystemStore(Configuration);
 
-            services.AddBingMaps(bingOptions);
+            //services.AddBingMaps(bingOptions);
 
             services.AddMongoDbStore(Configuration);
 

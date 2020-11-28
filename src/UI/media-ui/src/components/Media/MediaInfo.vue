@@ -1,15 +1,16 @@
 <template>
-  <v-card height="100%">
+  <v-card height="100%" :loading="loading">
     <div class="image-wrapper">
-      <img :src="`/api/media/webimage/${media.id}`" />
+      <img :src="`/api/media/webimage/${mediaId}`" />
     </div>
-    <v-toolbar color="gray" dense dark>
-      <h4>{{ media.filename }}</h4>
+    <v-toolbar v-if="!loading" color="gray" dense dark>
+      <h4>{{ media ? media.filename : "" }}</h4>
       <v-tabs v-model="tab" dark class="ml-8">
         <v-tab href="#attributes"> Attributes </v-tab>
         <v-tab href="#location" v-if="hasLocation"> Location </v-tab>
         <v-tab href="#faces" v-if="media.faces.length > 0"> Faces </v-tab>
         <v-tab href="#objects"> Objects </v-tab>
+        <v-tab href="#files"> Files </v-tab>
         <v-tab href="#raw"> Raw </v-tab>
       </v-tabs>
       <v-spacer></v-spacer>
@@ -17,7 +18,7 @@
       <v-icon class="mr-4" color="white" @click="back"> mdi-arrow-left </v-icon>
     </v-toolbar>
 
-    <v-card-text class="card-content">
+    <v-card-text class="card-content" v-if="!loading">
       <v-row>
         <v-col sm="12">
           <v-tabs-items v-model="tab" style="background-color: transparent">
@@ -114,6 +115,20 @@
               </div>
             </v-tab-item>
             <v-tab-item value="objects"> Objects </v-tab-item>
+            <v-tab-item value="files">
+              <v-row
+                v-for="file in media.files"
+                :key="file.filename"
+                class="file-row"
+              >
+                <v-col>
+                  <h3>{{ file.filename }}</h3>
+                  <h4>{{ file.location }}</h4>
+                  <h4>{{ file.type }}</h4>
+                  <h4>{{ formatSize(file.size) }}</h4>
+                </v-col>
+              </v-row>
+            </v-tab-item>
             <v-tab-item value="raw">
               <v-sheet
                 elevation="10"
@@ -136,20 +151,34 @@
 import VueJsonPretty from "vue-json-pretty";
 import "vue-json-pretty/lib/styles.css";
 import { getFaceColor } from "../../services/faceColor";
+import { getInfo } from "../../services/mediaService";
 
 export default {
   components: {
     VueJsonPretty,
   },
   props: {
-    media: Object,
+    mediaId: String,
   },
   data() {
     return {
       tab: "attributes",
+      media: null,
     };
   },
+  created() {
+    this.loadInfo(this.mediaId);
+  },
+  watch: {
+    mediaId: function (newValue) {
+      console.log("CHANGED");
+      this.loadInfo(newValue);
+    },
+  },
   computed: {
+    loading: function () {
+      return this.media == null;
+    },
     map: function () {
       let center = null;
 
@@ -201,11 +230,11 @@ export default {
           },
           {
             label: "District 1",
-            value: loc.address.distic1,
+            value: loc.address.distric1,
           },
           {
             label: "District 2",
-            value: loc.address.distic2,
+            value: loc.address.distric2,
           },
           {
             label: "Coordinates",
@@ -235,7 +264,7 @@ export default {
         },
         {
           label: "Size",
-          value: (this.media.size / 1024.0 / 1024.0).toPrecision(3) + " MB",
+          value: this.formatSize(this.media.size),
         },
         {
           label: "Dimension",
@@ -254,10 +283,46 @@ export default {
         });
       }
 
+      if (this.media.videoInfo) {
+        data.push({
+          label: "Duration",
+          value: this.media.videoInfo.duration,
+        });
+        data.push({
+          label: "Format",
+          value: this.media.videoInfo.format,
+        });
+        data.push({
+          label: "Framerate",
+          value: this.media.videoInfo.frameRate,
+        });
+      }
+
+      data.push({
+        label: "Source",
+        value: this.media.source.identifier,
+      });
+      data.push({
+        label: "Imported at",
+        value: this.$options.filters.dateformat(
+          this.media.source.importedAt,
+          "DATETIME_MED"
+        ),
+      });
+
       return data;
     },
   },
   methods: {
+    async loadInfo(mediaId) {
+      console.log("LOADINFO", mediaId);
+      if (mediaId) {
+        var res = await getInfo(mediaId);
+        this.media = res.data.mediaById;
+      } else {
+        this.media = null;
+      }
+    },
     getFaceProperties: function (face) {
       return [
         {
@@ -290,6 +355,9 @@ export default {
     },
     editFace: function (face) {
       this.$store.dispatch("face/openEdit", face);
+    },
+    formatSize: function (size) {
+      return (size / 1024.0 / 1024.0).toPrecision(2) + " MB";
     },
   },
 };
@@ -335,7 +403,7 @@ export default {
   background-color: rgb(36, 36, 36);
   margin: 8px;
   border-radius: 20px;
-  width: 500px;
+  width: 460px;
   float: left;
   opacity: 0.9;
   color: #fff;
@@ -344,5 +412,14 @@ export default {
 .face-conainer {
   height: 90vh;
   overflow-x: scroll;
+}
+
+.file-row {
+  background-color: rgb(36, 36, 36);
+  margin: 8px;
+  border-radius: 20px;
+  float: left;
+  opacity: 0.9;
+  color: #fff;
 }
 </style>>
