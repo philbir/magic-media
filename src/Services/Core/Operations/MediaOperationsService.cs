@@ -54,6 +54,19 @@ namespace MagicMedia.Operations
             await _bus.Publish(message, cancellationToken);
         }
 
+
+        public async Task DeleteAsync(
+            DeleteMediaRequest request,
+            CancellationToken cancellationToken)
+        {
+            DeleteMediaMessage message = new(request.Ids)
+            {
+                OperationId = request.OperationId
+            };
+
+            await _bus.Publish(message, cancellationToken);
+        }
+
         public async Task UpdateMetadataAsync(
             UpdateMediaMetadataRequest request,
             CancellationToken cancellationToken)

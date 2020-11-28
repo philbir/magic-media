@@ -17,17 +17,20 @@ namespace MagicMedia
         private readonly IMediaStore _mediaStore;
         private readonly IMediaBlobStore _mediaBlobStore;
         private readonly IAgeOperationsService _ageOperationsService;
+        private readonly IThumbnailBlobStore _thumbnailBlobStore;
         private readonly IBus _bus;
 
         public MediaService(
             IMediaStore mediaStore,
             IMediaBlobStore mediaBlobStore,
             IAgeOperationsService ageOperationsService,
+            IThumbnailBlobStore thumbnailBlobStore,
             IBus bus)
         {
             _mediaStore = mediaStore;
             _mediaBlobStore = mediaBlobStore;
             _ageOperationsService = ageOperationsService;
+            _thumbnailBlobStore = thumbnailBlobStore;
             _bus = bus;
         }
 
@@ -100,6 +103,8 @@ namespace MagicMedia
             await _bus.Publish(new NewMediaAddedMessage(request.Media.Id));
         }
 
+
+
         public async Task<MediaThumbnail?> GetThumbnailAsync(Guid mediaId, ThumbnailSizeName size, CancellationToken cancellationToken)
         {
             Media media = await _mediaStore.GetByIdAsync(mediaId, cancellationToken);
@@ -123,6 +128,47 @@ namespace MagicMedia
                 thumbs.FirstOrDefault();
 
             return thumb;
+        }
+
+        public async Task DeleteAsync(Media media, CancellationToken cancellationToken)
+        {
+            await DeleteAllFilesAsync(media, cancellationToken);
+
+            await DeleteThumbnailsAsync(media, cancellationToken);
+
+            await _mediaStore.DeleteAsync(media.Id, cancellationToken);
+
+            await _bus.Publish(new MediaDeletedMessage(media.Id));
+        }
+
+        private async Task DeleteThumbnailsAsync(Media media, CancellationToken cancellationToken)
+        {
+            foreach (MediaThumbnail thumb in media.Thumbnails)
+            {
+                await _thumbnailBlobStore.DeleteAsync(thumb.Id, cancellationToken);
+            }
+        }
+
+        private async Task DeleteAllFilesAsync(Media media, CancellationToken cancellationToken)
+        {
+            await _mediaBlobStore.DeleteAsync(
+                GetBlobRequest(media, MediaFileType.Original),
+                cancellationToken);
+
+            await _mediaBlobStore.DeleteAsync(
+                GetBlobRequest(media, MediaFileType.WebPreview),
+                cancellationToken);
+
+            if (media.MediaType == MediaType.Video)
+            {
+                await _mediaBlobStore.DeleteAsync(
+                    GetBlobRequest(media, MediaFileType.VideoGif),
+                    cancellationToken);
+
+                await _mediaBlobStore.DeleteAsync(
+                    GetBlobRequest(media, MediaFileType.Video720),
+                    cancellationToken);
+            }
         }
 
         public async Task<Media> UpdateDateTakenAsync(

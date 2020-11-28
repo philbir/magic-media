@@ -87,6 +87,17 @@ namespace MagicMedia.Store.MongoDb
             return media;
         }
 
+        public async Task DeleteAsync(
+            Guid id,
+            CancellationToken cancellationToken)
+        {
+            await _mediaStoreContext.Medias.DeleteOneAsync(
+                x => x.Id == id,
+                options: null,
+                cancellationToken);
+        }
+
+
         public async Task<IEnumerable<Media>> GetManyAsync(
             IEnumerable<Guid> ids,
             CancellationToken cancellationToken)

@@ -23,5 +23,6 @@ namespace MagicMedia
             CancellationToken cancellationToken);
         Stream GetStreamAsync(MediaBlobData request);
         string GetFilename(MediaBlobData data);
+        Task<bool> DeleteAsync(MediaBlobData request, CancellationToken cancellationToken);
     }
 }

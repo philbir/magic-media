@@ -96,6 +96,21 @@ namespace MagicMedia.Stores
             return Task.CompletedTask;
         }
 
+        public Task<bool> DeleteAsync(
+            MediaBlobData request,
+            CancellationToken cancellationToken)
+        {
+            var filename = GetFilename(request);
+            if (File.Exists(filename))
+            {
+                File.Delete(filename);
+
+                return Task.FromResult(true);
+            }
+
+            return Task.FromResult(false);
+        }
+
         public string GetFilename(MediaBlobData data)
         {
             string? directory = GetDirectory(data);
