@@ -66,7 +66,7 @@ namespace MagicMedia.Store.MongoDb
             IFindFluent<Media, Media>? cursor = _mediaStoreContext.Medias.Find(filter);
 
             List<Media> medias = await cursor
-                .SortByDescending(x => x.Source.ImportedAt)
+                .SortByDescending(x => x.DateTaken)
                 .Skip(request.PageNr * request.PageSize)
                 .Limit(request.PageSize + 1)
                 .ToListAsync();

@@ -33,7 +33,6 @@ namespace MagicMedia.Video
                 Meta = new MediaMetadata()
             };
 
-            FFmpeg.SetExecutablesPath(@"C:\Code");
 
             IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(filename, cancellationToken);
             IVideoStream? videoStream = mediaInfo.VideoStreams.FirstOrDefault();
@@ -93,19 +92,23 @@ namespace MagicMedia.Video
 
             IVideoStream video = mediaInfo.VideoStreams.FirstOrDefault();
 
-            var frames = video.Duration.TotalSeconds * video.Framerate;
+            var frames = (video.Duration.TotalSeconds == 0 ? 1 : video.Duration.TotalSeconds) * video.Framerate;
 
             outfile = outfile ?? Path.Join(Path.GetTempPath(), $"{Guid.NewGuid()}.gif");
 
             var totalFrames = 50.0;
 
-            var rate = Math.Ceiling(1.0 / frames * totalFrames);
+            var rate = Math.Ceiling(frames / totalFrames / video.Duration.TotalSeconds);
+            if (rate > video.Duration.TotalSeconds)
+            {
+                rate = video.Duration.TotalSeconds;
+            }
 
             video
                 .SetFramerate(rate)
                 .SetCodec(VideoCodec.gif)
                 .ChangeSpeed(2)
-                .SetSize(VideoSize.Hd720);
+                .SetSize(VideoSize.Hd480);
 
             IConversion? conversion = FFmpeg.Conversions.New()
                 .AddStream(video)

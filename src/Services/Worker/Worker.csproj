@@ -12,6 +12,8 @@
     <PackageReference Include="Quartz" Version="3.2.3" />
     <PackageReference Include="Scrutor" Version="3.3.0" />
     <PackageReference Include="MassTransit.AspNetCore" Version="$(MassTransitVersion)" />
+    <PackageReference Include="Xabe.FFmpeg.Downloader" Version="4.3.1" />
+
   </ItemGroup>
 
   <ItemGroup>

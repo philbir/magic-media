@@ -41,7 +41,7 @@ namespace SampleDataSeeder
 
             services.AddFileSystemStore(config);
             services.AddCoreMediaServices(config);
-            services.AddBingMaps(bingOptions);
+            //services.AddBingMaps(bingOptions);
 
             services.AddDataSeaders();
 

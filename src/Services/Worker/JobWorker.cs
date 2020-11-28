@@ -7,9 +7,12 @@ using Quartz;
 using Quartz.Spi;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Xabe.FFmpeg;
+using Xabe.FFmpeg.Downloader;
 
 namespace Worker
 {
@@ -38,6 +41,11 @@ namespace Worker
 
         public async override Task StartAsync(CancellationToken cancellationToken)
         {
+            FFmpeg.SetExecutablesPath(Path.Combine(Directory.GetCurrentDirectory(), "ffmpeg"));
+
+
+            //await FFmpegDownloader.GetLatestVersion(FFmpegVersion.Official);
+
             IScheduler scheduler = await _schedulerFactory
                 .GetScheduler(cancellationToken);
 

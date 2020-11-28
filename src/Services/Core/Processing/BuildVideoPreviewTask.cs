@@ -1,4 +1,5 @@
-﻿using System.Threading;
+using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Video;
 
@@ -24,11 +25,16 @@ namespace MagicMedia.Processing
             CancellationToken cancellationToken)
         {
             var filename = _mediaService.GetFilename(context.Media, MediaFileType.Original);
-            var gifFilename = _mediaService.GetFilename(context.Media, MediaFileType.WebPreview);
+            var convertedFilename = _mediaService.GetFilename(context.Media, MediaFileType.Video720);
+
+            if (File.Exists(convertedFilename))
+            {
+                File.Delete(convertedFilename);
+            }
 
             await _videoProcessingService.ConvertTo720Async(
                 filename,
-                gifFilename,
+                convertedFilename,
                 cancellationToken);
         }
     }

@@ -69,22 +69,33 @@ namespace MagicMedia
                   cancellationToken);
             }
 
-            if (request.Image != null && request.SaveMode == SaveMediaMode.CreateNew)
-            {
-                MemoryStream stream = new MemoryStream();
-                await request.Image.SaveAsJpegAsync(stream, cancellationToken);
-                stream.Position = 0;
 
-                await _mediaBlobStore.StoreAsync(
-                    new MediaBlobData
-                    {
-                        Type = MediaBlobType.Media,
-                        Data = stream.ToArray(),
-                        Directory = request.Media.Folder,
-                        Filename = Path.GetFileName(request.Media.Filename)
-                    },
-                    cancellationToken);
+            if (request.SaveMode == SaveMediaMode.CreateNew)
+            {
+                if (request.Media.MediaType == MediaType.Image)
+                {
+                    MemoryStream stream = new MemoryStream();
+                    await request.Image.SaveAsJpegAsync(stream, cancellationToken);
+                    stream.Position = 0;
+
+                    await _mediaBlobStore.StoreAsync(
+                        new MediaBlobData
+                        {
+                            Type = MediaBlobType.Media,
+                            Data = stream.ToArray(),
+                            Directory = request.Media.Folder,
+                            Filename = Path.GetFileName(request.Media.Filename)
+                        },
+                        cancellationToken);
+                }
+                else
+                {
+                    var newFileName = GetFilename(request.Media, MediaFileType.Original);
+                    File.Copy(request.Media.Source.Identifier, newFileName);
+                }
             }
+
+
 
             await _bus.Publish(new NewMediaAddedMessage(request.Media.Id));
         }

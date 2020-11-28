@@ -1,4 +1,5 @@
-﻿using System.Threading;
+using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Video;
 
@@ -9,7 +10,7 @@ namespace MagicMedia.Processing
         private readonly IMediaService _mediaService;
         private readonly IVideoProcessingService _videoProcessingService;
 
-        public string Name => MediaProcessorTaskNames.BuildVideoPreview;
+        public string Name => MediaProcessorTaskNames.BuildGifVideoPreview;
 
         public BuildGifVideoPreviewTask(
             IMediaService mediaService,
@@ -25,6 +26,11 @@ namespace MagicMedia.Processing
         {
             var filename = _mediaService.GetFilename(context.Media, MediaFileType.Original);
             var gifFilename = _mediaService.GetFilename(context.Media, MediaFileType.VideoGif);
+
+            if (File.Exists(gifFilename))
+            {
+                File.Delete(gifFilename);
+            }
 
             await _videoProcessingService.GeneratePreviewGifAsync(
                 filename,

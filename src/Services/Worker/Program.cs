@@ -44,7 +44,8 @@ namespace Worker
                         {
                             new FileDiscoveryLocation
                             {
-                                 Path = @"C:\Temp\School",
+                                 Path = @"H:\Drive\Moments\Mobile",
+                                 Filter = "*.jpg"
                             }
                         }
                     });

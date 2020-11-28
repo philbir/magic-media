@@ -4,11 +4,11 @@ query mediaInfo($id: Uuid!) {
     filename
     dateTaken
     cameraId
-    size,
+    size
     isFavorite
     mediaType
     folder
-    source{
+    source {
       identifier
       importedAt
       type
@@ -29,7 +29,7 @@ query mediaInfo($id: Uuid!) {
       make
     }
     geoLocation {
-      point{
+      point {
         coordinates
       }
       altitude
@@ -65,8 +65,9 @@ query mediaInfo($id: Uuid!) {
       age
       state
     }
-    files{
+    files {
       filename
+      location
       type
       size
     }
