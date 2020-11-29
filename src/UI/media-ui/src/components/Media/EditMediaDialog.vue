@@ -229,10 +229,13 @@ export default {
   methods: {
     setPlace: function (place) {
       this.map.center = place.geometry.location;
-      this.map.zoom = 10;
+      this.map.zoom = 11;
       const address = parseAddress(place);
       this.setAddress(address);
-      this.map.marker = place.geometry.location;
+      this.map.marker = {
+        lat: place.geometry.location.lat(),
+        lng: place.geometry.location.lng(),
+      };
     },
 
     clickMap: function (loc) {

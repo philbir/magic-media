@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Serilog.AspNetCore" Version="3.4.0" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <ProjectReference Include="..\Identity.Abstractions\Identity.Abstractions.csproj" />
     <ProjectReference Include="..\Identity.Core\Identity.Core.csproj" />
     <ProjectReference Include="..\Identity.Data.Mongo\Identity.Data.Mongo.csproj" />
