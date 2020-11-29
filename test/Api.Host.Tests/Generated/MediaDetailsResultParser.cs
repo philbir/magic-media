@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text.Json;
 using StrawberryShake;
 using StrawberryShake.Http;
-using StrawberryShake.Http.Subscriptions;
-using StrawberryShake.Transport;
 
 namespace MagicMedia.Api.Host.Tests
 {

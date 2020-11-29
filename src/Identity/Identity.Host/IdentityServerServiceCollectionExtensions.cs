@@ -1,4 +1,5 @@
 using System;
+using MagicMedia.Identity.AuthProviders;
 using MagicMedia.Identity.Services;
 using MagicMedia.Identity.Stores;
 using Microsoft.Extensions.Configuration;
@@ -9,7 +10,8 @@ namespace MagicMedia.Identity
     public static class IdentityServerServiceCollectionExtensions
     {
         public static IIdentityServerBuilder AddIdentityServer(
-            this IServiceCollection services, IConfiguration configuration)
+            this IServiceCollection services,
+            IConfiguration configuration)
         {
             //LoginOptions loginOptions = configuration.GetLoginOptions();
             //CachingOptions? cacheOptions = loginOptions.Caching;
@@ -33,6 +35,9 @@ namespace MagicMedia.Identity
             .AddPersistedGrantStore<PersistedGrantStore>()
             .AddCorsPolicyCache<CorsPolicyService>()
             .AddClientStoreCache<ClientStore>();
+
+            services.AddAuthentication()
+                  .AddExternalProviders(configuration);
 
             return builder;
         }

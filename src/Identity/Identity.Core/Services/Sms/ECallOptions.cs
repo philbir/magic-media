@@ -1,5 +1,3 @@
-using System.Runtime.Serialization;
-
 namespace MagicMedia.Identity.Core.Services
 {
     public class ECallOptions

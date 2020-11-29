@@ -1,5 +1,3 @@
-using System;
-
 namespace Identity.Host.Models
 {
     public class ErrorViewModel

@@ -48,7 +48,7 @@ namespace MagicMedia.Operations
 
             var completedmsg = new MediaOperationRequestCompletedMessage
             {
-                Type = MediaOperationType.Recycle,
+                Type = MediaOperationType.UpdateMetadata,
                 OperationId = message.OperationId,
                 SuccessCount = messages.Where(x => x.IsSuccess).Count(),
                 ErrorCount = messages.Where(x => !x.IsSuccess).Count(),

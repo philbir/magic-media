@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using StrawberryShake;
-
-namespace MagicMedia.Api.Host.Tests
+﻿namespace MagicMedia.Api.Host.Tests
 {
     public class MediaDimension1
         : IMediaDimension1

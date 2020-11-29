@@ -1,4 +1,3 @@
-using System;
 using MagicMedia.Store;
 
 namespace MagicMedia

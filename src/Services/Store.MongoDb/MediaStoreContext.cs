@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using MagicMedia.Operations;
 using MagicMedia.Store.MongoDb.Configuration;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Serializers;

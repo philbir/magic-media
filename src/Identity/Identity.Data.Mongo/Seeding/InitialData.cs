@@ -64,7 +64,7 @@ namespace MagicMedia.Identity.Data.Mongo.Seeding
                         { new Secret("geCDNACu94a5DfZQ2Sm46DBjkSErAnNA".ToSha256()) },
                     AllowedGrantTypes = GrantTypes.Code,
                     RedirectUris = {
-                        "http://localhost:5502"
+                        "http://localhost:5000/signin-oidc"
                     },
                     AllowOfflineAccess = true,
                     AlwaysIncludeUserClaimsInIdToken = true,

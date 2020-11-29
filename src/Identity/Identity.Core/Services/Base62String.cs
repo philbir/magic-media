@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 /*
  * Derived from https://github.com/google/google-authenticator-android/blob/8509dca15f42825dbe560af1c13d7660542eb233/java/com/google/android/apps/authenticator/util/Base32String.java
@@ -22,10 +20,6 @@ using System.Threading.Tasks;
  * limitations under the License.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Text.RegularExpressions;
 
 namespace MagicMedia.Identity.Services
 {

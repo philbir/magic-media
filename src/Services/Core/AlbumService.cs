@@ -1,14 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Extensions;
 using MagicMedia.Messaging;
 using MagicMedia.Search;
 using MagicMedia.Store;
-using MagicMedia.Store.MongoDb;
 using MassTransit;
 
 namespace MagicMedia
