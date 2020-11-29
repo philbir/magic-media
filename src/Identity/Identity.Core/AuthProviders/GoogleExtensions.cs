@@ -2,7 +2,6 @@ using IdentityServer4;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.Extensions.DependencyInjection;
-using Serilog;
 
 namespace MagicMedia.Identity.AuthProviders
 {

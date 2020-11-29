@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using MagicMedia.Identity.UI.Tests;
 using MagicMedia.Identity.UI.Tests.Components;
 using OpenQA.Selenium;

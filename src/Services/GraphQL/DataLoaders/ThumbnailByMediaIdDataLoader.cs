@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using GreenDonut;
 using HotChocolate.DataLoader;
 using MagicMedia.Store;
-using SixLabors.ImageSharp.ColorSpaces;
 
 namespace MagicMedia.GraphQL.DataLoaders
 {

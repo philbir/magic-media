@@ -11,5 +11,6 @@ namespace MagicMedia.Identity.Data
         IMongoCollection<MagicIdentityResource> IdentityResources { get; }
         IMongoCollection<MagicApiResource> ApiResources { get; }
         IMongoCollection<SignUpSession> SignUpSessions { get; }
+        IMongoCollection<User> Users { get; }
     }
 }

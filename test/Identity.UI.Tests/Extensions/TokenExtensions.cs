@@ -1,9 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Runtime.CompilerServices;
 using System.Security.Claims;
-using System.Text;
 
 namespace MagicMedia.Identity.UI.Tests.Extensions
 {

@@ -1,4 +1,4 @@
-﻿using MongoDB.Driver;
+using MongoDB.Driver;
 using MongoDB.Extensions.Context;
 
 namespace MagicMedia.Identity.Data.Mongo

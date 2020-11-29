@@ -1,11 +1,8 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using MagicMedia.Discovery;
 using MagicMedia.Face;
-using MagicMedia.Processing;
 using MagicMedia.Store;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

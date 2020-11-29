@@ -18,6 +18,7 @@ namespace MagicMedia.Identity.Data.Mongo
         private IMongoCollection<MagicIdentityResource>? _identityResources = null;
         private IMongoCollection<MagicApiResource>? _apiResources = null;
         private IMongoCollection<SignUpSession>? _signUpSessions = null;
+        private IMongoCollection<User>? _users = null;
 
         public IMongoCollection<MagicClient> Clients
         {
@@ -79,6 +80,16 @@ namespace MagicMedia.Identity.Data.Mongo
             }
         }
 
+        public IMongoCollection<User> Users
+        {
+            get
+            {
+                if (_users == null)
+                    _users = CreateCollection<User>();
+                return _users;
+            }
+        }
+
         protected override void OnConfiguring(IMongoDatabaseBuilder mongoDatabaseBuilder)
         {
             mongoDatabaseBuilder
@@ -91,6 +102,7 @@ namespace MagicMedia.Identity.Data.Mongo
                     .ConfigureCollection(new IdentityResourceCollectionConfiguration())
                     .ConfigureCollection(new ApiResourceCollectionConfiguration())
                     .ConfigureCollection(new SignUpSessionCollectionConfiguration())
+                    .ConfigureCollection(new UserCollectionConfiguration())
                     .ConfigureCollection(new OneLoginClientCollectionConfiguration());
         }
     }

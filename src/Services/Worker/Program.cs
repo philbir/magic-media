@@ -11,8 +11,6 @@ using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Quartz;
-using Quartz.Impl;
 using Serilog;
 using Serilog.Events;
 

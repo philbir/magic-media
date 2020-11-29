@@ -1,7 +1,5 @@
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using GreenDonut;
 using MagicMedia.GraphQL.DataLoaders;
 using MagicMedia.Store;
 

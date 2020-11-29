@@ -1,5 +1,11 @@
 namespace MagicMedia.Identity
 {
+    public class UserAccountOptions
+    {
+        public bool AutoProvisionUser { get; set; }
+    }
+
+
     public static class Wellknown
     {
         public static class ClaimTypes

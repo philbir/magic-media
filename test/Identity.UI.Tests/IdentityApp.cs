@@ -1,5 +1,4 @@
 using System;
-using System.Threading;
 using OpenQA.Selenium;
 using MagicMedia.Identity.UI.Tests.Components;
 

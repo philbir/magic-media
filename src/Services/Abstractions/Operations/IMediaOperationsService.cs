@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using MagicMedia.Messaging;
 using MagicMedia.Operations;
 
 namespace MagicMedia

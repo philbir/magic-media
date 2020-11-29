@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using MagicMedia;
 using MagicMedia.TestLibrary;
 using Moq;
 using Snapshooter.Xunit;

@@ -1,5 +1,3 @@
-using System;
-
 namespace MagicMedia.Identity.Services
 {
     public interface ITotpCodeService

@@ -1,5 +1,3 @@
-using System;
-
 namespace Api.Host.Models
 {
     public class ErrorViewModel

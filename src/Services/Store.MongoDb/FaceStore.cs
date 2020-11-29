@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Face;
 using MagicMedia.Search;
-using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 

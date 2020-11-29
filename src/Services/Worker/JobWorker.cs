@@ -2,17 +2,12 @@ using MagicMedia.Jobs;
 using MagicMedia.Processing;
 using MassTransit;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Quartz;
 using Quartz.Spi;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Xabe.FFmpeg;
-using Xabe.FFmpeg.Downloader;
 
 namespace Worker
 {

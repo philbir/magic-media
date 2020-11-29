@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace MagicMedia.Identity.UI.Tests
 {
     public class IdentityTestOptions

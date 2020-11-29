@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using StrawberryShake;
+﻿using System.Collections.Generic;
 
 namespace MagicMedia.Api.Host.Tests
 {

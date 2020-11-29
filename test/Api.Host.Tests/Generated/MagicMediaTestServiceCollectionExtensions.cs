@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Net.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using StrawberryShake;
 using StrawberryShake.Http;
 using StrawberryShake.Http.Pipelines;
-using StrawberryShake.Http.Subscriptions;
 using StrawberryShake.Serializers;
-using StrawberryShake.Transport;
 
 namespace MagicMedia.Api.Host.Tests
 {

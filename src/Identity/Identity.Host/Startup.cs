@@ -1,7 +1,6 @@
+using System.IdentityModel.Tokens.Jwt;
 using MagicMedia.Identity.Data.Mongo;
 using MagicMedia.Identity.Data.Mongo.Seeding;
-using MagicMedia.Identity.Services;
-using MagicMedia.Identity.Services.Sms;
 using MagicMedia.Identity.SignUp;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -11,10 +10,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MagicMedia.Identity
 {
@@ -42,8 +37,9 @@ namespace MagicMedia.Identity
 
         public void ConfigureServices(IServiceCollection services)
         {
-            IIdentityServerBuilder builder = services.AddIdentityServer(Configuration)
-                .AddTestUsers(TestUsers.Users);
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
+            IIdentityServerBuilder builder = services.AddIdentityServer(Configuration);
 
             builder.AddDeveloperSigningCredential();
 
@@ -64,11 +60,11 @@ namespace MagicMedia.Identity
             });
 
             services.AddDataAccess(Configuration);
-            services.AddSingleton<ITotpCodeService, TotpCodeService>();
-            services.AddECallSms(Configuration);
+            services.AddIdentityCore(Configuration);
             services.AddSingleton<SignUpService>();
 
-            services.AddControllersWithViews();
+            services.AddControllersWithViews()
+                .AddRazorRuntimeCompilation();
         }
 
         public void Configure(

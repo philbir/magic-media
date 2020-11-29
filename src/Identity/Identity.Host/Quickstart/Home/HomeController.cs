@@ -29,7 +29,7 @@ namespace MagicMedia.Identity
 
         public IActionResult Index()
         {
-            return RedirectToAction("Index", "SignUp");
+            return RedirectToAction("Index", "Diagnostics");
         }
 
         /// <summary>
