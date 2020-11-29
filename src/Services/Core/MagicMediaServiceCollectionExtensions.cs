@@ -44,6 +44,7 @@ namespace MagicMedia
             services.AddSingleton<IMediaOperationsService, MediaOperationsService>();
             services.AddSingleton<IMoveMediaHandler, MoveMediaHandler>();
             services.AddSingleton<IRecycleMediaHandler, RecycleMediaHandler>();
+            services.AddSingleton<IDeleteMediaHandler, DeleteMediaHandler>();
             services.AddSingleton<IUpdateMediaMetadataHandler, UpdateMediaMetadataHandler>();
 
             services.AddSingleton<IMediaSearchService, MediaSearchService>();

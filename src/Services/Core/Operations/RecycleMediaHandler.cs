@@ -25,8 +25,6 @@ namespace MagicMedia.Operations
             _bus = bus;
         }
 
-        public Guid MediaId { get; private set; }
-
         public async Task ExecuteAsync(
             RecycleMediaMessage message,
             CancellationToken cancellationToken)

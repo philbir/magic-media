@@ -84,6 +84,7 @@ namespace MagicMedia.Messaging
             busConfigurator.AddConsumer<PersonUpdatedConsumer>();
             busConfigurator.AddConsumer<ItemsAddedToAlbumConsumer>();
             busConfigurator.AddConsumer<RecycleMediaConsumer>();
+            busConfigurator.AddConsumer<DeleteMediaConsumer>();
             busConfigurator.AddConsumer<UpdateMediaMetadataConsumer>();
             busConfigurator.AddConsumer<NewMediaAddedConsumer>();
             busConfigurator.AddConsumer<RescanFacesMessageConsumer>();

@@ -8,6 +8,7 @@ namespace MagicMedia
 {
     public interface IMediaOperationsService
     {
+        Task DeleteAsync(DeleteMediaRequest request, CancellationToken cancellationToken);
         Task MoveMediaAsync(
             MoveMediaRequest request,
             CancellationToken cancellationToken);

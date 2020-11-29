@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Configuration;
+using Serilog;
 
 namespace MagicMedia.Stores
 {
@@ -94,6 +95,21 @@ namespace MagicMedia.Stores
             File.Move(filname, newFilename, true);
 
             return Task.CompletedTask;
+        }
+
+        public Task<bool> DeleteAsync(
+            MediaBlobData request,
+            CancellationToken cancellationToken)
+        {
+            var filename = GetFilename(request);
+            if (File.Exists(filename))
+            {
+                File.Delete(filename);
+                Log.Information("Delete {File}", filename);
+                return Task.FromResult(true);
+            }
+
+            return Task.FromResult(false);
         }
 
         public string GetFilename(MediaBlobData data)

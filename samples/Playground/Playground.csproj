@@ -1,20 +1,25 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <AssemblyName>MagicMedia.Playground</AssemblyName>
     <RootNamespace>MagicMedia.Playground</RootNamespace>
     <OutputType>Exe</OutputType>
-    <UserSecretsId>e8d8451e-4701-4d21-838c-cfb39c17eaa8</UserSecretsId>
-
+    <UserSecretsId>75433c12-81ac-4dee-88de-ab9f3fbcbc40</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="appsettings.json" />
+    <None Remove="appsettings.local.json" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="appsettings.local.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
@@ -26,6 +31,8 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.0" />
     <PackageReference Include="Scrutor" Version="3.3.0" />
+    <PackageReference Include="Serilog" Version="2.10.1-dev-01256" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
     <PackageReference Include="Xabe.FFmpeg.Downloader" Version="4.3.1" />
   </ItemGroup>
 

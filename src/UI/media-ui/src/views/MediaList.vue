@@ -133,7 +133,7 @@ export default {
       if (media.mediaType === "VIDEO" && this.hoveredIndex === media.idx) {
         return "/api/video/preview/" + media.id;
       }
-      return media.thumbnail.dataUrl;
+      return media.thumbnail ? media.thumbnail.dataUrl : null;
     },
     handleUpload: function () {
       this.$router.push("/upload");

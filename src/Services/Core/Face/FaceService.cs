@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using MagicMedia.Messaging;
 using MagicMedia.Store;
 using MassTransit;
+using Serilog;
 
 namespace MagicMedia.Face
 {
@@ -162,7 +163,7 @@ namespace MagicMedia.Face
 
                 await _faceStore.UpdateAsync(face, cancellationToken);
                 await _bus.Publish(new FaceUpdatedMessage(face.Id, "UNASSIGN_PERSON")
-                    { PersonId = currentPersonId });
+                { PersonId = currentPersonId });
             }
 
             return face;
@@ -223,7 +224,7 @@ namespace MagicMedia.Face
 
             IEnumerable<MediaFace> filtered = faces
                 .Where(x =>
-                    x.PersonId.HasValue == false && 
+                    x.PersonId.HasValue == false &&
                     x.State == FaceState.New);
 
             foreach (MediaFace face in filtered)
@@ -267,11 +268,31 @@ namespace MagicMedia.Face
             return await _faceStore.GetFacesByMediaAsync(mediaId, cancellationToken);
         }
 
+        public async Task DeleteByMediaIdAsync(Guid mediaId, CancellationToken cancellationToken)
+        {
+            IEnumerable<MediaFace> faces = await GetFacesByMediaAsync(mediaId, cancellationToken);
+
+            faces.ToList().ForEach(async face => await DeleteAsync(face, cancellationToken));
+        }
+
         public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
         {
-            await _faceStore.DeleteAsync(id, cancellationToken);
+            MediaFace face = await GetByIdAsync(id, cancellationToken);
+            await DeleteAsync(face, cancellationToken);
+        }
 
-            await _bus.Publish(new FaceUpdatedMessage(id, "DELETED"));
+        public async Task DeleteAsync(MediaFace face, CancellationToken cancellationToken)
+        {
+            Log.Information("Deleting face {Id}", face.Id);
+
+            await _faceStore.DeleteAsync(face.Id, cancellationToken);
+
+            if (face.Thumbnail != null)
+            {
+                await _mediaStore.Thumbnails.DeleteAsync(face.Thumbnail.Id, cancellationToken);
+            }
+
+            await _bus.Publish(new FaceUpdatedMessage(face.Id, "DELETED"));
         }
 
         public async Task<MediaThumbnail> GetThumbnailAsync(

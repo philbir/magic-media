@@ -31,6 +31,7 @@ namespace MagicMedia.Operations
             foreach (Guid mediaId in message.Ids)
             {
                 MediaOperationCompletedMessage msg = new();
+                msg.Type = MediaOperationType.RescanFaces;
 
                 try
                 {
@@ -38,6 +39,7 @@ namespace MagicMedia.Operations
                         .ScanByMediaIdAsync(mediaId, cancellationToken);
 
                     msg.IsSuccess = true;
+                    msg.Type = MediaOperationType.RescanFaces;
                     msg.MediaId = mediaId;
                     msg.OperationId = message.OperationId;
                 }
@@ -52,7 +54,7 @@ namespace MagicMedia.Operations
 
             var completedmsg = new MediaOperationRequestCompletedMessage
             {
-                Type = MediaOperationType.Recycle,
+                Type = MediaOperationType.RescanFaces,
                 OperationId = message.OperationId,
                 SuccessCount = messages.Where(x => x.IsSuccess).Count(),
                 ErrorCount = messages.Where(x => !x.IsSuccess).Count(),

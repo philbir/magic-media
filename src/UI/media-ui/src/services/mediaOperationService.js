@@ -10,5 +10,13 @@ export const mediaOperationTypeMap = {
   2: {
     verb: "metadata updated",
     completedText: "Metadata update completed."
+  },
+  3: {
+    verb: "faces rescanned",
+    completedText: "Face rescan completed."
+  },
+  4: {
+    verb: "deleted",
+    completedText: "Delete completed."
   }
 };

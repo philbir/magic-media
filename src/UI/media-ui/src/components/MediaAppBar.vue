@@ -147,6 +147,7 @@ export default {
         { text: "Move", action: "MOVE", icon: "mdi-file-move-outline" },
         { text: "Edit", action: "EDIT", icon: "mdi-pencil" },
         { text: "Recycle", action: "RECYCLE", icon: "mdi-recycle" },
+        { text: "Delete", action: "DELETE", icon: "mdi-delete" },
       ];
     },
     editModeText: function () {
@@ -194,6 +195,9 @@ export default {
           break;
         case "RECYCLE":
           this.$store.dispatch("media/recycle");
+          break;
+        case "DELETE":
+          this.$store.dispatch("media/delete");
           break;
       }
     },

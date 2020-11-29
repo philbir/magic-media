@@ -5,11 +5,13 @@ using System.Threading.Tasks;
 using MagicMedia;
 using MagicMedia.BingMaps;
 using MagicMedia.Discovery;
+using MagicMedia.Messaging;
 using MagicMedia.Playground;
 using MagicMedia.Store.MongoDb;
 using MagicMedia.Stores;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Serilog;
 
 namespace Playground
 {
@@ -17,30 +19,18 @@ namespace Playground
     {
         static async Task Main(string[] args)
         {
-            IServiceProvider sp = BuildServiceProvider();
-            ImportSample importSample = sp.GetService<ImportSample>();
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .WriteTo.Console()
+                .CreateLogger();
 
-            DiscoverySample discovery = sp.GetService<DiscoverySample>();
-            FaceScanner faceScanner = sp.GetService<FaceScanner>();
+            IServiceProvider sp = BuildServiceProvider();
+            BulkMediaUpdater updater = sp.GetService<BulkMediaUpdater>();
             VideoConverter videoConverter = sp.GetService<VideoConverter>();
 
-            await videoConverter.GenerateVideosAsync(default);
+            //await videoConverter.GenerateVideosAsync(default);
 
-            return;
-
-            await discovery.ScanExistingAsync(new FileSystemDiscoveryOptions
-            {
-                Locations = new List<FileDiscoveryLocation>
-                {
-                    new FileDiscoveryLocation
-                    {
-                         Path = @"Video",
-                         Root = @"C:\MagicMedia",
-                    }
-                }
-            }, default);
-
-            //await faceScanner.RunAsync(default);
+            await updater.CleanUpDeletedAsync(default);
         }
 
         private static IServiceProvider BuildServiceProvider()
@@ -48,22 +38,25 @@ namespace Playground
             IConfigurationRoot config = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                  .AddJsonFile("appsettings.json")
+                 .AddJsonFile("appsettings.local.json", optional: true)
                  .AddUserSecrets<Program>(optional: true)
                  .Build();
 
-            BingMapsOptions bingOptions = config.GetSection("MagicMedia:BingMaps")
-                .Get<BingMapsOptions>();
-
             var services = new ServiceCollection();
-            services.AddMongoDbStore(config);
-
-            services.AddFileSystemStore(config);
-            services.AddCoreMediaServices(config);
+            services
+                .AddMagicMediaServer(config)
+                .AddProcessingMediaServices()
+                .AddBingMaps()
+                .AddMongoDbStore()
+                .AddFileSystemStore()
+                .AddFileSystemDiscovery()
+                .AddWorkerMessaging();
 
             services.AddSingleton<ImportSample>();
             services.AddSingleton<DiscoverySample>();
             services.AddSingleton<FaceScanner>();
             services.AddSingleton<VideoConverter>();
+            services.AddSingleton<BulkMediaUpdater>();
 
             return services.BuildServiceProvider();
         }

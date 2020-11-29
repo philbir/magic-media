@@ -51,6 +51,20 @@ namespace MagicMedia.GraphQL
             return new MediaOperationPayload(request.OperationId);
         }
 
+        public async Task<MediaOperationPayload> DeleteMediaAsync(
+            DeleteMediaRequest input,
+            CancellationToken cancellationToken)
+        {
+            DeleteMediaRequest request = input with
+            {
+                OperationId = input.OperationId ?? Guid.NewGuid().ToString("N")
+            };
+
+            await _operationsService.DeleteAsync(request, cancellationToken);
+
+            return new MediaOperationPayload(request.OperationId);
+        }
+
         public async Task<MediaOperationPayload> UpdateMediaMetadataAsync(
             UpdateMediaMetadataRequest input,
             CancellationToken cancellationToken)
