@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MongoDB.Driver;
 using MongoDB.Driver.GridFS;
+using Serilog;
 
 namespace MagicMedia.Store.MongoDb
 {
@@ -35,25 +36,22 @@ namespace MagicMedia.Store.MongoDb
 
         public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken)
         {
-            FilterDefinition<GridFSFileInfo> filter = Builders<GridFSFileInfo>.Filter.Eq(x => x.Filename, id.ToString("N"));
+            FilterDefinition<GridFSFileInfo> filter = Builders<GridFSFileInfo>.Filter
+                .Eq(x => x.Filename, id.ToString("N"));
 
-            IAsyncCursor<GridFSFileInfo> cursor = await _gridFSBucket.FindAsync(filter, options: null, cancellationToken);
+            IAsyncCursor<GridFSFileInfo> cursor = await _gridFSBucket
+                .FindAsync(filter, options: null, cancellationToken);
+
             GridFSFileInfo? file = cursor.FirstOrDefault(cancellationToken);
 
             if (file != null)
             {
                 await _gridFSBucket.DeleteAsync(file.Id, cancellationToken);
-
+                Log.Information("Thmbnail {Filename} deleted.", id);
                 return true;
             }
 
             return false;
-        }
-
-
-        public Task StoreAsync(IEnumerable<ThumbnailData> datas, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
         }
     }
 }

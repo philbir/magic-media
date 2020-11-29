@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Configuration;
+using Serilog;
 
 namespace MagicMedia.Stores
 {
@@ -104,7 +105,7 @@ namespace MagicMedia.Stores
             if (File.Exists(filename))
             {
                 File.Delete(filename);
-
+                Log.Information("Delete {File}", filename);
                 return Task.FromResult(true);
             }
 

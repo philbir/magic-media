@@ -11,10 +11,6 @@ namespace MagicMedia
             ThumbnailData data,
             CancellationToken cancellationToken);
 
-        public Task StoreAsync(
-            IEnumerable<ThumbnailData> datas,
-            CancellationToken cancellationToken);
-
         public Task<byte[]> GetAsync(Guid id, CancellationToken cancellationToken);
         Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken);
     }

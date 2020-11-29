@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using MagicMedia.Messaging;
 using MagicMedia.Store;
 using MassTransit;
+using Serilog;
 
 namespace MagicMedia.Face
 {
@@ -282,6 +283,8 @@ namespace MagicMedia.Face
 
         public async Task DeleteAsync(MediaFace face, CancellationToken cancellationToken)
         {
+            Log.Information("Deleting face {Id}", face.Id);
+
             await _faceStore.DeleteAsync(face.Id, cancellationToken);
 
             if (face.Thumbnail != null)

@@ -5,6 +5,7 @@ import QUERY_METADATA from "../graphql/Media/MediaMetadata.gql";
 import QUERY_INFO from "../graphql/Media/GetMediaInfo.gql";
 import MUTATION_MOVE_MEDIA from "../graphql/Media/MoveMedia.gql";
 import MUTATION_RECYCLE_MEDIA from "../graphql/Media/RecycleMedia.gql";
+import MUTATION_DELETE_MEDIA from "../graphql/Media/DeleteMedia.gql";
 import QUERY_SEARCH from "../graphql/Media/SearchMedia.gql";
 import MUTATION_TOGGLE_FAVORITE from "../graphql/Media/ToggleFavorite.gql";
 import MUTATION_UPDATE_METADATA from "../graphql/Media/UpdateMediaMetadata.gql";
@@ -89,6 +90,16 @@ export const recycleMedia = async input => {
     }
   });
 };
+
+export const deleteMedia = async input => {
+  return await apollo.mutate({
+    mutation: MUTATION_DELETE_MEDIA,
+    variables: {
+      input: input
+    }
+  });
+};
+
 export const updateMetadata = async input => {
   return await apollo.mutate({
     mutation: MUTATION_UPDATE_METADATA,

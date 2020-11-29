@@ -1,0 +1,8 @@
+mutation deleteMedia($input: DeleteMediaRequestInput!) {
+  deleteMedia(input: $input) {
+    operationId
+    errors {
+      code
+    }
+  }
+}

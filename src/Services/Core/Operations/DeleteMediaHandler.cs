@@ -46,7 +46,7 @@ namespace MagicMedia.Operations
 
             var completedmsg = new MediaOperationRequestCompletedMessage
             {
-                Type = MediaOperationType.Recycle,
+                Type = MediaOperationType.Delete,
                 OperationId = message.OperationId,
                 SuccessCount = messages.Where(x => x.IsSuccess).Count(),
                 ErrorCount = messages.Where(x => !x.IsSuccess).Count(),
@@ -62,7 +62,7 @@ namespace MagicMedia.Operations
         {
             MediaOperationCompletedMessage msg = new MediaOperationCompletedMessage
             {
-                Type = MediaOperationType.Recycle,
+                Type = MediaOperationType.Delete,
                 MediaId = id,
             };
 
@@ -85,6 +85,5 @@ namespace MagicMedia.Operations
 
             return msg;
         }
-
     }
 }

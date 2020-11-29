@@ -56,9 +56,11 @@ export default {
     const self = this;
     this.$socket.on("mediaOperationCompleted", (data) => {
       self.$store.dispatch("snackbar/mediaOperationCompleted", data);
+      console.log(data);
     });
     this.$socket.on("mediaOperationRequestCompleted", (data) => {
       self.$store.dispatch("snackbar/mediaOperationRequestCompleted", data);
+      console.log(data);
 
       this.$store.dispatch("media/getFolderTree");
 

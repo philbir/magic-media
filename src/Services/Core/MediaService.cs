@@ -8,6 +8,7 @@ using MagicMedia.Messaging;
 using MagicMedia.Processing;
 using MagicMedia.Store;
 using MassTransit;
+using Serilog;
 using SixLabors.ImageSharp;
 
 namespace MagicMedia
@@ -98,12 +99,8 @@ namespace MagicMedia
                 }
             }
 
-
-
             await _bus.Publish(new NewMediaAddedMessage(request.Media.Id));
         }
-
-
 
         public async Task<MediaThumbnail?> GetThumbnailAsync(Guid mediaId, ThumbnailSizeName size, CancellationToken cancellationToken)
         {
@@ -132,6 +129,8 @@ namespace MagicMedia
 
         public async Task DeleteAsync(Media media, CancellationToken cancellationToken)
         {
+            Log.Information("Delete media {Id}", media.Id);
+
             await DeleteAllFilesAsync(media, cancellationToken);
 
             await DeleteThumbnailsAsync(media, cancellationToken);

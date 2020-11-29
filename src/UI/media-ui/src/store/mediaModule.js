@@ -1,6 +1,7 @@
 import Vue from "vue";
 
 import {
+  deleteMedia,
   getById,
   getFolderTree,
   getSearchFacets,
@@ -113,22 +114,22 @@ const mediaModule = {
     PAGE_NR_INC(state) {
       state.filter.pageNr++;
     },
-    UPLOAD_DIALOG_TOGGLED: function(state, open) {
+    UPLOAD_DIALOG_TOGGLED: function (state, open) {
       state.uploadDialog.open = open;
     },
-    SET_MEDIALIST_LOADING: function(state, isloading) {
+    SET_MEDIALIST_LOADING: function (state, isloading) {
       state.listLoading = isloading;
     },
-    SEARCH_FACETS_LOADED: function(state, facets) {
+    SEARCH_FACETS_LOADED: function (state, facets) {
       Vue.set(state, "facets", facets);
     },
-    RESET_FILTER: function(state) {
+    RESET_FILTER: function (state) {
       state.list = [];
       state.filter.pageNr = 0;
       state.totalLoaded = 0;
       state.selectedIndexes = [];
     },
-    RESET_FILTER_VALUES: function(state) {
+    RESET_FILTER_VALUES: function (state) {
       state.filter.countries = [];
       state.filter.cities = [];
       state.filter.persons = [];
@@ -138,17 +139,17 @@ const mediaModule = {
       state.filter.geoRadius = null;
       state.filter.folder = null;
     },
-    MEDIA_CLOSED: function(state) {
+    MEDIA_CLOSED: function (state) {
       state.currentMediaId = null;
       state.current = null;
     },
-    EDIT_MODE_TOGGLE: function(state, value) {
+    EDIT_MODE_TOGGLE: function (state, value) {
       state.isEditMode = value;
       if (!value) {
         state.selectedIndexes = [];
       }
     },
-    SELECTED: function(state, idx) {
+    SELECTED: function (state, idx) {
       const current = [...state.selectedIndexes];
       const i = current.indexOf(idx);
       if (i > -1) {
@@ -159,13 +160,13 @@ const mediaModule = {
 
       Vue.set(state, "selectedIndexes", current);
     },
-    ALL_SELECTED: function(state) {
+    ALL_SELECTED: function (state) {
       state.selectedIndexes = [...Array(state.list.length).keys()];
     },
-    CLEAR_SELECTED: function(state) {
+    CLEAR_SELECTED: function (state) {
       state.selectedIndexes = [];
     },
-    OPERATION_COMMITED: function(state) {
+    OPERATION_COMMITED: function (state) {
       var mediaIds = getMediaIdsFromIndexes(state);
 
       const current = [...state.list];
@@ -176,14 +177,14 @@ const mediaModule = {
       state.selectedIndexes = [];
       Vue.set(state, "list", current);
     },
-    FAVORITE_TOGGLED: function(state) {
+    FAVORITE_TOGGLED: function (state) {
       state.current.isFavorite = !state.current.isFavorite;
       var idx = state.list.findIndex(x => x.id === state.current.id);
       if (idx > -1) {
         state.list[idx].isFavorite = state.current.isFavorite;
       }
     },
-    VIEWER_OPTIONS_SET: function(state, options) {
+    VIEWER_OPTIONS_SET: function (state, options) {
       state.viewer = options;
     }
   },
@@ -264,6 +265,31 @@ const mediaModule = {
             title: "Recycle media",
             totalCount: ids.length,
             text: "Recycle media"
+          },
+          { root: true }
+        );
+      } catch (ex) {
+        console.error(ex);
+        this.$magic.snack("Error loading", "ERROR");
+      }
+    },
+    async delete({ commit, state, dispatch }, ids) {
+      try {
+        ids = ids ?? getMediaIdsFromIndexes(state);
+        const res = await deleteMedia({
+          ids
+        });
+
+        commit("OPERATION_COMMITED", res.data.deleteMedia.operationId);
+
+        dispatch(
+          "snackbar/operationStarted",
+          {
+            id: res.data.deleteMedia.operationId,
+            type: "INFO",
+            title: "Delete media",
+            totalCount: ids.length,
+            text: "Delete media"
           },
           { root: true }
         );
@@ -365,26 +391,26 @@ const mediaModule = {
         console.error(ex);
       }
     },
-    toggleUploadDialog: function({ commit }, open) {
+    toggleUploadDialog: function ({ commit }, open) {
       commit("UPLOAD_DIALOG_TOGGLED", open);
     },
-    toggleEditMode: function({ commit }, value) {
+    toggleEditMode: function ({ commit }, value) {
       commit("EDIT_MODE_TOGGLE", value);
     },
-    select: function({ commit }, id) {
+    select: function ({ commit }, id) {
       commit("SELECTED", id);
     },
-    selectAll: function({ commit }) {
+    selectAll: function ({ commit }) {
       commit("ALL_SELECTED");
     },
-    clearSelected: function({ commit }) {
+    clearSelected: function ({ commit }) {
       commit("CLEAR_SELECTED");
     },
     async toggleFavorite({ commit }, media) {
       await toggleFavorite(media.id, !media.isFavorite);
       commit("FAVORITE_TOGGLED", media);
     },
-    faceUpdated: function({ dispatch }, face) {
+    faceUpdated: function ({ dispatch }, face) {
       //TODO: Patch details instead of reloading...
       dispatch("loadDetails", face.mediaId);
     }
