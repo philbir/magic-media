@@ -38,6 +38,7 @@ namespace MagicMedia.Api
             services.AddMvc();
             services.AddSignalR();
 
+
             services.ConfigureSameSiteCookies();
             services.AddAuthentication(Configuration);
 
@@ -63,17 +64,6 @@ namespace MagicMedia.Api
             }
             else
             {
-                app.Use(async (context, next) =>
-                {
-                    if (!context.User.Identity.IsAuthenticated)
-                    {
-                        await context.ChallengeAsync();
-                    }
-                    else
-                    {
-                        await next();
-                    }
-                });
                 app.UseExceptionHandler("/Home/Error");
             }
 
@@ -83,8 +73,21 @@ namespace MagicMedia.Api
             app.UseStaticFiles();
 
             app.UseRouting();
+
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.Use(async (context, next) =>
+            {
+                if (!context.User.Identity.IsAuthenticated)
+                {
+                    await context.ChallengeAsync();
+                }
+                else
+                {
+                    await next();
+                }
+            });
 
             app.UseEndpoints(endpoints =>
             {

@@ -46,7 +46,6 @@ namespace MagicMedia
 
                 options.ClaimActions.MapAllExcept("iss", "nbf", "exp", "aud", "nonce", "iat", "c_hash");
 
-                options.SaveTokens = false;
                 options.Events = new OpenIdConnectEvents
                 {
                     OnRedirectToIdentityProvider = (ctx) =>
@@ -54,6 +53,10 @@ namespace MagicMedia
                         return Task.CompletedTask;
                     },
                     OnTicketReceived = (ctx) =>
+                    {
+                        return Task.CompletedTask;
+                    },
+                    OnAuthorizationCodeReceived = (ctx) =>
                     {
                         return Task.CompletedTask;
                     }

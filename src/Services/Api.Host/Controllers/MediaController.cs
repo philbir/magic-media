@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using HotChocolate.AspNetCore.Authorization;
 using MagicMedia.Face;
 using MagicMedia.Store;
 using Microsoft.AspNetCore.Http;
