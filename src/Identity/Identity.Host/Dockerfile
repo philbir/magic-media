@@ -7,6 +7,10 @@ EXPOSE 80
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
 
+COPY ["Directory.Build.props", "/"]
+COPY ["Versions.props", "/"]
+COPY ["global.json", "/"]
+
 COPY ["Identity.Host/Identity.Host.csproj", "Identity.Host/"]
 COPY ["Identity.Abstractions/Identity.Abstractions.csproj", "Identity.Abstractions/"]
 COPY ["Identity.Core/Identity.Core.csproj", "Identity.Core/"]

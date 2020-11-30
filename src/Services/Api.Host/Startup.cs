@@ -1,3 +1,4 @@
+using MagicMedia.AspNetCore;
 using MagicMedia.BingMaps;
 using MagicMedia.Hubs;
 using MagicMedia.Messaging;
@@ -37,14 +38,7 @@ namespace MagicMedia.Api
             services.AddMvc();
             services.AddSignalR();
 
-            services.Configure<ForwardedHeadersOptions>(options =>
-            {
-                options.ForwardedHeaders =
-                    ForwardedHeaders.XForwardedFor |
-                    ForwardedHeaders.XForwardedProto;
-            });
             services.ConfigureSameSiteCookies();
-
             services.AddAuthentication(Configuration);
 
             services.AddAuthorization(o => o.AddPolicy("Read", p =>
@@ -60,12 +54,15 @@ namespace MagicMedia.Api
         {
             busControl.Start();
 
-            app.UseForwardedHeaders();
+            app.UseDefaultForwardedHeaders();
             app.UseCookiePolicy();
 
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+            }
+            else
+            {
                 app.Use(async (context, next) =>
                 {
                     if (!context.User.Identity.IsAuthenticated)
@@ -77,9 +74,6 @@ namespace MagicMedia.Api
                         await next();
                     }
                 });
-            }
-            else
-            {
                 app.UseExceptionHandler("/Home/Error");
             }
 

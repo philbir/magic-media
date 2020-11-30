@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace MagicMedia.Api
+namespace MagicMedia.AspNetCore
 {
     public static class SameSiteCookieExtensions
     {

@@ -1,4 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
+using MagicMedia.AspNetCore;
 using MagicMedia.Identity.Data.Mongo;
 using MagicMedia.Identity.Data.Mongo.Seeding;
 using MagicMedia.Identity.SignUp;
@@ -22,19 +23,6 @@ namespace MagicMedia.Identity
 
         public IConfiguration Configuration { get; }
 
-        private void CheckSameSite(HttpContext httpContext, CookieOptions options)
-        {
-            if (options.SameSite == SameSiteMode.None)
-            {
-                var userAgent = httpContext.Request.Headers["User-Agent"].ToString();
-                // TODO: Use your User Agent library of choice here.
-                if (true)
-                {
-                    options.SameSite = SameSiteMode.Unspecified;
-                }
-            }
-        }
-
         public void ConfigureServices(IServiceCollection services)
         {
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
@@ -43,25 +31,11 @@ namespace MagicMedia.Identity
 
             builder.AddDeveloperSigningCredential();
 
-            services.Configure<CookiePolicyOptions>(options =>
-            {
-                options.MinimumSameSitePolicy = SameSiteMode.Unspecified;
-                options.OnAppendCookie = cookieContext =>
-                    CheckSameSite(cookieContext.Context, cookieContext.CookieOptions);
-                options.OnDeleteCookie = cookieContext =>
-                    CheckSameSite(cookieContext.Context, cookieContext.CookieOptions);
-            });
-
-            services.Configure<ForwardedHeadersOptions>(options =>
-            {
-                options.ForwardedHeaders =
-                    ForwardedHeaders.XForwardedFor |
-                    ForwardedHeaders.XForwardedProto;
-            });
-
             services.AddDataAccess(Configuration);
             services.AddIdentityCore(Configuration);
             services.AddSingleton<SignUpService>();
+
+            services.ConfigureSameSiteCookies();
 
             services.AddControllersWithViews()
                 .AddRazorRuntimeCompilation();
@@ -86,7 +60,7 @@ namespace MagicMedia.Identity
 
             app.UseSerilogRequestLogging();
 
-            app.UseForwardedHeaders();
+            app.UseDefaultForwardedHeaders();
             app.UseCookiePolicy();
             app.UseStaticFiles();
 
