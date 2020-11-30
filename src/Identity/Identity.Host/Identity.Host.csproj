@@ -12,6 +12,7 @@
   </ItemGroup>
   
   <ItemGroup>
+    <ProjectReference Include="..\..\Shared\AspNetCore\Shared.AspNetCore.csproj" />
     <ProjectReference Include="..\Identity.Abstractions\Identity.Abstractions.csproj" />
     <ProjectReference Include="..\Identity.Core\Identity.Core.csproj" />
     <ProjectReference Include="..\Identity.Data.Mongo\Identity.Data.Mongo.csproj" />
