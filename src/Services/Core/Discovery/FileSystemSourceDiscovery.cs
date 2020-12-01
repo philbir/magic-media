@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Serilog;
 
 namespace MagicMedia.Discovery
 {
@@ -22,10 +23,15 @@ namespace MagicMedia.Discovery
                     Path.Combine(location.Root, location.Path) :
                     location.Path;
 
+                string pattern = location.Filter ?? "*.*";
+                Log.Information("Discover media in {Path} with pattern: {Pattern}", filePath, pattern);
+
                 string[] files = Directory.GetFiles(
                     filePath,
-                    location.Filter ?? "*.*",
+                    pattern,
                     SearchOption.AllDirectories);
+
+                Log.Information("{Count} media found in {Path}", files.Length, filePath);
 
                 result.AddRange(files.Select(x =>
                     new MediaDiscoveryIdentifier

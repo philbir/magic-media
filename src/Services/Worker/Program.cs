@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using MagicMedia;
 using MagicMedia.BingMaps;
 using MagicMedia.Discovery;
@@ -42,21 +41,11 @@ namespace Worker
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
-                    BingMapsOptions bingOptions = hostContext.Configuration
-                        .GetSection("MagicMedia:BingMaps")
-                        .Get<BingMapsOptions>();
+                    FileSystemDiscoveryOptions discoveryOptions = hostContext.Configuration
+                        .GetSection("MagicMedia:Discovery")
+                        .Get<FileSystemDiscoveryOptions>();
 
-                    services.AddSingleton(new FileSystemDiscoveryOptions
-                    {
-                        Locations = new List<FileDiscoveryLocation>
-                        {
-                            new FileDiscoveryLocation
-                            {
-                                 Path = @"H:\Drive\Moments\Mobile",
-                                 Filter = "*.jpg"
-                            }
-                        }
-                    });
+                    services.AddSingleton(discoveryOptions);
 
                     services
                         .AddMagicMediaServer(hostContext.Configuration)

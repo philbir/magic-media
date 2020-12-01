@@ -51,6 +51,22 @@ namespace MagicMedia
             services.AddSingleton<IMediaService, MediaService>();
             services.AddSingleton<IVideoPlayerService, VideoPlayerService>();
             services.AddSingleton<IVideoProcessingService, VideoProcessingService>();
+            services.AddFFmpeg(configuration);
+
+            return services;
+        }
+
+        private static IServiceCollection AddFFmpeg(
+            this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            FFmpegOption? ffmpegOptions = configuration.GetSection("MagicMedia:FFMpeg")
+                .Get<FFmpegOption>() ?? new FFmpegOption
+                {
+                    AutoDownload = true
+                };
+
+            services.AddSingleton<IFFmpegInitializer>(c => new FFmpegInitializer(ffmpegOptions));
 
             return services;
         }

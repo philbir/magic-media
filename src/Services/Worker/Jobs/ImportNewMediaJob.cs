@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using MagicMedia.Processing;
 using Quartz;
+using Serilog;
 
 namespace MagicMedia.Jobs
 {
@@ -15,6 +16,7 @@ namespace MagicMedia.Jobs
 
         public async Task Execute(IJobExecutionContext context)
         {
+            Log.Information("Executing ImportNewMedia job");
             await _sourceScanner.ScanAsync(context.CancellationToken);
         }
     }
