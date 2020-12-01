@@ -143,14 +143,38 @@ namespace MagicMedia.Identity
             }
             else
             {
-                return Redirect("/");
+                var returnUrl = result.Properties.Items["returnUrl"] ?? "~/";
+
+                // check if external login is in the context of an OIDC request
+                AuthorizationRequest context = await _interaction.GetAuthorizationContextAsync(returnUrl);
+
+                var vm = new UserNotFoundViewModel
+                {
+                    Provider = authRequest.Provider,
+                    BackUrl = context?.RedirectUri ?? "/"
+                };
+
+                return View("UserNotFound", vm);
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> UserNotFound(string provider, string returnUrl, CancellationToken cancellationToken)
+        {
+            AuthorizationRequest context = await _interaction.GetAuthorizationContextAsync(returnUrl);
+            var vm = new UserNotFoundViewModel
+            {
+                Provider = provider,
+                BackUrl = context.RedirectUri
+            };
+
+            return View(vm);
+        }
+
         private void ProcessLoginCallback(
-            AuthenticateResult externalResult,
-            List<Claim> localClaims,
-            AuthenticationProperties localSignInProps)
+        AuthenticateResult externalResult,
+        List<Claim> localClaims,
+        AuthenticationProperties localSignInProps)
         {
             // if the external system sent a session id claim, copy it over
             // so we can use it for single sign-out

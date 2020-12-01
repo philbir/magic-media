@@ -67,7 +67,7 @@ query mediaInfo($id: Uuid!) {
     }
     files {
       filename
-      location
+      location  
       type
       size
     }

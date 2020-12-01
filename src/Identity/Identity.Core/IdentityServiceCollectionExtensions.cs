@@ -13,10 +13,10 @@ namespace MagicMedia.Identity
         {
             services.AddSingleton<IUserAccountService, UserAccountService>();
 
-            services.AddSingleton(new UserAccountOptions
-            {
-                AutoProvisionUser = true
-            });
+            UserAccountOptions accountOptions = configuration.GetSection("Identity:Account")
+                .Get<UserAccountOptions>();
+
+            services.AddSingleton(accountOptions);
 
             services.AddSingleton<IUserFactory, UserFactory>();
             services.AddSingleton<ITotpCodeService, TotpCodeService>();
