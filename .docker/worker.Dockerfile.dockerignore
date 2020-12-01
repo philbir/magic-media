@@ -1,0 +1,13 @@
+# Ignore everything
+**
+
+# Allow files and directories
+!/src/Services/**
+!/src/Shared/**
+!/src/Directory.Build.props
+!/src/Versions.props
+!/global.json
+!/Directory.Build.props
+**appsettings.local.json
+**/bin/**
+**/obj/**

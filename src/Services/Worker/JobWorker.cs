@@ -1,5 +1,6 @@
 using MagicMedia.Jobs;
 using MagicMedia.Processing;
+using MagicMedia.Video;
 using MassTransit;
 using Microsoft.Extensions.Hosting;
 using Quartz;
@@ -13,17 +14,18 @@ namespace Worker
 {
     public class JobWorker : BackgroundService
     {
-        private readonly IMediaSourceScanner _mediaSourceScanner;
-        private readonly IBusControl _busControl;
         private readonly ISchedulerFactory _schedulerFactory;
         private readonly IJobFactory _jobFactory;
+        private readonly IFFmpegInitializer _fFmpegInitializer;
 
         public JobWorker(
             ISchedulerFactory schedulerFactory,
-            IJobFactory jobFactory)
+            IJobFactory jobFactory,
+            IFFmpegInitializer fFmpegInitializer)
         {
             _schedulerFactory = schedulerFactory;
             _jobFactory = jobFactory;
+            _fFmpegInitializer = fFmpegInitializer;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -36,10 +38,7 @@ namespace Worker
 
         public async override Task StartAsync(CancellationToken cancellationToken)
         {
-            FFmpeg.SetExecutablesPath(Path.Combine(Directory.GetCurrentDirectory(), "ffmpeg"));
-
-
-            //await FFmpegDownloader.GetLatestVersion(FFmpegVersion.Official);
+            await _fFmpegInitializer.Intitialize();
 
             IScheduler scheduler = await _schedulerFactory
                 .GetScheduler(cancellationToken);

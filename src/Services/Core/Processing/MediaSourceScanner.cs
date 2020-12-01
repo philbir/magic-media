@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Discovery;
 using MagicMedia.Store;
+using Serilog;
 
 namespace MagicMedia.Processing
 {
