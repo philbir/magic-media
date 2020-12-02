@@ -2,10 +2,12 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Store;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MagicMedia.Api.Controllers
 {
+    [Authorize("ApiAccess")]
     [Route("api/person")]
     public class PersonController : Controller
     {
