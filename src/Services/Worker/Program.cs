@@ -58,6 +58,7 @@ namespace Worker
 
                     services.AddScheduler();
                     services.AddSingleton<ImportNewMediaJob>();
+                    services.AddSingleton<UpdateAllAlbumSummaryJob>();
                     services.AddMassTransitHostedService();
                     services.AddHostedService<JobWorker>();
                 });

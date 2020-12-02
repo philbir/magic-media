@@ -31,7 +31,6 @@ namespace MagicMedia.Store.MongoDb
             _dbContext = dbContext;
             _albumMediaResolver = albumMediaResolver;
             _cancellationToken = cancellationToken;
-
         }
 
         public MediaFilterBuilder AddFolder(string? folder)

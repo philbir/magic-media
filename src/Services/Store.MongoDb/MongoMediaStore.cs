@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Search;
@@ -96,7 +97,6 @@ namespace MagicMedia.Store.MongoDb
                 options: null,
                 cancellationToken);
         }
-
 
         public async Task<IEnumerable<Media>> GetManyAsync(
             IEnumerable<Guid> ids,
@@ -253,7 +253,6 @@ namespace MagicMedia.Store.MongoDb
 
             var result = new List<SearchFacetItem>();
 
-
             foreach (BsonDocument doc in docs)
             {
                 var item = new SearchFacetItem();
@@ -268,6 +267,24 @@ namespace MagicMedia.Store.MongoDb
             }
 
             return result.OrderByDescending(x => x.Count);
+        }
+
+        public async Task<IEnumerable<Guid>> GetIdsByFolderAsync(
+            string folder,
+            CancellationToken cancellationToken)
+        {
+            FilterDefinition<Media> filter = Builders<Media>.Filter.Regex(
+                x => x.Folder,
+                new BsonRegularExpression("^" + Regex.Escape(folder), "i"));
+
+            ProjectionDefinition<Media> projection = Builders<Media>.Projection
+                .Include(x => x.Id);
+
+            var options = new FindOptions<Media, BsonDocument> { Projection = projection };
+
+            IAsyncCursor<BsonDocument> cursor = await _mediaStoreContext.Medias.FindAsync(filter, options, cancellationToken);
+            List<BsonDocument> docs = await cursor.ToListAsync(cancellationToken);
+            return docs.Select(x => x["_id"].AsGuid);
         }
 
         public async Task<IEnumerable<SearchFacetItem>> GetGroupedCountriesAsync(

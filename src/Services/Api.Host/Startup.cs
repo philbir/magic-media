@@ -77,17 +77,17 @@ namespace MagicMedia.Api
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.Use(async (context, next) =>
-            {
-                if (!context.User.Identity.IsAuthenticated)
-                {
-                    await context.ChallengeAsync();
-                }
-                else
-                {
-                    await next();
-                }
-            });
+            //app.Use(async (context, next) =>
+            //{
+            //    if (!context.User.Identity.IsAuthenticated)
+            //    {
+            //        await context.ChallengeAsync();
+            //    }
+            //    else
+            //    {
+            //        await next();
+            //    }
+            //});
 
             app.UseEndpoints(endpoints =>
             {
