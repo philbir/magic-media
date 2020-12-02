@@ -52,19 +52,30 @@ namespace MagicMedia
             ThumbnailSizeName size,
             CancellationToken cancellationToken)
         {
+            Guid? mediaId;
+
             if (album.CoverMediaId.HasValue)
             {
+                mediaId = album.CoverMediaId.Value;
+            }
+            else
+            {
+                mediaId = (await GetMediaIdsAsync(album, cancellationToken))
+                    .FirstOrDefault();
+            }
+
+            if (mediaId.HasValue)
+            {
                 IReadOnlyDictionary<Guid, MediaThumbnail>? thumbs = await _mediaStore
-                    .GetThumbnailsByMediaIdsAsync(
-                        new[] { album.CoverMediaId.Value },
-                        size,
-                        cancellationToken);
+                .GetThumbnailsByMediaIdsAsync(
+                    new[] { mediaId.Value },
+                    size,
+                    cancellationToken);
 
                 return thumbs.Values.FirstOrDefault();
             }
 
             return null;
-
         }
 
         public async Task<Album> AddItemsToAlbumAsync(
@@ -130,9 +141,9 @@ namespace MagicMedia
             return await GetMediaIdsAsync(album, cancellationToken);
         }
 
-        public Task<IEnumerable<Guid>> GetMediaIdsAsync(
-        Album album,
-        CancellationToken cancellationToken)
+        public async Task<IEnumerable<Guid>> GetMediaIdsAsync(
+            Album album,
+            CancellationToken cancellationToken)
         {
             HashSet<Guid> ids = new();
 
@@ -143,10 +154,18 @@ namespace MagicMedia
                     case AlbumIncludeType.Ids:
                         ids.AddRange(include.MediaIds);
                         break;
+                    case AlbumIncludeType.Folder:
+
+                        foreach (var folder in include.Folders!)
+                        {
+                            IEnumerable<Guid> folderIds = await _mediaStore.GetIdsByFolderAsync(folder, cancellationToken);
+                            ids.AddRange(folderIds);
+                        }
+                        break;
                 }
             }
 
-            return Task.FromResult((IEnumerable<Guid>)ids);
+            return ids;
         }
 
         public async Task<Album> UpdateAlbumAsync(

@@ -8,6 +8,7 @@ namespace MagicMedia
     public interface IAlbumSummaryService
     {
         Task<Album> BuildAsync(Album album, CancellationToken cancellationToken);
+        Task UpdateAllAsync(CancellationToken cancellationToken);
         Task<Album> UpdateAsync(Guid id, CancellationToken cancellationToken);
     }
 }

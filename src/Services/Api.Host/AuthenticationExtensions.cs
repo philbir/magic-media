@@ -5,12 +5,49 @@ using MagicMedia.Api;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 
 namespace MagicMedia
 {
+    public static class AuthorizationExtensions
+    {
+        public static IServiceCollection AddAuthorization(
+            this IServiceCollection services,
+            IWebHostEnvironment env)
+        {
+            services.AddAuthorization(c =>
+            {
+                if (env.IsDevelopment())
+                {
+                    c.AddPolicy("ApiAccess", new AuthorizationPolicyBuilder()
+                        .RequireAssertion(_ => true)
+                        .Build());
+
+                    //c.DefaultPolicy = new AuthorizationPolicyBuilder()
+                    //    .RequireAssertion(_ => true)
+                    //    .Build();
+                }
+                else
+                {
+                    c.AddPolicy("ApiAccess", new AuthorizationPolicyBuilder()
+                        .RequireAuthenticatedUser()
+                        .Build());
+
+                    //c.DefaultPolicy = new AuthorizationPolicyBuilder()
+                    //    .RequireAuthenticatedUser()
+                    //    .Build();
+                }
+            });
+
+            return services;
+        }
+    }
+
     public static class AuthenticationExtensions
     {
         public static AuthenticationBuilder AddAuthentication(

@@ -2,14 +2,15 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using HotChocolate.AspNetCore.Authorization;
 using MagicMedia.Face;
 using MagicMedia.Store;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MagicMedia.Api.Controllers
 {
+    [Authorize("ApiAccess")]
     [Route("api/media")]
     public class MediaController : Controller
     {

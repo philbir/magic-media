@@ -1,10 +1,12 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MagicMedia.Api.Controllers
 {
+    [Authorize("ApiAccess")]
     [Route("api/video")]
     public class VideoController : Controller
     {
@@ -22,7 +24,6 @@ namespace MagicMedia.Api.Controllers
             MediaStream? mediaStream = _videoPlayerService.GetVideoPreview(id, cancellationToken);
             return new FileStreamResult(mediaStream.Stream, mediaStream.MimeType);
         }
-
 
         [Route("{id}")]
         [HttpGet]

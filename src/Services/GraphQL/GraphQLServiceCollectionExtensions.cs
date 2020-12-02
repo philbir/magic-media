@@ -1,4 +1,5 @@
 using HotChocolate.Execution.Configuration;
+using HotChocolate.Types;
 using MagicMedia.GraphQL;
 using MagicMedia.GraphQL.DataLoaders;
 using MagicMedia.GraphQL.Face;

@@ -18,9 +18,12 @@ namespace MagicMedia.Api
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        private readonly IWebHostEnvironment _env;
+
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
+            _env = env;
         }
 
         public IConfiguration Configuration { get; }
@@ -38,19 +41,13 @@ namespace MagicMedia.Api
             services.AddMvc();
             services.AddSignalR();
 
-
+            services.AddAuthorization(_env);
             services.ConfigureSameSiteCookies();
             services.AddAuthentication(Configuration);
-
-            services.AddAuthorization(o => o.AddPolicy("Read", p =>
-            {
-                p.RequireClaim("scope", "api.magic.read");
-            }));
         }
 
         public void Configure(
             IApplicationBuilder app,
-            IWebHostEnvironment env,
             IBusControl busControl)
         {
             busControl.Start();
@@ -58,7 +55,7 @@ namespace MagicMedia.Api
             app.UseDefaultForwardedHeaders();
             app.UseCookiePolicy();
 
-            if (env.IsDevelopment())
+            if (_env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
@@ -76,18 +73,7 @@ namespace MagicMedia.Api
 
             app.UseAuthentication();
             app.UseAuthorization();
-
-            app.Use(async (context, next) =>
-            {
-                if (!context.User.Identity.IsAuthenticated)
-                {
-                    await context.ChallengeAsync();
-                }
-                else
-                {
-                    await next();
-                }
-            });
+            app.UseMiddleware<EnsureAuthenticatedMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {

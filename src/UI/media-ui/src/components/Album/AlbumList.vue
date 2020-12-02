@@ -1,10 +1,10 @@
 <template>
   <div>
     <v-container>
-      <v-row style="overflow-x: auto; height: 600px">
+      <v-row style="overflow-x: auto; width: 100%; height: 90vh">
         <v-col v-for="album in albums" :key="album.id" sm="3" lg="4">
           <v-card width="400">
-            <v-img height="150" :src="album.thumbnail.dataUrl"></v-img>
+            <v-img height="150" :src="imageUrl(album)"></v-img>
 
             <v-card-title class="font-weight-bold">
               <div class="country-flag-container">
@@ -67,6 +67,13 @@ export default {
     },
   },
   methods: {
+    imageUrl: function (album) {
+      if (album.thumbnail) {
+        return album.thumbnail.dataUrl;
+      } else {
+        return null;
+      }
+    },
     editClick: function (id) {
       this.editAlbumId = id;
       this.showEditDialog = true;

@@ -58,6 +58,20 @@ namespace Worker
 
             await scheduler.ScheduleJob(job, trigger, cancellationToken);
 
+
+            IJobDetail albumJob = JobBuilder
+                .Create<UpdateAllAlbumSummaryJob>()
+                .WithIdentity("UpdateAllAlbums")
+                .Build();
+
+            ITrigger albumTrigger = TriggerBuilder
+                .Create()
+                .WithIdentity("UpdateAllAlbums")
+                .WithSimpleSchedule( c => c.WithIntervalInHours(12))
+                .Build();
+
+            await scheduler.ScheduleJob(albumJob, albumTrigger, cancellationToken);
+
             await scheduler.Start();
         }
     }

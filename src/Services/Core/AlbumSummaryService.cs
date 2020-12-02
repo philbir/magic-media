@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Store;
+using Serilog;
 
 namespace MagicMedia
 {
@@ -23,10 +24,29 @@ namespace MagicMedia
         public async Task<Album> UpdateAsync(Guid id, CancellationToken cancellationToken)
         {
             Album album = await _mediaStore.Albums.GetByIdAsync(id, cancellationToken);
+
+            return await UpdateAsync(album, cancellationToken);
+        }
+
+        public async Task<Album> UpdateAsync(Album album, CancellationToken cancellationToken)
+        {
+            Log.Information("Updating album summary. {Id}", album.Id);
+
             album = await BuildAsync(album, cancellationToken);
             await _mediaStore.Albums.UpdateAsync(album, cancellationToken);
 
             return album;
+        }
+
+
+        public async Task UpdateAllAsync(CancellationToken cancellationToken)
+        {
+            IEnumerable<Album> all = await _albumService.GetAllAsync(cancellationToken);
+
+            foreach (Album? album in all)
+            {
+                await UpdateAsync(album, cancellationToken);
+            }
         }
 
         public async Task<Album> BuildAsync(
