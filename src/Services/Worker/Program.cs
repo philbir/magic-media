@@ -1,3 +1,4 @@
+using System;
 using MagicMedia;
 using MagicMedia.BingMaps;
 using MagicMedia.Discovery;
@@ -19,14 +20,34 @@ namespace Worker
     {
         public static void Main(string[] args)
         {
-            Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Debug()   
+            LoggerConfiguration logConfig = new LoggerConfiguration()
+                .MinimumLevel.Debug()
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+                .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
                 .Enrich.FromLogContext()
-                .WriteTo.Console()
-                .CreateLogger();
+                .Enrich.WithProperty("Service", "Worker")
+                .WriteTo.Console();
 
-            CreateHostBuilder(args).Build().Run();
+            var seqUrl = Environment.GetEnvironmentVariable("SEQ_URL");
+            if (seqUrl != null)
+            {
+                logConfig.WriteTo.Seq(seqUrl);
+            }
+
+            Log.Logger = logConfig.CreateLogger();
+            try
+            {
+                Log.Information("Starting Worker");
+                CreateHostBuilder(args).Build().Run();
+            }
+            catch (Exception ex)
+            {
+                Log.Fatal(ex, "Worker terminated unexpectedly");
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

@@ -22,7 +22,8 @@ namespace MagicMedia.Api.Controllers
         public IActionResult Preview(Guid id, CancellationToken cancellationToken)
         {
             MediaStream? mediaStream = _videoPlayerService.GetVideoPreview(id, cancellationToken);
-            return new FileStreamResult(mediaStream.Stream, mediaStream.MimeType);
+            return new FileStreamResult(mediaStream.Stream, mediaStream.MimeType)
+                { EnableRangeProcessing = true };
         }
 
         [Route("{id}")]
@@ -31,7 +32,8 @@ namespace MagicMedia.Api.Controllers
         {
             MediaStream? mediaStream = await _videoPlayerService.GetVideoAsync(id, cancellationToken);
 
-            return new FileStreamResult(mediaStream.Stream, $"video/{mediaStream.MimeType}");
+            return new FileStreamResult(mediaStream.Stream, $"video/{mediaStream.MimeType}")
+                { EnableRangeProcessing = true };
         }
     }
 }
