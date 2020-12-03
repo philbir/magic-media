@@ -95,6 +95,13 @@ namespace MagicMedia
                 else
                 {
                     var newFileName = GetFilename(request.Media, MediaFileType.Original);
+
+                    DirectoryInfo directory = new FileInfo(newFileName).Directory!;
+                    if (directory!.Exists)
+                    {
+                        directory.Create();
+                    }
+
                     File.Copy(request.Media.Source.Identifier, newFileName);
                 }
             }
