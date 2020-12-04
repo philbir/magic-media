@@ -1,3 +1,5 @@
+using Elastic.Apm.AspNetCore;
+using Elastic.Apm.DiagnosticSource;
 using MagicMedia.AspNetCore;
 using MagicMedia.BingMaps;
 using MagicMedia.Hubs;
@@ -5,10 +7,8 @@ using MagicMedia.Messaging;
 using MagicMedia.Store.MongoDb;
 using MagicMedia.Stores;
 using MassTransit;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -63,6 +63,9 @@ namespace MagicMedia.Api
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
+            app.UseElasticApm(Configuration,
+                    new HttpDiagnosticsSubscriber());
 
             app.UseSerilogRequestLogging();
 

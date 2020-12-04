@@ -20,21 +20,8 @@ namespace Worker
     {
         public static void Main(string[] args)
         {
-            LoggerConfiguration logConfig = new LoggerConfiguration()
-                .MinimumLevel.Information()
-                .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-                .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
-                .Enrich.FromLogContext()
-                .Enrich.WithProperty("Service", "Worker")
-                .WriteTo.Console();
+            LoggingConfig.Configure("Worker");
 
-            var seqUrl = Environment.GetEnvironmentVariable("SEQ_URL");
-            if (seqUrl != null)
-            {
-                logConfig.WriteTo.Seq(seqUrl);
-            }
-
-            Log.Logger = logConfig.CreateLogger();
             try
             {
                 Log.Information("Starting Worker");

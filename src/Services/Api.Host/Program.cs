@@ -1,9 +1,12 @@
 using System;
+using Elastic.Apm.SerilogEnricher;
+using Elastic.CommonSchema.Serilog;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
+using Serilog.Sinks.Elasticsearch;
 
 namespace MagicMedia.Api
 {
@@ -11,21 +14,8 @@ namespace MagicMedia.Api
     {
         public static void Main(string[] args)
         {
-            LoggerConfiguration logConfig = new LoggerConfiguration()
-                .MinimumLevel.Debug()
-                .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-                .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
-                .Enrich.FromLogContext()
-                .Enrich.WithProperty("Service", "Api")
-                .WriteTo.Console();
+            LoggingConfig.Configure("Api");
 
-            var seqUrl = Environment.GetEnvironmentVariable("SEQ_URL");
-            if (seqUrl != null)
-            {
-                logConfig.WriteTo.Seq(seqUrl);
-            }
-
-            Log.Logger = logConfig.CreateLogger();
             try
             {
                 Log.Information("Starting Api");
