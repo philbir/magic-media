@@ -101,6 +101,11 @@
       :show="showEditDialog"
       @close="showEditDialog = false"
     ></edit-media-dialog>
+
+    <GlobalEvents
+      @keydown="keyPressed"
+      :filter="(event, handler, eventName) => event.target.tagName !== 'INPUT'"
+    ></GlobalEvents>
   </v-app-bar>
 </template>
 
@@ -111,6 +116,7 @@ import AppBarNavMenu from "./AppBarNavMenu";
 import NotificationMenu from "./Common/NotificationMenu";
 import AddToAlbumDialog from "./Album/AddToAlbumDialog";
 import EditMediaDialog from "./Media/EditMediaDialog";
+import GlobalEvents from "vue-global-events";
 
 export default {
   name: "App",
@@ -121,6 +127,7 @@ export default {
     NotificationMenu,
     AddToAlbumDialog,
     EditMediaDialog,
+    GlobalEvents,
   },
 
   data: () => ({
@@ -179,6 +186,9 @@ export default {
     selectAll: function () {
       this.$store.dispatch("media/selectAll");
     },
+    clearSelected: function () {
+      this.$store.dispatch("media/clearSelected");
+    },
     resetFilters: function () {
       this.$store.dispatch("media/resetAllFilters");
     },
@@ -199,6 +209,24 @@ export default {
         case "DELETE":
           this.$store.dispatch("media/delete");
           break;
+      }
+    },
+    keyPressed: function (e) {
+      switch (e.which) {
+        case 69: //e
+          this.$store.dispatch("media/toggleEditMode");
+          break;
+        case 65: //a
+          if (this.$store.state.media.isEditMode) {
+            if (this.$store.state.media.selectedIndexes.length === 0) {
+              this.selectAll();
+            } else {
+              this.clearSelected();
+            }
+          }
+          break;
+        default:
+          console.log(e.which);
       }
     },
   },

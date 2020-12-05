@@ -1,4 +1,5 @@
 import Vue from "vue";
+/* eslint-disable no-debugger */
 
 import {
   deleteMedia,
@@ -37,6 +38,7 @@ const mediaModule = {
     currentMediaId: null,
     listLoading: false,
     selectedIndexes: [],
+    lastSelectedIndex: -1,
     hasMore: true,
     isEditMode: false,
     thumbnailSize: "M",
@@ -149,15 +151,36 @@ const mediaModule = {
         state.selectedIndexes = [];
       }
     },
-    SELECTED: function (state, idx) {
+    SELECTED: function (state, payload) {
+      const { idx, multi } = payload;
       const current = [...state.selectedIndexes];
-      const i = current.indexOf(idx);
-      if (i > -1) {
-        current.splice(i, 1);
-      } else {
-        current.push(idx);
-      }
+      const isSelected = state.selectedIndexes.includes(idx);
+      if (state.lastSelectedIndex > -1 && multi) {
+        if (idx > state.lastSelectedIndex) {
+          for (let i = state.lastSelectedIndex; i <= idx; i++) {
+            if (!isSelected) {
+              current.push(i);
+            }
 
+          }
+        } else {
+          for (let i = idx; i <= state.lastSelectedIndex; i++) {
+            if (!isSelected) {
+              current.push(i);
+            }
+
+          }
+        }
+      } else {
+
+        const i = current.indexOf(idx);
+        if (i > -1) {
+          current.splice(i, 1);
+        } else {
+          current.push(idx);
+        }
+      }
+      state.lastSelectedIndex = idx;
       Vue.set(state, "selectedIndexes", current);
     },
     ALL_SELECTED: function (state) {
@@ -165,6 +188,7 @@ const mediaModule = {
     },
     CLEAR_SELECTED: function (state) {
       state.selectedIndexes = [];
+      state.lastSelectedIndex = -1;
     },
     OPERATION_COMMITED: function (state) {
       var mediaIds = getMediaIdsFromIndexes(state);
@@ -394,11 +418,16 @@ const mediaModule = {
     toggleUploadDialog: function ({ commit }, open) {
       commit("UPLOAD_DIALOG_TOGGLED", open);
     },
-    toggleEditMode: function ({ commit }, value) {
+    toggleEditMode: function ({ commit, state }, value) {
+
+      if (value === undefined) {
+        value = !state.isEditMode
+      }
+
       commit("EDIT_MODE_TOGGLE", value);
     },
-    select: function ({ commit }, id) {
-      commit("SELECTED", id);
+    select: function ({ commit }, payload) {
+      commit("SELECTED", payload);
     },
     selectAll: function ({ commit }) {
       commit("ALL_SELECTED");

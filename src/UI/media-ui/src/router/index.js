@@ -13,7 +13,7 @@ import MediaAppBar from "../components/MediaAppBar";
 import MediaFilter from "../components/MediaFilter";
 import PersonFilter from "../components/PersonFilter";
 import FaceList from "../views/FaceList.vue";
-import MediaList from "../views/MediaList.vue";
+import MediaList from "../components/Media/MediaList";
 import PersonList from "../views/PersonList";
 import Playground from "../views/Playground";
 
