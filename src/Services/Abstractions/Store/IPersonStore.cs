@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using MagicMedia.Search;
 
 namespace MagicMedia.Store
 {
@@ -13,7 +14,7 @@ namespace MagicMedia.Store
         Task<IEnumerable<Person>> GetPersonsAsync(
             IEnumerable<Guid> ids,
             CancellationToken cancellationToken);
-
+        Task<SearchResult<Person>> SearchAsync(SearchPersonRequest request, CancellationToken cancellationToken);
         Task<Person> TryGetByNameAsync(string name, CancellationToken cancellationToken);
         Task<Person> UpdateAsync(Person person, CancellationToken cancellationToken);
     }

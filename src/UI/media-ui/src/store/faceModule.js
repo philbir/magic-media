@@ -20,6 +20,7 @@ const faceModule = {
     totalLoaded: 0,
     totalCount: 0,
     selectedIndexes: [],
+    lastSelectedIndex: -1,
     isEditMode: false,
     hasMore: true,
     filter: {
@@ -67,14 +68,34 @@ const faceModule = {
     SET_LIST_LOADING: function (state, isloading) {
       state.listLoading = isloading;
     },
-    SELECTED: function (state, idx) {
+    SELECTED: function (state, payload) {
+      const { idx, multi } = payload;
       const current = [...state.selectedIndexes];
-      const i = current.indexOf(idx);
-      if (i > -1) {
-        current.splice(i, 1);
+      const isSelected = state.selectedIndexes.includes(idx);
+      if (state.lastSelectedIndex > -1 && multi) {
+        if (idx > state.lastSelectedIndex) {
+          for (let i = state.lastSelectedIndex; i <= idx; i++) {
+            if (!isSelected) {
+              current.push(i);
+            }
+          }
+        } else {
+          for (let i = idx; i <= state.lastSelectedIndex; i++) {
+            if (!isSelected) {
+              current.push(i);
+            }
+
+          }
+        }
       } else {
-        current.push(idx);
+        const i = current.indexOf(idx);
+        if (i > -1) {
+          current.splice(i, 1);
+        } else {
+          current.push(idx);
+        }
       }
+      state.lastSelectedIndex = idx;
 
       Vue.set(state, "selectedIndexes", current);
     },
@@ -82,6 +103,7 @@ const faceModule = {
       state.isEditMode = value;
       if (!value) {
         state.selectedIndexes = [];
+        state.lastSelectedIndex = -1;
       }
     },
     ALL_SELECTED: function (state) {
@@ -145,8 +167,8 @@ const faceModule = {
     toggleEditMode: function ({ commit }, value) {
       commit("EDIT_MODE_TOGGLE", value);
     },
-    select: function ({ commit }, id) {
-      commit("SELECTED", id);
+    select: function ({ commit }, payload) {
+      commit("SELECTED", payload);
     },
     selectAll: function ({ commit }) {
       commit("ALL_SELECTED");
@@ -264,15 +286,25 @@ const faceModule = {
   },
   getters: {
     next: (state, getters, rootState) => step => {
+
+
       const currentId = rootState.media.current.id;
       const idx = state.list.findIndex(x => x.media.id == currentId);
-
+      let newIndex = idx;
       if (idx > -1) {
-        const newIndex = idx + step;
-        if (currentId !== state.list[newIndex].media.id) {
-          return state.list[newIndex].media.id;
+        let newId = null;
+        while (newId === null) {
+          newIndex = newIndex + step;
+
+          if (newIndex < 0 || newIndex > state.list.length) {
+            break;
+          }
+          if (currentId !== state.list[newIndex].media.id) {
+            newId = state.list[newIndex].media.id;
+          }
         }
-        return null;
+
+        return newId;
       }
     }
   }

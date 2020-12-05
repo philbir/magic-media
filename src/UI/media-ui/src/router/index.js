@@ -4,18 +4,18 @@ import VueRouter from "vue-router";
 import AlbumFilter from "../components/Album/AlbumFilter";
 import AlbumList from "../components/Album/AlbumList";
 import DefaultAppBar from "../components/DefaultAppBar";
-import FaceAppBar from "../components/FaceAppBar";
-import FaceFilter from "../components/FaceFilter";
+import FaceAppBar from "../components/Face/FaceAppBar";
+import FaceFilter from "../components/Face/FaceFilter";
 import MapView from "../components/Map/MapView";
 import MapAppBar from "../components/Map/MapAppBar";
 import MapFilter from "../components/Map/MapFilter";
-import MediaAppBar from "../components/MediaAppBar";
-import MediaFilter from "../components/MediaFilter";
-import PersonFilter from "../components/PersonFilter";
-import FaceList from "../views/FaceList.vue";
-import MediaList from "../views/MediaList.vue";
-import PersonList from "../views/PersonList";
-import Playground from "../views/Playground";
+import MediaAppBar from "../components/Media/MediaAppBar";
+import MediaFilter from "../components/Media/MediaFilter";
+import PersonFilter from "../components/Person/PersonFilter";
+import FaceList from "../components/Face/FaceList.vue";
+import MediaList from "../components/Media/MediaList";
+import PersonList from "../components/Person/PersonList";
+import Playground from "../components/Playground/Playground";
 
 Vue.use(VueRouter);
 

@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import { getFaceColor } from "../services/faceColor";
+import { getFaceColor } from "../../services/faceColor";
 
 export default {
   mounted() {

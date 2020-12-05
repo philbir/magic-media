@@ -171,7 +171,6 @@ export default {
   },
   watch: {
     mediaId: function (newValue) {
-      console.log("CHANGED");
       this.loadInfo(newValue);
     },
   },
@@ -315,7 +314,6 @@ export default {
   },
   methods: {
     async loadInfo(mediaId) {
-      console.log("LOADINFO", mediaId);
       if (mediaId) {
         var res = await getInfo(mediaId);
         this.media = res.data.mediaById;

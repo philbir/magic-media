@@ -17,7 +17,8 @@
 </template>
 
 <script>
-import FilterList from "./Common/FilterList";
+import FilterList from "../Common/FilterList";
+import { debounce } from "lodash";
 export default {
   components: { FilterList },
   created() {},
@@ -28,23 +29,25 @@ export default {
     };
   },
   watch: {
-    searchText: function (newValue) {
+    searchText: debounce(function (newValue) {
       this.$store.dispatch("person/filter", {
         searchText: newValue,
         groups: this.selectedGroups,
       });
-    },
+    }, 500),
   },
   computed: {
     groups: function () {
       return this.$store.state.person.groups;
     },
   },
-
   methods: {
     onSelectGroup: function (groups) {
       const selected = groups.map((x) => x.id);
-      this.$store.dispatch("person/filter", selected);
+      this.$store.dispatch("person/filter", {
+        searchText: this.searchText,
+        groups: selected,
+      });
     },
   },
 };

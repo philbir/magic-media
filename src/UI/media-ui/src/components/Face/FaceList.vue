@@ -53,7 +53,7 @@
 
 <script>
 import { debounce, chunk } from "lodash";
-import { getFaceColor } from "../services/faceColor";
+import { getFaceColor } from "../../services/faceColor";
 
 export default {
   components: {},
@@ -133,12 +133,23 @@ export default {
     },
     clickFace: function (face, e) {
       if (this.$store.state.face.isEditMode) {
-        this.$store.dispatch("face/select", face.idx);
+        this.$store.dispatch("face/select", {
+          idx: face.idx,
+          multi: e.shiftKey,
+        });
       } else {
         if (e.ctrlKey) {
           this.$store.dispatch("face/openEdit", face);
         } else {
-          this.$store.dispatch("media/show", face.media.id);
+          if (e.shiftKey) {
+            this.$store.dispatch("face/toggleEditMode", true);
+            this.$store.dispatch("face/select", {
+              idx: face.idx,
+              multi: false,
+            });
+          } else {
+            this.$store.dispatch("media/show", face.media.id);
+          }
         }
       }
     },

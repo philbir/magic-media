@@ -40,8 +40,8 @@
 
 <script>
 import AppPreLoader from "./components/AppPreLoader";
-import Upload from "./components/Upload";
-import MediaViewer from "./components/MediaViewer";
+import Upload from "./components/Media/Upload";
+import MediaViewer from "./components/Media/MediaViewer";
 import VuePageTransition from "vue-page-transition";
 import Vue from "vue";
 import { mediaOperationTypeMap } from "./services/mediaOperationService";
@@ -56,11 +56,9 @@ export default {
     const self = this;
     this.$socket.on("mediaOperationCompleted", (data) => {
       self.$store.dispatch("snackbar/mediaOperationCompleted", data);
-      console.log(data);
     });
     this.$socket.on("mediaOperationRequestCompleted", (data) => {
       self.$store.dispatch("snackbar/mediaOperationRequestCompleted", data);
-      console.log(data);
 
       this.$store.dispatch("media/getFolderTree");
 

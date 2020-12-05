@@ -57,7 +57,7 @@
 </template>
 
 <script>
-import FilterList from "./Common/FilterList";
+import FilterList from "../Common/FilterList";
 export default {
   components: { FilterList },
   created() {},

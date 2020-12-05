@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using HotChocolate;
 using HotChocolate.Types;
+using MagicMedia.Search;
 using MagicMedia.Store;
 
 namespace MagicMedia.GraphQL
@@ -16,6 +18,13 @@ namespace MagicMedia.GraphQL
         {
             _personService = personService;
             _groupService = groupService;
+        }
+
+        public async Task<SearchResult<Person>> SearchPersonsAsync(
+            SearchPersonRequest input,
+            CancellationToken cancellationToken)
+        {
+            return await _personService.SearchAsync(input, cancellationToken);
         }
 
         public async Task<IEnumerable<Person>> GetPersonsAsync(CancellationToken cancellationToken)

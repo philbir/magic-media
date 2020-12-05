@@ -19,7 +19,7 @@
           :key="i"
           class="media-item"
           :class="{ selected: isSelected(box.media.idx) }"
-          v-on:click="selectMedia(box.media)"
+          v-on:click="selectMedia(box.media, $event)"
           @mouseover="hover(true, box.media.idx)"
           @mouseleave="hover(false, box.media.idx)"
           :style="{
@@ -48,7 +48,7 @@
 
 <script>
 import justified from "justified-layout";
-import { mediaListViewMap } from "../services/mediaListViewMap";
+import { mediaListViewMap } from "../../services/mediaListViewMap";
 import { debounce } from "lodash";
 
 export default {
@@ -144,11 +144,22 @@ export default {
     loadMore() {
       this.$store.dispatch("media/loadMore");
     },
-    selectMedia: function (media) {
+    selectMedia: function (media, e) {
       if (this.$store.state.media.isEditMode) {
-        this.$store.dispatch("media/select", media.idx);
+        this.$store.dispatch("media/select", {
+          idx: media.idx,
+          multi: e.shiftKey,
+        });
       } else {
-        this.$store.dispatch("media/show", media.id);
+        if (e.shiftKey) {
+          this.$store.dispatch("media/toggleEditMode", true);
+          this.$store.dispatch("media/select", {
+            idx: media.idx,
+            multi: false,
+          });
+        } else {
+          this.$store.dispatch("media/show", media.id);
+        }
       }
     },
     selectAll: function () {
