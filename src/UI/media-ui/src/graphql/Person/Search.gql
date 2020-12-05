@@ -1,0 +1,26 @@
+query searchPersons($input: SearchPersonRequestInput!) {
+ searchPersons(input: $input) {
+    
+    items {
+      id
+      name
+      dateOfBirth
+      groups{
+        id
+        name
+      }
+      thumbnail{
+
+        dataUrl
+      }
+      summary{
+        computerCount,
+        mediaCount
+        humanCount
+        validatedCount
+      }
+    },
+    totalCount
+    hasMore
+  }
+}

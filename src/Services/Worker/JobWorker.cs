@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Jobs;
@@ -14,15 +18,21 @@ namespace Worker
         private readonly ISchedulerFactory _schedulerFactory;
         private readonly IJobFactory _jobFactory;
         private readonly IFFmpegInitializer _fFmpegInitializer;
+        private readonly IEnumerable<JobScheduleOptions> _scheduleOptions;
+        private readonly IEnumerable<IJob> _jobs;
 
         public JobWorker(
             ISchedulerFactory schedulerFactory,
             IJobFactory jobFactory,
-            IFFmpegInitializer fFmpegInitializer)
+            IFFmpegInitializer fFmpegInitializer,
+            IEnumerable<JobScheduleOptions> scheduleOptions,
+            IEnumerable<IJob> jobs)
         {
             _schedulerFactory = schedulerFactory;
             _jobFactory = jobFactory;
             _fFmpegInitializer = fFmpegInitializer;
+            _scheduleOptions = scheduleOptions;
+            _jobs = jobs;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -44,31 +54,47 @@ namespace Worker
 
             scheduler.JobFactory = _jobFactory;
 
-            IJobDetail job = JobBuilder
-                .Create<ImportNewMediaJob>()
-                .WithIdentity("ImportMedia")
-                .Build();
+            foreach (IJob job in _jobs)
+            {
+                Type jobType = job.GetType();
+                Log.Information("Scheduling job {Name}", jobType.Name);
 
-            ITrigger trigger = TriggerBuilder
-                .Create()
-                .WithIdentity("ImportMedia")
-                .WithSimpleSchedule(c => c.WithIntervalInMinutes(30))
-                .Build();
+                JobScheduleOptions? options = _scheduleOptions
+                    .FirstOrDefault(x => x.Name == jobType.Name);
 
-            await scheduler.ScheduleJob(job, trigger, cancellationToken);
+                if (options != null && options.Enabled)
+                {
+                    IJobDetail jobDetail = JobBuilder
+                        .Create(jobType)
+                        .WithIdentity(jobType.Name)
+                        .Build();
 
-            IJobDetail albumJob = JobBuilder
-                .Create<UpdateAllAlbumSummaryJob>()
-                .WithIdentity("UpdateAllAlbums")
-                .Build();
+                    TriggerBuilder triggerBuilder = TriggerBuilder
+                        .Create()
+                        .WithIdentity(jobType.Name);
 
-            ITrigger albumTrigger = TriggerBuilder
-                .Create()
-                .WithIdentity("UpdateAllAlbums")
-                .WithSimpleSchedule( c => c.WithIntervalInHours(12))
-                .Build();
+                    if (options.Intervall.HasValue)
+                    {
+                        triggerBuilder.WithSimpleSchedule(s => s.WithInterval(options.Intervall.Value));
+                        Log.Information("Schedule job {Name} with intervall: {Intervall}",
+                            jobType.Name,
+                            options.Intervall);
+                    }
+                    else
+                    {
+                        triggerBuilder.WithCronSchedule(options.Cron!);
+                        Log.Information("Schedule job {Name} with cron expression: {Cron}",
+                            jobType.Name,
+                            options.Cron);
+                    }
 
-            await scheduler.ScheduleJob(albumJob, albumTrigger, cancellationToken);
+                    await scheduler.ScheduleJob(jobDetail, triggerBuilder.Build(), cancellationToken);
+                }
+                else
+                {
+                    Log.Information("Job {Name} is not enabled", jobType.Name);
+                }
+            }
 
             await scheduler.Start();
         }

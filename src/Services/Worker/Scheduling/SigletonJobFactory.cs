@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using Quartz;
 using Quartz.Impl;
@@ -16,8 +18,9 @@ namespace MagicMedia.Scheduling
 
         public IJob NewJob(TriggerFiredBundle bundle, IScheduler scheduler)
         {
-            return _serviceProvider.GetRequiredService(bundle.JobDetail.JobType) as IJob ??
-                throw new InvalidOperationException();
+            IEnumerable<IJob> jobs = _serviceProvider.GetRequiredService<IEnumerable<IJob>>();
+
+            return jobs.Single(x => x.GetType() == bundle.JobDetail.JobType);
         }
 
         public void ReturnJob(IJob job)

@@ -1,4 +1,4 @@
-#import "./UserErrorFragment.gql"
+#import "../UserErrorFragment.gql"
 #import "./PersonFragment.gql"
 
 mutation updatePerson($input: UpdatePersonRequestInput!) {

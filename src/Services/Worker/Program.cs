@@ -12,7 +12,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
-using Serilog.Events;
 
 namespace Worker
 {
@@ -62,11 +61,10 @@ namespace Worker
                         .AddMongoDbStore()
                         .AddFileSystemStore()
                         .AddFileSystemDiscovery()
-                        .AddWorkerMessaging();
+                        .AddWorkerMessaging()
+                        .AddScheduler()
+                        .AddJobs();
 
-                    services.AddScheduler();
-                    services.AddSingleton<ImportNewMediaJob>();
-                    services.AddSingleton<UpdateAllAlbumSummaryJob>();
                     services.AddMassTransitHostedService();
                     services.AddHostedService<JobWorker>();
                 });

@@ -1,8 +1,8 @@
 import apollo from "../apollo";
-import QUERY_ALL_PERSONS from "../graphql/AllPersons.gql";
-import QUERY_ALL_GROUPS from "../graphql/AllGroups.gql";
-import MUTATION_UPDATE_PERSON from "../graphql/UpdatePersonRequest.gql";
-import MUTATION_CREATE_GROUP from "../graphql/CreateGroup.gql";
+import QUERY_ALL_PERSONS from "../graphql/Person/AllPersons.gql";
+import QUERY_ALL_GROUPS from "../graphql/Person/AllGroups.gql";
+import MUTATION_UPDATE_PERSON from "../graphql/Person/UpdatePersonRequest.gql";
+import MUTATION_CREATE_GROUP from "../graphql/Person/CreateGroup.gql";
 
 export const getAllPersons = async () => {
   return await apollo.query({

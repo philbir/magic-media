@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using MagicMedia.Search;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 
@@ -31,6 +34,35 @@ namespace MagicMedia.Store.MongoDb
         {
             return await _mediaStoreContext.Persons.AsQueryable()
                 .ToListAsync(cancellationToken);
+        }
+
+        public async Task<SearchResult<Person>> SearchAsync(
+            SearchPersonRequest request,
+            CancellationToken cancellationToken)
+        {
+            FilterDefinition<Person> filter = Builders<Person>.Filter.Empty;
+
+            if (!string.IsNullOrWhiteSpace(request.SearchText))
+            {
+                filter &= Builders<Person>.Filter.Regex(
+                    x => x.Name,
+                    new BsonRegularExpression($".*{Regex.Escape(request.SearchText)}.*", "i"));
+            }
+
+            if (request.Groups is { } groups && groups.Any())
+            {
+                filter = filter & Builders<Person>.Filter.In(nameof(Person.Groups), groups);
+            }
+
+            IFindFluent<Person, Person>? cursor = _mediaStoreContext.Persons.Find(filter);
+            long totalCount = await cursor.CountDocumentsAsync(cancellationToken);
+
+            List<Person> persons = await cursor
+                .Skip(request.PageNr * request.PageSize)
+                .Limit(request.PageSize)
+                .ToListAsync();
+
+            return new SearchResult<Person>(persons, (int)totalCount);
         }
 
         public async Task<Person> GetByIdAsnc(
