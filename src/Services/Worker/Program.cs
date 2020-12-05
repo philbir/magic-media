@@ -1,3 +1,4 @@
+using System;
 using MagicMedia;
 using MagicMedia.BingMaps;
 using MagicMedia.Discovery;
@@ -19,14 +20,21 @@ namespace Worker
     {
         public static void Main(string[] args)
         {
-            Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Debug()   
-                .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-                .Enrich.FromLogContext()
-                .WriteTo.Console()
-                .CreateLogger();
+            LoggingConfig.Configure("Worker");
 
-            CreateHostBuilder(args).Build().Run();
+            try
+            {
+                Log.Information("Starting Worker");
+                CreateHostBuilder(args).Build().Run();
+            }
+            catch (Exception ex)
+            {
+                Log.Fatal(ex, "Worker terminated unexpectedly");
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

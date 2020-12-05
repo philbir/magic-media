@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Store;
 using NGeoHash;
+using Serilog;
 using Xabe.FFmpeg;
 using MetadataEx = MetadataExtractor;
 
@@ -28,6 +29,8 @@ namespace MagicMedia.Video
             string filename,
             CancellationToken cancellationToken)
         {
+            Log.Information("Extract VideoData for: {Filename}", filename);
+
             ExtractVideoDataResult result = new ExtractVideoDataResult()
             {
                 Meta = new MediaMetadata()

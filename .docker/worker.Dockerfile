@@ -28,5 +28,8 @@ RUN dotnet publish "src/Services/Worker/Worker.csproj" -c Release -o /app/publis
 
 FROM base AS final
 WORKDIR /app
+
+RUN apt-get update && apt-get install ffmpeg --yes
+
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "MagicMedia.Worker.dll"]

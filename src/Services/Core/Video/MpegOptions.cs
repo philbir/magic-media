@@ -17,23 +17,30 @@ namespace MagicMedia.Video
 
         public async Task Intitialize()
         {
-            Log.Information("Initialize FFmpeg");
+            var location = GetDirectory();
+
+            Log.Information("Initialize FFmpeg with location: {Location}", location);
             if (_options.AutoDownload)
             {
                 Log.Information("FFmpeg GetLatestVersion");
                 await FFmpegDownloader.GetLatestVersion(
                     FFmpegVersion.Official,
-                    GetDirectory());
+                    location);
             }
-            else
-            {
-                FFmpeg.SetExecutablesPath(GetDirectory());
-            }
+
+            FFmpeg.SetExecutablesPath(location);
         }
 
         private string GetDirectory()
         {
-            return Path.Combine(Directory.GetCurrentDirectory(), _options.Location ?? "ffmpeg");
+            if (_options.Location == null)
+            {
+                return Path.Combine(Directory.GetCurrentDirectory(), "ffmpeg");
+            }
+            else
+            {
+                return _options.Location;
+            }
         }
     }
 }

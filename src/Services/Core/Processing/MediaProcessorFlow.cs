@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Serilog;
 
 namespace MagicMedia.Processing
 {
@@ -25,6 +26,7 @@ namespace MagicMedia.Processing
             foreach (string taskName in Tasks)
             {
                 IMediaProcessorTask instance = _taskFactory.GetTask(taskName);
+                Log.Information("Execute Task {Name}", taskName);
                 await instance.ExecuteAsync(context, cancellationToken);
             }
         }

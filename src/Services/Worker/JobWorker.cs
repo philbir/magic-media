@@ -1,14 +1,11 @@
+using System.Threading;
+using System.Threading.Tasks;
 using MagicMedia.Jobs;
-using MagicMedia.Processing;
 using MagicMedia.Video;
-using MassTransit;
 using Microsoft.Extensions.Hosting;
 using Quartz;
 using Quartz.Spi;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using Xabe.FFmpeg;
+using Serilog;
 
 namespace Worker
 {
@@ -38,6 +35,8 @@ namespace Worker
 
         public async override Task StartAsync(CancellationToken cancellationToken)
         {
+            Log.Information("Starting JobWorker...");
+
             await _fFmpegInitializer.Intitialize();
 
             IScheduler scheduler = await _schedulerFactory
@@ -57,7 +56,6 @@ namespace Worker
                 .Build();
 
             await scheduler.ScheduleJob(job, trigger, cancellationToken);
-
 
             IJobDetail albumJob = JobBuilder
                 .Create<UpdateAllAlbumSummaryJob>()
