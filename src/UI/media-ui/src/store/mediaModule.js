@@ -1,5 +1,4 @@
 import Vue from "vue";
-/* eslint-disable no-debugger */
 
 import {
   deleteMedia,
@@ -231,7 +230,6 @@ const mediaModule = {
     },
     async show({ commit }, id) {
       try {
-        console.log("SHOW", id);
         const res = await getById(id);
         commit("DETAILS_LOADED", res.data.mediaById);
       } catch (ex) {
@@ -448,9 +446,12 @@ const mediaModule = {
     next: state => step => {
       const currentId = state.current.id;
       const idx = state.list.findIndex(x => x.id == currentId);
+
       if (idx > -1) {
         const newIndex = idx + step;
-        if (newIndex > state.list.length) return null;
+        if (typeof state.list[newIndex] === 'undefined') {
+          return null;
+        }
         return state.list[newIndex].id;
       }
 

@@ -286,15 +286,25 @@ const faceModule = {
   },
   getters: {
     next: (state, getters, rootState) => step => {
+
+
       const currentId = rootState.media.current.id;
       const idx = state.list.findIndex(x => x.media.id == currentId);
-
+      let newIndex = idx;
       if (idx > -1) {
-        const newIndex = idx + step;
-        if (currentId !== state.list[newIndex].media.id) {
-          return state.list[newIndex].media.id;
+        let newId = null;
+        while (newId === null) {
+          newIndex = newIndex + step;
+
+          if (newIndex < 0 || newIndex > state.list.length) {
+            break;
+          }
+          if (currentId !== state.list[newIndex].media.id) {
+            newId = state.list[newIndex].media.id;
+          }
         }
-        return null;
+
+        return newId;
       }
     }
   }
