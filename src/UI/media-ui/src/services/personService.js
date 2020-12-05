@@ -1,6 +1,7 @@
 import apollo from "../apollo";
 import QUERY_ALL_PERSONS from "../graphql/Person/AllPersons.gql";
 import QUERY_ALL_GROUPS from "../graphql/Person/AllGroups.gql";
+import QUERY_SEARCH from "../graphql/Person/search.gql";
 import MUTATION_UPDATE_PERSON from "../graphql/Person/UpdatePersonRequest.gql";
 import MUTATION_CREATE_GROUP from "../graphql/Person/CreateGroup.gql";
 
@@ -15,6 +16,13 @@ export const getAllGroups = async () => {
   return await apollo.query({
     query: QUERY_ALL_GROUPS,
     variables: {}
+  });
+};
+
+export const search = async (input) => {
+  return await apollo.query({
+    query: QUERY_SEARCH,
+    variables: { input }
   });
 };
 
