@@ -118,8 +118,8 @@
 </template>
 
 <script>
-import FolderTree from "./FolderTree";
-import FilterList from "./Common/FilterList";
+import FolderTree from "../FolderTree";
+import FilterList from "../Common/FilterList";
 
 export default {
   components: { FolderTree, FilterList },

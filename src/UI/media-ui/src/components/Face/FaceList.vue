@@ -53,7 +53,7 @@
 
 <script>
 import { debounce, chunk } from "lodash";
-import { getFaceColor } from "../services/faceColor";
+import { getFaceColor } from "../../services/faceColor";
 
 export default {
   components: {},

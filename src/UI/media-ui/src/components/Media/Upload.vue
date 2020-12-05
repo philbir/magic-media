@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { uploadFile } from "../services/uploadFileService";
+import { uploadFile } from "../../services/uploadFileService";
 
 export default {
   computed: {

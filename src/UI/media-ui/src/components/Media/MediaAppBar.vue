@@ -112,10 +112,10 @@
 <script>
 import Upload from "./Upload";
 import MoveMediaDialog from "./MoveMediaDialog";
-import AppBarNavMenu from "./AppBarNavMenu";
-import NotificationMenu from "./Common/NotificationMenu";
-import AddToAlbumDialog from "./Album/AddToAlbumDialog";
-import EditMediaDialog from "./Media/EditMediaDialog";
+import AppBarNavMenu from "../AppBarNavMenu";
+import NotificationMenu from "../Common/NotificationMenu";
+import AddToAlbumDialog from "../Album/AddToAlbumDialog";
+import EditMediaDialog from "./EditMediaDialog";
 import GlobalEvents from "vue-global-events";
 
 export default {

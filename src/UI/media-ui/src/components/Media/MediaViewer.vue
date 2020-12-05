@@ -194,10 +194,10 @@
 <script>
 import FilmStripe from "./FilmStripe.vue";
 //import debounce from "lodash";
-import { parsePath } from "../services/mediaService";
-import MediaQuickInfo from "./Media/MediaQuickInfo.vue";
-import MediaInfo from "./Media/MediaInfo";
-import FaceBox from "./FaceBox.vue";
+import { parsePath } from "../../services/mediaService";
+import MediaQuickInfo from "./MediaQuickInfo.vue";
+import MediaInfo from "./MediaInfo";
+import FaceBox from "../Face/FaceBox";
 import GlobalEvents from "vue-global-events";
 
 export default {

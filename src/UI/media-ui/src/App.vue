@@ -40,8 +40,8 @@
 
 <script>
 import AppPreLoader from "./components/AppPreLoader";
-import Upload from "./components/Upload";
-import MediaViewer from "./components/MediaViewer";
+import Upload from "./components/Media/Upload";
+import MediaViewer from "./components/Media/MediaViewer";
 import VuePageTransition from "vue-page-transition";
 import Vue from "vue";
 import { mediaOperationTypeMap } from "./services/mediaOperationService";

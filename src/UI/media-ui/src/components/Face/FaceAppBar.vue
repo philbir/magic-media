@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import AppBarNavMenu from "./AppBarNavMenu";
+import AppBarNavMenu from "../AppBarNavMenu";
 
 export default {
   name: "App",

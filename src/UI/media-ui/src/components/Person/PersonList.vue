@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import EditPersonDialog from "../components/EditPersonDialog";
+import EditPersonDialog from "./EditPersonDialog";
 
 export default {
   components: {
