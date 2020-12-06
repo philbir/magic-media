@@ -32,6 +32,7 @@ namespace MagicMedia
             services.AddSingleton<IDateTakenParser, DateTakenParser>();
             services.AddSingleton<ICameraService, CameraService>();
             services.AddSingleton<IPersonService, PersonService>();
+            services.AddSingleton<IPersonTimelineService, PersonTimelineService>();
             services.AddSingleton<IGroupService, GroupService>();
             services.AddSingleton<IFaceService, FaceService>();
 

@@ -44,7 +44,11 @@
             </v-card-text>
 
             <v-card-actions>
+              <v-btn outlined rounded icon @click="openTimeline(person)">
+                <v-icon> mdi-timeline-clock-outline </v-icon>
+              </v-btn>
               <v-spacer></v-spacer>
+
               <v-btn outlined rounded text @click="editClick(person.id)">
                 Edit
               </v-btn>
@@ -96,6 +100,10 @@ export default {
     editClick: function (id) {
       this.editPersonId = id;
       this.showEditDialog = true;
+    },
+    openTimeline: function (person) {
+      this.$router.push({ name: "PersonTimeline", params: { id: person.id } });
+      console.log(person);
     },
   },
 };

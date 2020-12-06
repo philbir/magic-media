@@ -1,0 +1,17 @@
+query personTimeline($id: Uuid!) {
+  person(id: $id) {
+    name
+    timeline(itemsPerYear: 9) {
+      ages {
+        age
+        faces {
+          id,
+          mediaId,
+          thumbnail {
+            dataUrl
+          }
+        }
+      }
+    }
+  }
+}

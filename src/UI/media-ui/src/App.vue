@@ -3,7 +3,7 @@
     <Upload :show="showUpload"></Upload>
     <v-app>
       <router-view name="appbar"></router-view>
-      <v-navigation-drawer clipped v-if="!isFullscreen" app>
+      <v-navigation-drawer clipped v-if="showSidebar" app>
         <router-view name="left"></router-view>
       </v-navigation-drawer>
 
@@ -122,7 +122,6 @@ export default {
         },
       ];
     },
-
     editModeText: function () {
       return this.$store.state.media.isEditMode ? "Edit" : "View";
     },
@@ -162,6 +161,13 @@ export default {
     },
     loading: function () {
       return this.$store.state.media.listLoading;
+    },
+    showSidebar: function () {
+      if (this.$route.meta.hideSidebar) {
+        return false;
+      }
+
+      return true;
     },
     isFullscreen: function () {
       if (this.$route.meta.fullscreen) {

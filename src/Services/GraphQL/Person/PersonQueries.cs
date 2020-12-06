@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -35,6 +36,11 @@ namespace MagicMedia.GraphQL
         public async Task<IEnumerable<Group>> GetGroupsAsync(CancellationToken cancellationToken)
         {
             return await _groupService.GetAllAsync(cancellationToken);
+        }
+
+        public async Task<Person> GetPersonAsync(Guid id, CancellationToken cancellationToken)
+        {
+            return await _personService.GetByIdAsync(id, cancellationToken);
         }
     }
 }
