@@ -11,4 +11,12 @@ namespace MagicMedia.Extensions
                 MediaOrientation.Portrait;
         }
     }
+
+    public static class ImageBoxExtensions
+    {
+        public static int GetResolution(this ImageBox box)
+        {
+            return (box.Bottom - box.Top) * (box.Right - box.Left);
+        }
+    }
 }

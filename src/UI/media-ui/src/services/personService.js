@@ -2,6 +2,7 @@ import apollo from "../apollo";
 import QUERY_ALL_PERSONS from "../graphql/Person/AllPersons.gql";
 import QUERY_ALL_GROUPS from "../graphql/Person/AllGroups.gql";
 import QUERY_SEARCH from "../graphql/Person/Search.gql";
+import QUERY_TIMELINE from "../graphql/Person/Timeline.gql";
 import MUTATION_UPDATE_PERSON from "../graphql/Person/UpdatePersonRequest.gql";
 import MUTATION_CREATE_GROUP from "../graphql/Person/CreateGroup.gql";
 
@@ -25,6 +26,14 @@ export const search = async (input) => {
     variables: { input }
   });
 };
+
+export const getTimeline = async (id) => {
+  return await apollo.query({
+    query: QUERY_TIMELINE,
+    variables: { id }
+  });
+};
+
 
 export const updatePerson = async input => {
   return await apollo.mutate({

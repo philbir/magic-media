@@ -9,13 +9,16 @@ namespace MagicMedia.GraphQL
     public class PersonResolvers
     {
         private readonly IPersonService _personService;
+        private readonly IPersonTimelineService _personTimelineService;
         private readonly IGroupService _groupService;
 
         public PersonResolvers(
             IPersonService personService,
+            IPersonTimelineService personTimelineService,
             IGroupService groupService)
         {
             _personService = personService;
+            _personTimelineService = personTimelineService;
             _groupService = groupService;
         }
 
@@ -37,6 +40,17 @@ namespace MagicMedia.GraphQL
         {
             return await _personService.TryGetFaceThumbnailAsync(
                 person.Id,
+                cancellationToken);
+        }
+
+        public async Task<PersonTimeline> GetTimelineAsync(
+            Person person,
+            int itemsPerYear,
+            CancellationToken cancellationToken)
+        {
+            return await _personTimelineService.BuildTimelineAsync(
+                person.Id,
+                itemsPerYear,
                 cancellationToken);
         }
     }

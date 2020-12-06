@@ -16,7 +16,7 @@ const magicPlugin = {
   install: Vue => {
     Vue.prototype.$magic = {
       self: this,
-      snack: function(text, type = "INFO") {
+      snack: function (text, type = "INFO") {
         store.dispatch("snackbar/addSnack", {
           text,
           type
@@ -30,16 +30,19 @@ Vue.use(VueCoreVideoPlayer);
 Vue.use(magicPlugin);
 Vue.use(signalrHub);
 Vue.use(VueMask);
+
+console.log('GOOGLE', process.env.VUE_APP_GOOGLE_MAPS_KEY)
+
 Vue.use(GmapVue, {
   load: {
-    key: "AIzaSyDScX2p_g7Qqj1pFzQkA999SevEOi6u1c8",
+    key: process.env.VUE_APP_GOOGLE_MAPS_KEY,
     libraries: "places"
   },
 
   installComponents: true
 });
 
-Vue.filter("dateformat", function(value, format = "DATE_SHORT") {
+Vue.filter("dateformat", function (value, format = "DATE_SHORT") {
   if (!value) return "";
 
   var date = DateTime.fromISO(value);
@@ -48,7 +51,7 @@ Vue.filter("dateformat", function(value, format = "DATE_SHORT") {
   }
   return "";
 });
-Vue.filter("toISODate", function(value) {
+Vue.filter("toISODate", function (value) {
   if (!value) return "";
 
   var date = DateTime.fromISO(value);

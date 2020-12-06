@@ -16,6 +16,7 @@ import FaceList from "../components/Face/FaceList.vue";
 import MediaList from "../components/Media/MediaList";
 import PersonList from "../components/Person/PersonList";
 import Playground from "../components/Playground/Playground";
+import PersonTimeline from "../components/Person/PersonTimeline"
 
 Vue.use(VueRouter);
 
@@ -46,6 +47,16 @@ const routes = [
       left: PersonFilter,
       appbar: DefaultAppBar
     }
+  },
+  {
+    path: "/persons/timeline/:id",
+    name: "PersonTimeline",
+    components: {
+      default: PersonTimeline,
+      left: PersonFilter,
+      appbar: DefaultAppBar
+    },
+    meta: { hideSidebar: true }
   },
   {
     path: "/albums",
