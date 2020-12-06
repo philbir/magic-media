@@ -1,6 +1,6 @@
 import Vue from "vue";
 
-import { createGroup, getAllPersons, updatePerson, getAllGroups, search } from "../services/personService";
+import { createGroup, getAllPersons, updatePerson, getAllGroups, search, buildModel } from "../services/personService";
 
 const personModule = {
   namespaced: true,
@@ -100,6 +100,23 @@ const personModule = {
       try {
         const res = await createGroup(name);
         commit("GROUP_ADDED", res.data.createGroup.group);
+      } catch (ex) {
+        console.error(ex);
+      }
+    },
+    async buildModel({ dispatch }) {
+      try {
+        const res = await buildModel();
+
+        dispatch(
+          "snackbar/addSnack",
+          {
+            text: `Person model build. (${res.data.buildPersonModel.faceCount} faces)`,
+            type: "SUCCESS"
+          },
+          { root: true }
+        );
+
       } catch (ex) {
         console.error(ex);
       }

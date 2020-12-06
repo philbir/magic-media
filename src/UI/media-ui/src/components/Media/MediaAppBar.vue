@@ -225,8 +225,11 @@ export default {
             }
           }
           break;
+        case 77: //m
+          this.$store.dispatch("person/buildModel");
+          break;
         default:
-          console.log(e.which);
+          console.log("BAR", e.which);
       }
     },
   },

@@ -1,0 +1,10 @@
+#import "../UserErrorFragment.gql"
+
+mutation buildPersonModel {
+  buildPersonModel {
+    faceCount
+    errors {
+      ...userError
+    }
+  }
+}
