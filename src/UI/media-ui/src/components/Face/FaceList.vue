@@ -45,8 +45,8 @@
           top: row.top + 'px',
           height: row.height + 'px',
         }"
-        class="face-row"
-      ></div>
+        class="face-row hidden"
+      />
     </template>
   </div>
 </template>
@@ -101,6 +101,7 @@ export default {
   data() {
     return {
       containerWith: 0,
+      previousScroll: 0,
       viewPort: {
         start: 0,
         end: window.innerHeight,
@@ -171,9 +172,13 @@ export default {
         start: elm.scrollTop - offset,
         end: elm.scrollTop + elm.offsetHeight + offset,
       };
-      if (!this.loading && percent > 0.85) {
+
+      console.log(percent, this.loading, this.previousScroll);
+      if (!this.loading && percent > 0.85 && percent > this.previousScroll) {
         this.loadMore();
       }
+
+      this.previousScroll = percent;
     },
   },
 };
@@ -225,6 +230,11 @@ const getTitle = (face) => {
 
 .face-row {
   position: absolute;
+}
+
+.hidden::after {
+  content: ".";
+  visibility: hidden;
 }
 
 .face-row-container {

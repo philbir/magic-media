@@ -62,6 +62,7 @@ namespace MagicMedia.Store.MongoDb
                 .AddMediaTypes(request.MediaTypes)
                 .AddAlbum(request.AlbumId)
                 .AddGeoRadius(request.GeoRadius)
+                .AddDate(request.Date)
                 .BuildAsync();
 
             IFindFluent<Media, Media>? cursor = _mediaStoreContext.Medias.Find(filter);

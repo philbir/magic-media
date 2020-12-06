@@ -21,7 +21,9 @@
       width="248"
       v-if="activeTabId == 'date'"
       v-model="dates"
-      range
+      @change="dateChanged"
+      @click:year="dateYearChanged"
+      @click:month="dateMonthChanged"
     ></v-date-picker>
 
     <div v-if="activeTabId == 'person'">
@@ -242,6 +244,15 @@ export default {
 
         this.$store.dispatch("media/setGeoFilter", geoFilter);
       }
+    },
+    dateChanged: function (value) {
+      this.$store.dispatch("media/setDateFilter", value);
+    },
+    dateYearChanged: function (year) {
+      this.$store.dispatch("media/setDateFilter", year.toString());
+    },
+    dateMonthChanged: function (month) {
+      this.$store.dispatch("media/setDateFilter", month);
     },
   },
 };

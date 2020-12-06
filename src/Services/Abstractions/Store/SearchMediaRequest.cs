@@ -24,6 +24,8 @@ namespace MagicMedia.Store
         public Guid? AlbumId { get; set; }
 
         public GeoRadiusFilter? GeoRadius { get; set; }
+
+        public string? Date { get; set; }
     }
 
     public class GeoRadiusFilter

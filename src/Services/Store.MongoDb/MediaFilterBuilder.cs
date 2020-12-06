@@ -66,6 +66,56 @@ namespace MagicMedia.Store.MongoDb
             return this;
         }
 
+        internal MediaFilterBuilder AddDate(string? date)
+        {
+            if (!string.IsNullOrEmpty(date))
+            {
+                var dateParts = date.Split('-', StringSplitOptions.RemoveEmptyEntries);
+
+                switch (dateParts.Length)
+                {
+                    case 1:
+                        _filter &= BuildYearFilter(int.Parse(dateParts[0]));
+                        break;
+                    case 2:
+                        _filter &= BuildMonthFilter(dateParts);
+                        break;
+                    case 3:
+                        _filter &= BuildDayFilter(date);
+                        break;
+                }
+            }
+
+            return this;
+        }
+
+        private FilterDefinition<Media> BuildDayFilter(string date)
+        {
+            DateTime startDate = DateTime.Parse(date);
+            DateTime endDate = startDate.AddDays(1);
+
+            return Builders<Media>.Filter.And(
+                Builders<Media>.Filter.Gte(x => x.DateTaken, startDate),
+                Builders<Media>.Filter.Lt(x => x.DateTaken, endDate));
+        }
+
+        private FilterDefinition<Media> BuildMonthFilter(string[] dateParts)
+        {
+            DateTime startDate = new DateTime(int.Parse(dateParts[0]), int.Parse(dateParts[1]), 1);
+            DateTime endDate = startDate.AddMonths(1);
+
+            return Builders<Media>.Filter.And(
+                Builders<Media>.Filter.Gte(x => x.DateTaken, startDate),
+                Builders<Media>.Filter.Lt(x => x.DateTaken, endDate));
+        }
+
+        private FilterDefinition<Media> BuildYearFilter(int yaer)
+        {
+            return Builders<Media>.Filter.And(
+                    Builders<Media>.Filter.Gte(x => x.DateTaken, new DateTime(yaer, 1, 1)),
+                    Builders<Media>.Filter.Lt(x => x.DateTaken, new DateTime(yaer + 1, 1, 1)));
+        }
+
         public MediaFilterBuilder AddPersons(IEnumerable<Guid>? persons)
         {
             if (persons is { } p && p.Any())
@@ -182,7 +232,7 @@ namespace MagicMedia.Store.MongoDb
             FilterDefinition<Media> recycledFilter = Builders<Media>.Filter
                 .Eq(x => x.State, MediaState.Recycled);
 
-            if ( _showRecycled)
+            if (_showRecycled)
             {
                 _filter &= recycledFilter;
             }

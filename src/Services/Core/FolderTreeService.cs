@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -48,7 +49,7 @@ namespace MagicMedia
 
         private FolderItem BuildStructure(IEnumerable<FolderItem> flat)
         {
-            var prep = flat.Distinct(new FolderItemComparer()).OrderBy(x => x.Level).ThenBy(x => x.Path).ToList();
+            var prep = flat.Distinct(new FolderItemComparer()).OrderBy(x => x.Level).ThenBy(x => x.Path, new FolderComparer()).ToList();
             var root = new FolderItem { Path = "/", Name = "Home" };
 
             foreach (FolderItem? item in prep)
@@ -77,6 +78,43 @@ namespace MagicMedia
             return root;
         }
     }
+
+    class FolderComparer : IComparer<string>
+    {
+        public int Compare(string? x, string? y)
+        {
+            var xNr = GetNumber(x);
+            var yNr = GetNumber(y);
+
+            if (xNr.HasValue)
+            {
+                if (yNr.HasValue)
+                {
+                    return yNr.Value.CompareTo(xNr);
+                }
+                else
+                {
+                    return 1;
+                }
+            }
+            else
+            {
+                return x.CompareTo(y);
+            }
+        }
+
+
+        private int? GetNumber(string? value)
+        {
+            if (int.TryParse(value, out var nr))
+            {
+                return nr;
+            }
+            return null;
+        }
+    }
+
+    
 
     class FolderItemComparer : IEqualityComparer<FolderItem>
     {

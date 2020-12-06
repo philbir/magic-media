@@ -49,6 +49,7 @@ const mediaModule = {
       persons: [],
       mediaTypes: [],
       cameras: [],
+      date: null,
       albumId: null,
       geoRadius: null,
       folder: null
@@ -112,6 +113,9 @@ const mediaModule = {
     FILTER_GEO_SET(state, geo) {
       state.filter.geoRadius = geo;
     },
+    FILTER_DATE_SET(state, date) {
+      state.filter.date = date;
+    },
     PAGE_NR_INC(state) {
       state.filter.pageNr++;
     },
@@ -139,6 +143,7 @@ const mediaModule = {
       state.filter.albumId = null;
       state.filter.geoRadius = null;
       state.filter.folder = null;
+      state.filter.date = null;
     },
     MEDIA_CLOSED: function (state) {
       state.currentMediaId = null;
@@ -387,6 +392,11 @@ const mediaModule = {
     setCamaraFilter({ dispatch, commit }, cameras) {
       commit("RESET_FILTER");
       commit("FILTER_CAMERA_SET", cameras);
+      dispatch("search");
+    },
+    setDateFilter({ dispatch, commit }, date) {
+      commit("RESET_FILTER");
+      commit("FILTER_DATE_SET", date);
       dispatch("search");
     },
     setViewerOptions({ commit }, options) {

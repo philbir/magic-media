@@ -30,7 +30,7 @@
         </template>
       </v-snackbar>
     </v-app>
-    <v-dialog v-model="mediaViewerOpen" :transition="false" fullscreen>
+    <v-dialog v-model="mediaViewerOpen" fullscreen>
       <MediaViewer v-if="mediaViewerOpen"></MediaViewer>
     </v-dialog>
 
@@ -83,6 +83,7 @@ export default {
       { text: "Large", code: "L" },
     ],
     showUpload: false,
+    mediaViewerOpen: false,
   }),
   computed: {
     mediaActions: function () {
@@ -125,9 +126,8 @@ export default {
     editModeText: function () {
       return this.$store.state.media.isEditMode ? "Edit" : "View";
     },
-
-    mediaViewerOpen: function () {
-      return this.$store.state.media.currentMediaId != null;
+    currentMediaId: function () {
+      return this.$store.state.media.currentMediaId;
     },
     snacks: function () {
       return this.$store.state.snackbar.snacks.map((snack) => {
@@ -177,6 +177,11 @@ export default {
       }
     },
   },
+  watch: {
+    currentMediaId: function (newValue) {
+      this.mediaViewerOpen = newValue !== null;
+    },
+  },
   methods: {
     setSize: function (code) {
       this.$store.dispatch("media/setThumbnailSize", code);
@@ -211,37 +216,33 @@ main {
 }
 
 ::-webkit-scrollbar {
-  width: 2px;
-  height: 2px;
+  width: 6px;
+  height: 6px;
 }
-::-webkit-scrollbar-button {
-  width: 0px;
-  height: 0px;
+
+::-webkit-scrollbar-track:hover {
+  background: #b9dff8;
 }
+::-webkit-scrollbar-track:active {
+  background: #dcdfe0;
+}
+
+::-webkit-scrollbar-track {
+  background: #e3eaf0;
+  border: 0px none #ffffff;
+  border-radius: 50px;
+}
+
 ::-webkit-scrollbar-thumb {
-  background: #e1e1e1;
+  background: #68bef881;
   border: 0px none #ffffff;
   border-radius: 50px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #ffffff;
+  background: #49a3df;
 }
 ::-webkit-scrollbar-thumb:active {
-  background: #000000;
-}
-::-webkit-scrollbar-track {
-  background: #666666;
-  border: 0px none #ffffff;
-  border-radius: 50px;
-}
-::-webkit-scrollbar-track:hover {
-  background: #666666;
-}
-::-webkit-scrollbar-track:active {
-  background: #333333;
-}
-::-webkit-scrollbar-corner {
-  background: transparent;
+  background: #3481b4;
 }
 </style>
 

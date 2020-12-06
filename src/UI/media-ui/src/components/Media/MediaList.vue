@@ -38,10 +38,8 @@
         :key="i"
         v-else
         :style="{ top: row.top + 'px', height: row.boxes[0].height + 'px' }"
-        class="media-row"
-      >
-        &nbsp;
-      </div>
+        class="media-row hidden"
+      />
     </template>
   </div>
 </template>
@@ -61,7 +59,6 @@ export default {
       window.innerWidth - (this.$vuetify.breakpoint.mobile ? 0 : 264);
     this.onScroll = debounce(this.onScroll, 50);
   },
-
   computed: {
     layout: function () {
       const items = this.$store.state.media.list;
@@ -117,6 +114,7 @@ export default {
         end: window.innerHeight,
       },
       hoveredIndex: -1,
+      previousScroll: 0,
     };
   },
   methods: {
@@ -180,10 +178,11 @@ export default {
         start: elm.scrollTop - offset,
         end: elm.scrollTop + elm.offsetHeight + offset,
       };
-
-      if (!this.loading && percent > 0.85) {
+      if (!this.loading && percent > 0.85 && percent > this.previousScroll) {
         this.loadMore();
       }
+
+      this.previousScroll = percent;
     },
   },
 };
@@ -206,6 +205,11 @@ export default {
   position: absolute;
 }
 
+.hidden::after {
+  content: ".";
+  visibility: hidden;
+}
+
 .media-item.selected {
   transform: rotate(2deg);
   transform: scale(0.82);
@@ -216,7 +220,7 @@ export default {
 }
 
 .visible {
-  transition: opacity 100ms ease-in;
+  transition: opacity 50ms ease-in;
 }
 
 .duration {
