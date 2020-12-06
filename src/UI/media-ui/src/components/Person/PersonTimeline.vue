@@ -60,7 +60,6 @@ export default {
       this.person = res.data.person;
     },
     clickFace: function (face, e) {
-      console.log(face);
       if (e.ctrlKey) {
         this.$store.dispatch("face/openEdit", face);
       } else {
@@ -76,14 +75,14 @@ export default {
 
 <style lang="sass" scoped>
 .face-container
-    position: relative
-    display: flex
-    align-items: flex-start
-    align-content: space-around
+  position: relative
+  display: flex
+  align-items: flex-start
+  align-content: space-around
 
 .face-image
-    margin-right: 10px
-    border-radius: 100%
-    height: 120px
-    width: 120px
+  margin-right: 10px
+  border-radius: 100%
+  height: 120px
+  width: 120px
 </style>

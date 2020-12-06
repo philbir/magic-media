@@ -26,6 +26,7 @@ namespace MagicMedia.Face
             Guid faceId,
             double? distance,
             CancellationToken cancellationToken);
+        Task<IEnumerable<(MediaFace face, bool hasMatch)>> PredictPersonsByMediaAsync(Guid mediaId, double? distance, CancellationToken cancellationToken);
         Task<IEnumerable<MediaFace>> UnassignAllPredictedByMediaAsync(Guid mediaId, CancellationToken cancellationToken);
         Task<MediaFace> UnAssignPersonAsync(Guid id, CancellationToken cancellationToken);
     }

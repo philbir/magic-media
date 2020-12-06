@@ -7,6 +7,7 @@ import {
   deleteFace,
   deleteUnassignedByMedia,
   predictPerson,
+  predictPersonsByMedia,
   searchFaces,
   unAssignAllPrecictedByMedia,
   unAssignPerson
@@ -256,6 +257,31 @@ const faceModule = {
           { root: true }
         );
       }
+    },
+    async predictPersonsByMedia({ dispatch }, mediaId) {
+      const result = await predictPersonsByMedia(mediaId);
+      const { media, matchCount } = result.data.predictPersonsByMedia;
+
+      //TODO: Better patch currentDetails
+      dispatch("media/loadDetails", media.id, {
+        root: true
+      });
+
+      if (matchCount > 0) {
+        dispatch(
+          "snackbar/addSnack",
+          { text: `${matchCount} persons found.`, type: "SUCCESS" },
+          { root: true }
+        );
+      } else {
+        dispatch(
+          "snackbar/addSnack",
+          { text: "No persons found.", type: "INFO" },
+          { root: true }
+        );
+      }
+
+
     },
     async deleteFace({ commit, dispatch }, face) {
       await deleteFace(face.id);

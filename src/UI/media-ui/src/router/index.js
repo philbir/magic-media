@@ -17,6 +17,7 @@ import MediaList from "../components/Media/MediaList";
 import PersonList from "../components/Person/PersonList";
 import Playground from "../components/Playground/Playground";
 import PersonTimeline from "../components/Person/PersonTimeline"
+import SettingsPage from "../components/Settings/SettingsPage"
 
 Vue.use(VueRouter);
 
@@ -75,6 +76,16 @@ const routes = [
       left: MapFilter,
       appbar: MapAppBar
     }
+  },
+  {
+    path: "/settings",
+    name: "Settings",
+    components: {
+      default: SettingsPage,
+      left: null,
+      appbar: DefaultAppBar
+    },
+    meta: { hideSidebar: true }
   },
   {
     path: "/playground",

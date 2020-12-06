@@ -57,6 +57,11 @@ export default {
           icon: "mdi-map-search-outline",
           route: "Map",
         },
+        {
+          text: "Settings",
+          icon: "mdi-tune-variant",
+          route: "Settings",
+        },
       ];
     },
   },

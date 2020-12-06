@@ -5,6 +5,7 @@ import QUERY_SEARCH from "../graphql/Person/Search.gql";
 import QUERY_TIMELINE from "../graphql/Person/Timeline.gql";
 import MUTATION_UPDATE_PERSON from "../graphql/Person/UpdatePersonRequest.gql";
 import MUTATION_CREATE_GROUP from "../graphql/Person/CreateGroup.gql";
+import MUTATION_BUILD_MODEL from "../graphql/Person/BuildModel.gql";
 
 export const getAllPersons = async () => {
   return await apollo.query({
@@ -34,7 +35,6 @@ export const getTimeline = async (id) => {
   });
 };
 
-
 export const updatePerson = async input => {
   return await apollo.mutate({
     mutation: MUTATION_UPDATE_PERSON,
@@ -55,6 +55,14 @@ export const createGroup = async name => {
     mutation: MUTATION_CREATE_GROUP,
     variables: {
       name: name
+    }
+  });
+};
+
+export const buildModel = async () => {
+  return await apollo.mutate({
+    mutation: MUTATION_BUILD_MODEL,
+    variables: {
     }
   });
 };

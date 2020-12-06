@@ -237,6 +237,11 @@ export default {
               value: "APPROVE_ALL",
             },
             {
+              title: "Predict [p]",
+              icon: "mdi-auto-fix",
+              value: "PREDICT",
+            },
+            {
               title: "Unassign predicted [u]",
               icon: "mdi-close-outline",
               value: "UNASIGN_PREDICTED",
@@ -416,6 +421,9 @@ export default {
         case 85: //u
           this.unassignPredicted();
           break;
+        case 80: //p
+          this.predictPersons();
+          break;
         case 70: //f
           this.toggleFavorite();
           break;
@@ -436,7 +444,7 @@ export default {
           );
           break;
         default:
-          console.log(e.which);
+          console.log("VIEW", e.which);
           break;
       }
     },
@@ -484,6 +492,9 @@ export default {
         case "UNASIGN_PREDICTED":
           this.unassignPredicted();
           break;
+        case "PREDICT":
+          this.predictPersons();
+          break;
         case "DELETED_UNASSINGNED":
           this.deleteUnassigned();
           break;
@@ -504,6 +515,9 @@ export default {
     },
     deleteUnassigned: function () {
       this.$store.dispatch("face/deleteUnassignedByMedia", this.media.id);
+    },
+    predictPersons: function () {
+      this.$store.dispatch("face/predictPersonsByMedia", this.media.id);
     },
     recycle() {
       this.$store.dispatch("media/recycle", [this.media.id]);

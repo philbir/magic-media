@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Messaging;
@@ -69,8 +70,8 @@ namespace MagicMedia.Face
         }
 
         private async Task UpdateAgeAsync(
-        MediaFace face,
-        Person person,
+            MediaFace face,
+            Person person,
         CancellationToken cancellationToken)
         {
             if (person.DateOfBirth.HasValue)
@@ -87,13 +88,33 @@ namespace MagicMedia.Face
             }
         }
 
-        public async Task<(MediaFace face, bool hasMatch)> PredictPersonAsync(
-            Guid faceId,
+        public async Task<IEnumerable<(MediaFace face, bool hasMatch)>> PredictPersonsByMediaAsync(
+            Guid mediaId,
             double? distance,
             CancellationToken cancellationToken)
         {
-            MediaFace face = await _faceStore.GetByIdAsync(faceId, cancellationToken);
+            IEnumerable<MediaFace> faces = await GetFacesByMediaAsync(mediaId, cancellationToken);
 
+            var results = new List<(MediaFace face, bool hasMatch)>();
+
+            foreach (MediaFace face in faces.Where( x => x.PersonId == null))
+            {
+                (MediaFace face, bool hasMatch) faceResult = await PredictPersonAsync(
+                    face,
+                    distance,
+                    cancellationToken);
+
+                results.Add(faceResult);
+            }
+
+            return results;
+        }
+
+        public async Task<(MediaFace face, bool hasMatch)> PredictPersonAsync(
+            MediaFace face,
+            double? distance,
+            CancellationToken cancellationToken)
+        {
             var distanceValue = distance.GetValueOrDefault(.4);
             Guid? personId = await _faceDetectionService.PredictPersonAsync(
                 new PredictPersonRequest
@@ -112,6 +133,16 @@ namespace MagicMedia.Face
             }
 
             return (face, personId.HasValue);
+        }
+
+        public async Task<(MediaFace face, bool hasMatch)> PredictPersonAsync(
+            Guid faceId,
+            double? distance,
+            CancellationToken cancellationToken)
+        {
+            MediaFace face = await _faceStore.GetByIdAsync(faceId, cancellationToken);
+
+            return await PredictPersonAsync(face, distance, cancellationToken);
         }
 
         public async Task<MediaFace> AssignPersonByComputerAsync(

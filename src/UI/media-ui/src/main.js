@@ -31,8 +31,6 @@ Vue.use(magicPlugin);
 Vue.use(signalrHub);
 Vue.use(VueMask);
 
-console.log('GOOGLE', process.env.VUE_APP_GOOGLE_MAPS_KEY)
-
 Vue.use(GmapVue, {
   load: {
     key: process.env.VUE_APP_GOOGLE_MAPS_KEY,

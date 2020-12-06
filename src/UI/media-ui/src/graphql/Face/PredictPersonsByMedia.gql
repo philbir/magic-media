@@ -1,0 +1,18 @@
+mutation predictPersonsByMedia($input: PredictPersonsByMediaInput!) {
+  predictPersonsByMedia(input: $input) {
+    matchCount
+    media {
+      id
+      faces {
+        id
+        state
+        recognitionType
+        personId
+      }
+    }
+    errors {
+      code
+      message
+    }
+  }
+}

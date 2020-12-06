@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using HotChocolate.Types;
@@ -14,15 +15,18 @@ namespace MagicMedia.GraphQL.Face
         private readonly IFaceService _faceService;
         private readonly IFaceModelBuilderService _faceModelBuilder;
         private readonly IFaceDetectionService _faceDetectionService;
+        private readonly IMediaService _mediaService;
 
         public FaceMutations(
             IFaceService faceService,
             IFaceModelBuilderService faceModelBuilder,
-            IFaceDetectionService faceDetectionService)
+            IFaceDetectionService faceDetectionService,
+            IMediaService mediaService)
         {
             _faceService = faceService;
             _faceModelBuilder = faceModelBuilder;
             _faceDetectionService = faceDetectionService;
+            _mediaService = mediaService;
         }
 
         public async Task<UpdateFacePayload> AssignPersonByHumanAsync(
@@ -121,6 +125,21 @@ namespace MagicMedia.GraphQL.Face
                 cancellationToken);
 
             return new PredictPersonPayload(result.hasMatch, result.face);
+        }
+
+        public async Task<PredictPersonsByMediaPayload> PredictPersonsByMediaAsync(
+            PredictPersonsByMediaInput input,
+            CancellationToken cancellationToken)
+        {
+            IEnumerable<(MediaFace face, bool hasMatch)>? results = await _faceService
+                .PredictPersonsByMediaAsync(
+                    input.MediaId,
+                    input.Distance,
+                    cancellationToken);
+
+            Media media = await _mediaService.GetByIdAsync(input.MediaId, cancellationToken);
+
+            return new PredictPersonsByMediaPayload(results.Count(x => x.hasMatch), media);
         }
     }
 }
