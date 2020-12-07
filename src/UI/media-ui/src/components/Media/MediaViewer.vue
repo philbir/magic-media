@@ -36,11 +36,19 @@
             <v-icon @click="handleHome" color="white" class="mr-2">
               mdi-home
             </v-icon>
-            <span class="path" v-for="(path, i) in pathInfo" :key="path.path"
+            <span
+              class="path"
+              v-for="(path, i) in pathInfo"
+              :key="path.path"
+              @click="setFolderFilter(path.path)"
               >{{ path.name }}
               <span v-if="i < pathInfo.length - 1"> | </span>
             </span>
-            <span class="path" v-if="media.dateTaken">
+            <span
+              class="path"
+              v-if="media.dateTaken"
+              @click="setDateFilter(media.dateTaken)"
+            >
               @ {{ media.dateTaken | dateformat("DATE_MED") }}
             </span>
           </v-col>
@@ -199,6 +207,7 @@ import MediaQuickInfo from "./MediaQuickInfo.vue";
 import MediaInfo from "./MediaInfo";
 import FaceBox from "../Face/FaceBox";
 import GlobalEvents from "vue-global-events";
+import { DateTime } from "luxon";
 
 export default {
   components: {
@@ -525,6 +534,15 @@ export default {
     },
     toggleInfo: function () {
       this.showInfoPage = !this.showInfoPage;
+    },
+    setFolderFilter: function (folder) {
+      this.$store.dispatch("media/setFolderFilter", folder);
+      this.handleHome();
+    },
+    setDateFilter: function (date) {
+      var dateFilter = DateTime.fromISO(date).toISODate();
+      this.$store.dispatch("media/setDateFilter", dateFilter);
+      this.handleHome();
     },
   },
 };
