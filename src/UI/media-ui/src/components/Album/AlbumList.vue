@@ -85,14 +85,16 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .country-flag-container {
   position: absolute;
   right: 20px;
 
   img {
-    margin-left: 2px;
+    margin-left: 4px;
     margin-top: 10px;
+    width: 24px;
+    height: 24px;
   }
 }
 </style>

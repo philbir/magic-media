@@ -12,6 +12,7 @@ namespace MagicMedia
         public IEnumerable<Guid>? MediaIds { get; set; }
 
         public IEnumerable<string>? Folders { get; set; }
-
     }
+
+    public record RemoveFoldersFromAlbumRequest(Guid AlbumId, IEnumerable<string> Folders);
 }

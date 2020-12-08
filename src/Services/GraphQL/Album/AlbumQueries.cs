@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,6 +28,14 @@ namespace MagicMedia.GraphQL
             CancellationToken cancellationToken)
         {
             return await _albumService.SearchAsync(input, cancellationToken);
+        }
+
+
+        public async Task<Album> GetAlbumAsync(
+            Guid id,
+            CancellationToken cancellationToken)
+        {
+            return await _albumService.GetByIdAsync(id, cancellationToken);
         }
     }
 }

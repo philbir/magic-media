@@ -22,7 +22,7 @@ namespace MagicMedia
             Album album,
             ThumbnailSizeName size,
             CancellationToken cancellationToken);
-
+        Task<Album> RemoveFoldersAsync(RemoveFoldersFromAlbumRequest request, CancellationToken cancellationToken);
         Task<SearchResult<Album>> SearchAsync(
             SearchAlbumRequest request,
             CancellationToken cancellationToken);

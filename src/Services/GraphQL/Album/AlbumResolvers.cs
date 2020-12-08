@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -29,6 +30,13 @@ namespace MagicMedia.GraphQL
             return album.Includes?
                 .FirstOrDefault(x => x.Type == AlbumIncludeType.Folder)?
                 .Folders;
+        }
+
+        public async Task<IEnumerable<Guid>?> GetAllMediaIdsAsync(
+            Album album,
+            CancellationToken cancellationToken)
+        {
+            return await _albumService.GetMediaIdsAsync(album, cancellationToken);
         }
     }
 }

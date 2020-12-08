@@ -91,6 +91,22 @@
                       </v-list>
                     </v-expansion-panel-content>
                   </v-expansion-panel>
+
+                  <v-expansion-panel v-if="album && album.folders">
+                    <v-expansion-panel-header>
+                      Folders
+                    </v-expansion-panel-header>
+                    <v-expansion-panel-content>
+                      <v-chip
+                        v-for="folder in album.folders"
+                        :key="folder"
+                        class="ma-2"
+                        close
+                      >
+                        {{ folder }}
+                      </v-chip>
+                    </v-expansion-panel-content>
+                  </v-expansion-panel>
                 </v-expansion-panels>
               </v-col>
             </v-row>
@@ -106,6 +122,8 @@
       <v-divider></v-divider>
 
       <v-card-actions class="pa-1">
+        <v-btn color="blue darken-1" text @click="cancel"> Settings </v-btn>
+
         <v-spacer></v-spacer>
 
         <v-btn color="blue darken-1" text @click="cancel"> Cancel </v-btn>
@@ -124,7 +142,7 @@
 </template>
 <script>
 import { getFlagUrl } from "../../services/countryFlags";
-import { getAlbumMedia } from "../../services/albumService";
+import { getAlbumById, getAlbumMedia } from "../../services/albumService";
 import AlbumMedia from "./AlbumMedia.vue";
 export default {
   components: { AlbumMedia },
@@ -148,15 +166,7 @@ export default {
   watch: {
     albumId: function (newValue) {
       if (newValue) {
-        const album = this.$store.state.album.albums.find(
-          (x) => x.id === newValue
-        );
-        this.album = { ...album };
-
-        this.originalTitle = this.album.title;
-        getAlbumMedia(this.album.id).then((res) => {
-          this.medias = res.data.searchMedia.items;
-        });
+        this.loadAlbum(newValue);
       } else {
         this.album = {};
         this.medias = [];
@@ -197,6 +207,15 @@ export default {
     },
   },
   methods: {
+    async loadAlbum(id) {
+      const res = await getAlbumById(id);
+      this.album = res.data.album;
+      this.originalTitle = this.album.title;
+
+      const mediaRes = await getAlbumMedia(id);
+
+      this.medias = mediaRes.data.searchMedia.items;
+    },
     save: function () {
       this.$store.dispatch("album/update", {
         title: this.album.title,
@@ -209,6 +228,12 @@ export default {
     },
     deleteAlbum: function () {
       this.close();
+    },
+    removeFolder: function (folder) {
+      this.$store.dispatch("album/removeFolders", {
+        id: this.album.id,
+        folders: [folder],
+      });
     },
     flagUrl: function (country) {
       return getFlagUrl(country.code, 32);
@@ -225,6 +250,16 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+.country-flag-container {
+  position: absolute;
+  right: 20px;
+  img {
+    width: 28px;
+    height: 28px;
+    padding-left: 4px;
+  }
+}
 </style>
+
 

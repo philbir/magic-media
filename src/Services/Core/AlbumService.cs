@@ -8,6 +8,7 @@ using MagicMedia.Messaging;
 using MagicMedia.Search;
 using MagicMedia.Store;
 using MassTransit;
+using SixLabors.ImageSharp.ColorSpaces;
 
 namespace MagicMedia
 {
@@ -98,6 +99,22 @@ namespace MagicMedia
             await _mediaStore.Albums.UpdateAsync(album, cancellationToken);
 
             await _bus.Publish(new ItemsAddedToAlbumMessage(album.Id));
+
+            return album;
+        }
+
+        public async Task<Album> RemoveFoldersAsync(RemoveFoldersFromAlbumRequest request, CancellationToken cancellationToken)
+        {
+            Album album = await GetByIdAsync(request.AlbumId, cancellationToken);
+
+            foreach (AlbumInclude include in album.Includes.Where(x => x.Type == AlbumIncludeType.Folder))
+            {
+                include.Folders?.RemoveAll(f => request.Folders.Contains(f));
+            }
+
+            await _mediaStore.Albums.UpdateAsync(album, cancellationToken);
+
+            await _bus.Publish(new FoldersRemovedFromAlbum(album.Id, request.Folders));
 
             return album;
         }

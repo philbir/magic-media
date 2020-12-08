@@ -1,0 +1,31 @@
+query getAlbumById($id: Uuid!) {
+  album(id: $id) {
+    id
+    title
+    videoCount
+    imageCount
+    folders
+    thumbnail {
+      dataUrl
+    }
+    startDate
+    endDate
+    folders
+    allMediaIds
+    persons {
+      personId
+      faceId
+      name
+      count
+    }
+    countries {
+      name
+      code
+      count
+      cities {
+        name
+        count
+      }
+    }
+  }
+}

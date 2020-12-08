@@ -1,11 +1,14 @@
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using HotChocolate.Types;
+using HotChocolate.Types.Descriptors;
 using MagicMedia.Store;
 
 namespace MagicMedia.GraphQL
 {
+
     [ExtendObjectType(Name = "Mutation")]
     public class AlbumMutations
     {
@@ -21,6 +24,15 @@ namespace MagicMedia.GraphQL
             Album album = await _albumService.AddItemsToAlbumAsync(input, cancellationToken);
 
             return new AddItemToAlbumPayload(album);
+        }
+
+        public async Task<UpdateAlbumPayload> RemoveFoldersFromAlbumAsync(
+            RemoveFoldersFromAlbumRequest input,
+            CancellationToken cancellationToken)
+        {
+            Album album = await _albumService.RemoveFoldersAsync(input, cancellationToken);
+
+            return new UpdateAlbumPayload(album);
         }
 
         public async Task<UpdateAlbumPayload> UpdateAlbumAsync(
