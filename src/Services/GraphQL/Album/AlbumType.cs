@@ -1,4 +1,4 @@
-﻿using HotChocolate.Types;
+using HotChocolate.Types;
 using MagicMedia.Store;
 
 namespace MagicMedia.GraphQL
@@ -13,6 +13,10 @@ namespace MagicMedia.GraphQL
                     .DefaultValue(ThumbnailSizeName.M)
                     .Type(typeof(ThumbnailSizeName)))
                 .ResolveWith<AlbumResolvers>(_ => _.GetThumbnailAsync(default!, default!, default!));
+
+            descriptor
+                .Field("folders")
+                .ResolveWith<AlbumResolvers>(_ => _.GetFolders(default!));
         }
     }
 }
