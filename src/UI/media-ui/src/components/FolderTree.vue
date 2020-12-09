@@ -34,6 +34,8 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
+
 export default {
   created() {
     this.$store.dispatch("media/getFolderTree");
@@ -72,9 +74,14 @@ export default {
     },
   },
   methods: {
+    ...mapActions("media", ["setFilter"]),
     onSelect(e) {
       if (e.length > 0) {
-        this.$store.dispatch("media/setFolderFilter", e[0].path);
+        //this.$store.dispatch("media/setFolderFilter", e[0].path);
+        this.setFilter({
+          key: "folder",
+          value: e[0].path,
+        });
       }
     },
   },

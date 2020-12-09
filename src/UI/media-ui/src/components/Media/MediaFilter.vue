@@ -122,6 +122,7 @@
 <script>
 import FolderTree from "../FolderTree";
 import FilterList from "../Common/FilterList";
+import { mapActions } from "vuex";
 
 export default {
   components: { FolderTree, FilterList },
@@ -200,22 +201,35 @@ export default {
     albums: function () {
       return this.$store.state.album.allAlbums;
     },
+    filterDesc: function () {
+      return this.$store.getters["media/filterDescriptions"];
+    },
   },
   methods: {
+    ...mapActions("media", ["setFilter"]),
     select: function (tab) {
       this.activeTabId = tab.id;
     },
     onSelectPerson: function (persons) {
       const selected = persons.map((x) => x.id);
-      this.$store.dispatch("media/setPersonFilter", selected);
+      this.setFilter({
+        key: "persons",
+        value: selected,
+      });
     },
     onSelectCity: function (cities) {
       const selected = cities.map((x) => x.value);
-      this.$store.dispatch("media/setCityFilter", selected);
+      this.setFilter({
+        key: "cities",
+        value: selected,
+      });
     },
     onSelectCountry: function (countries) {
       const selected = countries.map((x) => x.value);
-      this.$store.dispatch("media/setCountryFilter", selected);
+      this.setFilter({
+        key: "countries",
+        value: selected,
+      });
     },
     onSelectAlbum: function (album) {
       this.$store.dispatch("media/setAlbumFilter", album ? album.id : null);
