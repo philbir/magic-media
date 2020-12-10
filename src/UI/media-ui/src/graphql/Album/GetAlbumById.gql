@@ -11,6 +11,12 @@ query getAlbumById($id: Uuid!) {
     startDate
     endDate
     folders
+    filters{
+      key
+      name
+      value
+      description
+    }
     allMediaIds
     persons {
       personId

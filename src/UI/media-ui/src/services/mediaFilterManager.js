@@ -14,6 +14,7 @@ class MediaFilterManager {
             persons: {
                 name: "Persons",
                 default: [],
+                stringValue: (state) => state.filter.persons.join(','),
                 valueText: (rootState) => rootState.person.persons.filter(x => rootState.media.filter.persons.includes(x.id))
                     .map(x => x.name)
                     .join(' | ')
@@ -21,17 +22,18 @@ class MediaFilterManager {
             countries: {
                 name: "Country",
                 default: [],
+                stringValue: (state) => state.filter.countries.join(','),
                 valueText: (rootState) => {
                     return rootState.media.facets.country.filter(x =>
                         rootState.media.filter.countries.includes(x.value))
                         .map(x => x.text)
                         .join(' | ')
-
                 }
             },
             cities: {
                 name: "City",
                 default: [],
+                stringValue: (state) => state.filter.city.join(','),
                 valueText: (rootState) => rootState.media.facets.city.filter(x =>
                     rootState.media.filter.cities.includes(x.value))
                     .map(x => x.text)
@@ -56,6 +58,10 @@ class MediaFilterManager {
             geoRadius: {
                 name: "Geo",
                 default: null,
+                stringValue: (state) => {
+                    const radius = state.filter.geoRadius;
+                    return `${radius.distance}/${radius.latitude.toPrecision},${radius.longitude}`
+                },
                 valueText: (rootState) => {
                     const radius = rootState.media.filter.geoRadius;
                     return `${radius.distance} km arround ${radius.latitude.toPrecision(2)}, ${radius.longitude.toPrecision(2)}`
@@ -63,7 +69,6 @@ class MediaFilterManager {
             },
         }
     }
-
     setFilter = (state, key, value) => {
         state.filter[key] = value;
     }
@@ -71,13 +76,21 @@ class MediaFilterManager {
     removeFilter = (state, key) => {
         state.filter[key] = this.definitions[key].default;
     }
-
     getDesc = (key, rootState) => {
+
+        var value = rootState.media.filter[key];
+        const def = this.definitions[key];
+
+        if (def.stringValue) {
+            value = def.stringValue(rootState.media)
+        }
+
         return {
             key,
-            name: this.definitions[key].name,
+            name: def.name,
             value: rootState.media.filter[key],
-            desc: this.definitions[key].valueText(rootState)
+            stringValue: value,
+            description: def.valueText(rootState)
         }
     }
 
@@ -107,6 +120,5 @@ class MediaFilterManager {
         return filterDescs;
     }
 }
-
 
 export default MediaFilterManager;

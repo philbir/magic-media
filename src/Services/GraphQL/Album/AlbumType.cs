@@ -19,6 +19,10 @@ namespace MagicMedia.GraphQL
                 .ResolveWith<AlbumResolvers>(_ => _.GetFolders(default!));
 
             descriptor
+                .Field("filters")
+                .ResolveWith<AlbumResolvers>(_ => _.GetFilters(default!));
+
+            descriptor
                 .Field("allMediaIds")
                 .ResolveWith<AlbumResolvers>(_ => _.GetAllMediaIdsAsync(default!, default!));
         }

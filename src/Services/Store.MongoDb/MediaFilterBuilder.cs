@@ -23,7 +23,7 @@ namespace MagicMedia.Store.MongoDb
 
         public MediaFilterBuilder(
             MediaStoreContext dbContext,
-            Func<Guid, CancellationToken, Task<IEnumerable<Guid>>> albumMediaResolver,
+            Func<Guid, CancellationToken, Task<IEnumerable<Guid>>>? albumMediaResolver,
             CancellationToken cancellationToken)
         {
             _filter = Builders<Media>.Filter.Empty;
@@ -163,7 +163,7 @@ namespace MagicMedia.Store.MongoDb
 
         public MediaFilterBuilder AddAlbum(Guid? albumId)
         {
-            if (albumId.HasValue)
+            if (albumId.HasValue && _albumMediaResolver != null)
             {
                 _tasks.Add(CreateAlbumFilter(albumId.Value));
             }
@@ -197,6 +197,10 @@ namespace MagicMedia.Store.MongoDb
             if (mediaIds.Any())
             {
                 _filter &= Builders<Media>.Filter.In(x => x.Id, mediaIds);
+            }
+            else
+            {
+                _filter &= Builders<Media>.Filter.Eq(x => x.Id, Guid.NewGuid());
             }
         }
 

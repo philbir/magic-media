@@ -32,6 +32,13 @@ namespace MagicMedia.GraphQL
                 .Folders;
         }
 
+        public IEnumerable<FilterDescription>? GetFilters(Album album)
+        {
+            return album.Includes?
+                .FirstOrDefault(x => x.Type == AlbumIncludeType.Query)?
+                .Filters;
+        }
+
         public async Task<IEnumerable<Guid>?> GetAllMediaIdsAsync(
             Album album,
             CancellationToken cancellationToken)

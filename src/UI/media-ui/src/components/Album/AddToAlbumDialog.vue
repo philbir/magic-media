@@ -6,14 +6,14 @@
         <v-container>
           <v-row v-if="context === 'QUERY'">
             <v-chip
-              v-for="(desc, i) in filterDesc"
-              :key="i"
+              v-for="(desc) in filterDescriptions"
+              :key="desc.key"
               class="ma-2"
               small
               text-color="white"
               color="blue darken-4"
             >
-              {{ desc.key }} : {{ desc.desc }}
+              {{ desc.name }} : {{ desc.description }}
             </v-chip>
           </v-row>
           <v-row v-if="context === 'FOLDER'">
@@ -95,6 +95,7 @@
   </v-dialog>
 </template>
 <script>
+import { mapActions, mapGetters } from 'vuex';
 export default {
   props: {
     show: {
@@ -113,6 +114,7 @@ export default {
     };
   },
   computed: {
+    ... mapGetters('media', ["selectedMediaIds", "filterDescriptions"]),
     isOpen: {
       get() {
         return this.show;
@@ -132,9 +134,6 @@ export default {
     folder: function () {
       return this.$store.state.media.filter.folder;
     },
-    filterDesc: function () {
-      return this.$store.getters["media/filterDescriptions"];
-    },
     title: function () {
       switch (this.context) {
         case "IDS":
@@ -149,6 +148,8 @@ export default {
     },
   },
   methods: {
+    ... mapActions('album',  { addItemsToAlbum: "addItems" }),
+
     close: function () {
       this.isOpen = false;
     },
@@ -162,18 +163,27 @@ export default {
 
       switch (this.context) {
         case "IDS":
-          input.mediaIds = this.$store.getters["media/selectedMediaIds"];
+          input.mediaIds = this.selectedMediaIds;
           break;
         case "FOLDER":
           input.folders = [this.$store.state.media.filter.folder];
           break;
         case "QUERY":
-          input.filters = this.filterDesc;
+          input.filters = this.filterDescriptions.map(x => {
+            return {
+              name: x.name, 
+              key:  x.key,
+              value: x.stringValue,
+              description: x.description
+            }
+
+          });
           break;
       }
 
-      input.mediaIds = this.$store.getters["media/selectedMediaIds"];
-      this.$store.dispatch("album/addItems", input);
+      console.log(input);
+
+      this.addItemsToAlbum(input);
 
       this.newAlbumTitle = null;
 
