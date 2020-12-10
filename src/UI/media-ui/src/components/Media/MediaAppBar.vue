@@ -18,10 +18,6 @@
       </v-list>
     </v-menu>
 
-    <v-btn color="white" icon @click="resetFilters">
-      <v-icon>mdi-cancel</v-icon>
-    </v-btn>
-
     <v-menu
       left
       bottom
@@ -237,9 +233,6 @@ export default {
     },
     clearSelected: function () {
       this.$store.dispatch("media/clearSelected");
-    },
-    resetFilters: function () {
-      this.$store.dispatch("media/resetAllFilters");
     },
     onClickAction: function (action) {
       switch (action) {

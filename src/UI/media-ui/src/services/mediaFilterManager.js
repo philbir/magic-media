@@ -1,15 +1,8 @@
 /* eslint-disable no-debugger */
 
-class FilterManager {
+class MediaFilterManager {
     /*
-      state.filter.persons = [];
-      state.filter.mediaTypes = [];
       state.filter.cameras = [];
-      state.filter.albumId = null;
-      state.filter.geoRadius = null;
-      state.filter.folder = null;
-      state.filter.date = null;
- 
     */
     constructor() {
         this.definitions = {
@@ -43,8 +36,31 @@ class FilterManager {
                     rootState.media.filter.cities.includes(x.value))
                     .map(x => x.text)
                     .join(' | ')
-            }
-
+            },
+            albumId: {
+                name: "Album",
+                default: null,
+                valueText: (rootState) => rootState.album.allAlbums.filter(x =>
+                    x.id === rootState.media.filter.albumId)[0].title
+            },
+            mediaTypes: {
+                name: "Media type",
+                default: [],
+                valueText: (rootState) => rootState.media.filter.mediaTypes.join(' | ')
+            },
+            date: {
+                name: "Date",
+                default: null,
+                valueText: (rootState) => rootState.media.filter.date
+            },
+            geoRadius: {
+                name: "Geo",
+                default: null,
+                valueText: (rootState) => {
+                    const radius = rootState.media.filter.geoRadius;
+                    return `${radius.distance} km arround ${radius.latitude.toPrecision(2)}, ${radius.longitude.toPrecision(2)}`
+                }
+            },
         }
     }
 
@@ -53,7 +69,6 @@ class FilterManager {
     }
 
     removeFilter = (state, key) => {
-        console.log('REM', key)
         state.filter[key] = this.definitions[key].default;
     }
 
@@ -70,11 +85,11 @@ class FilterManager {
         const filter = state.filter;
         const filterDescs = [];
 
-
         for (const key in this.definitions) {
 
             if (Object.prototype.hasOwnProperty.call(this.definitions, key)) {
                 const defaultValue = this.definitions[key].default;
+
                 if (Array.isArray(defaultValue)) {
                     if (filter[key].length > 0) {
                         filterDescs.push(this.getDesc(key, rootState))
@@ -94,4 +109,4 @@ class FilterManager {
 }
 
 
-export default FilterManager;
+export default MediaFilterManager;

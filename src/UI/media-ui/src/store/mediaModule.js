@@ -12,7 +12,7 @@ import {
   updateMetadata
 } from "../services/mediaService";
 
-import FilterManager from '../services/mediaFilter';
+import MediaFilterManager from '../services/mediaFilterManager';
 
 const getMediaIdsFromIndexes = state => {
   const ids = [];
@@ -23,7 +23,7 @@ const getMediaIdsFromIndexes = state => {
 };
 
 
-const fm = new FilterManager();
+const fm = new MediaFilterManager();
 
 const mediaModule = {
   namespaced: true,
@@ -94,21 +94,6 @@ const mediaModule = {
       state.totalLoaded = 0;
       state.selectedIndexes = [];
     },
-    FILTER_ALBUM_SET(state, albumId) {
-      state.filter.albumId = albumId;
-    },
-    FILTER_CAMERA_SET(state, ids) {
-      state.filter.cameras = ids;
-    },
-    FILTER_MEDIATYPES_SET(state, types) {
-      state.filter.mediaTypes = types;
-    },
-    FILTER_GEO_SET(state, geo) {
-      state.filter.geoRadius = geo;
-    },
-    FILTER_DATE_SET(state, date) {
-      state.filter.date = date;
-    },
     PAGE_NR_INC(state) {
       state.filter.pageNr++;
     },
@@ -122,9 +107,6 @@ const mediaModule = {
       Vue.set(state, "facets", facets);
     },
     FILTER_SET(state, filter) {
-
-      //Vue.set(state.filter, filter.key, filter.value);
-
       fm.setFilter(state, filter.key, filter.value);
     },
     FILTER_REMOVED(state, key) {
@@ -354,31 +336,6 @@ const mediaModule = {
     },
     setThumbnailSize({ dispatch, commit }, size) {
       commit("FILTER_THUMBNAIL_SIZE_SET", size);
-      dispatch("search");
-    },
-    setAlbumFilter({ dispatch, commit }, albumId) {
-      commit("RESET_FILTER");
-      commit("FILTER_ALBUM_SET", albumId);
-      dispatch("search");
-    },
-    setGeoFilter({ dispatch, commit }, geo) {
-      commit("RESET_FILTER");
-      commit("FILTER_GEO_SET", geo);
-      dispatch("search");
-    },
-    setMediaTypeFilter({ dispatch, commit }, types) {
-      commit("RESET_FILTER");
-      commit("FILTER_MEDIATYPES_SET", types);
-      dispatch("search");
-    },
-    setCamaraFilter({ dispatch, commit }, cameras) {
-      commit("RESET_FILTER");
-      commit("FILTER_CAMERA_SET", cameras);
-      dispatch("search");
-    },
-    setDateFilter({ dispatch, commit }, date) {
-      commit("RESET_FILTER");
-      commit("FILTER_DATE_SET", date);
       dispatch("search");
     },
     setViewerOptions({ commit }, options) {

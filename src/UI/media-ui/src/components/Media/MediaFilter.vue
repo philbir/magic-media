@@ -232,10 +232,16 @@ export default {
       });
     },
     onSelectAlbum: function (album) {
-      this.$store.dispatch("media/setAlbumFilter", album ? album.id : null);
+      this.setFilter({
+        key: "albumId",
+        value: album ? album.id : null,
+      });
     },
     onSelectMediaType: function (types) {
-      this.$store.dispatch("media/setMediaTypeFilter", types);
+      this.setFilter({
+        key: "mediaTypes",
+        value: types,
+      });
     },
     clickMap: function (loc) {
       this.mapMarker = {
@@ -255,18 +261,31 @@ export default {
           longitude: this.mapMarker.lng,
           distance: +this.mapRadius,
         };
+        this.setFilter({
+          key: "geoRadius",
+          value: geoFilter,
+        });
 
-        this.$store.dispatch("media/setGeoFilter", geoFilter);
+        //this.$store.dispatch("media/setGeoFilter", geoFilter);
       }
     },
     dateChanged: function (value) {
-      this.$store.dispatch("media/setDateFilter", value);
+      this.setFilter({
+        key: "date",
+        value: value,
+      });
     },
     dateYearChanged: function (year) {
-      this.$store.dispatch("media/setDateFilter", year.toString());
+      this.setFilter({
+        key: "date",
+        value: year.toString(),
+      });
     },
     dateMonthChanged: function (month) {
-      this.$store.dispatch("media/setDateFilter", month);
+      this.setFilter({
+        key: "date",
+        value: month,
+      });
     },
   },
 };

@@ -8,6 +8,18 @@
     <v-progress-linear v-if="loading" indeterminate color="blue" top />
     <v-row class="filter-row">
       <v-chip
+        v-show="filterDesc.length > 1"
+        close
+        small
+        class="ma-2"
+        text-color="white"
+        color="blue darken-4"
+        @click:close="resetAllFilters"
+      >
+        Clear all
+      </v-chip>
+
+      <v-chip
         v-for="(desc, i) in filterDesc"
         close
         small
@@ -136,7 +148,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions("media", ["removeFilter"]),
+    ...mapActions("media", ["removeFilter", "resetAllFilters"]),
     inViewPort: function (top) {
       return top > this.viewPort.start && top < this.viewPort.end;
     },
