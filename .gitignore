@@ -307,3 +307,4 @@ ffmpeg.exe
 ffprobe.exe
 ._ffmpeg.exe
 ._ffprobe.exe
+samples/Migration**

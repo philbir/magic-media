@@ -9,7 +9,6 @@ namespace MagicMedia.Store.MongoDb
         public static IMagicMediaServerBuilder AddMongoDbStore(
             this IMagicMediaServerBuilder builder)
         {
-
             builder.Services.AddMongoDbStore(builder.Configuration);
 
             return builder;

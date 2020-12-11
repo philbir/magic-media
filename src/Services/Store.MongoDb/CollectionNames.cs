@@ -10,5 +10,7 @@ namespace MagicMedia.Store.MongoDb
         public static readonly string Group = "group";
         public static readonly string GeoAddressCache = "geoAddressCache";
         public static readonly string MediaOperation = "operation";
+
+        public static readonly string MediaAI = "media_ai";
     }
 }
