@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Store;
@@ -19,6 +22,28 @@ namespace MagicMedia.GraphQL
             CancellationToken cancellationToken)
         {
             return await _albumService.GetThumbnailAsync(album, size, cancellationToken);
+        }
+
+        public IEnumerable<string>? GetFolders(
+            Album album)
+        {
+            return album.Includes?
+                .FirstOrDefault(x => x.Type == AlbumIncludeType.Folder)?
+                .Folders;
+        }
+
+        public IEnumerable<FilterDescription>? GetFilters(Album album)
+        {
+            return album.Includes?
+                .FirstOrDefault(x => x.Type == AlbumIncludeType.Query)?
+                .Filters;
+        }
+
+        public async Task<IEnumerable<Guid>?> GetAllMediaIdsAsync(
+            Album album,
+            CancellationToken cancellationToken)
+        {
+            return await _albumService.GetMediaIdsAsync(album, cancellationToken);
         }
     }
 }

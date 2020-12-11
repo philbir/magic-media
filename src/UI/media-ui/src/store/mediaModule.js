@@ -12,6 +12,8 @@ import {
   updateMetadata
 } from "../services/mediaService";
 
+import MediaFilterManager from '../services/mediaFilterManager';
+
 const getMediaIdsFromIndexes = state => {
   const ids = [];
   for (let i = 0; i < state.selectedIndexes.length; i++) {
@@ -19,6 +21,9 @@ const getMediaIdsFromIndexes = state => {
   }
   return ids;
 };
+
+
+const fm = new MediaFilterManager();
 
 const mediaModule = {
   namespaced: true,
@@ -89,33 +94,6 @@ const mediaModule = {
       state.totalLoaded = 0;
       state.selectedIndexes = [];
     },
-    FILTER_PERSONS_SET(state, persons) {
-      state.filter.persons = persons;
-    },
-    FILTER_COUNTRY_SET(state, countries) {
-      state.filter.countries = countries;
-    },
-    FILTER_CITY_SET(state, cities) {
-      state.filter.cities = cities;
-    },
-    FILTER_FOLDER_SET(state, folder) {
-      state.filter.folder = folder;
-    },
-    FILTER_ALBUM_SET(state, albumId) {
-      state.filter.albumId = albumId;
-    },
-    FILTER_CAMERA_SET(state, ids) {
-      state.filter.cameras = ids;
-    },
-    FILTER_MEDIATYPES_SET(state, types) {
-      state.filter.mediaTypes = types;
-    },
-    FILTER_GEO_SET(state, geo) {
-      state.filter.geoRadius = geo;
-    },
-    FILTER_DATE_SET(state, date) {
-      state.filter.date = date;
-    },
     PAGE_NR_INC(state) {
       state.filter.pageNr++;
     },
@@ -127,6 +105,12 @@ const mediaModule = {
     },
     SEARCH_FACETS_LOADED: function (state, facets) {
       Vue.set(state, "facets", facets);
+    },
+    FILTER_SET(state, filter) {
+      fm.setFilter(state, filter.key, filter.value);
+    },
+    FILTER_REMOVED(state, key) {
+      fm.removeFilter(state, key);
     },
     RESET_FILTER: function (state) {
       state.list = [];
@@ -354,57 +338,22 @@ const mediaModule = {
       commit("FILTER_THUMBNAIL_SIZE_SET", size);
       dispatch("search");
     },
-    setPersonFilter({ dispatch, commit }, persons) {
-      commit("RESET_FILTER");
-      commit("FILTER_PERSONS_SET", persons);
-      dispatch("search");
-    },
-    setCountryFilter({ dispatch, commit }, countries) {
-      commit("RESET_FILTER");
-      commit("FILTER_COUNTRY_SET", countries);
-      dispatch("search");
-    },
-    setCityFilter({ dispatch, commit }, cities) {
-      commit("RESET_FILTER");
-      commit("FILTER_CITY_SET", cities);
-      dispatch("search");
-    },
-    setFolderFilter({ dispatch, commit }, folder) {
-      commit("RESET_FILTER");
-      commit("FILTER_FOLDER_SET", folder);
-      dispatch("search");
-    },
-    setAlbumFilter({ dispatch, commit }, albumId) {
-      commit("RESET_FILTER");
-      commit("FILTER_ALBUM_SET", albumId);
-      dispatch("search");
-    },
-    setGeoFilter({ dispatch, commit }, geo) {
-      commit("RESET_FILTER");
-      commit("FILTER_GEO_SET", geo);
-      dispatch("search");
-    },
-    setMediaTypeFilter({ dispatch, commit }, types) {
-      commit("RESET_FILTER");
-      commit("FILTER_MEDIATYPES_SET", types);
-      dispatch("search");
-    },
-    setCamaraFilter({ dispatch, commit }, cameras) {
-      commit("RESET_FILTER");
-      commit("FILTER_CAMERA_SET", cameras);
-      dispatch("search");
-    },
-    setDateFilter({ dispatch, commit }, date) {
-      commit("RESET_FILTER");
-      commit("FILTER_DATE_SET", date);
-      dispatch("search");
-    },
     setViewerOptions({ commit }, options) {
       commit("VIEWER_OPTIONS_SET", options);
     },
     resetAllFilters({ dispatch, commit }) {
       commit("RESET_FILTER_VALUES");
       commit("RESET_FILTER");
+      dispatch("search");
+    },
+    setFilter({ dispatch, commit }, filter) {
+      commit("RESET_FILTER");
+      commit("FILTER_SET", filter);
+      dispatch("search");
+    },
+    removeFilter({ dispatch, commit }, key) {
+      commit("RESET_FILTER");
+      commit("FILTER_REMOVED", key);
       dispatch("search");
     },
     async loadDetails({ commit }, id) {
@@ -469,8 +418,17 @@ const mediaModule = {
     },
     selectedMediaIds: state => {
       return getMediaIdsFromIndexes(state);
+    },
+    filterDescriptions: (state, getters, rootState) => {
+
+      if (state.facets) {
+        return fm.buildDescriptions(rootState, state, state.filter.folder);
+      }
+      return [];
+
     }
-  }
+  },
+
 };
 
 export default mediaModule;

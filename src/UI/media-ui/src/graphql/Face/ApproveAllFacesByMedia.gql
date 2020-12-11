@@ -7,7 +7,7 @@ mutation approveAllFacesByMedia($mediaId: Uuid!) {
       ...face
     }
     errors {
-      ...userError
+      ... userError
     }
   }
 }

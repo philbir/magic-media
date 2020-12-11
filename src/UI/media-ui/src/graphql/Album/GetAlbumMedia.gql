@@ -8,7 +8,7 @@ query GetAlbumMedia($albumId: Uuid!) {
       id
       filename
       dateTaken
-      thumbnail(size: S) {
+      thumbnail(size: SQ_S) {
         size
         dataUrl
       }

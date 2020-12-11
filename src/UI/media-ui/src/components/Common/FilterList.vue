@@ -4,8 +4,8 @@
       <v-subheader>{{ title }}</v-subheader>
     </v-card-title>
     <v-card-text>
-      <v-row v-if="showFilter">
-        <v-col>
+      <v-row v-if="showFilter" class="my-0 py-0">
+        <v-col class="my-0 py-0">
           <v-text-field
             v-model="searchText"
             :label="title"
@@ -30,16 +30,12 @@
             v-for="item in filtered"
             v-show="item.visible"
             dense
-            :key="item.value"
-            :value="item"
+            :key="item[valueField]"
+            :value="item[valueField]"
           >
             <template v-slot:default="{ active }">
               <v-list-item-action>
-                <v-checkbox
-                  :input-value="active"
-                  :true-value="item[valueField]"
-                  color="primary"
-                ></v-checkbox>
+                <v-checkbox :input-value="active" color="primary"></v-checkbox>
               </v-list-item-action>
               <v-list-item-content>
                 <slot v-bind:item="item">
@@ -58,6 +54,7 @@
 export default {
   props: {
     items: Array,
+    value: [String, Array, Number],
     multiple: {
       type: Boolean,
       default: true,
@@ -79,10 +76,18 @@ export default {
   data() {
     return {
       searchText: "",
-      selected: [],
+      selected2: [],
     };
   },
   computed: {
+    selected: {
+      get() {
+        return this.value;
+      },
+      set(val) {
+        this.$emit("input", val);
+      },
+    },
     showFilter: function () {
       return this.items.length > 5;
     },

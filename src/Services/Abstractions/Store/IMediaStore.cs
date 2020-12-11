@@ -30,6 +30,7 @@ namespace MagicMedia.Store
         Task<IEnumerable<SearchFacetItem>> GetGroupedCountriesAsync(CancellationToken cancellationToken);
         Task<IEnumerable<MediaHeaderData>> GetHeaderDataAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken);
         Task<IEnumerable<Guid>> GetIdsByFolderAsync(string folder, CancellationToken cancellationToken);
+        Task<IEnumerable<Guid>> GetIdsFromSearchRequestAsync(SearchMediaRequest request, CancellationToken cancellationToken);
         Task<IEnumerable<Media>> GetManyAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken);
         Task<IReadOnlyDictionary<Guid, MediaThumbnail>> GetThumbnailsByMediaIdsAsync(
             IEnumerable<Guid> mediaIds,

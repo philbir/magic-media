@@ -125,8 +125,10 @@ namespace MagicMedia
                         Name = person.Name,
                         Count = group.Count()
                     };
-                    ap.FaceId = group.OrderByDescending(
-                        x => x.Thumbnail.Dimensions.Width).First().Id;
+
+                   ap.FaceId = group.Where( x => x.Thumbnail != null)
+                                    .OrderByDescending(x => x.Thumbnail.Dimensions.Width)
+                                    .First().Id;
 
                     albumPersons.Add(ap);
                 }

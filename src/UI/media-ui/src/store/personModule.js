@@ -127,7 +127,9 @@ const personModule = {
 
     }
   },
-  getters: {}
+  getters: {
+
+  }
 };
 
 export default personModule;

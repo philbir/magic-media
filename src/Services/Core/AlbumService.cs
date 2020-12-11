@@ -8,6 +8,7 @@ using MagicMedia.Messaging;
 using MagicMedia.Search;
 using MagicMedia.Store;
 using MassTransit;
+using SixLabors.ImageSharp.ColorSpaces;
 
 namespace MagicMedia
 {
@@ -94,10 +95,48 @@ namespace MagicMedia
             }
 
             AddMediaIds(request, album);
-
+            AddFolders(request, album);
+            AddFilters(request, album);
+                
             await _mediaStore.Albums.UpdateAsync(album, cancellationToken);
 
             await _bus.Publish(new ItemsAddedToAlbumMessage(album.Id));
+
+            return album;
+        }
+
+        private void AddFilters(AddItemToAlbumRequest request, Album album)
+        {
+            if (request.Filters is { } filters && filters.Any())
+            {
+                AlbumInclude? include = album.Includes
+                    .FirstOrDefault(x => x.Type == AlbumIncludeType.Query);
+
+                if (include == null)
+                {
+                    include = new AlbumInclude() { Type = AlbumIncludeType.Query };
+                    album.Includes.Add(include);
+                }
+
+                include.Filters = filters;
+            }
+        }
+
+        public async Task<Album> RemoveFoldersAsync(RemoveFoldersFromAlbumRequest request, CancellationToken cancellationToken)
+        {
+            Album album = await GetByIdAsync(request.AlbumId, cancellationToken);
+
+            foreach (AlbumInclude include in album.Includes.Where(x => x.Type == AlbumIncludeType.Folder))
+            {
+                var removed = include.Folders?.ToList();
+                removed?.RemoveAll(f => request.Folders.Contains(f));
+
+                include.Folders = removed;
+            }
+
+            await _mediaStore.Albums.UpdateAsync(album, cancellationToken);
+
+            await _bus.Publish(new FoldersRemovedFromAlbum(album.Id, request.Folders));
 
             return album;
         }
@@ -116,7 +155,7 @@ namespace MagicMedia
                 }
                 var toAdd = new HashSet<Guid>(idInclude.MediaIds);
 
-                foreach (Guid newId in request.MediaIds)
+                foreach (Guid newId in ids)
                 {
                     toAdd.Add(newId);
                 }
@@ -125,9 +164,29 @@ namespace MagicMedia
             }
         }
 
+        private static void AddFolders(AddItemToAlbumRequest request, Album album)
+        {
+            if (request.Folders is { } folders && folders.Any())
+            {
+                AlbumInclude? folderInclude = album.Includes
+                    .FirstOrDefault(x => x.Type == AlbumIncludeType.Folder);
+
+                if (folderInclude == null)
+                {
+                    folderInclude = new AlbumInclude() { Type = AlbumIncludeType.Folder };
+                    album.Includes.Add(folderInclude);
+                }
+
+                var toAdd = new HashSet<string>(folderInclude.Folders);
+                toAdd.AddRange(folders);
+
+                folderInclude.Folders = toAdd;
+            }
+        }
+
         public async Task<SearchResult<Album>> SearchAsync(
-            SearchAlbumRequest request,
-            CancellationToken cancellationToken)
+        SearchAlbumRequest request,
+        CancellationToken cancellationToken)
         {
             return await _mediaStore.Albums.SearchAsync(request, cancellationToken);
         }
@@ -162,10 +221,70 @@ namespace MagicMedia
                             ids.AddRange(folderIds);
                         }
                         break;
+                    case AlbumIncludeType.Query:
+                        IEnumerable<Guid> queryIds = await GetIdsFromFilter(include.Filters, cancellationToken);
+                        ids.AddRange(queryIds);
+                        break;
                 }
             }
 
             return ids;
+        }
+
+        private async Task<IEnumerable<Guid>> GetIdsFromFilter(IEnumerable<FilterDescription> filters, CancellationToken cancellationToken)
+        {
+            SearchMediaRequest request = MapToSearchRequest(filters);
+
+            return await _mediaStore.GetIdsFromSearchRequestAsync(request, cancellationToken);
+        }
+
+
+        private SearchMediaRequest MapToSearchRequest(IEnumerable<FilterDescription> filters)
+        {
+            var request = new SearchMediaRequest()
+            {
+                PageSize = 100000
+            };
+
+            foreach (FilterDescription? filter in filters)
+            {
+                switch (filter.Key.ToLower())
+                {
+                    case "folder":
+                        request.Folder = filter.Value;
+                        break;
+                    case "date":
+                        request.Date = filter.Value;
+                        break;
+                    case "persons":
+                        request.Persons = filter.Value.Split(',').Select(x => Guid.Parse(x));
+                        break;
+                    case "countries":
+                        request.Countries = filter.Value.Split(',');
+                        break;
+                    case "cities":
+                        request.Cities = filter.Value.Split(',');
+                        break;
+                    case "albumId":
+                        request.AlbumId = Guid.Parse(filter.Value);
+                        break;
+                    case "mediaTypes":
+                        request.MediaTypes = filter.Value.Split(',').Select(x => Enum.Parse<MediaType>(x, true));
+                        break;
+                    case "geoRadius":
+                        var parts = filter.Value.Split(':');
+                        var coords = parts[1].Split(',');
+                        request.GeoRadius = new GeoRadiusFilter
+                        {
+                            Distance = int.Parse(parts[0]),
+                            Latitude = double.Parse(coords[0]),
+                            Longitude = double.Parse(coords[1]),
+                        };
+                        break;
+                }
+            }
+
+            return request;
         }
 
         public async Task<Album> UpdateAlbumAsync(

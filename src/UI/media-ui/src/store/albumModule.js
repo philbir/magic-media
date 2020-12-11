@@ -3,6 +3,7 @@ import Vue from "vue";
 import {
   addItems,
   getAllAlbums,
+  removeFolders,
   searchAlbums,
   updateAlbum
 } from "../services/albumService";
@@ -61,6 +62,22 @@ const albumModule = {
         console.error(ex);
       }
     },
+    async removeFolders({ dispatch }, input) {
+      try {
+        const res = await removeFolders(input);
+
+        dispatch(
+          "snackbar/addSnack",
+          {
+            text: `Folder removed from album: ${res.data.removeFoldersFromAlbum.album.title}`,
+            type: "SUCCESS"
+          },
+          { root: true }
+        );
+      } catch (ex) {
+        console.error(ex);
+      }
+    },
     async update({ commit, dispatch }, input) {
       try {
         const res = await updateAlbum(input);
@@ -95,7 +112,7 @@ const albumModule = {
         console.error(ex);
       }
     },
-    filter: function({ commit, dispatch }, filter) {
+    filter: function ({ commit, dispatch }, filter) {
       commit("FILTER_SET", filter);
       dispatch("search");
     }

@@ -1,7 +1,7 @@
 #import "../UserErrorFragment.gql"
 
-mutation addToAlbum($input: AddItemToAlbumRequestInput!) {
-  addItemsToAlbum(input: $input) {
+mutation removeFoldersFromAlbum($input: RemoveFoldersFromAlbumInput!) {
+  removeFoldersFromAlbum(input: $input) {
     album {
       id
       title

@@ -10,20 +10,9 @@ query searchAlbums($input: SearchAlbumRequestInput!) {
       }
       startDate
       endDate
-      persons {
-        personId
-        faceId
-        name
-        count
-      }
       countries {
         name
         code
-        count
-        cities {
-          name
-          count
-        }
       }
     }
   }

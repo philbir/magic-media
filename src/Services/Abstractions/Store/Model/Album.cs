@@ -66,13 +66,26 @@ namespace MagicMedia.Store
     }
 
     public class AlbumInclude
-    {
+    {   
         public AlbumIncludeType Type { get; set; }
 
-        public IEnumerable<Guid> MediaIds { get; set; } = new List<Guid>();
+        public IEnumerable<Guid>? MediaIds { get; set; } = new List<Guid>();
 
-        public List<string>? Folders { get; set; } = new List<string>();
+        public IEnumerable<string>? Folders { get; set; } = new List<string>();
+
+        public IEnumerable<FilterDescription>? Filters { get; set; }
 
         public string? SerializedQuery { get; set; }
+    }
+
+    public class FilterDescription
+    {
+        public string Key { get; set; }
+
+        public string Name { get; set; }
+
+        public string Value { get; set; }
+
+        public string? Description { get; set; }
     }
 }

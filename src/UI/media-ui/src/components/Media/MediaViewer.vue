@@ -36,11 +36,19 @@
             <v-icon @click="handleHome" color="white" class="mr-2">
               mdi-home
             </v-icon>
-            <span class="path" v-for="(path, i) in pathInfo" :key="path.path"
+            <span
+              class="path"
+              v-for="(path, i) in pathInfo"
+              :key="path.path"
+              @click="setFolderFilter(path.path)"
               >{{ path.name }}
               <span v-if="i < pathInfo.length - 1"> | </span>
             </span>
-            <span class="path" v-if="media.dateTaken">
+            <span
+              class="path"
+              v-if="media.dateTaken"
+              @click="setDateFilter(media.dateTaken)"
+            >
               @ {{ media.dateTaken | dateformat("DATE_MED") }}
             </span>
           </v-col>
@@ -199,6 +207,8 @@ import MediaQuickInfo from "./MediaQuickInfo.vue";
 import MediaInfo from "./MediaInfo";
 import FaceBox from "../Face/FaceBox";
 import GlobalEvents from "vue-global-events";
+import { DateTime } from "luxon";
+import { mapActions } from "vuex";
 
 export default {
   components: {
@@ -354,6 +364,7 @@ export default {
     },
   },
   methods: {
+    ...mapActions("media", ["setFilter"]),
     onImgLoaded() {
       this.$nextTick(() => {
         window.setTimeout(() => {
@@ -444,7 +455,7 @@ export default {
           );
           break;
         default:
-          console.log("VIEW", e.which);
+          console.log("KEYPress viewer", e.which);
           break;
       }
     },
@@ -525,6 +536,21 @@ export default {
     },
     toggleInfo: function () {
       this.showInfoPage = !this.showInfoPage;
+    },
+    setFolderFilter: function (folder) {
+      this.setFilter({
+        key: "folder",
+        value: folder,
+      });
+      this.handleHome();
+    },
+    setDateFilter: function (date) {
+      var dateFilter = DateTime.fromISO(date).toISODate();
+      this.setFilter({
+        key: "date",
+        value: dateFilter,
+      });
+      this.handleHome();
     },
   },
 };

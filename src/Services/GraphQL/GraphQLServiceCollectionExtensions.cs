@@ -41,12 +41,23 @@ namespace MagicMedia
                 .AddType<AlbumType>()
                 .AddType<ThumbnailType>()
                 .AddType<SearchFacetType>()
+                .RenameRequestToInput<RemoveFoldersFromAlbumRequest>()
                 .AddDataLoader<CameraByIdDataLoader>()
                 .AddDataLoader<ThumbnailByMediaIdDataLoader>()
                 .AddDataLoader<MediaByIdDataLoader>()
                 .AddDataLoader<ThumbnailDataDataLoader>()
                 .AddInMemorySubscriptions()
                 .AddAuthorization();
+
+            return builder;
+        }
+
+
+        private static IRequestExecutorBuilder RenameRequestToInput<T>(
+            this IRequestExecutorBuilder builder)
+        {
+            var name = typeof(T).Name.Replace("Request", "Input");
+            builder.AddInputObjectType<T>(d => d.Name(name));
 
             return builder;
         }

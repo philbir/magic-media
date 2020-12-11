@@ -51,6 +51,46 @@ namespace MagicMedia.Store.MongoDb
             Func<Guid, CancellationToken, Task<IEnumerable<Guid>>> albumMediaResolver,
             CancellationToken cancellationToken)
         {
+            FilterDefinition<Media>? filter = await BuildFilterFromRequestAsync(request, albumMediaResolver, cancellationToken);
+
+            IFindFluent<Media, Media>? cursor = _mediaStoreContext.Medias.Find(filter);
+
+            List<Media> medias = await cursor
+                .SortByDescending(x => x.DateTaken)
+                .Skip(request.PageNr * request.PageSize)
+                .Limit(request.PageSize + 1)
+                .ToListAsync();
+
+            return new SearchResult<Media>(
+                medias.Take(request.PageSize),
+                medias.Count() > request.PageSize);
+        }
+
+
+        public async Task<IEnumerable<Guid>> GetIdsFromSearchRequestAsync(
+            SearchMediaRequest request,
+            CancellationToken cancellationToken)
+        {
+            FilterDefinition<Media>? filter = await BuildFilterFromRequestAsync(
+                request,
+                albumMediaResolver: null,
+                cancellationToken);
+
+            ProjectionDefinition<Media> projection = Builders<Media>.Projection
+                .Include(x => x.Id);
+
+            var options = new FindOptions<Media, BsonDocument> { Projection = projection };
+
+            IAsyncCursor<BsonDocument>? cursor = await _mediaStoreContext.Medias.FindAsync(filter, options, cancellationToken);
+            List<BsonDocument> docs = await cursor.ToListAsync(cancellationToken);
+
+            return docs.Select(x => x["_id"].AsGuid);
+        }
+
+        private async Task<FilterDefinition<Media>> BuildFilterFromRequestAsync(
+            SearchMediaRequest request, Func<Guid, CancellationToken, Task<IEnumerable<Guid>>>? albumMediaResolver,
+            CancellationToken cancellationToken)
+        {
             FilterDefinition<Media>? filter = await new MediaFilterBuilder(
                 _mediaStoreContext,
                 albumMediaResolver,
@@ -65,17 +105,7 @@ namespace MagicMedia.Store.MongoDb
                 .AddDate(request.Date)
                 .BuildAsync();
 
-            IFindFluent<Media, Media>? cursor = _mediaStoreContext.Medias.Find(filter);
-
-            List<Media> medias = await cursor
-                .SortByDescending(x => x.DateTaken)
-                .Skip(request.PageNr * request.PageSize)
-                .Limit(request.PageSize + 1)
-                .ToListAsync();
-
-            return new SearchResult<Media>(
-                medias.Take(request.PageSize),
-                medias.Count() > request.PageSize);
+            return filter;
         }
 
         public async Task<Media> GetByIdAsync(

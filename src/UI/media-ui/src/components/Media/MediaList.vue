@@ -6,7 +6,33 @@
     :style="{ height: layout.clientHeight + 'px' }"
   >
     <v-progress-linear v-if="loading" indeterminate color="blue" top />
+    <v-row class="filter-row">
+      <v-chip
+        v-show="filterDesc.length > 1"
+        close
+        small
+        class="ma-2"
+        text-color="white"
+        color="blue darken-4"
+        @click:close="resetAllFilters"
+      >
+        Clear all
+      </v-chip>
 
+      <v-chip
+        v-for="(desc, i) in filterDesc"
+        close
+        small
+        :key="i"
+        class="ma-2"
+        text-color="white"
+        color="blue darken-4"
+        @click:close="removeFilter(desc.key)"
+      >
+        <strong>{{ desc.name }}</strong
+        >: {{ desc.description }}
+      </v-chip>
+    </v-row>
     <template v-for="(row, i) in layout.rows">
       <div
         :key="i"
@@ -48,6 +74,7 @@
 import justified from "justified-layout";
 import { mediaListViewMap } from "../../services/mediaListViewMap";
 import { debounce } from "lodash";
+import { mapActions } from "vuex";
 
 export default {
   components: {},
@@ -105,6 +132,9 @@ export default {
     loading: function () {
       return this.$store.state.media.listLoading;
     },
+    filterDesc: function () {
+      return this.$store.getters["media/filterDescriptions"];
+    },
   },
   data() {
     return {
@@ -118,6 +148,7 @@ export default {
     };
   },
   methods: {
+    ...mapActions("media", ["removeFilter", "resetAllFilters"]),
     inViewPort: function (top) {
       return top > this.viewPort.start && top < this.viewPort.end;
     },
@@ -226,5 +257,14 @@ export default {
 .duration {
   color: #fff;
   margin-left: 4px;
+}
+
+.filter-row {
+  z-index: 2;
+  opacity: 0.7;
+  width: 100%;
+  position: absolute;
+  margin: 0;
+  height: 36px;
 }
 </style>

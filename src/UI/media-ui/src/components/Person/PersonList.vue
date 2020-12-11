@@ -103,7 +103,6 @@ export default {
     },
     openTimeline: function (person) {
       this.$router.push({ name: "PersonTimeline", params: { id: person.id } });
-      console.log(person);
     },
   },
 };
