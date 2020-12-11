@@ -9,7 +9,7 @@
             <v-card-title class="font-weight-bold">
               <div class="country-flag-container">
                 <img
-                  v-for="(country, i) in album.countries"
+                  v-for="(country, i) in album.countries.slice(0, 4)"
                   :key="i"
                   :src="flagUrl(country)"
                 />

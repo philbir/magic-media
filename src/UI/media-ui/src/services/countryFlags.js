@@ -1,7 +1,7 @@
 
-export const getFlagUrl = (code = 24) => {
+export const getFlagUrl = (code, size = 24) => {
 
-    return `https://purecatamphetamine.github.io/country-flag-icons/3x2/${code}.svg`
+    //return `https://raw.githubusercontent.com/gosquared/flags/master/flags/flags-iso/shiny/${size}/${code}.png`
 
-    //return `https://www.countryflags.io/${code}/shiny/${size}.png`
+    return `https://www.countryflags.io/${code}/shiny/${size}.png`
 } 

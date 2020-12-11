@@ -107,7 +107,8 @@ const mediaModule = {
       Vue.set(state, "facets", facets);
     },
     FILTER_SET(state, filter) {
-      fm.setFilter(state, filter.key, filter.value);
+      Vue.set(state.filter, filter.key, filter.value)
+      //fm.setFilter(state, filter.key, filter.value);
     },
     FILTER_REMOVED(state, key) {
       fm.removeFilter(state, key);

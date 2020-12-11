@@ -58,6 +58,7 @@
 export default {
   props: {
     items: Array,
+    value: [String, Array, Number],
     multiple: {
       type: Boolean,
       default: true,
@@ -79,10 +80,17 @@ export default {
   data() {
     return {
       searchText: "",
-      selected: [],
     };
   },
   computed: {
+    selected: {
+      get() {
+        return this.value;
+      },
+      set(val) {
+        this.$emit("input", val);
+      },
+    },
     showFilter: function () {
       return this.items.length > 5;
     },

@@ -208,6 +208,7 @@ import MediaInfo from "./MediaInfo";
 import FaceBox from "../Face/FaceBox";
 import GlobalEvents from "vue-global-events";
 import { DateTime } from "luxon";
+import { mapActions } from "vuex";
 
 export default {
   components: {
@@ -363,6 +364,7 @@ export default {
     },
   },
   methods: {
+    ...mapActions("media", ["setFilter"]),
     onImgLoaded() {
       this.$nextTick(() => {
         window.setTimeout(() => {
@@ -536,12 +538,18 @@ export default {
       this.showInfoPage = !this.showInfoPage;
     },
     setFolderFilter: function (folder) {
-      this.$store.dispatch("media/setFolderFilter", folder);
+      this.setFilter({
+        key: "folder",
+        value: folder,
+      });
       this.handleHome();
     },
     setDateFilter: function (date) {
       var dateFilter = DateTime.fromISO(date).toISODate();
-      this.$store.dispatch("media/setDateFilter", dateFilter);
+      this.setFilter({
+        key: "date",
+        value: dateFilter,
+      });
       this.handleHome();
     },
   },

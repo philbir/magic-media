@@ -33,7 +33,7 @@
         max-height="250"
         value-field="id"
         text-field="name"
-        @change="onSelectPerson"
+        v-model="selectedPersons"
       ></FilterList>
     </div>
     <div v-if="activeTabId == 'geo'">
@@ -131,7 +131,6 @@ export default {
   },
   data() {
     return {
-      selectedPersons: [],
       selectedMediaTypes: ["IMAGE", "VIDEO"],
       activeTabId: "folder",
       dates: null,
@@ -180,6 +179,24 @@ export default {
         }
         return tab;
       });
+    },
+    selectedPersons: {
+      set(value) {
+        const selected = value.map((x) => x.id);
+        this.setFilter({
+          key: "persons",
+          value: selected,
+        });
+
+        console.log("SET", value);
+      },
+      get() {
+        var sel = this.$store.state.person.persons.filter((x) =>
+          this.$store.state.media.filter.persons.includes(x.id)
+        );
+        console.log("GET", sel);
+        return sel;
+      },
     },
     mapCenter: function () {
       return { lat: 47.28752423541094, lng: 8.533110649108862 };

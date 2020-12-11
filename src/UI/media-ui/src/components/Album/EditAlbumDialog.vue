@@ -6,6 +6,10 @@
       class="d-flex flex-column"
       v-if="album"
     >
+      <v-progress-linear
+        v-if="album.id == undefined"
+        indeterminate
+      ></v-progress-linear>
       <v-card-title>
         {{ album.title }}
         <div class="country-flag-container">
@@ -70,7 +74,7 @@
                         Countries
                       </v-expansion-panel-header>
                       <v-expansion-panel-content>
-                        <v-list>
+                        <v-list height="200" style="overflow: auto">
                           <v-list-item
                             v-for="country in album.countries"
                             :key="country.code"
@@ -108,17 +112,35 @@
         <div v-show="view === 'settings'">
           <v-row>
             <v-col sm="6">
-              <h4>Folders</h4>
-              <v-chip
-                v-for="(folder, i) in album.folders"
-                :key="i"
-                class="ma-2"
-                close
-                @click:close="removeFolder(folder)"
-              >
-                {{ folder }}
-              </v-chip></v-col
-            >
+              <div v-if="album.folders">
+                <h4>Folders</h4>
+                <v-chip
+                  v-for="(folder, i) in album.folders"
+                  :key="i"
+                  class="ma-2"
+                  text-color="white"
+                  color="blue darken-4"
+                  close
+                  @click:close="removeFolder(folder)"
+                >
+                  {{ folder }}
+                </v-chip>
+              </div>
+              <div v-if="album.filters">
+                <h4>Filters</h4>
+                <v-chip
+                  v-for="filter in album.filters"
+                  :key="filter.key"
+                  class="ma-2"
+                  close
+                  text-color="white"
+                  color="blue darken-4"
+                  @click:close="removeFilter(filter.key)"
+                >
+                  {{ filter.name }} : {{ filter.description }}
+                </v-chip>
+              </div>
+            </v-col>
             <v-col sm="6"><h4>Shared with</h4></v-col>
           </v-row>
         </div>
@@ -152,6 +174,7 @@
 import { getFlagUrl } from "../../services/countryFlags";
 import { getAlbumById, getAlbumMedia } from "../../services/albumService";
 import AlbumMedia from "./AlbumMedia.vue";
+import { mapActions } from "vuex";
 export default {
   components: { AlbumMedia },
   props: {
@@ -216,6 +239,10 @@ export default {
     },
   },
   methods: {
+    ...mapActions("album", {
+      removeFolders: "removeFolders",
+      saveAlbum: "update",
+    }),
     async loadAlbum(id) {
       const res = await getAlbumById(id);
       this.album = res.data.album;
@@ -226,7 +253,7 @@ export default {
       this.medias = mediaRes.data.searchMedia.items;
     },
     save: function () {
-      this.$store.dispatch("album/update", {
+      this.saveAlbum({
         title: this.album.title,
         id: this.album.id,
       });
@@ -244,10 +271,15 @@ export default {
     removeFolder: function (folder) {
       const idx = this.album.folders.findIndex((x) => x === folder);
       this.album.folders.splice(idx, 1);
-      this.$store.dispatch("album/removeFolders", {
+      this.removeFolders({
         albumId: this.album.id,
         folders: [folder],
       });
+    },
+    removeFilter: function (key) {
+      const idx = this.album.filters.findIndex((x) => x.key === key);
+      this.album.filters.splice(idx, 1);
+      console.log(key);
     },
     flagUrl: function (country) {
       return getFlagUrl(country.code, 32);
@@ -259,6 +291,7 @@ export default {
       this.isOpen = false;
       this.album = {};
       this.medias = [];
+      this.view = "details";
     },
   },
 };

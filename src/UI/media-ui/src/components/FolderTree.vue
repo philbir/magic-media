@@ -2,6 +2,7 @@
   <div>
     <v-text-field
       v-model="searchText"
+      @input="handleSearch"
       label="Search in folders"
       prepend-inner-icon="mdi-magnify"
       flat
@@ -10,7 +11,7 @@
     ></v-text-field>
     <v-treeview
       activatable
-      selection-type="independent"
+      ref="tree"
       :multiple-active="false"
       :open="initiallyOpen"
       :items="folderTree"
@@ -35,14 +36,17 @@
 
 <script>
 import { mapActions } from "vuex";
+import { debounce } from "lodash";
 
 export default {
   created() {
     this.$store.dispatch("media/getFolderTree");
+    this.handleSearch = debounce(this.handleSearch, 500);
   },
   data: () => ({
     initiallyOpen: ["Home"],
     files: {},
+    active: [],
     specialFolders: [
       {
         name: "Favorites",
@@ -72,15 +76,36 @@ export default {
         ...this.specialFolders,
       ];
     },
+    activePath: function () {
+      return this.$store.state.media.filter.folder;
+    },
+  },
+  watch: {
+    activePath: function (newValue) {
+      console.log([newValue]);
+      this.active = [newValue]; //Can not sync selected node from $store 😢
+    },
   },
   methods: {
     ...mapActions("media", ["setFilter"]),
+    handleSearch(input) {
+      if (input) {
+        if (input.length > 2) this.$refs.tree.updateAll(true);
+      } else {
+        this.$refs.tree.updateAll(false);
+      }
+    },
     onSelect(e) {
       if (e.length > 0) {
-        //this.$store.dispatch("media/setFolderFilter", e[0].path);
+        this.selected = [e[0].path];
         this.setFilter({
           key: "folder",
           value: e[0].path,
+        });
+      } else {
+        this.setFilter({
+          key: "folder",
+          value: null,
         });
       }
     },
