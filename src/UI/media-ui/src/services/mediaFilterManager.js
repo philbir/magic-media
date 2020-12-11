@@ -1,4 +1,5 @@
 /* eslint-disable no-debugger */
+import Vue from "vue";
 
 class MediaFilterManager {
     /*
@@ -33,7 +34,7 @@ class MediaFilterManager {
             cities: {
                 name: "City",
                 default: [],
-                stringValue: (state) => state.filter.city.join(','),
+                stringValue: (state) => state.filter.cities.join(','),
                 valueText: (rootState) => rootState.media.facets.city.filter(x =>
                     rootState.media.filter.cities.includes(x.value))
                     .map(x => x.text)
@@ -70,11 +71,11 @@ class MediaFilterManager {
         }
     }
     setFilter = (state, key, value) => {
-        state.filter[key] = value;
+        Vue.set(state.filter, key, value);
     }
 
     removeFilter = (state, key) => {
-        state.filter[key] = this.definitions[key].default;
+        Vue.set(state.filter, key, this.definitions[key].default);
     }
     getDesc = (key, rootState) => {
 

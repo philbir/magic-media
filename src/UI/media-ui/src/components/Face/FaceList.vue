@@ -173,7 +173,6 @@ export default {
         end: elm.scrollTop + elm.offsetHeight + offset,
       };
 
-      console.log(percent, this.loading, this.previousScroll);
       if (!this.loading && percent > 0.85 && percent > this.previousScroll) {
         this.loadMore();
       }

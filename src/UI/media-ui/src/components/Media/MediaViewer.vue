@@ -455,7 +455,7 @@ export default {
           );
           break;
         default:
-          console.log("VIEW", e.which);
+          console.log("KEYPress viewer", e.which);
           break;
       }
     },

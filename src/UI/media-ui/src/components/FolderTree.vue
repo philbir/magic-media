@@ -82,7 +82,6 @@ export default {
   },
   watch: {
     activePath: function (newValue) {
-      console.log([newValue]);
       this.active = [newValue]; //Can not sync selected node from $store 😢
     },
   },

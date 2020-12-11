@@ -6,7 +6,7 @@
         <v-container>
           <v-row v-if="context === 'QUERY'">
             <v-chip
-              v-for="(desc) in filterDescriptions"
+              v-for="desc in filterDescriptions"
               :key="desc.key"
               class="ma-2"
               small
@@ -95,7 +95,7 @@
   </v-dialog>
 </template>
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions, mapGetters } from "vuex";
 export default {
   props: {
     show: {
@@ -114,7 +114,7 @@ export default {
     };
   },
   computed: {
-    ... mapGetters('media', ["selectedMediaIds", "filterDescriptions"]),
+    ...mapGetters("media", ["selectedMediaIds", "filterDescriptions"]),
     isOpen: {
       get() {
         return this.show;
@@ -148,7 +148,7 @@ export default {
     },
   },
   methods: {
-    ... mapActions('album',  { addItemsToAlbum: "addItems" }),
+    ...mapActions("album", { addItemsToAlbum: "addItems" }),
 
     close: function () {
       this.isOpen = false;
@@ -169,22 +169,17 @@ export default {
           input.folders = [this.$store.state.media.filter.folder];
           break;
         case "QUERY":
-          input.filters = this.filterDescriptions.map(x => {
+          input.filters = this.filterDescriptions.map((x) => {
             return {
-              name: x.name, 
-              key:  x.key,
+              name: x.name,
+              key: x.key,
               value: x.stringValue,
-              description: x.description
-            }
-
+              description: x.description,
+            };
           });
           break;
       }
-
-      console.log(input);
-
       this.addItemsToAlbum(input);
-
       this.newAlbumTitle = null;
 
       if (this.context === "IDS") {

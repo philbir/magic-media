@@ -28,9 +28,9 @@
         text-color="white"
         color="blue darken-4"
         @click:close="removeFilter(desc.key)"
-        :title="desc.desc"
       >
-        {{ desc.name }}
+        <strong>{{ desc.name }}</strong
+        >: {{ desc.description }}
       </v-chip>
     </v-row>
     <template v-for="(row, i) in layout.rows">

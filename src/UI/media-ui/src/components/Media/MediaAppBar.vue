@@ -284,7 +284,7 @@ export default {
           this.$store.dispatch("person/buildModel");
           break;
         default:
-          console.log("BAR", e.which);
+          console.log("KEYPress MediaBar", e.which);
       }
     },
   },

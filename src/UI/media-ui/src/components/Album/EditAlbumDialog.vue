@@ -279,7 +279,6 @@ export default {
     removeFilter: function (key) {
       const idx = this.album.filters.findIndex((x) => x.key === key);
       this.album.filters.splice(idx, 1);
-      console.log(key);
     },
     flagUrl: function (country) {
       return getFlagUrl(country.code, 32);
