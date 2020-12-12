@@ -189,6 +189,12 @@
           <face-box :key="face.id" :face="face" :image="image"></face-box>
         </template>
       </div>
+      <AIObjects
+        v-if="image.loaded && showObjects"
+        :image="image"
+        :objects="media.ai.objects"
+      ></AIObjects>
+
       <div v-if="showQuickInfo" class="quick-info">
         <media-quick-info :faces="media.faces"></media-quick-info>
       </div>
@@ -209,6 +215,7 @@ import FaceBox from "../Face/FaceBox";
 import GlobalEvents from "vue-global-events";
 import { DateTime } from "luxon";
 import { mapActions } from "vuex";
+import AIObjects from "./AIObjects";
 
 export default {
   components: {
@@ -217,6 +224,7 @@ export default {
     GlobalEvents,
     MediaQuickInfo,
     MediaInfo,
+    AIObjects,
   },
   data() {
     return {
@@ -323,6 +331,9 @@ export default {
     },
     showFaceBox: function () {
       return this.$store.state.media.viewer.showFaceBox;
+    },
+    showObjects: function () {
+      return this.$store.state.media.viewer.showObjects;
     },
     showQuickInfo: function () {
       return this.$store.state.media.viewer.showFaceList;
@@ -451,6 +462,14 @@ export default {
             "media/setViewerOptions",
             Object.assign({}, this.$store.state.media.viewer, {
               showFaceList: !this.$store.state.media.viewer.showFaceList,
+            })
+          );
+          break;
+        case 79: //o
+          this.$store.dispatch(
+            "media/setViewerOptions",
+            Object.assign({}, this.$store.state.media.viewer, {
+              showObjects: !this.$store.state.media.viewer.showObjects,
             })
           );
           break;

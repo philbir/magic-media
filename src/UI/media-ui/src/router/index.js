@@ -18,6 +18,7 @@ import PersonList from "../components/Person/PersonList";
 import Playground from "../components/Playground/Playground";
 import PersonTimeline from "../components/Person/PersonTimeline"
 import SettingsPage from "../components/Settings/SettingsPage"
+import MediaViewLaucher from "../components/Media/MediaViewLauncher"
 
 Vue.use(VueRouter);
 
@@ -55,6 +56,16 @@ const routes = [
     components: {
       default: PersonTimeline,
       left: PersonFilter,
+      appbar: DefaultAppBar
+    },
+    meta: { hideSidebar: true }
+  },
+  {
+    path: "/media/view/:id",
+    name: "MediaViewLauncher",
+    components: {
+      default: MediaViewLaucher,
+      left: null,
       appbar: DefaultAppBar
     },
     meta: { hideSidebar: true }

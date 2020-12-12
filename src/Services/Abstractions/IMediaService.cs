@@ -11,6 +11,7 @@ namespace MagicMedia
     {
         Task AddNewMediaAsync(MagicMedia.AddNewMediaRequest request, CancellationToken cancellationToken);
         Task DeleteAsync(Media media, CancellationToken cancellationToken);
+        Task<MediaAI> GetAIDataAsync(Guid mediaId, CancellationToken cancellationToken);
         MediaBlobData GetBlobRequest(Media media, MediaFileType type);
         Task<Media> GetByIdAsync(Guid id, CancellationToken cancellationToken);
         string GetFilename(Media media, MediaFileType mediaFileType);

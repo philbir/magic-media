@@ -23,7 +23,8 @@ namespace MagicMedia.Store.MongoDb
             IFaceStore faceStore,
             IAlbumStore albumStore,
             ICameraStore cameraStore,
-            IPersonStore personStore)
+            IPersonStore personStore,
+            IMediaAIStore mediaAIStore)
         {
             _mediaStoreContext = mediaStoreContext;
             Thumbnails = thumbnailBlobStore;
@@ -32,6 +33,7 @@ namespace MagicMedia.Store.MongoDb
             Albums = albumStore;
             Cameras = cameraStore;
             Persons = personStore;
+            MediaAI = mediaAIStore;
         }
 
         public IFaceStore Faces { get; }
@@ -41,6 +43,8 @@ namespace MagicMedia.Store.MongoDb
         public ICameraStore Cameras { get; }
 
         public IPersonStore Persons { get; }
+
+        public IMediaAIStore MediaAI { get; }
 
         public IThumbnailBlobStore Thumbnails { get; }
 
@@ -391,5 +395,4 @@ namespace MagicMedia.Store.MongoDb
             return locs;
         }
     }
-
 }

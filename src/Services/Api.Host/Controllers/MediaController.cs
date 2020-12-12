@@ -43,7 +43,6 @@ namespace MagicMedia.Api.Controllers
                 },
                 cancellationToken);
 
-
             return new FileContentResult(data.Data, "image/webp") { EnableRangeProcessing = true };
         }
 

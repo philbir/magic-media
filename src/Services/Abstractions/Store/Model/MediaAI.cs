@@ -23,7 +23,7 @@ namespace MagicMedia.Store
 
     public class MediaAITag
     {
-        public ImageAISource Source { get; set; }
+        public AISource Source { get; set; }
 
         public string Name { get; set; }
 
@@ -32,7 +32,7 @@ namespace MagicMedia.Store
 
     public class MediaAIObject
     {
-        public ImageAISource Source { get; set; }
+        public AISource Source { get; set; }
 
         public string Name { get; set; }
 
@@ -58,7 +58,7 @@ namespace MagicMedia.Store
         public double Confidence { get; set; }
     }
 
-    public enum ImageAISource
+    public enum AISource
     {
         ImageAI,
         AzureCV

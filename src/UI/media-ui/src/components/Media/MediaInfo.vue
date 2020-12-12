@@ -9,7 +9,7 @@
         <v-tab href="#attributes"> Attributes </v-tab>
         <v-tab href="#location" v-if="hasLocation"> Location </v-tab>
         <v-tab href="#faces" v-if="media.faces.length > 0"> Faces </v-tab>
-        <v-tab href="#objects"> Objects </v-tab>
+        <v-tab href="#ai"> AI </v-tab>
         <v-tab href="#files"> Files </v-tab>
         <v-tab href="#raw"> Raw </v-tab>
       </v-tabs>
@@ -114,7 +114,50 @@
                 </v-row>
               </div>
             </v-tab-item>
-            <v-tab-item value="objects"> Objects </v-tab-item>
+            <v-tab-item value="ai" v-if="media.ai">
+              <v-row>
+                <v-col lg="4">
+                  <v-sheet
+                    width="300"
+                    elevation="10"
+                    rounded="lg"
+                    class="ma-2 pa-4 card-details-content"
+                  >
+                    <h3>Tags</h3>
+                    <v-row
+                      class="ma-0 pa-0"
+                      v-for="(tag, i) in media.ai.tags"
+                      :key="i"
+                    >
+                      <v-col cols="12" sm="8">{{ tag.name }}</v-col>
+                      <v-col cols="12" sm="4" class="font-weight-bold">{{
+                        Math.round(tag.confidence * 100) / 100
+                      }}</v-col>
+                    </v-row>
+                  </v-sheet>
+                </v-col>
+                <v-col lg="4">
+                  <v-sheet
+                    width="300"
+                    elevation="10"
+                    rounded="lg"
+                    class="ma-2 pa-4 card-details-content"
+                  >
+                    <h3>Objects</h3>
+                    <v-row
+                      class="ma-0 pa-0"
+                      v-for="(obj, i) in media.ai.objects"
+                      :key="i"
+                    >
+                      <v-col cols="12" sm="8">{{ obj.name }}</v-col>
+                      <v-col cols="12" sm="4" class="font-weight-bold">{{
+                        Math.round(obj.confidence * 100) / 100
+                      }}</v-col>
+                    </v-row>
+                  </v-sheet>
+                </v-col>
+              </v-row>
+            </v-tab-item>
             <v-tab-item value="files">
               <v-row
                 v-for="file in media.files"
@@ -317,6 +360,7 @@ export default {
       if (mediaId) {
         var res = await getInfo(mediaId);
         this.media = res.data.mediaById;
+        console.log(this.media);
       } else {
         this.media = null;
       }
@@ -389,6 +433,8 @@ export default {
   background-color: rgb(36, 36, 36);
   opacity: 0.85;
   color: #fff !important;
+  max-height: 84vh;
+  overflow-x: auto;
 }
 
 .face-image {
