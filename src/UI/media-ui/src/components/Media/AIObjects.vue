@@ -46,7 +46,7 @@ export default {
       if (item.source === "AZURE_C_V") {
         box.color = "#d900b8";
       } else {
-        box.color = "#a600d9";
+        box.color = "#009261";
       }
 
       return box;

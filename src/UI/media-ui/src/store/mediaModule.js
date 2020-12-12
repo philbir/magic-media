@@ -52,6 +52,8 @@ const mediaModule = {
       countries: [],
       cities: [],
       persons: [],
+      //tags: [],
+      //objects: [],
       mediaTypes: [],
       cameras: [],
       date: null,

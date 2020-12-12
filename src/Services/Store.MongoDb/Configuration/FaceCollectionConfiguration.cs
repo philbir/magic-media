@@ -29,6 +29,9 @@ namespace MagicMedia.Store.MongoDb.Configuration
                          Builders<MediaFace>.IndexKeys
                              .Descending(c => c.PersonId),
                          new CreateIndexOptions { Unique = false });
+
+                    collection.Indexes.CreateOne(mediaIdIndex);
+                    collection.Indexes.CreateOne(personIdIndex);
                 });
         }
     }

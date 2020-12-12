@@ -25,5 +25,17 @@ namespace MagicMedia.GraphQL.SearchFacets
         {
             return await _searchFacetService.GetCityFacetsAsync(cancellationToken);
         }
+
+        public async Task<IEnumerable<SearchFacetItem>> GetAITagsAsync(
+            CancellationToken cancellationToken)
+        {
+            return await _searchFacetService.GetAITagFacetsAsync(cancellationToken);
+        }
+
+        public async Task<IEnumerable<SearchFacetItem>> GetAIObjectsAsync(
+            CancellationToken cancellationToken)
+        {
+            return await _searchFacetService.GetAIObjectsFacetsAsync(cancellationToken);
+        }
     }
 }

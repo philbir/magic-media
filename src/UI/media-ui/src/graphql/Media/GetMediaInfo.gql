@@ -70,7 +70,7 @@ query mediaInfo($id: Uuid!) {
       type
       size
     }
-    ai {
+    ai(minConfidence: 10) {
       objects {
         name
         confidence

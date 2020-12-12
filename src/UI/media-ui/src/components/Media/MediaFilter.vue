@@ -28,6 +28,8 @@
       <city-filter></city-filter>
     </div>
     <div v-if="activeTabId == 'other'">
+      <AITagsFilter></AITagsFilter>
+      <AIObjectsFilter></AIObjectsFilter>
       <album-filter></album-filter>
 
       <media-type-filter></media-type-filter>
@@ -45,6 +47,8 @@ import AlbumFilter from "./Filters/AlbumFilter.vue";
 import DateFilter from "./Filters/DateFilter.vue";
 import MapFilter from "./Filters/MapFilter.vue";
 import MediaTypeFilter from "./Filters/MediaTypeFilter.vue";
+import AITagsFilter from "./Filters/AITagsFilter.vue";
+import AIObjectsFilter from "./Filters/AIObjectsFilter.vue";
 
 export default {
   components: {
@@ -56,6 +60,8 @@ export default {
     DateFilter,
     MapFilter,
     MediaTypeFilter,
+    AITagsFilter,
+    AIObjectsFilter,
   },
   created() {
     this.$store.dispatch("media/getSearchFacets");

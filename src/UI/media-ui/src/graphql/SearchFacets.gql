@@ -5,6 +5,12 @@ query facets {
     }
     city {
       ...facet
+    },
+    aiTags{
+      ... facet
+    },
+    aiObjects{
+      ... facet
     }
   }
 }

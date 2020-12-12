@@ -1,9 +1,9 @@
 <template>
   <FilterList
-    :items="cities"
-    title="Cities"
+    :items="tags"
+    title="Tags"
     max-height="250"
-    v-model="selectedCities"
+    v-model="selectedTags"
   ></FilterList>
 </template>
 
@@ -14,19 +14,19 @@ import { mapActions } from "vuex";
 export default {
   components: { FilterList },
   computed: {
-    selectedCities: {
+    selectedTags: {
       set(value) {
         this.setFilter({
-          key: "cities",
+          key: "tags",
           value: value,
         });
       },
       get() {
-        return this.$store.state.media.filter.cities;
+        return this.$store.state.media.filter.tags;
       },
     },
-    cities: function () {
-      return this.$store.state.media.facets.city;
+    tags: function () {
+      return this.$store.state.media.facets.aiTags;
     },
   },
   methods: {

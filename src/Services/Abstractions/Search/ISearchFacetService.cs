@@ -7,6 +7,8 @@ namespace MagicMedia
 {
     public interface ISearchFacetService
     {
+        Task<IEnumerable<SearchFacetItem>> GetAIObjectsFacetsAsync(CancellationToken cancellationToken);
+        Task<IEnumerable<SearchFacetItem>> GetAITagFacetsAsync(CancellationToken cancellationToken);
         Task<IEnumerable<SearchFacetItem>> GetCityFacetsAsync(CancellationToken cancellationToken);
         Task<IEnumerable<SearchFacetItem>> GetCountryFacetsAsync(CancellationToken cancellationToken);
     }

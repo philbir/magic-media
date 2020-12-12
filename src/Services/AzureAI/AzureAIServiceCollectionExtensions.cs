@@ -1,4 +1,5 @@
 using System;
+using System.Net.Http;
 using Microsoft.Azure.CognitiveServices.Vision.ComputerVision;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -21,7 +22,7 @@ namespace MagicMedia.AzureAI
         {
             ComputerVisionClient computerVision = new ComputerVisionClient(
               new ApiKeyServiceClientCredentials(options.SubscriptionKey),
-              new System.Net.Http.DelegatingHandler[] { });
+              new DelegatingHandler[] { });
 
             computerVision.Endpoint = options.Endpoint;
 

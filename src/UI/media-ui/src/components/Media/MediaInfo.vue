@@ -115,9 +115,26 @@
               </div>
             </v-tab-item>
             <v-tab-item value="ai" v-if="media.ai">
+              <v-sheet
+                v-if="media.ai.caption"
+                elevation="10"
+                rounded="lg"
+                class="ma-2 pa-4 card-details-content"
+              >
+                <h3>
+                  {{ media.ai.caption.text }}
+                  <small>
+                    ({{
+                      Math.round(media.ai.caption.confidence * 100) / 100
+                    }}%)</small
+                  >
+                </h3>
+              </v-sheet>
+
               <v-row>
                 <v-col lg="4">
                   <v-sheet
+                    v-if="media.ai.tags.length > 0"
                     width="300"
                     elevation="10"
                     rounded="lg"
@@ -130,14 +147,23 @@
                       :key="i"
                     >
                       <v-col cols="12" sm="8">{{ tag.name }}</v-col>
-                      <v-col cols="12" sm="4" class="font-weight-bold">{{
-                        Math.round(tag.confidence * 100) / 100
-                      }}</v-col>
+                      <v-col
+                        cols="12"
+                        sm="4"
+                        class="font-weight-bold"
+                        style="position: relative"
+                        >{{ Math.round(tag.confidence * 100) / 100 }}
+                        <div
+                          :title="tag.source"
+                          :class="`dot-ai-source ${tag.source.toLowerCase()}`"
+                        ></div>
+                      </v-col>
                     </v-row>
                   </v-sheet>
                 </v-col>
                 <v-col lg="4">
                   <v-sheet
+                    v-if="media.ai.objects.length > 0"
                     width="300"
                     elevation="10"
                     rounded="lg"
@@ -150,9 +176,72 @@
                       :key="i"
                     >
                       <v-col cols="12" sm="8">{{ obj.name }}</v-col>
-                      <v-col cols="12" sm="4" class="font-weight-bold">{{
-                        Math.round(obj.confidence * 100) / 100
-                      }}</v-col>
+                      <v-col
+                        cols="12"
+                        sm="4"
+                        class="font-weight-bold"
+                        style="position: relative"
+                        >{{ Math.round(obj.confidence * 100) / 100 }}
+                        <div
+                          :title="obj.source"
+                          :class="`dot-ai-source ${obj.source.toLowerCase()}`"
+                        ></div
+                      ></v-col>
+                    </v-row>
+                  </v-sheet>
+                </v-col>
+                <v-col lg="4" v-if="media.ai.colors">
+                  <v-sheet
+                    width="300"
+                    elevation="10"
+                    rounded="lg"
+                    class="ma-2 pa-4 card-details-content"
+                  >
+                    <h3>Colors</h3>
+                    <v-row class="ma-0 pa-0">
+                      <v-col cols="12" sm="6">Accent</v-col>
+                      <v-col cols="12" sm="6" class="font-weight-bold">
+                        <div
+                          class="color-box"
+                          :style="{
+                            'background-color': getColorString(
+                              media.ai.colors.accent
+                            ),
+                          }"
+                        >
+                          &nbsp;
+                        </div>
+                      </v-col>
+                    </v-row>
+                    <v-row class="ma-0 pa-0">
+                      <v-col cols="12" sm="6">Foreground</v-col>
+                      <v-col cols="12" sm="6" class="font-weight-bold">
+                        <div
+                          class="color-box"
+                          :style="{
+                            'background-color': getColorString(
+                              media.ai.colors.dominantForeground
+                            ),
+                          }"
+                        >
+                          &nbsp;
+                        </div>
+                      </v-col>
+                    </v-row>
+                    <v-row class="ma-0 pa-0">
+                      <v-col cols="12" sm="6">Background</v-col>
+                      <v-col cols="12" sm="6" class="font-weight-bold">
+                        <div
+                          class="color-box"
+                          :style="{
+                            'background-color': getColorString(
+                              media.ai.colors.dominantBackground
+                            ),
+                          }"
+                        >
+                          &nbsp;
+                        </div>
+                      </v-col>
                     </v-row>
                   </v-sheet>
                 </v-col>
@@ -365,6 +454,10 @@ export default {
         this.media = null;
       }
     },
+    getColorString: function (col) {
+      if (col.length === 6) return "#" + col;
+      return col;
+    },
     getFaceProperties: function (face) {
       return [
         {
@@ -465,5 +558,30 @@ export default {
   float: left;
   opacity: 0.9;
   color: #fff;
+}
+
+.color-box {
+  height: 24px;
+  width: 24px;
+  border: 1px solid #fff;
+}
+
+.dot-ai-source {
+  position: absolute;
+  height: 10px;
+  width: 10px;
+  border-radius: 100%;
+  left: 56px;
+  top: 18px;
+}
+
+.dot-ai-source.image_a_i {
+  background-color: #009261;
+  box-shadow: 0 0 6px 2px #34ffbb;
+}
+
+.dot-ai-source.azure_c_v {
+  background-color: #d900b8;
+  box-shadow: 0 0 6px 2px #f740db;
 }
 </style>>

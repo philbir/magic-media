@@ -12,13 +12,13 @@ namespace MagicMedia.Store
 
         public Guid MediaId { get; set; }
 
-        public MediaAICaption Caption { get; set; }
+        public MediaAICaption? Caption { get; set; }
 
-        public IEnumerable<MediaAITag> Tags { get; set; }
+        public IEnumerable<MediaAITag>? Tags { get; set; }
 
-        public IEnumerable<MediaAIObject> Objects { get; set; }
+        public IEnumerable<MediaAIObject>? Objects { get; set; }
 
-        public MediaAIColors Colors { get; set; }
+        public MediaAIColors? Colors { get; set; }
     }
 
     public class MediaAITag

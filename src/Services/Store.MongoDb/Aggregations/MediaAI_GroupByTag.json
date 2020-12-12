@@ -1,0 +1,29 @@
+[
+  {
+    "$unwind": {
+      "path": "$Tags"
+    }
+  },
+  {
+    "$project": {
+      "Name": "$Tags.Name",
+      "Confidence": "$Tags.Confidence"
+    }
+  },
+  {
+    "$match": {
+      "Confidence": { "$gt": 20 }
+    }
+  },
+  {
+    "$group": {
+      "_id": "$Name",
+      "count": { "$sum": 1 }
+    }
+  },
+  {
+    "$sort": {
+      "count": -1
+    }
+  }
+]
