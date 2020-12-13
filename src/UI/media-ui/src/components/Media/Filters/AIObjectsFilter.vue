@@ -1,5 +1,6 @@
 <template>
   <FilterList
+    v-if="objects"
     :items="objects"
     title="Objects"
     max-height="250"

@@ -40,6 +40,24 @@ class MediaFilterManager {
                     .map(x => x.text)
                     .join(' | ')
             },
+            tags: {
+                name: "Tags",
+                default: [],
+                stringValue: (state) => state.filter.tags.join(','),
+                valueText: (rootState) => rootState.media.facets.aiTags.filter(x =>
+                    rootState.media.filter.tags.includes(x.value))
+                    .map(x => x.text)
+                    .join(' | ')
+            },
+            objects: {
+                name: "Objects",
+                default: [],
+                stringValue: (state) => state.filter.objects.join(','),
+                valueText: (rootState) => rootState.media.facets.aiTags.filter(x =>
+                    rootState.media.filter.objects.includes(x.value))
+                    .map(x => x.text)
+                    .join(' | ')
+            },
             albumId: {
                 name: "Album",
                 default: null,

@@ -52,8 +52,8 @@ const mediaModule = {
       countries: [],
       cities: [],
       persons: [],
-      //tags: [],
-      //objects: [],
+      tags: [],
+      objects: [],
       mediaTypes: [],
       cameras: [],
       date: null,
@@ -123,6 +123,8 @@ const mediaModule = {
     RESET_FILTER_VALUES: function (state) {
       state.filter.countries = [];
       state.filter.cities = [];
+      state.filter.tags = [];
+      state.filter.objects = [];
       state.filter.persons = [];
       state.filter.mediaTypes = [];
       state.filter.cameras = [];

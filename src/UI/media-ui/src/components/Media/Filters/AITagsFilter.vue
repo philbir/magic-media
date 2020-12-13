@@ -1,5 +1,6 @@
 <template>
   <FilterList
+    v-if="tags"
     :items="tags"
     title="Tags"
     max-height="250"

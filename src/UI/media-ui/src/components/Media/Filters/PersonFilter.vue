@@ -1,6 +1,7 @@
       <template>
   <FilterList
     :items="persons"
+    :open="true"
     title="Person"
     max-height="250"
     value-field="id"

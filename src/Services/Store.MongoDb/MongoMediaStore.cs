@@ -70,7 +70,6 @@ namespace MagicMedia.Store.MongoDb
                 medias.Count() > request.PageSize);
         }
 
-
         public async Task<IEnumerable<Guid>> GetIdsFromSearchRequestAsync(
             SearchMediaRequest request,
             CancellationToken cancellationToken)
@@ -85,7 +84,11 @@ namespace MagicMedia.Store.MongoDb
 
             var options = new FindOptions<Media, BsonDocument> { Projection = projection };
 
-            IAsyncCursor<BsonDocument>? cursor = await _mediaStoreContext.Medias.FindAsync(filter, options, cancellationToken);
+            IAsyncCursor<BsonDocument>? cursor = await _mediaStoreContext.Medias.FindAsync(
+                filter,
+                options,
+                cancellationToken);
+
             List<BsonDocument> docs = await cursor.ToListAsync(cancellationToken);
 
             return docs.Select(x => x["_id"].AsGuid);
@@ -107,6 +110,8 @@ namespace MagicMedia.Store.MongoDb
                 .AddAlbum(request.AlbumId)
                 .AddGeoRadius(request.GeoRadius)
                 .AddDate(request.Date)
+                .AddAITags(request.Tags)
+                .AddAIObjects(request.Objects)
                 .BuildAsync();
 
             return filter;

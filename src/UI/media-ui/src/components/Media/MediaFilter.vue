@@ -29,6 +29,7 @@
     </div>
     <div v-if="activeTabId == 'other'">
       <AITagsFilter></AITagsFilter>
+
       <AIObjectsFilter></AIObjectsFilter>
       <album-filter></album-filter>
 
