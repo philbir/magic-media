@@ -18,6 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\AspNetCore\Shared.AspNetCore.csproj" />
     <ProjectReference Include="..\Abstractions\Abstractions.csproj" />
+    <ProjectReference Include="..\AzureAI\AzureAI.csproj" />
     <ProjectReference Include="..\BingMaps\BingMaps.csproj" />
     <ProjectReference Include="..\Core\Core.csproj" />
     <ProjectReference Include="..\Store.MongoDb\Store.MongoDb.csproj" />

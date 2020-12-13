@@ -8,7 +8,6 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 
-
 namespace MagicMedia.Store.MongoDb
 {
     public class MediaAIStore : IMediaAIStore
@@ -28,6 +27,36 @@ namespace MagicMedia.Store.MongoDb
                 .Where(x => x.MediaId == mediaId)
                 .SingleOrDefaultAsync(cancellationToken);
         }
+
+        public async Task<MediaAI> SaveAsync(
+            MediaAI mediaAI,
+            CancellationToken cancellationToken)
+        {
+            await _mediaStoreContext.MediaAI.ReplaceOneAsync(
+                x => x.MediaId == mediaAI.MediaId,
+                mediaAI,
+                new ReplaceOptions { IsUpsert = true },
+                cancellationToken);
+
+            return mediaAI;
+        }
+
+        public async Task<IEnumerable<MediaAI>> GetWithoutSourceInfoAsync(
+            AISource source,
+            int limit,
+            CancellationToken cancellationToken)
+        {
+            FilterDefinition<MediaAISourceInfo> elmFilter = Builders<MediaAISourceInfo>
+                .Filter.Eq(x => x.Source, source);
+
+            FilterDefinition<MediaAI>? filter = Builders<MediaAI>.Filter.Not(
+                Builders<MediaAI>.Filter.ElemMatch(x => x.SourceInfo, elmFilter));
+
+            IFindFluent<MediaAI, MediaAI> cursor =  _mediaStoreContext.MediaAI.Find(filter);
+
+            return await cursor.Limit(limit).ToListAsync(cancellationToken);
+        }
+
 
         public async Task<IEnumerable<SearchFacetItem>> GetGroupedAITagsAsync(
             CancellationToken cancellationToken)
@@ -80,7 +109,6 @@ namespace MagicMedia.Store.MongoDb
 
             return result;
         }
-
 
         private string TitleCase(string input)
         {

@@ -18,7 +18,6 @@ namespace MagicMedia.Scheduling
             return builder;
         }
 
-
         private static IServiceCollection AddScheduler(
             this IServiceCollection services,
             IConfiguration configuration)

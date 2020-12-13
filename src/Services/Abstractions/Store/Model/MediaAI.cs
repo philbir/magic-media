@@ -1,8 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MagicMedia.Store
 {
@@ -19,6 +16,18 @@ namespace MagicMedia.Store
         public IEnumerable<MediaAIObject>? Objects { get; set; }
 
         public MediaAIColors? Colors { get; set; }
+
+        public IEnumerable<MediaAISourceInfo>? SourceInfo { get; set; }
+    }
+
+
+    public class MediaAISourceInfo
+    {
+        public AISource Source { get; set; }
+
+        public DateTime AnalysisDate { get; set; }
+
+        public Dictionary<string, object> Data { get; set; } = new Dictionary<string, object>();
     }
 
     public class MediaAITag

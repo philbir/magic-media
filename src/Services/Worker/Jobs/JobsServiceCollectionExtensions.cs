@@ -10,6 +10,7 @@ namespace MagicMedia.Jobs
             builder.Services.AddSingleton<IJob, ImportNewMediaJob>();
             builder.Services.AddSingleton<IJob, UpdateAllAlbumSummaryJob>();
             builder.Services.AddSingleton<IJob, UpdateAllPersonSummaryJob>();
+            builder.Services.AddSingleton<IJob, AzureComputerVisionAnalyseJob>();
 
             return builder;
         }

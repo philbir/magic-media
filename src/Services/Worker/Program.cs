@@ -58,6 +58,7 @@ namespace Worker
                         .AddMagicMediaServer(hostContext.Configuration)
                         .AddProcessingMediaServices()
                         .AddBingMaps()
+                        .AddAzureAI()
                         .AddMongoDbStore()
                         .AddFileSystemStore()
                         .AddFileSystemDiscovery()

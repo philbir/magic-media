@@ -42,7 +42,9 @@ namespace MagicMedia
 
         public async Task<MediaBlobData> GetMediaData(Media media, CancellationToken cancellationToken)
         {
-            MediaBlobData blob = await _mediaBlobStore.GetAsync(media.ToBlobDataRequest(), cancellationToken);
+            MediaBlobData blob = await _mediaBlobStore.GetAsync(
+                media.ToBlobDataRequest(),
+                cancellationToken);
 
             return blob;
         }
