@@ -1,0 +1,11 @@
+mutation analyseMedia($input: AnalyseMediaInput!) {
+  analyseMedia(input: $input) {
+    mediaAI {
+      mediaId
+    }
+    errors {
+      code
+      message
+    }
+  }
+}

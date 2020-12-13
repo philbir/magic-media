@@ -9,6 +9,7 @@ import MUTATION_DELETE_MEDIA from "../graphql/Media/DeleteMedia.gql";
 import QUERY_SEARCH from "../graphql/Media/SearchMedia.gql";
 import MUTATION_TOGGLE_FAVORITE from "../graphql/Media/ToggleFavorite.gql";
 import MUTATION_UPDATE_METADATA from "../graphql/Media/UpdateMediaMetadata.gql";
+import MUTATION_ANALYSE_MEDIA from "../graphql/Media/AnalyseMedia.gql";
 import QUERY_GEO_LOCATION_CLUSTERS from "../graphql/Media/geoLocationClusters.gql";
 import QUERY_SEARCH_FACETS from "../graphql/SearchFacets.gql";
 
@@ -116,6 +117,17 @@ export const toggleFavorite = async (id, isFavorite) => {
       input: {
         id: id,
         isFavorite: isFavorite
+      }
+    }
+  });
+};
+
+export const analyseMedia = async (id) => {
+  return await apollo.mutate({
+    mutation: MUTATION_ANALYSE_MEDIA,
+    variables: {
+      input: {
+        id: id,
       }
     }
   });

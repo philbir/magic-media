@@ -4,12 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using ImageMagick;
 using MagicMedia.Extensions;
 using MagicMedia.Store;
-using MetadataExtractor;
 using Serilog;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Jpeg;
+using SixLabors.ImageSharp.Processing;
 
 namespace MagicMedia
 {
@@ -29,17 +29,21 @@ namespace MagicMedia
             _mediaStore = mediaStore;
         }
 
-        public async Task AnalyseMediaAsync(Media media, CancellationToken cancellationToken)
+        public async Task<MediaAI?> AnalyseMediaAsync(Media media, CancellationToken cancellationToken)
         {
+            MediaAI? result = null;
+
             foreach (ICloudAIMediaAnalyser imageAnalyzer in _analysers)
             {
                 MediaAI aiData = await AnalyseMediaAsync(media, imageAnalyzer, cancellationToken);
 
-                await SaveMediaAI(aiData, cancellationToken);
+                result = await SaveMediaAI(aiData, cancellationToken);
             }
+
+            return result;
         }
 
-        private async Task SaveMediaAI(MediaAI aiData, CancellationToken cancellationToken)
+        private async Task<MediaAI> SaveMediaAI(MediaAI aiData, CancellationToken cancellationToken)
         {
             MediaAI? existing = await _mediaStore.MediaAI.GetByMediaIdAsync(
                 aiData.MediaId,
@@ -48,6 +52,8 @@ namespace MagicMedia
             if (existing == null)
             {
                 await _mediaStore.MediaAI.SaveAsync(aiData, cancellationToken);
+
+                return aiData;
             }
             else
             {
@@ -78,6 +84,8 @@ namespace MagicMedia
                 }
 
                 await _mediaStore.MediaAI.SaveAsync(existing, cancellationToken);
+
+                return existing;
             }
         }
 
@@ -87,7 +95,7 @@ namespace MagicMedia
         {
             IEnumerable<MediaAI> result = await _mediaStore.MediaAI.GetWithoutSourceInfoAsync(
                 source,
-                limit: 10,
+                limit: 1,
                 excludePersons: true,
                 cancellationToken);
 
@@ -101,6 +109,17 @@ namespace MagicMedia
 
                 await SaveMediaAI(aiData, cancellationToken);
             }
+        }
+
+        public async Task<MediaAI?> AnalyseMediaAsync(
+            Guid mediaId,
+            CancellationToken cancellationToken)
+        {
+            Media media = await _mediaService.GetByIdAsync(mediaId, cancellationToken);
+
+            MediaAI? mediaAI = await AnalyseMediaAsync(media, cancellationToken);
+
+            return mediaAI;
         }
 
         private async Task<MediaAI> AnalyseMediaAsync(
@@ -152,10 +171,24 @@ namespace MagicMedia
         {
             Image image = await Image.LoadAsync(imageStream);
 
+
             image.Metadata.ExifProfile = null;
             var ms = new MemoryStream();
+            Size size = image.Size();
 
-            await image.SaveAsJpegAsync(ms, cancellationToken);
+            if (imageStream.Length > 4 * 1024 * 1024)
+            {
+                var encoder = new JpegEncoder()
+                {
+                    Quality = 50
+                };
+                await image.SaveAsJpegAsync(ms, encoder, cancellationToken);
+            }
+            else
+            {
+                await image.SaveAsJpegAsync(ms, cancellationToken);
+            }
+
             ms.Position = 0;
             return ms;
         }

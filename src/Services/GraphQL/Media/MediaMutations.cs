@@ -12,10 +12,14 @@ namespace MagicMedia.GraphQL
     public class MediaMutations
     {
         private readonly IMediaOperationsService _operationsService;
+        private readonly ICloudAIMediaProcessingService _cloudAIMediaProcessing;
 
-        public MediaMutations(IMediaOperationsService operationsService)
+        public MediaMutations(
+            IMediaOperationsService operationsService,
+            ICloudAIMediaProcessingService cloudAIMediaProcessing)
         {
             _operationsService = operationsService;
+            _cloudAIMediaProcessing = cloudAIMediaProcessing;
         }
 
         public async Task<MediaOperationPayload> MoveMediaAsync(
@@ -91,23 +95,14 @@ namespace MagicMedia.GraphQL
             return new MediaOperationPayload(request.OperationId);
         }
 
-        public async Task<AnalyseMediaPayload> AnalyseMediaAsync(AnalyseMediaInput input)
+        public async Task<AnalyseMediaPayload> AnalyseMediaAsync(
+            AnalyseMediaInput input,
+            CancellationToken cancellationToken)
         {
+            MediaAI? mediaAi = await _cloudAIMediaProcessing
+                .AnalyseMediaAsync(input.Id, cancellationToken);
 
-
-
-            return new AnalyseMediaPayload();
+            return new AnalyseMediaPayload(mediaAi);
         }
     }
-
-    public class AnalyseMediaPayload
-    {
-
-
-
-    }
-
-    public record AnalyseMediaInput(Guid Id, IEnumerable<AISource> Sources);
-
-    public record ToggleMediaFavoriteInput(Guid Id, bool IsFavorite);
 }

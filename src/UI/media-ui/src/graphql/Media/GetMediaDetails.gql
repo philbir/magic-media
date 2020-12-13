@@ -71,6 +71,13 @@ query mediaDetails($id: Uuid!) {
           ...bbox
         }
       }
+      caption{
+        text,
+        confidence
+      },
+      colors{
+        accent
+      }
     }
   }
 }
