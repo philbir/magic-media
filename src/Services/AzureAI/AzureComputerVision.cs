@@ -45,6 +45,11 @@ namespace MagicMedia.AzureAI
 
                 return ToMediaAI(analysis);
             }
+            catch (ComputerVisionErrorException ex)
+            {
+                Log.Error(ex, "Error in analyse image. Message: {Message}", ex.Response.Content);
+                throw;
+            }
             catch (Exception ex)
             {
                 Log.Error(ex, "Error in analyse image");
@@ -84,6 +89,7 @@ namespace MagicMedia.AzureAI
             {
                 AnalysisDate = DateTime.UtcNow,
                 Source = Source,
+                Success = true,
                 Data = new() { ["RequestId"] = analysis.RequestId }
             };
 

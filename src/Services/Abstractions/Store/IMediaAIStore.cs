@@ -12,7 +12,12 @@ namespace MagicMedia.Store
 
         Task<IEnumerable<SearchFacetItem>> GetGroupedAIObjectsAsync(CancellationToken cancellationToken);
         Task<IEnumerable<SearchFacetItem>> GetGroupedAITagsAsync(CancellationToken cancellationToken);
-        Task<IEnumerable<MediaAI>> GetWithoutSourceInfoAsync(AISource source, int limit, CancellationToken cancellationToken);
+        Task<IEnumerable<MediaAI>> GetWithoutSourceInfoAsync(
+            AISource source,
+            int limit,
+            bool excludePersons,
+            CancellationToken cancellationToken);
+
         Task<MediaAI> SaveAsync(MediaAI mediaAI, CancellationToken cancellationToken);
     }
 }

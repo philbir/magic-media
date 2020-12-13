@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using HotChocolate.Types;
 using MagicMedia.Operations;
+using MagicMedia.Store;
 
 namespace MagicMedia.GraphQL
 {
@@ -88,7 +90,24 @@ namespace MagicMedia.GraphQL
 
             return new MediaOperationPayload(request.OperationId);
         }
+
+        public async Task<AnalyseMediaPayload> AnalyseMediaAsync(AnalyseMediaInput input)
+        {
+
+
+
+            return new AnalyseMediaPayload();
+        }
     }
+
+    public class AnalyseMediaPayload
+    {
+
+
+
+    }
+
+    public record AnalyseMediaInput(Guid Id, IEnumerable<AISource> Sources);
 
     public record ToggleMediaFavoriteInput(Guid Id, bool IsFavorite);
 }

@@ -44,6 +44,7 @@ namespace MagicMedia.Store.MongoDb
         public async Task<IEnumerable<MediaAI>> GetWithoutSourceInfoAsync(
             AISource source,
             int limit,
+            bool excludePersons,
             CancellationToken cancellationToken)
         {
             FilterDefinition<MediaAISourceInfo> elmFilter = Builders<MediaAISourceInfo>
@@ -51,6 +52,11 @@ namespace MagicMedia.Store.MongoDb
 
             FilterDefinition<MediaAI>? filter = Builders<MediaAI>.Filter.Not(
                 Builders<MediaAI>.Filter.ElemMatch(x => x.SourceInfo, elmFilter));
+
+            if ( excludePersons)
+            {
+                filter &= Builders<MediaAI>.Filter.Eq(x => x.PersonCount, 0);
+            }
 
             IFindFluent<MediaAI, MediaAI> cursor =  _mediaStoreContext.MediaAI.Find(filter);
 

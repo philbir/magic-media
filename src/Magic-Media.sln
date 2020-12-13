@@ -68,6 +68,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{120006
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared.AspNetCore", "Shared\AspNetCore\Shared.AspNetCore.csproj", "{E1D28004-4E4D-42DE-9784-E4D80FF9347D}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Migration.Console", "..\samples\Migration.Console\Migration.Console.csproj", "{EB14742A-3957-4528-A928-D5DBD0B0009F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -166,6 +168,10 @@ Global
 		{E1D28004-4E4D-42DE-9784-E4D80FF9347D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E1D28004-4E4D-42DE-9784-E4D80FF9347D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E1D28004-4E4D-42DE-9784-E4D80FF9347D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB14742A-3957-4528-A928-D5DBD0B0009F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB14742A-3957-4528-A928-D5DBD0B0009F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB14742A-3957-4528-A928-D5DBD0B0009F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB14742A-3957-4528-A928-D5DBD0B0009F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -187,6 +193,7 @@ Global
 		{43BC2FC5-234F-4B58-BF47-B8C5149956CB} = {F6075731-6037-4B36-B720-4A4E2CF5D42F}
 		{B59B0305-1AA6-4431-B80E-685CF5EE318B} = {F6075731-6037-4B36-B720-4A4E2CF5D42F}
 		{E1D28004-4E4D-42DE-9784-E4D80FF9347D} = {1200063E-406D-45B8-9259-C19547938D17}
+		{EB14742A-3957-4528-A928-D5DBD0B0009F} = {B9946157-A449-4176-805B-F47D209D29AA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {779E8080-1E0E-4536-9183-89B02491C584}

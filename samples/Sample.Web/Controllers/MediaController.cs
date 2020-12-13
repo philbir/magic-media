@@ -63,7 +63,7 @@ namespace Sample.Web.Controllers
             byte[] data = _sampleService.GetMedia(id);
             var ms = new MemoryStream(data);
 
-            ImageAnalysis analysis = await _azureComputerVision.AnalyseImageAsync(ms, default);
+            MagicMedia.Store.MediaAI analysis = await _azureComputerVision.AnalyseImageAsync(ms, default);
 
             return Ok(analysis);
         }

@@ -51,13 +51,21 @@ namespace MagicMedia
             }
             else
             {
-                var tags = new List<MediaAITag>(existing.Tags);
-                var objects = new List<MediaAIObject>(existing.Objects);
-                var sources = new List<MediaAISourceInfo>(existing.SourceInfo?? new List<MediaAISourceInfo>());
+                List<MediaAITag> tags = new();
+                tags.AddRangeIfNotNull(existing.Tags);
+                tags.AddRangeIfNotNull(aiData.Tags);
 
-                tags.AddRange(aiData.Tags);
-                objects.AddRange(aiData.Objects);
-                sources.AddRange(aiData.SourceInfo);
+                List<MediaAIObject> objects = new();
+                objects.AddRangeIfNotNull(existing.Objects);
+                objects.AddRangeIfNotNull(aiData.Objects);
+
+                List<MediaAISourceInfo> sources = new();
+                sources.AddRangeIfNotNull(existing.SourceInfo);
+                sources.AddRangeIfNotNull(aiData.SourceInfo);
+
+                existing.Tags = tags;
+                existing.Objects = objects;
+                existing.SourceInfo = sources;
 
                 if (aiData.Colors != null)
                 {
@@ -79,17 +87,12 @@ namespace MagicMedia
         {
             IEnumerable<MediaAI> result = await _mediaStore.MediaAI.GetWithoutSourceInfoAsync(
                 source,
-                1000,
+                limit: 10,
+                excludePersons: true,
                 cancellationToken);
 
             foreach (MediaAI mediaAI in result)
             {
-                //Make sure no persons are on the image
-                if (mediaAI.Objects.Count(x => x.Name == "person") > 0)
-                {
-                    continue;
-                }
-
                 Media media = await _mediaService.GetByIdAsync(mediaAI.MediaId, cancellationToken);
 
                 ICloudAIMediaAnalyser analyser = _analysers.Single(x => x.Source == source);
@@ -112,9 +115,30 @@ namespace MagicMedia
             using Stream imageStream = _mediaStore.Blob.GetStreamAsync(request);
             using Stream stream = await RemoveExifDataAsync(imageStream, cancellationToken);
 
-            MediaAI aiData = await analyser.AnalyseImageAsync(
-                    stream,
-                    cancellationToken);
+            MediaAI aiData = new();
+
+            try
+            {
+                aiData = await analyser.AnalyseImageAsync(
+                        stream,
+                        cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                aiData.SourceInfo = new List<MediaAISourceInfo>
+                {
+                    new MediaAISourceInfo
+                    {
+                        AnalysisDate = DateTime.UtcNow,
+                        Source = analyser.Source,
+                        Success = false,
+                        Data = new()
+                        {
+                            ["Error"] = ex.Message
+                        }
+                    }
+                };
+            }
 
             aiData.MediaId = media.Id;
             aiData.Id = Guid.NewGuid();

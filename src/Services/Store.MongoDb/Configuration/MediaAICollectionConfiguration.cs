@@ -29,14 +29,16 @@ namespace MagicMedia.Store.MongoDb.Configuration
 
                     var objectNameIndex = new CreateIndexModel<MediaAI>(
                          Builders<MediaAI>.IndexKeys
-                             .Ascending("Objects.Name"),
+                             .Ascending("Objects.Name")
+                             .Ascending("Objects.Confidence"),
                          new CreateIndexOptions { Unique = false });
 
                     collection.Indexes.CreateOne(objectNameIndex);
 
                     var tagNameIndex = new CreateIndexModel<MediaAI>(
                      Builders<MediaAI>.IndexKeys
-                         .Ascending("Tags.Name"),
+                         .Ascending("Tags.Name")
+                         .Ascending("Tags.Confidence"),
                      new CreateIndexOptions { Unique = false });
 
                     collection.Indexes.CreateOne(tagNameIndex);
