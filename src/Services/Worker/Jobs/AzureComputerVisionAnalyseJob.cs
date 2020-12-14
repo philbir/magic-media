@@ -11,10 +11,10 @@ namespace MagicMedia.Jobs
 {
     public class AzureComputerVisionAnalyseJob : IJob
     {
-        private readonly ICloudAIMediaProcessingService _cloudAIMediaProcessing;
+        private readonly IMediaAIService _cloudAIMediaProcessing;
 
         public AzureComputerVisionAnalyseJob(
-            ICloudAIMediaProcessingService cloudAIMediaProcessing)
+            IMediaAIService cloudAIMediaProcessing)
         {
             _cloudAIMediaProcessing = cloudAIMediaProcessing;
         }

@@ -10,7 +10,7 @@
             v-model="searchText"
             :label="title"
             prepend-inner-icon="mdi-magnify"
-            @click="expaned = true"
+            @click="expanded = true"
           ></v-text-field>
         </v-col>
         <v-col sm="2">
@@ -108,7 +108,7 @@ export default {
     },
     filtered: function () {
       var self = this;
-      return this.items.map((x) => {
+      const mapped = this.items.map((x) => {
         x.visible = x[self.textField]
           .toLowerCase()
           .includes(this.searchText.toLowerCase());
@@ -117,6 +117,8 @@ export default {
           : x[self.textField];
         return x;
       });
+
+      return mapped.filter((x) => x.visible);
     },
     expandIcon: function () {
       return `mdi-chevron-${this.expanded ? "up" : "down"}`;

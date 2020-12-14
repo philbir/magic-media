@@ -34,6 +34,7 @@ namespace MagicMedia.Store
         Task<IEnumerable<Guid>> GetIdsByFolderAsync(string folder, CancellationToken cancellationToken);
         Task<IEnumerable<Guid>> GetIdsFromSearchRequestAsync(SearchMediaRequest request, CancellationToken cancellationToken);
         Task<IEnumerable<Media>> GetManyAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken);
+        Task<IEnumerable<Media>> GetMediaWithoutAISourceAsync(AISource source, int limit, CancellationToken cancellationToken);
         Task<IReadOnlyDictionary<Guid, MediaThumbnail>> GetThumbnailsByMediaIdsAsync(
             IEnumerable<Guid> mediaIds,
             ThumbnailSizeName size,
@@ -49,7 +50,7 @@ namespace MagicMedia.Store
             SearchMediaRequest request,
             Func<Guid, CancellationToken, Task<IEnumerable<Guid>>> albumMediaResolver,
             CancellationToken cancellationToken);
-
+        Task UpdateAISummaryAsync(Guid mediaId, MediaAISummary mediaAISummary, CancellationToken cancellationToken);
         Task UpdateAsync(Media media, CancellationToken cancellationToken);
     }
 }

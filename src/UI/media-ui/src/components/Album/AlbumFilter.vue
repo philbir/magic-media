@@ -19,6 +19,8 @@
 
 <script>
 import FilterList from "../Common/FilterList";
+import { debounce } from "lodash";
+import { mapActions } from "vuex";
 
 export default {
   components: { FilterList },
@@ -30,11 +32,11 @@ export default {
     };
   },
   watch: {
-    searchText: function (newValue) {
-      this.$store.dispatch("album/filter", {
+    searchText: debounce(function (newValue) {
+      this.filter({
         searchText: newValue,
       });
-    },
+    }, 300),
   },
   computed: {
     persons: function () {
@@ -47,9 +49,11 @@ export default {
     },
   },
   methods: {
+    ...mapActions("album", ["filter"]),
+
     onSelectPerson: function (persons) {
       const selected = persons.map((x) => x.id);
-      this.$store.dispatch("album/filter", { persons: selected });
+      this.filter({ persons: selected });
     },
   },
 };

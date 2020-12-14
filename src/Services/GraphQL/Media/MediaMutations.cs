@@ -12,11 +12,11 @@ namespace MagicMedia.GraphQL
     public class MediaMutations
     {
         private readonly IMediaOperationsService _operationsService;
-        private readonly ICloudAIMediaProcessingService _cloudAIMediaProcessing;
+        private readonly IMediaAIService _cloudAIMediaProcessing;
 
         public MediaMutations(
             IMediaOperationsService operationsService,
-            ICloudAIMediaProcessingService cloudAIMediaProcessing)
+            IMediaAIService cloudAIMediaProcessing)
         {
             _operationsService = operationsService;
             _cloudAIMediaProcessing = cloudAIMediaProcessing;

@@ -8,10 +8,23 @@ using MagicMedia.Search;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
-
+using SixLabors.ImageSharp.ColorSpaces;
 
 namespace MagicMedia.Store.MongoDb
 {
+    public class DefaultMongoOptions
+    {
+        public static UpdateOptions Update => new UpdateOptions();
+
+        public static DeleteOptions Delete => new DeleteOptions();
+
+        public static InsertOneOptions InsertOne => new InsertOneOptions();
+
+        public static InsertManyOptions InsertMany => new InsertManyOptions();
+
+        public static ReplaceOptions Replace => new ReplaceOptions();
+    }
+
     public class MongoMediaStore : IMediaStore
     {
         private readonly MediaStoreContext _mediaStoreContext;
@@ -134,7 +147,7 @@ namespace MagicMedia.Store.MongoDb
         {
             await _mediaStoreContext.Medias.DeleteOneAsync(
                 x => x.Id == id,
-                options: null,
+                DefaultMongoOptions.Delete,
                 cancellationToken);
         }
 
@@ -203,7 +216,7 @@ namespace MagicMedia.Store.MongoDb
                 {
                     await _mediaStoreContext.Faces.InsertManyAsync(
                         faces,
-                        options: null,
+                        DefaultMongoOptions.InsertMany,
                         cancellationToken);
                 }
             }
@@ -211,7 +224,7 @@ namespace MagicMedia.Store.MongoDb
             await _mediaStoreContext.Medias.UpdateOneAsync(
                 x => x.Id == mediaId,
                 Builders<Media>.Update.Set(f => f.FaceCount, faces.Count()),
-                options: null,
+                DefaultMongoOptions.Update,
                 cancellationToken);
         }
 
@@ -240,7 +253,7 @@ namespace MagicMedia.Store.MongoDb
 
             await _mediaStoreContext.Medias.InsertOneAsync(
                 media,
-                options: null,
+                DefaultMongoOptions.InsertOne,
                 cancellationToken);
 
             if (faces != null)
@@ -259,7 +272,7 @@ namespace MagicMedia.Store.MongoDb
             {
                 await _mediaStoreContext.Faces.InsertManyAsync(
                     faces,
-                    options: null,
+                    DefaultMongoOptions.InsertMany,
                     cancellationToken);
             }
         }
@@ -281,6 +294,21 @@ namespace MagicMedia.Store.MongoDb
                 .Select(x => x.Folder!)
                 .Distinct()
                 .ToListAsync(cancellationToken);
+        }
+
+        public async Task<IEnumerable<Media>> GetMediaWithoutAISourceAsync( 
+            AISource source,
+            int limit,
+            CancellationToken cancellationToken)
+        {
+            FilterDefinition<Media> filter = Builders<Media>.Filter.And(
+                Builders<Media>.Filter.Ne("AISummary.Sources", source),
+                Builders<Media>.Filter.Eq(x => x.MediaType, MediaType.Image),
+                Builders<Media>.Filter.Eq(x => x.State, MediaState.Active));
+
+            IFindFluent<Media, Media>? cursor = _mediaStoreContext.Medias.Find(filter);
+
+            return await cursor.Limit(limit).ToListAsync(cancellationToken);
         }
 
         public async Task<IEnumerable<SearchFacetItem>> GetGroupedCitiesAsync(
@@ -363,6 +391,21 @@ namespace MagicMedia.Store.MongoDb
 
             return result.OrderByDescending(x => x.Count);
         }
+
+        public async Task UpdateAISummaryAsync(
+            Guid mediaId,
+            MediaAISummary mediaAISummary,
+            CancellationToken cancellationToken)
+        {
+            UpdateDefinition<Media> update = Builders<Media>.Update.Set(x => x.AISummary, mediaAISummary);
+
+            await _mediaStoreContext.Medias.UpdateOneAsync(
+                x => x.Id == mediaId,
+                update,
+                DefaultMongoOptions.Update,
+                cancellationToken);
+        }
+
 
         public async Task<IEnumerable<MediaGeoLocation>> FindMediaInGeoBoxAsync(
             GeoBox box,
