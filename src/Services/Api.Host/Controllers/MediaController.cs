@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Face;
+using MagicMedia.Security;
 using MagicMedia.Store;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -18,23 +19,34 @@ namespace MagicMedia.Api.Controllers
         private readonly IMediaService _mediaService;
         private readonly IThumbnailBlobStore _thumbnailBlobStore;
         private readonly IFaceService _faceService;
+        private readonly IAuthorizationService _authorizationService;
+        private readonly IUserContextFactory _userContextFactory;
 
         public MediaController(
             IMediaBlobStore mediaBlobStore,
             IMediaService mediaService,
             IThumbnailBlobStore thumbnailBlobStore,
-            IFaceService faceService)
+            IFaceService faceService,
+            IAuthorizationService authorizationService)
         {
             _mediaBlobStore = mediaBlobStore;
             _mediaService = mediaService;
             _thumbnailBlobStore = thumbnailBlobStore;
             _faceService = faceService;
+            _authorizationService = authorizationService;
         }
 
         [HttpGet]
         [Route("webimage/{id}")]
         public async Task<IActionResult> WebImageAsync(Guid id, CancellationToken cancellationToken)
         {
+            AuthorizationResult res = await _authorizationService.AuthorizeAsync(User, id, "Media_View");
+
+            if (!res.Succeeded)
+            {
+                //return new ForbidResult();
+            }
+
             MediaBlobData data = await _mediaBlobStore.GetAsync(
                 new MediaBlobData
                 {

@@ -17,6 +17,9 @@ export default {
     this.$store.dispatch("person/getAllGroups").then(() => {
       this.preloaded = true;
     });
+    this.$store.dispatch("user/getAll").then(() => {
+      this.preloaded = true;
+    });
   },
 };
 </script>

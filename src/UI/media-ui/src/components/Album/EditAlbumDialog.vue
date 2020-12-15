@@ -141,7 +141,33 @@
                 </v-chip>
               </div>
             </v-col>
-            <v-col sm="6"><h4>Shared with</h4></v-col>
+            <v-col sm="6">
+              <h4>Shared with</h4>
+
+              <v-autocomplete
+                v-model="sharedWithUsers"
+                :items="allUsers"
+                text-color="white"
+                chips
+                item-text="name"
+                multiple
+                return-object
+              >
+                <template v-slot:selection="data">
+                  <v-chip
+                    v-bind="data.attrs"
+                    :input-value="data.selected"
+                    text-color="white"
+                    color="blue darken-4"
+                    close
+                    @click="data.select"
+                    @click:close="removeSharedWith(data.item)"
+                  >
+                    {{ data.item.name }}
+                  </v-chip>
+                </template>
+              </v-autocomplete>
+            </v-col>
           </v-row>
         </div>
       </v-card-text>
@@ -158,12 +184,7 @@
 
         <v-btn color="blue darken-1" text @click="cancel"> Cancel </v-btn>
         <v-btn color="red darken-1" text @click="deleteAlbum"> Delete </v-btn>
-        <v-btn
-          color="primary"
-          text
-          @click="save"
-          :disabled="album.title == originalTitle"
-        >
+        <v-btn color="primary" text @click="save" :disabled="false">
           Save
         </v-btn>
       </v-card-actions>
@@ -174,7 +195,7 @@
 import { getFlagUrl } from "../../services/countryFlags";
 import { getAlbumById, getAlbumMedia } from "../../services/albumService";
 import AlbumMedia from "./AlbumMedia.vue";
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
 export default {
   components: { AlbumMedia },
   props: {
@@ -193,6 +214,7 @@ export default {
       valid: true,
       originalTitle: null,
       view: "details",
+      sharedWithUsers: [],
     };
   },
   watch: {
@@ -206,6 +228,7 @@ export default {
     },
   },
   computed: {
+    ...mapState("user", { allUsers: "all" }),
     isOpen: {
       get() {
         return this.show;
@@ -247,6 +270,9 @@ export default {
       const res = await getAlbumById(id);
       this.album = res.data.album;
       this.originalTitle = this.album.title;
+      this.sharedWithUsers = this.allUsers.filter((x) =>
+        this.album.sharedWith.includes(x.id)
+      );
 
       const mediaRes = await getAlbumMedia(id);
 
@@ -256,6 +282,7 @@ export default {
       this.saveAlbum({
         title: this.album.title,
         id: this.album.id,
+        sharedWith: this.sharedWithUsers.map((x) => x.id),
       });
       this.close();
     },
@@ -279,6 +306,10 @@ export default {
     removeFilter: function (key) {
       const idx = this.album.filters.findIndex((x) => x.key === key);
       this.album.filters.splice(idx, 1);
+    },
+    removeSharedWith: function (user) {
+      const idx = this.sharedWithUsers.findIndex((x) => x.id == user.id);
+      this.sharedWithUsers.splice(idx, 1);
     },
     flagUrl: function (country) {
       return getFlagUrl(country.code, 32);

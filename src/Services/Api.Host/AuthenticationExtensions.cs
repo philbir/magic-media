@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using IdentityModel;
 using MagicMedia.Api;
+using MagicMedia.Api.Security;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -31,6 +32,8 @@ namespace MagicMedia
                     //c.DefaultPolicy = new AuthorizationPolicyBuilder()
                     //    .RequireAssertion(_ => true)
                     //    .Build();
+
+                    c.AddPolicy("Media_View", p => p.Requirements.Add(new AuhorizedOnMediaRequirement()));
                 }
                 else
                 {
@@ -43,6 +46,8 @@ namespace MagicMedia
                     //    .Build();
                 }
             });
+
+            services.AddSingleton<IAuthorizationHandler, MediaAuthorizationHandler>();
 
             return services;
         }

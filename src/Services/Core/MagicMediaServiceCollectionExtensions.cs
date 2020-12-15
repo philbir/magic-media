@@ -2,6 +2,7 @@ using MagicMedia.Face;
 using MagicMedia.Metadata;
 using MagicMedia.Operations;
 using MagicMedia.Processing;
+using MagicMedia.Security;
 using MagicMedia.Thumbnail;
 using MagicMedia.Video;
 using Microsoft.Extensions.Configuration;
@@ -54,6 +55,9 @@ namespace MagicMedia
             services.AddSingleton<IVideoProcessingService, VideoProcessingService>();
             services.AddSingleton<IMediaAIService, MediaAIService>();
             services.AddFFmpeg(configuration);
+
+            services.AddSingleton<IUserService, UserService>();
+            //services.AddSingleton<IUserContext, DefaultUserContext>();
 
             return services;
         }

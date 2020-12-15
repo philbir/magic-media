@@ -16,6 +16,10 @@ namespace MagicMedia.GraphQL
                 .ResolveWith<PersonResolvers>(x => x.GetThumbnailAsync(default!, default!));
 
             descriptor
+                .Field("user")
+                .ResolveWith<PersonResolvers>(x => x.GetUserAsync(default!, default!));
+
+            descriptor
                 .Field("timeline")
                 .Argument("itemsPerYear", a => a
                     .DefaultValue(5)

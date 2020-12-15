@@ -301,6 +301,7 @@ namespace MagicMedia
         {
             Album album = await GetByIdAsync(request.Id, cancellationToken);
             album.Title = request.Title;
+            album.SharedWith = request.SharedWith;
 
             await _mediaStore.Albums.UpdateAsync(album, cancellationToken);
 

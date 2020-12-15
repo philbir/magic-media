@@ -27,6 +27,7 @@ namespace MagicMedia.Store.MongoDb
                 .ConfigureCollection(new FaceCollectionConfiguration())
                 .ConfigureCollection(new CameraCollectionConfiguration())
                 .ConfigureCollection(new PersonCollectionConfiguration())
+                .ConfigureCollection(new UserCollectionConfiguration())
                 .ConfigureCollection(new GroupCollectionConfiguration())
                 .ConfigureCollection(new AlbumCollectionConfiguration())
                 .ConfigureCollection(new MediaAICollectionConfiguration())
@@ -71,6 +72,14 @@ namespace MagicMedia.Store.MongoDb
             get
             {
                 return CreateCollection<Person>();
+            }
+        }
+
+        public IMongoCollection<User> Users
+        {
+            get
+            {
+                return CreateCollection<User>();
             }
         }
 

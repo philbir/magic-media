@@ -58,6 +58,11 @@ export default {
           route: "Map",
         },
         {
+          text: "Users",
+          icon: "mdi-account",
+          route: "Users",
+        },
+        {
           text: "Settings",
           icon: "mdi-tune-variant",
           route: "Settings",

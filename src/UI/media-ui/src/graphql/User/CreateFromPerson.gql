@@ -1,0 +1,14 @@
+mutation createUserFromPerson($input: CreateUserFromPersonInput!) {
+  User_CreateFromPerson(input: $input) {
+    user {
+      id
+      email
+      name
+      personId
+    }
+    errors {
+      code
+      message
+    }
+  }
+}

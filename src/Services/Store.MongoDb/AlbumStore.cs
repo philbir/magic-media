@@ -87,5 +87,12 @@ namespace MagicMedia.Store.MongoDb
 
             return new SearchResult<Album>(medias, (int)totalCount);
         }
+
+        public async Task<IEnumerable<Album>> GetSharedWithAlbumsAsync(Guid userId, CancellationToken cancellationToken)
+        {
+            return null;
+
+
+        } 
     }
 }

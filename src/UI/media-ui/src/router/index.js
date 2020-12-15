@@ -15,6 +15,7 @@ import PersonFilter from "../components/Person/PersonFilter";
 import FaceList from "../components/Face/FaceList.vue";
 import MediaList from "../components/Media/MediaList";
 import PersonList from "../components/Person/PersonList";
+import UserList from "../components/User/UserList";
 import Playground from "../components/Playground/Playground";
 import PersonTimeline from "../components/Person/PersonTimeline"
 import SettingsPage from "../components/Settings/SettingsPage"
@@ -76,6 +77,15 @@ const routes = [
     components: {
       default: AlbumList,
       left: AlbumFilter,
+      appbar: DefaultAppBar
+    }
+  },
+  {
+    path: "/users",
+    name: "Users",
+    components: {
+      default: UserList,
+      left: null,
       appbar: DefaultAppBar
     }
   },

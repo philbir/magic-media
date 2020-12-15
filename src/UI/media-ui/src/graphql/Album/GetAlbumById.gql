@@ -10,6 +10,7 @@ query getAlbumById($id: Uuid!) {
     }
     startDate
     endDate
+    sharedWith
     folders
     filters{
       key

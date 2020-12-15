@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MagicMedia.Security;
 using MagicMedia.Store;
 
 namespace MagicMedia.GraphQL
@@ -11,15 +13,23 @@ namespace MagicMedia.GraphQL
         private readonly IPersonService _personService;
         private readonly IPersonTimelineService _personTimelineService;
         private readonly IGroupService _groupService;
+        private readonly IUserService _userService;
 
         public PersonResolvers(
             IPersonService personService,
             IPersonTimelineService personTimelineService,
-            IGroupService groupService)
+            IGroupService groupService,
+            IUserService userService)
         {
             _personService = personService;
             _personTimelineService = personTimelineService;
             _groupService = groupService;
+            _userService = userService;
+        }
+
+        public async Task<User?> GetUserAsync(Person person, CancellationToken cancellationToken)
+        {
+            return await _userService.TryGetByPersonIdAsync(person.Id, cancellationToken);
         }
 
         public async Task<IEnumerable<Group>> GetGroupsAsync(
