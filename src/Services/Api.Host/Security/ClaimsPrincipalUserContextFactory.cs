@@ -23,7 +23,6 @@ namespace MagicMedia.Api.Security
             _userService = userService;
         }
 
-
         public async Task<IUserContext> CreateAsync(CancellationToken cancellationToken)
         {
             ClaimsPrincipal? principal = _httpContextAccessor.HttpContext?.User;
@@ -40,7 +39,7 @@ namespace MagicMedia.Api.Security
 
                 if (user != null)
                 {
-                    return new DefaultUserContext(user);
+                    return new DefaultUserContext(user, _userService);
                 }
             }
 

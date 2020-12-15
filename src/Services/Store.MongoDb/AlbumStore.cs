@@ -43,6 +43,17 @@ namespace MagicMedia.Store.MongoDb
                 .ToListAsync(cancellationToken);
         }
 
+        public async Task<IEnumerable<Album>> GetSharedByUserIdAsync(
+            Guid userId,
+            CancellationToken cancellationToken)
+        {
+            List<Album> albums = await _mediaStoreContext.Albums.AsQueryable()
+                .Where(x => x.SharedWith.Contains(userId))
+                .ToListAsync(cancellationToken);
+
+            return albums;
+        }
+
         public async Task<Album> UpdateAsync(
             Album album,
             CancellationToken cancellationToken)

@@ -224,6 +224,7 @@ export default {
       } else {
         this.album = {};
         this.medias = [];
+        this.sharedWithUsers = [];
       }
     },
   },

@@ -37,7 +37,7 @@ namespace Playground
             await hasher.HashAsync();
 
             //await faceScanner.RunAsync(default);
-        }
+          }
 
         private static IServiceProvider BuildServiceProvider()
         {

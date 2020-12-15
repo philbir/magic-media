@@ -12,11 +12,16 @@ namespace MagicMedia.Security
     public class UserService : IUserService
     {
         private readonly IUserStore _userStore;
+        private readonly IAlbumService _albumService;
         private readonly IPersonService _personService;
 
-        public UserService(IUserStore userStore, IPersonService personService)
+        public UserService(
+            IUserStore userStore,
+            IAlbumService albumService,
+            IPersonService personService)
         {
             _userStore = userStore;
+            _albumService = albumService;
             _personService = personService;
         }
 
@@ -36,6 +41,33 @@ namespace MagicMedia.Security
             CancellationToken cancellationToken)
         {
             return await _userStore.TryGetByPersonIdAsync(personId, cancellationToken);
+        }
+
+        public async Task<IEnumerable<Album>> GetSharedAlbumsAsync(
+            Guid userId,
+            CancellationToken cancellationToken)
+        {
+            return await _albumService.GetSharedByUserIdAsync(userId, cancellationToken);
+        }
+
+        public async Task<IEnumerable<Guid>> GetAuthorizedOnMediaIdsAsync(
+            Guid userId,
+            CancellationToken cancellationToken)
+        {
+            IEnumerable<Album> albums = await GetSharedAlbumsAsync(userId, cancellationToken);
+
+            var ids = new HashSet<Guid>();
+
+            foreach (Album? album in albums)
+            {
+                IEnumerable<Guid>? albumMediaIds = await _albumService.GetMediaIdsAsync(
+                    album,
+                    cancellationToken);
+
+                ids.UnionWith(albumMediaIds);
+            }
+
+            return ids;
         }
 
         public async Task<User> CreateFromPersonAsync(CreateUserFromPersonRequest request, CancellationToken cancellationToken)

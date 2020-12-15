@@ -10,10 +10,12 @@ namespace MagicMedia.Security
     public class DefaultUserContext : IUserContext
     {
         private readonly User _user;
+        private readonly IUserService _userService;
 
-        public DefaultUserContext(User user)
+        public DefaultUserContext(User user, IUserService userService)
         {
             _user = user ?? throw new ArgumentNullException(nameof(user));
+            _userService = userService;
         }
 
         public bool IsAuthenticated => true;
@@ -29,7 +31,7 @@ namespace MagicMedia.Security
 
         public async Task<IEnumerable<Guid>> GetAuthorizedMediaAsync(CancellationToken cancellationToken)
         {
-            return new List<Guid> { Guid.NewGuid() };
+            return await _userService.GetAuthorizedOnMediaIdsAsync(UserId.Value, cancellationToken);
         }
 
         public bool HasRole(string role)
@@ -49,27 +51,5 @@ namespace MagicMedia.Security
             return false;
         }
 
-    }
-
-    public class NotAuthenticatedUserContext : IUserContext
-    {
-        private const string _message = "User is not authenticated";
-
-        public bool IsAuthenticated => false;
-
-        public Guid? UserId => null;
-
-        public IEnumerable<string> Roles => new string[0];
-
-        public Task<IEnumerable<Guid>> GetAuthorizedPersonsAsync(CancellationToken cancellationToken)
-            => throw new UnauthorizedAccessException(_message);
-
-        public Task<IEnumerable<Guid>> GetAuthorizedMediaAsync(CancellationToken cancellationToken)
-            => throw new UnauthorizedAccessException(_message);
-
-        public bool HasRole(string role) => throw new UnauthorizedAccessException(_message);
-
-        public Task<bool> IsAuthorizedAsync(object resourceId, ProtectedResourceType type, CancellationToken cancellationToken)
-            => throw new UnauthorizedAccessException(_message);
     }
 }

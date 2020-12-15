@@ -48,6 +48,13 @@ namespace MagicMedia
             return await _mediaStore.Albums.GetAllAsync(cancellationToken);
         }
 
+        public async Task<IEnumerable<Album>> GetSharedByUserIdAsync(
+            Guid userId,
+            CancellationToken cancellationToken)
+        {
+            return await _mediaStore.Albums.GetSharedByUserIdAsync(userId, cancellationToken);
+        }
+
         public async Task<MediaThumbnail?> GetThumbnailAsync(
             Album album,
             ThumbnailSizeName size,
