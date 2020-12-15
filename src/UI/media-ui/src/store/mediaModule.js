@@ -1,6 +1,7 @@
 import Vue from "vue";
 
 import {
+  analyseMedia,
   deleteMedia,
   getById,
   getFolderTree,
@@ -52,6 +53,8 @@ const mediaModule = {
       countries: [],
       cities: [],
       persons: [],
+      tags: [],
+      objects: [],
       mediaTypes: [],
       cameras: [],
       date: null,
@@ -121,6 +124,8 @@ const mediaModule = {
     RESET_FILTER_VALUES: function (state) {
       state.filter.countries = [];
       state.filter.cities = [];
+      state.filter.tags = [];
+      state.filter.objects = [];
       state.filter.persons = [];
       state.filter.mediaTypes = [];
       state.filter.cameras = [];
@@ -395,6 +400,19 @@ const mediaModule = {
     async toggleFavorite({ commit }, media) {
       await toggleFavorite(media.id, !media.isFavorite);
       commit("FAVORITE_TOGGLED", media);
+    },
+    async analyseAI({
+      dispatch }, id) {
+      await analyseMedia(id);
+
+      dispatch('loadDetails', id);
+
+      dispatch(
+        "snackbar/addSnack",
+        { text: "Cloud AI analyze completed.", type: "SUCCESS" },
+        { root: true }
+      );
+
     },
     faceUpdated: function ({ dispatch }, face) {
       //TODO: Patch details instead of reloading...

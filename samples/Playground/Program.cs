@@ -10,6 +10,7 @@ using MagicMedia.Store.MongoDb;
 using MagicMedia.Stores;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Bson;
 using Serilog;
 
 namespace Playground
@@ -26,10 +27,16 @@ namespace Playground
             IServiceProvider sp = BuildServiceProvider();
             BulkMediaUpdater updater = sp.GetService<BulkMediaUpdater>();
             VideoConverter videoConverter = sp.GetService<VideoConverter>();
+            FaceScanner faceScanner = sp.GetService<FaceScanner>();
+            ImageHasher hasher = sp.GetService<ImageHasher>();
 
             //await videoConverter.GenerateVideosAsync(default);
 
-            await updater.CleanUpDeletedAsync(default);
+            //await updater.UpdateMediaAISummaryAsync(default);
+
+            await hasher.HashAsync();
+
+            //await faceScanner.RunAsync(default);
         }
 
         private static IServiceProvider BuildServiceProvider()
@@ -56,6 +63,8 @@ namespace Playground
             services.AddSingleton<FaceScanner>();
             services.AddSingleton<VideoConverter>();
             services.AddSingleton<BulkMediaUpdater>();
+            services.AddSingleton<ImageHasher>();
+
 
             return services.BuildServiceProvider();
         }

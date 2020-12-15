@@ -15,6 +15,10 @@ namespace MagicMedia.Store
 
         public IEnumerable<string>? Cities { get; set; }
 
+        public IEnumerable<string>? Tags { get; set; }
+
+        public IEnumerable<string>? Objects { get; set; }
+
         public IEnumerable<Guid>? Cameras { get; set; }
 
         public IEnumerable<MediaType>? MediaTypes { get; set; }

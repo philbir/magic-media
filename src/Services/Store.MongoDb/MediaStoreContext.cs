@@ -29,6 +29,7 @@ namespace MagicMedia.Store.MongoDb
                 .ConfigureCollection(new PersonCollectionConfiguration())
                 .ConfigureCollection(new GroupCollectionConfiguration())
                 .ConfigureCollection(new AlbumCollectionConfiguration())
+                .ConfigureCollection(new MediaAICollectionConfiguration())
                 .ConfigureCollection(new GeoAddressCacheCollectionConfiguration())
                 .ConfigureCollection(new MediaCollectionConfiguration());
         }
@@ -38,6 +39,14 @@ namespace MagicMedia.Store.MongoDb
             get
             {
                 return CreateCollection<Media>();
+            }
+        }
+
+        public IMongoCollection<MediaAI> MediaAI
+        {
+            get
+            {
+                return CreateCollection<MediaAI>();
             }
         }
 

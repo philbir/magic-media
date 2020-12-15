@@ -12,7 +12,7 @@ namespace MagicMedia.Jobs
 
         public bool Enabled { get; set; }
 
-        public TimeSpan? Intervall { get; set; }
+        public TimeSpan? Interval { get; set; }
 
         public string? Cron { get; set; }
     }

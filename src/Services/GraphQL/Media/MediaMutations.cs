@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using HotChocolate.Types;
 using MagicMedia.Operations;
+using MagicMedia.Store;
 
 namespace MagicMedia.GraphQL
 {
@@ -10,10 +12,14 @@ namespace MagicMedia.GraphQL
     public class MediaMutations
     {
         private readonly IMediaOperationsService _operationsService;
+        private readonly IMediaAIService _cloudAIMediaProcessing;
 
-        public MediaMutations(IMediaOperationsService operationsService)
+        public MediaMutations(
+            IMediaOperationsService operationsService,
+            IMediaAIService cloudAIMediaProcessing)
         {
             _operationsService = operationsService;
+            _cloudAIMediaProcessing = cloudAIMediaProcessing;
         }
 
         public async Task<MediaOperationPayload> MoveMediaAsync(
@@ -88,7 +94,15 @@ namespace MagicMedia.GraphQL
 
             return new MediaOperationPayload(request.OperationId);
         }
-    }
 
-    public record ToggleMediaFavoriteInput(Guid Id, bool IsFavorite);
+        public async Task<AnalyseMediaPayload> AnalyseMediaAsync(
+            AnalyseMediaInput input,
+            CancellationToken cancellationToken)
+        {
+            MediaAI? mediaAi = await _cloudAIMediaProcessing
+                .AnalyseMediaAsync(input.Id, cancellationToken);
+
+            return new AnalyseMediaPayload(mediaAi);
+        }
+    }
 }

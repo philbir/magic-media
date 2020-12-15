@@ -1,10 +1,12 @@
+#import "../ImageBoxFragment.gql"
+
 query mediaDetails($id: Uuid!) {
   mediaById(id: $id) {
     id
     filename
     dateTaken
     cameraId
-    size,
+    size
     isFavorite
     mediaType
     folder
@@ -21,7 +23,7 @@ query mediaDetails($id: Uuid!) {
       make
     }
     geoLocation {
-            point{
+      point {
         coordinates
       }
       altitude
@@ -37,10 +39,7 @@ query mediaDetails($id: Uuid!) {
       id
       mediaId
       box {
-        left
-        top
-        right
-        bottom
+        ...bbox
       }
       thumbnail {
         id
@@ -63,5 +62,23 @@ query mediaDetails($id: Uuid!) {
         width
       }
     }
+    ai(minConfidence: 30) {
+      objects {
+        name
+        confidence
+        source
+        box {
+          ...bbox
+        }
+      }
+      caption{
+        text,
+        confidence
+      },
+      colors{
+        accent
+      }
+    }
   }
 }
+

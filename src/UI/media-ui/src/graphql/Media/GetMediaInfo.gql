@@ -1,3 +1,5 @@
+#import "../ImageBoxFragment.gql"
+
 query mediaInfo($id: Uuid!) {
   mediaById(id: $id) {
     id
@@ -47,10 +49,7 @@ query mediaInfo($id: Uuid!) {
       id
       mediaId
       box {
-        left
-        top
-        right
-        bottom
+        ...bbox
       }
       thumbnail {
         id
@@ -67,9 +66,34 @@ query mediaInfo($id: Uuid!) {
     }
     files {
       filename
-      location  
+      location
       type
       size
+    }
+    ai(minConfidence: 10) {
+      objects {
+        name
+        confidence
+        source
+        box {
+          ...bbox
+        }
+      }
+      tags {
+        name
+        confidence
+        source
+      }
+      caption {
+        text
+        confidence
+      }
+      colors {
+        accent
+        dominantBackground
+        dominantForeground
+        isBackWhite
+      }
     }
   }
 }

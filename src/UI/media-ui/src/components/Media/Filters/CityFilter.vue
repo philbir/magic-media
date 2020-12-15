@@ -16,7 +16,6 @@ export default {
   computed: {
     selectedCities: {
       set(value) {
-        console.log(value);
         this.setFilter({
           key: "cities",
           value: value,

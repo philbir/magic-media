@@ -66,7 +66,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Worker", "Services\Worker\W
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{1200063E-406D-45B8-9259-C19547938D17}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared.AspNetCore", "Shared\AspNetCore\Shared.AspNetCore.csproj", "{E1D28004-4E4D-42DE-9784-E4D80FF9347D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared.AspNetCore", "Shared\AspNetCore\Shared.AspNetCore.csproj", "{E1D28004-4E4D-42DE-9784-E4D80FF9347D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

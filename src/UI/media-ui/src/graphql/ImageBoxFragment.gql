@@ -1,0 +1,6 @@
+fragment bbox on ImageBox {
+  left
+  top
+  right
+  bottom
+}

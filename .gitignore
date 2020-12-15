@@ -299,6 +299,8 @@ output
 All.sln
 
 src/Face/models/
+src/ImageAI/models/
+src/ImageAI/tmp/out.jpg
 *.pyc
 **/*.Api.Host/wwwroot
 src/Services/Api.Host/wwwroot/
@@ -307,3 +309,4 @@ ffmpeg.exe
 ffprobe.exe
 ._ffmpeg.exe
 ._ffprobe.exe
+samples/Migration**

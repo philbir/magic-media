@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,7 +28,16 @@ namespace MagicMedia.Processing
             {
                 IMediaProcessorTask instance = _taskFactory.GetTask(taskName);
                 Log.Information("Execute Task {Name}", taskName);
-                await instance.ExecuteAsync(context, cancellationToken);
+
+                try
+                {
+                    await instance.ExecuteAsync(context, cancellationToken);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "Error executing Task {Name}", taskName);
+                    throw;
+                }
             }
         }
     }

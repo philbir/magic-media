@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using MagicMedia.Extensions;
 using MagicMedia.Face;
 using MagicMedia.Store;
 using MagicMedia.Store.MongoDb;
@@ -25,6 +26,44 @@ namespace MagicMedia.Playground
             _mediaService = mediaService;
             _faceService = faceService;
             _context = context;
+        }
+
+
+        public async Task UpdateMediaAISummaryAsync(CancellationToken cancellationToken)
+        {
+            List<MediaAI> allAI = await _context.MediaAI.AsQueryable().ToListAsync(cancellationToken);
+
+            foreach (List<MediaAI> chunk in allAI.ChunkBy(500))
+            {
+                List<UpdateOneModel<Media>> bulkUpdates = new();
+
+                foreach (MediaAI mediaAI in chunk)
+                {
+                    MediaAISummary summary = BuildSummary(mediaAI);
+
+                    UpdateDefinition<Media> update = Builders<Media>.Update.Set(x => x.AISummary, summary);
+
+                    bulkUpdates.Add(new UpdateOneModel<Media>(
+                        Builders<Media>.Filter.Eq(x => x.Id, mediaAI.MediaId),
+                        update));
+
+                }
+
+                await _context.Medias.BulkWriteAsync(bulkUpdates, null, cancellationToken);
+                Console.WriteLine("Chunk updated...");
+            }
+        }
+
+
+        private MediaAISummary BuildSummary(MediaAI mediaAI)
+        {
+            return new MediaAISummary
+            {
+                Sources = mediaAI.SourceInfo.Select(x => x.Source),
+                ObjectCount = mediaAI.Objects.Count(x => !x.Name.Equals("person", StringComparison.InvariantCultureIgnoreCase)),
+                PersonCount = mediaAI.Objects.Count(x => x.Name.Equals("person", StringComparison.InvariantCultureIgnoreCase)),
+                TagCount = mediaAI.Tags.Count()
+            };
         }
 
 

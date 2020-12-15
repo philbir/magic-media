@@ -27,6 +27,16 @@ namespace MagicMedia.GraphQL
             descriptor
                 .Field("files")
                 .ResolveWith<MediaResolvers>(x => x.GetFileInfos(default!));
+
+            descriptor
+                .Field("ai")
+                .Argument("minConfidence", a => a
+                    .DefaultValue(0.0)
+                    .Type(typeof(double)))
+                //.Argument("source", a => a
+                //    .DefaultValue(null)
+                //    .Type(typeof(AISource?)))
+                .ResolveWith<MediaResolvers>(x => x.GetAIDataAsync(default!, default!, default!));
         }
     }
 

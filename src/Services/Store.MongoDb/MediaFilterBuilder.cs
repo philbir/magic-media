@@ -15,7 +15,7 @@ namespace MagicMedia.Store.MongoDb
     public class MediaFilterBuilder
     {
         private readonly MediaStoreContext _dbContext;
-        private readonly Func<Guid, CancellationToken, Task<IEnumerable<Guid>>> _albumMediaResolver;
+        private readonly Func<Guid, CancellationToken, Task<IEnumerable<Guid>>>? _albumMediaResolver;
         private readonly CancellationToken _cancellationToken;
         private FilterDefinition<Media> _filter;
         private List<Task> _tasks;
@@ -126,6 +126,26 @@ namespace MagicMedia.Store.MongoDb
             return this;
         }
 
+        public MediaFilterBuilder AddAITags(IEnumerable<string>? tags)
+        {
+            if (tags is { } t && t.Any())
+            {
+                _tasks.Add(CreateAITagsFilter(t));
+            }
+
+            return this;
+        }
+
+        public MediaFilterBuilder AddAIObjects(IEnumerable<string>? objects)
+        {
+            if (objects is { } o && o.Any())
+            {
+                _tasks.Add(CreateAIObjectsFilter(o));
+            }
+
+            return this;
+        }
+
         public MediaFilterBuilder AddCities(IEnumerable<string>? cities)
         {
             if (cities is { } c && c.Any())
@@ -192,6 +212,11 @@ namespace MagicMedia.Store.MongoDb
 
         private async Task CreateAlbumFilter(Guid id)
         {
+            if (_albumMediaResolver == null)
+            {
+                throw new InvalidOperationException("_albumMediaResolver can not be null");
+            }
+
             IEnumerable<Guid>? mediaIds = await _albumMediaResolver(id, _cancellationToken);
 
             if (mediaIds.Any())
@@ -217,6 +242,27 @@ namespace MagicMedia.Store.MongoDb
             }
         }
 
+        private async Task CreateAITagsFilter(
+            IEnumerable<string> tags)
+        {
+            IEnumerable<Guid> mediaIds = await GetMediaIdsByAITags(tags, 30, _cancellationToken);
+
+            if (mediaIds.Any())
+            {
+                _filter &= Builders<Media>.Filter.In(x => x.Id, mediaIds);
+            }
+        }
+
+        private async Task CreateAIObjectsFilter(
+            IEnumerable<string> objects)
+        {
+            IEnumerable<Guid> mediaIds = await GetMediaIdsByAIObjects(objects, 30, _cancellationToken);
+
+            if (mediaIds.Any())
+            {
+                _filter &= Builders<Media>.Filter.In(x => x.Id, mediaIds);
+            }
+        }
 
         private async Task<IEnumerable<Guid>> GetMediaIdsByPersons(
             IEnumerable<Guid> persons,
@@ -229,6 +275,65 @@ namespace MagicMedia.Store.MongoDb
                 .ToListAsync(cancellationToken);
 
             return ids;
+        }
+
+
+        private async Task<IEnumerable<Guid>> GetMediaIdsByAITags(
+            IEnumerable<string> tags,
+            int minConfidence,
+            CancellationToken cancellationToken)
+        {
+            FilterDefinition<MediaAITag>? tagFilter = Builders<MediaAITag>
+                .Filter.In(x => x.Name, tags);
+
+            tagFilter &= Builders<MediaAITag>
+                .Filter.Gte(x => x.Confidence, 20);
+
+            FilterDefinition<MediaAI>? filter = Builders<MediaAI>.Filter
+                .ElemMatch(x => x.Tags, tagFilter);
+
+            ProjectionDefinition<MediaAI> projection = Builders<MediaAI>.Projection
+                .Include(x => x.MediaId);
+
+            var options = new FindOptions<MediaAI, BsonDocument> { Projection = projection };
+
+            IAsyncCursor<BsonDocument> cursor = await _dbContext.MediaAI.FindAsync(
+                filter,
+                options,
+                cancellationToken);
+
+            List<BsonDocument> docs = await cursor.ToListAsync(cancellationToken);
+
+            return docs.Select(x => x["MediaId"].AsGuid);
+        }
+
+        private async Task<IEnumerable<Guid>> GetMediaIdsByAIObjects(
+            IEnumerable<string> objects,
+            int minConfidence,
+            CancellationToken cancellationToken)
+        {
+            FilterDefinition<MediaAIObject>? tagFilter = Builders<MediaAIObject>
+                .Filter.In(x => x.Name, objects);
+
+            tagFilter &= Builders<MediaAIObject>
+                .Filter.Gte(x => x.Confidence, minConfidence);
+
+            FilterDefinition<MediaAI>? filter = Builders<MediaAI>.Filter
+                .ElemMatch(x => x.Objects, tagFilter);
+
+            ProjectionDefinition<MediaAI> projection = Builders<MediaAI>.Projection
+                .Include(x => x.MediaId);
+
+            var options = new FindOptions<MediaAI, BsonDocument> { Projection = projection };
+
+            IAsyncCursor<BsonDocument> cursor = await _dbContext.MediaAI.FindAsync(
+                filter,
+                options,
+                cancellationToken);
+
+            List<BsonDocument> docs = await cursor.ToListAsync(cancellationToken);
+
+            return docs.Select(x => x["MediaId"].AsGuid);
         }
 
         public async Task<FilterDefinition<Media>> BuildAsync()

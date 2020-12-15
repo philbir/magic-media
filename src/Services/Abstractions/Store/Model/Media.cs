@@ -19,6 +19,8 @@ namespace MagicMedia.Store
 
         public string OriginalHash { get; set; }
 
+        public string? ImageHash { get; set; }
+
         public string? UniqueIdentifier { get; set; }
 
         public string? ImageUniqueId { get; set; }
@@ -43,7 +45,8 @@ namespace MagicMedia.Store
 
         public Guid? CameraId { get; set; }
 
-        public int? ObjectCount { get; set; }
+        public MediaAISummary AISummary { get; set; }
+
     }
 
     public record MediaHeaderData(Guid Id, string Filename, DateTimeOffset? DateTaken);

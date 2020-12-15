@@ -1,7 +1,6 @@
 FROM hellozcb/face_recognition
 
 RUN pip install --upgrade pip && \
-  pip install pymongo && \
   pip install imutils && \
   pip install opencv-python && \
   pip install --upgrade ptvsd && \

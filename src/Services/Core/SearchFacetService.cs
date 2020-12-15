@@ -26,5 +26,17 @@ namespace MagicMedia
         {
             return await _mediaStore.GetGroupedCitiesAsync(cancellationToken);
         }
+
+        public async Task<IEnumerable<SearchFacetItem>> GetAITagFacetsAsync(
+            CancellationToken cancellationToken)
+        {
+            return await _mediaStore.MediaAI.GetGroupedAITagsAsync(cancellationToken);
+        }
+
+        public async Task<IEnumerable<SearchFacetItem>> GetAIObjectsFacetsAsync(
+            CancellationToken cancellationToken)
+        {
+            return await _mediaStore.MediaAI.GetGroupedAIObjectsAsync(cancellationToken);
+        }
     }
 }

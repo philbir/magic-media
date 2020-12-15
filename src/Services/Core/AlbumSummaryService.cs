@@ -96,7 +96,7 @@ namespace MagicMedia
                     Code = country.FirstOrDefault()?.GeoLocation?.Address.CountryCode,
                     Count = country.Count(),
                     Cities = GetCities(country.ToList()).OrderByDescending(x => x.Count)
-            };
+                };
                 albumCountries.Add(ab);
             }
 
@@ -126,9 +126,9 @@ namespace MagicMedia
                         Count = group.Count()
                     };
 
-                   ap.FaceId = group.Where( x => x.Thumbnail != null)
-                                    .OrderByDescending(x => x.Thumbnail.Dimensions.Width)
-                                    .First().Id;
+                    ap.FaceId = group.Where(x => x.Thumbnail != null)
+                                     .OrderByDescending(x => x.Thumbnail.Dimensions.Width)
+                                     .First().Id;
 
                     albumPersons.Add(ap);
                 }

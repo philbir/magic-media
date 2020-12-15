@@ -52,6 +52,7 @@ namespace MagicMedia
             services.AddSingleton<IMediaService, MediaService>();
             services.AddSingleton<IVideoPlayerService, VideoPlayerService>();
             services.AddSingleton<IVideoProcessingService, VideoProcessingService>();
+            services.AddSingleton<IMediaAIService, MediaAIService>();
             services.AddFFmpeg(configuration);
 
             return services;

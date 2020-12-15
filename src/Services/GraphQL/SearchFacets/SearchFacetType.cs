@@ -13,6 +13,14 @@ namespace MagicMedia.GraphQL.SearchFacets
             descriptor
                 .Field("city")
                 .ResolveWith<SearchFacetResolvers>(x => x.GetCitiesAsync(default!));
+
+            descriptor
+               .Field("aiTags")
+               .ResolveWith<SearchFacetResolvers>(x => x.GetAITagsAsync(default!));
+
+            descriptor
+               .Field("aiObjects")
+               .ResolveWith<SearchFacetResolvers>(x => x.GetAIObjectsAsync(default!));
         }
     }
 }

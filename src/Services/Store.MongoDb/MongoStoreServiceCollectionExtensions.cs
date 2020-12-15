@@ -9,7 +9,6 @@ namespace MagicMedia.Store.MongoDb
         public static IMagicMediaServerBuilder AddMongoDbStore(
             this IMagicMediaServerBuilder builder)
         {
-
             builder.Services.AddMongoDbStore(builder.Configuration);
 
             return builder;
@@ -25,7 +24,7 @@ namespace MagicMedia.Store.MongoDb
             services.AddSingleton(new MediaStoreContext(options));
             services.AddSingleton<IThumbnailBlobStore>((c) =>
             {
-                MediaStoreContext mongoCtx = c.GetService<MediaStoreContext>();
+                MediaStoreContext mongoCtx = c.GetRequiredService<MediaStoreContext>();
                 return new GridFsThumbnailStore(mongoCtx.CreateGridFsBucket());
             });
 
@@ -35,6 +34,7 @@ namespace MagicMedia.Store.MongoDb
             services.AddSingleton<IPersonStore, PersonStore>();
             services.AddSingleton<IGroupStore, GroupStore>();
             services.AddSingleton<IAlbumStore, AlbumStore>();
+            services.AddSingleton<IMediaAIStore, MediaAIStore>();
 
             return services;
         }

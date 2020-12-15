@@ -34,6 +34,7 @@ namespace MagicMedia.Api
                 .AddMagicMediaServer(Configuration)
                 .AddGraphQLServer()
                 .AddBingMaps()
+                .AddAzureAI()
                 .AddMongoDbStore()
                 .AddFileSystemStore()
                 .AddApiMessaging();

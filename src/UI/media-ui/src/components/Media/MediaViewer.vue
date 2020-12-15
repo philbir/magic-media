@@ -189,12 +189,22 @@
           <face-box :key="face.id" :face="face" :image="image"></face-box>
         </template>
       </div>
+      <AIObjects
+        v-if="image.loaded && showObjects"
+        :image="image"
+        :objects="media.ai.objects"
+      ></AIObjects>
+
       <div v-if="showQuickInfo" class="quick-info">
         <media-quick-info :faces="media.faces"></media-quick-info>
       </div>
     </div>
     <div class="filmstripe" v-show="showStripe">
       <FilmStripe></FilmStripe>
+    </div>
+
+    <div v-if="caption" class="caption" :style="{ color: '#' + caption.color }">
+      <h2>{{ caption.text }}</h2>
     </div>
   </div>
 </template>
@@ -209,6 +219,7 @@ import FaceBox from "../Face/FaceBox";
 import GlobalEvents from "vue-global-events";
 import { DateTime } from "luxon";
 import { mapActions } from "vuex";
+import AIObjects from "./AIObjects";
 
 export default {
   components: {
@@ -217,6 +228,7 @@ export default {
     GlobalEvents,
     MediaQuickInfo,
     MediaInfo,
+    AIObjects,
   },
   data() {
     return {
@@ -268,6 +280,11 @@ export default {
           items: [
             { title: "Move", icon: "mdi-file-move-outline", action: "MOVE" },
             { title: "Edit", icon: "mdi-pencil", action: "EDIT" },
+            {
+              title: "Analyse CloudAI",
+              action: "AI",
+              icon: "mdi-cloud-check-outline",
+            },
             { title: "Delete", icon: "mdi-recycle", action: "RECYCLE" },
             { title: "Add to Album", icon: "mdi-plus", action: "ADD_TO_ALBUM" },
           ],
@@ -306,7 +323,16 @@ export default {
     pathInfo: function () {
       return parsePath(this.media.folder);
     },
+    caption: function () {
+      if (this.media.ai && this.media.ai.caption) {
+        return {
+          text: this.media.ai.caption.text,
+          color: this.media.ai.colors.accent,
+        };
+      }
 
+      return null;
+    },
     video: function () {
       return {
         src: "/api/video/" + this.media.id,
@@ -323,6 +349,9 @@ export default {
     },
     showFaceBox: function () {
       return this.$store.state.media.viewer.showFaceBox;
+    },
+    showObjects: function () {
+      return this.$store.state.media.viewer.showObjects;
     },
     showQuickInfo: function () {
       return this.$store.state.media.viewer.showFaceList;
@@ -438,6 +467,9 @@ export default {
         case 70: //f
           this.toggleFavorite();
           break;
+        case 67: //c
+          this.analyseAI();
+          break;
         case 32: //space
           this.$store.dispatch(
             "media/setViewerOptions",
@@ -451,6 +483,14 @@ export default {
             "media/setViewerOptions",
             Object.assign({}, this.$store.state.media.viewer, {
               showFaceList: !this.$store.state.media.viewer.showFaceList,
+            })
+          );
+          break;
+        case 79: //o
+          this.$store.dispatch(
+            "media/setViewerOptions",
+            Object.assign({}, this.$store.state.media.viewer, {
+              showObjects: !this.$store.state.media.viewer.showObjects,
             })
           );
           break;
@@ -516,6 +556,9 @@ export default {
         case "RECYCLE":
           this.recycle();
           break;
+        case "AI":
+          this.analyseAI();
+          break;
       }
     },
     approveAll: function () {
@@ -533,6 +576,9 @@ export default {
     recycle() {
       this.$store.dispatch("media/recycle", [this.media.id]);
       this.navigate(1);
+    },
+    analyseAI() {
+      this.$store.dispatch("media/analyseAI", this.media.id);
     },
     toggleInfo: function () {
       this.showInfoPage = !this.showInfoPage;
@@ -600,6 +646,14 @@ export default {
   background-color: #000;
   opacity: 0.5;
   width: 100%;
+}
+
+.caption {
+  position: absolute;
+  top: 48px;
+  left: 10px;
+  margin: auto;
+  text-align: center;
 }
 
 .filmstripe {

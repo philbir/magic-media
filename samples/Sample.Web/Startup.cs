@@ -123,10 +123,6 @@ namespace Sample.Web
 
             services.AddSingleton<SampleService>();
 
-            AzureAIOptions azureAi = Configuration.GetSection("MagicMedia:AzureAI")
-                .Get<AzureAIOptions>();
-
-            services.AddAzureAI(azureAi);
         }
 
         public void Configure(IApplicationBuilder app, SampleService sampleService)

@@ -73,12 +73,15 @@ namespace Worker
                         .Create()
                         .WithIdentity(jobType.Name);
 
-                    if (options.Intervall.HasValue)
+                    if (options.Interval.HasValue)
                     {
-                        triggerBuilder.WithSimpleSchedule(s => s.WithInterval(options.Intervall.Value));
-                        Log.Information("Schedule job {Name} with intervall: {Intervall}",
+                        triggerBuilder.WithSimpleSchedule(s => s
+                            .WithInterval(options.Interval.Value)
+                            .RepeatForever());
+
+                        Log.Information("Schedule job {Name} with intervall: {Interval}",
                             jobType.Name,
-                            options.Intervall);
+                            options.Interval);
                     }
                     else
                     {
