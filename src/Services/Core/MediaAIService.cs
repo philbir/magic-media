@@ -112,6 +112,8 @@ namespace MagicMedia
 
             MediaAI merged = MergeAIData(existing, aiDatas);
 
+            await SaveMediaAI(merged, cancellationToken);
+
             return merged;
         }
 
@@ -148,7 +150,9 @@ namespace MagicMedia
             return mediaAI;
         }
 
-        public async Task SaveImageAIDetectionAsync(ImageAIDetectionResult imageAIResult, CancellationToken cancellationToken)
+        public async Task SaveImageAIDetectionAsync(
+            ImageAIDetectionResult imageAIResult,
+            CancellationToken cancellationToken)
         {
             var mediaAi = new MediaAI
             {

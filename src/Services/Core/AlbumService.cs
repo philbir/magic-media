@@ -281,6 +281,14 @@ namespace MagicMedia
                             Longitude = double.Parse(coords[1]),
                         };
                         break;
+                    case "tags":
+                        request.Tags = filter.Value.Split(',');
+                        break;
+                    case "objects":
+                        request.Objects = filter.Value.Split(',');
+                        break;
+                    default:
+                        throw new InvalidOperationException($"Invalid filter key: {filter.Key}");
                 }
             }
 

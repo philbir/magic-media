@@ -27,7 +27,10 @@ namespace MagicMedia.Playground
         public async Task HashAsync()
         {
             List<Media> medias = await _dbContext.Medias.AsQueryable()
-                .Where(x => x.State != MediaState.Recycled && x.MediaType == MediaType.Image && x.ImageHash == null)
+                .Where(x =>
+                    x.State == MediaState.Active &&
+                    x.MediaType == MediaType.Image &&
+                    x.ImageHash == null)
                 .ToListAsync();
 
             var todo = medias.Count;
@@ -37,13 +40,28 @@ namespace MagicMedia.Playground
             foreach (Media media in medias)
             {
                 Console.WriteLine($"{todo} - {media.Id}");
-                using Stream stream = _mediaService.GetMediaStream(media);
 
-                var hash = hasher.Hash(stream);
+                try
+                {
 
-                UpdateDefinition<Media> update = Builders<Media>.Update.Set(x => x.ImageHash, hash.ToString());
+                    var fileName = _mediaService.GetFilename(media, MediaFileType.Original);
 
-                await _dbContext.Medias.UpdateOneAsync(x => x.Id == media.Id, update);
+                    if (File.Exists(fileName))
+                    {
+                        var hash = hasher.Hash(File.OpenRead(fileName));
+
+                        UpdateDefinition<Media> update = Builders<Media>.Update.Set(x => x.ImageHash, hash.ToString());
+                        await _dbContext.Medias.UpdateOneAsync(x => x.Id == media.Id, update);
+                    }
+                    else
+                    {
+                        File.WriteAllText($@"C:\MagicMedia\Broken\{media.Id}.txt", $"NOT_FOUND:{fileName}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    File.WriteAllText($@"C:\MagicMedia\Broken\{media.Id}.txt", $"ERROR:{ex.Message}");
+                }
 
                 todo--;
             }

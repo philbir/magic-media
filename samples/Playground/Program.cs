@@ -27,6 +27,7 @@ namespace Playground
             IServiceProvider sp = BuildServiceProvider();
             BulkMediaUpdater updater = sp.GetService<BulkMediaUpdater>();
             VideoConverter videoConverter = sp.GetService<VideoConverter>();
+            FaceScanner faceScanner = sp.GetService<FaceScanner>();
             ImageHasher hasher = sp.GetService<ImageHasher>();
 
             //await videoConverter.GenerateVideosAsync(default);
@@ -34,6 +35,8 @@ namespace Playground
             //await updater.UpdateMediaAISummaryAsync(default);
 
             await hasher.HashAsync();
+
+            //await faceScanner.RunAsync(default);
         }
 
         private static IServiceProvider BuildServiceProvider()

@@ -15,13 +15,16 @@ namespace MagicMedia.Playground
     public class FaceScanner
     {
         private readonly MediaStoreContext _storeContext;
+        private readonly IMediaService _mediaService;
         private readonly IMediaProcessorFlowFactory _flowFactory;
 
         public FaceScanner(
             MediaStoreContext storeContext,
+            IMediaService mediaService,
             IMediaProcessorFlowFactory flowFactory)
         {
             _storeContext = storeContext;
+            _mediaService = mediaService;
             _flowFactory = flowFactory;
         }
 
@@ -30,7 +33,13 @@ namespace MagicMedia.Playground
             IMediaProcessorFlow flow = _flowFactory.CreateFlow("ScanFaces");
 
             List<Store.Media> medias = await _storeContext.Medias.AsQueryable()
-                .Where(x => x.FaceCount == 0)
+                .Where(x =>
+                    x.FaceCount == 0 &&
+                    x.MediaType == MediaType.Image &&
+                    x.State == MediaState.Active)
+
+                .OrderByDescending(x => x.DateTaken)
+                .Take(100)
                 .ToListAsync(cancellationToken);
 
             foreach (Media media in medias)
@@ -55,7 +64,9 @@ namespace MagicMedia.Playground
 
         private async Task<Image> GetImageAsync(Media media)
         {
-            return await Image.LoadAsync(media.Source.Identifier);
+            var fileName = _mediaService.GetFilename(media, MediaFileType.Original);
+
+            return await Image.LoadAsync(fileName);
         }
     }
 }
