@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using MagicMedia.Api.DevTokenAuthentication;
 using MagicMedia.Face;
 using MagicMedia.Security;
 using MagicMedia.Store;
@@ -20,7 +21,6 @@ namespace MagicMedia.Api.Controllers
         private readonly IThumbnailBlobStore _thumbnailBlobStore;
         private readonly IFaceService _faceService;
         private readonly IAuthorizationService _authorizationService;
-        private readonly IUserContextFactory _userContextFactory;
 
         public MediaController(
             IMediaBlobStore mediaBlobStore,
@@ -44,7 +44,7 @@ namespace MagicMedia.Api.Controllers
 
             if (!res.Succeeded)
             {
-                //return new ForbidResult();
+                return new ForbidResult();
             }
 
             MediaBlobData data = await _mediaBlobStore.GetAsync(

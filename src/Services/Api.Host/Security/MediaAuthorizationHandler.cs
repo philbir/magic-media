@@ -1,9 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using MagicMedia.Security;
 using Microsoft.AspNetCore.Authorization;
+using Serilog;
 
 namespace MagicMedia.Api.Security
 {
@@ -26,19 +25,27 @@ namespace MagicMedia.Api.Security
 
             try
             {
-                bool isAuthorized = await userContext.IsAuthorizedAsync(resource, ProtectedResourceType.Media, default);
-
-                if (isAuthorized)
+                if (userContext.HasPermission(Permissions.Media.ViewAll))
                 {
                     context.Succeed(requirement);
                 }
                 else
                 {
-                    context.Fail();
+                    bool isAuthorized = await userContext.IsAuthorizedAsync(resource, ProtectedResourceType.Media, default);
+
+                    if (isAuthorized)
+                    {
+                        context.Succeed(requirement);
+                    }
+                    else
+                    {
+                        context.Fail();
+                    }
                 }
             }
             catch (Exception ex)
             {
+                Log.Error(ex, "Error in HandleRequirementAsync for resource: {Resource}", resource);
                 context.Fail();
             }
         }

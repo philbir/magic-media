@@ -11,11 +11,26 @@ namespace MagicMedia.Security
     {
         private readonly User _user;
         private readonly IUserService _userService;
+        private HashSet<string> _allPermissions = new();
 
         public DefaultUserContext(User user, IUserService userService)
         {
             _user = user ?? throw new ArgumentNullException(nameof(user));
             _userService = userService;
+            SetAllPermissions();
+        }
+
+        private void SetAllPermissions()
+        {
+            _allPermissions = new HashSet<string>();
+
+            foreach ( var role in _user.Roles)
+            {
+                if (Permissions.RoleMap.ContainsKey(role))
+                {
+                    _allPermissions.UnionWith(Permissions.RoleMap[role]);
+                }
+            }
         }
 
         public bool IsAuthenticated => true;
@@ -51,5 +66,9 @@ namespace MagicMedia.Security
             return false;
         }
 
+        public bool HasPermission(string permission)
+        {
+            return _allPermissions.Contains(permission);
+        }
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using IdentityModel;
 using MagicMedia.Api;
+using MagicMedia.Api.DevTokenAuthentication;
 using MagicMedia.Api.Security;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -23,28 +24,11 @@ namespace MagicMedia
         {
             services.AddAuthorization(c =>
             {
-                if (env.IsDevelopment())
-                {
-                    c.AddPolicy("ApiAccess", new AuthorizationPolicyBuilder()
-                        .RequireAssertion(_ => true)
-                        .Build());
+                c.AddPolicy("ApiAccess", new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build());
 
-                    //c.DefaultPolicy = new AuthorizationPolicyBuilder()
-                    //    .RequireAssertion(_ => true)
-                    //    .Build();
-
-                    c.AddPolicy("Media_View", p => p.Requirements.Add(new AuhorizedOnMediaRequirement()));
-                }
-                else
-                {
-                    c.AddPolicy("ApiAccess", new AuthorizationPolicyBuilder()
-                        .RequireAuthenticatedUser()
-                        .Build());
-
-                    //c.DefaultPolicy = new AuthorizationPolicyBuilder()
-                    //    .RequireAuthenticatedUser()
-                    //    .Build();
-                }
+                c.AddPolicy("Media_View", p => p.Requirements.Add(new AuhorizedOnMediaRequirement()));
             });
 
             services.AddSingleton<IAuthorizationHandler, MediaAuthorizationHandler>();
@@ -57,6 +41,7 @@ namespace MagicMedia
     {
         public static AuthenticationBuilder AddAuthentication(
             this IServiceCollection services,
+            IWebHostEnvironment env,
             IConfiguration configuration)
         {
             SecurityOptions secOptions = configuration.GetSection("MagicMedia:Security")
@@ -64,7 +49,10 @@ namespace MagicMedia
 
             AuthenticationBuilder authBuilder = services.AddAuthentication(options =>
             {
-                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultScheme = env.IsDevelopment() ?
+                    DevTokenDefaults.AuthenticationScheme :
+                    CookieAuthenticationDefaults.AuthenticationScheme;
+
                 options.DefaultChallengeScheme = "oidc";
             });
 
@@ -117,6 +105,12 @@ namespace MagicMedia
             //        options.Authority = secOptions.Authority;
             //        options.Audience = "api.magic";
             //    });
+
+            if (env.IsDevelopment())
+            {
+                authBuilder.AddDevToken();
+            }
+
 
             return authBuilder;
         }

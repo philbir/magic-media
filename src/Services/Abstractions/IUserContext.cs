@@ -15,6 +15,8 @@ namespace MagicMedia
 
         bool HasRole(string role);
 
+        bool HasPermission(string permission);
+
         Task<IEnumerable<Guid>> GetAuthorizedPersonsAsync(CancellationToken cancellationToken);
 
         Task<IEnumerable<Guid>> GetAuthorizedMediaAsync(CancellationToken cancellationToken);

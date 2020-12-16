@@ -25,5 +25,8 @@ namespace MagicMedia.Security
 
         public Task<bool> IsAuthorizedAsync(object resourceId, ProtectedResourceType type, CancellationToken cancellationToken)
             => throw new UnauthorizedAccessException(_message);
+
+        public bool HasPermission(string permission)
+            => throw new UnauthorizedAccessException(_message);
     }
 }

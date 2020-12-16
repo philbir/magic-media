@@ -15,4 +15,11 @@ namespace MagicMedia.Store
 
         public IEnumerable<string> Roles { get; set; } = new List<string>();
     }
+
+    public class UserRole
+    {
+        public string Id { get; set; }
+
+        public IEnumerable<string> Permissions { get; set; }
+    }
 }
