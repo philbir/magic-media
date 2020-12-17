@@ -27,9 +27,13 @@ namespace MagicMedia.Store
 
         Task<IEnumerable<string>> GetAllFoldersAsync(IEnumerable<Guid>? ids, CancellationToken cancellationToken);
         Task<Media> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+        Task<IEnumerable<SearchFacetItem>> GetGroupedCitiesAsync(
+            IEnumerable<Guid>? mediaIds,
+            CancellationToken cancellationToken);
+        Task<IEnumerable<SearchFacetItem>> GetGroupedCountriesAsync(
+            IEnumerable<Guid>? mediaIds,
+            CancellationToken cancellationToken);
 
-        Task<IEnumerable<SearchFacetItem>> GetGroupedCitiesAsync(CancellationToken cancellationToken);
-        Task<IEnumerable<SearchFacetItem>> GetGroupedCountriesAsync(CancellationToken cancellationToken);
         Task<IEnumerable<MediaHeaderData>> GetHeaderDataAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken);
         Task<IEnumerable<Guid>> GetIdsByFolderAsync(string folder, CancellationToken cancellationToken);
         Task<IEnumerable<Guid>> GetIdsFromSearchRequestAsync(SearchMediaRequest request, CancellationToken cancellationToken);

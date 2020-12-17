@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using MongoDB.Bson;
@@ -17,6 +18,14 @@ namespace MagicMedia.Store.MongoDb
                 .Create(stages.Select(x => BsonDocument.Parse(x.ToString())));
 
             return pipeline;
+        }
+
+        public static IEnumerable<BsonDocument> CreateStages(string name)
+        {
+            var json = GetResource(name);
+            var stages = JArray.Parse(json);
+
+            return stages.Select(x => BsonDocument.Parse(x.ToString()));
         }
 
         private static string GetResource(string name)

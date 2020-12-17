@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Store.MongoDb.Configuration;
@@ -120,7 +121,37 @@ namespace MagicMedia.Store.MongoDb
             PipelineDefinition<BsonDocument, BsonDocument> pipeline =
                 AggregationPipelineFactory.Create(name);
 
+
             IMongoCollection<BsonDocument> collection = Database
+                .GetCollection<BsonDocument>(collectionName);
+
+            IAsyncCursor<BsonDocument> cursor = await collection.AggregateAsync(
+                pipeline,
+                options: null,
+                cancellationToken);
+
+            List<BsonDocument> documents = await cursor.ToListAsync(cancellationToken);
+
+            return documents;
+        }
+
+        internal async Task<IEnumerable<BsonDocument>> ExecuteAggregation(
+            string collectionName,
+            string name,
+            BsonDocument? prependStage=null,
+            CancellationToken cancellationToken=default)
+        {
+            List<BsonDocument> stages = AggregationPipelineFactory.CreateStages(name).ToList();
+
+            if (prependStage != null)
+            {
+                stages.Insert(0, prependStage);
+            }
+
+            PipelineDefinition<BsonDocument, BsonDocument> pipeline = PipelineDefinition<BsonDocument, BsonDocument>
+                .Create(stages);
+
+            IMongoCollection <BsonDocument> collection = Database
                 .GetCollection<BsonDocument>(collectionName);
 
             IAsyncCursor<BsonDocument> cursor = await collection.AggregateAsync(

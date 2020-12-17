@@ -274,7 +274,7 @@ namespace MagicMedia.Store.MongoDb
                 .Select(x => new MediaHeaderData(x.Id, x.Filename, x.DateTaken))
                 .ToListAsync(cancellationToken);
         }
-            
+
         public async Task<IEnumerable<string>> GetAllFoldersAsync(
             IEnumerable<Guid>? ids,
             CancellationToken cancellationToken)
@@ -316,11 +316,16 @@ namespace MagicMedia.Store.MongoDb
         }
 
         public async Task<IEnumerable<SearchFacetItem>> GetGroupedCitiesAsync(
-                CancellationToken cancellationToken)
+            IEnumerable<Guid>? mediaIds,
+            CancellationToken cancellationToken)
         {
+
+            BsonDocument? idMatch = GetMediaIdMatch(mediaIds);
+
             IEnumerable<BsonDocument> docs = await _mediaStoreContext.ExecuteAggregation(
                 CollectionNames.Media,
                 "Media_GroupByCity",
+                idMatch,
                 cancellationToken);
 
             var result = new List<SearchFacetItem>();
@@ -339,6 +344,30 @@ namespace MagicMedia.Store.MongoDb
             }
 
             return result.OrderByDescending(x => x.Count);
+        }
+
+        private BsonDocument? GetMediaIdMatch(IEnumerable<Guid>? mediaIds)
+        {
+            if (mediaIds != null)
+            {
+                return new BsonDocument
+                {
+                    {
+                        "$match",
+                        new BsonDocument
+                            {
+                                {"_id", new BsonDocument
+                                {
+                                    {
+                                        "$in", new BsonArray(mediaIds)
+                                    }
+                                }}
+                            }
+                    }
+                };
+            }
+
+            return null;
         }
 
         public async Task<IEnumerable<Guid>> GetIdsByFolderAsync(
@@ -361,11 +390,15 @@ namespace MagicMedia.Store.MongoDb
         }
 
         public async Task<IEnumerable<SearchFacetItem>> GetGroupedCountriesAsync(
+            IEnumerable<Guid>? mediaIds,
             CancellationToken cancellationToken)
         {
+            BsonDocument? idMatch = GetMediaIdMatch(mediaIds);
+
             IEnumerable<BsonDocument> docs = await _mediaStoreContext.ExecuteAggregation(
                 CollectionNames.Media,
                 "Media_GroupByCountry",
+                idMatch,
                 cancellationToken);
 
             var result = new List<SearchFacetItem>();
