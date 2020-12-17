@@ -10,7 +10,7 @@ namespace MagicMedia.Security
             public static readonly string ViewAll = "MEDIA_VIEW_ALL";
         }
 
-        internal static readonly Dictionary<string, List<string>> RoleMap;
+        public static readonly Dictionary<string, List<string>> RoleMap;
 
         static Permissions()
         {

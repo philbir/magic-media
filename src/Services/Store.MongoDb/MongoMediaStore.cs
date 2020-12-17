@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Search;
+using MagicMedia.Security;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
@@ -28,9 +29,11 @@ namespace MagicMedia.Store.MongoDb
     public class MongoMediaStore : IMediaStore
     {
         private readonly MediaStoreContext _mediaStoreContext;
+        private readonly IUserContextFactory _userContextFactory;
 
         public MongoMediaStore(
             MediaStoreContext mediaStoreContext,
+            IUserContextFactory userContextFactory,
             IThumbnailBlobStore thumbnailBlobStore,
             IMediaBlobStore blobStore,
             IFaceStore faceStore,
@@ -40,6 +43,7 @@ namespace MagicMedia.Store.MongoDb
             IMediaAIStore mediaAIStore)
         {
             _mediaStoreContext = mediaStoreContext;
+            _userContextFactory = userContextFactory;
             Thumbnails = thumbnailBlobStore;
             Blob = blobStore;
             Faces = faceStore;
@@ -113,6 +117,7 @@ namespace MagicMedia.Store.MongoDb
         {
             FilterDefinition<Media>? filter = await new MediaFilterBuilder(
                 _mediaStoreContext,
+                await _userContextFactory.CreateAsync(cancellationToken),
                 albumMediaResolver,
                 cancellationToken)
                 .AddFolder(request.Folder)
@@ -289,8 +294,12 @@ namespace MagicMedia.Store.MongoDb
 
         public async Task<IEnumerable<string>> GetAllFoldersAsync(CancellationToken cancellationToken)
         {
-            return await _mediaStoreContext.Medias.AsQueryable()
-                .Where(x => x.Folder != null)
+
+            IMongoQueryable<Media> query = _mediaStoreContext.Medias.AsQueryable()
+                .Where(x => x.Folder != null);
+
+
+            return await query
                 .Select(x => x.Folder!)
                 .Distinct()
                 .ToListAsync(cancellationToken);
