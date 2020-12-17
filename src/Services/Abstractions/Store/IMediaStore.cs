@@ -25,7 +25,7 @@ namespace MagicMedia.Store
             int limit,
             CancellationToken cancellation);
 
-        Task<IEnumerable<string>> GetAllFoldersAsync(CancellationToken cancellationToken);
+        Task<IEnumerable<string>> GetAllFoldersAsync(IEnumerable<Guid>? ids, CancellationToken cancellationToken);
         Task<Media> GetByIdAsync(Guid id, CancellationToken cancellationToken);
 
         Task<IEnumerable<SearchFacetItem>> GetGroupedCitiesAsync(CancellationToken cancellationToken);

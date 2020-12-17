@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Store;
@@ -13,20 +11,23 @@ namespace MagicMedia.Security
     public class UserService : IUserService
     {
         private readonly IUserStore _userStore;
-        private readonly IAlbumService _albumService;
+        private readonly IAlbumStore _albumStore;
         private readonly IPersonService _personService;
         private readonly IMemoryCache _memoryCache;
+        private readonly IAlbumMediaIdResolver _albumMediaIdResolver;
 
         public UserService(
             IUserStore userStore,
-            IAlbumService albumService,
+            IAlbumStore albumStore,
             IPersonService personService,
-            IMemoryCache memoryCache)
+            IMemoryCache memoryCache,
+            IAlbumMediaIdResolver albumMediaIdResolver)
         {
             _userStore = userStore;
-            _albumService = albumService;
+            _albumStore = albumStore;
             _personService = personService;
             _memoryCache = memoryCache;
+            _albumMediaIdResolver = albumMediaIdResolver;
         }
 
         public async Task<User> TryGetByIdAsync(Guid id, CancellationToken cancellationToken)
@@ -51,9 +52,8 @@ namespace MagicMedia.Security
             Guid userId,
             CancellationToken cancellationToken)
         {
-            return await _albumService.GetSharedByUserIdAsync(userId, cancellationToken);
+            return await _albumStore.GetSharedByUserIdAsync(userId, cancellationToken);
         }
-
 
         public async Task<IEnumerable<Guid>> GetAuthorizedOnMediaIdsAsync(
             Guid userId,
@@ -72,9 +72,6 @@ namespace MagicMedia.Security
             return ids;
         }
 
-
-
-
         public async Task<IEnumerable<Guid>> GetAuthorizedOnMediaIdsInternalAsync(
             Guid userId,
             CancellationToken cancellationToken)
@@ -85,9 +82,7 @@ namespace MagicMedia.Security
 
             foreach (Album? album in albums)
             {
-                IEnumerable<Guid>? albumMediaIds = await _albumService.GetMediaIdsAsync(
-                    album,
-                    cancellationToken);
+                IEnumerable<Guid>? albumMediaIds = await _albumMediaIdResolver.GetMediaIdsAsync(album, cancellationToken);
 
                 ids.UnionWith(albumMediaIds);
             }
@@ -109,12 +104,9 @@ namespace MagicMedia.Security
                 PersonId = person.Id
             };
 
-
             await _userStore.AddAsync(user, cancellationToken);
 
             return user;
         }
-
-
     }
 }

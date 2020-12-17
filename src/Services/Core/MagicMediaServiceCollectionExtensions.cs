@@ -1,10 +1,16 @@
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using MagicMedia.Face;
 using MagicMedia.Metadata;
 using MagicMedia.Operations;
 using MagicMedia.Processing;
 using MagicMedia.Security;
+using MagicMedia.Store.MongoDb;
 using MagicMedia.Thumbnail;
 using MagicMedia.Video;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -57,7 +63,17 @@ namespace MagicMedia
             services.AddFFmpeg(configuration);
 
             services.AddSingleton<IUserService, UserService>();
-            //services.AddSingleton<IUserContext, DefaultUserContext>();
+            services.AddSingleton<IAlbumMediaIdResolver, AlbumMediaIdResolver>();
+
+            //services.AddSingleton<IUserService>(c =>
+            //{
+            //    return new UserService(
+            //        c.GetRequiredService<IUserStore>(),
+            //        c.GetRequiredService<IAlbumStore>(),
+            //        c.GetRequiredService<IPersonService>(),
+            //        c.GetRequiredService<IMemoryCache>(),
+            //        
+            //});
 
             return services;
         }

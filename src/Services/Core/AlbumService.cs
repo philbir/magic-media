@@ -6,22 +6,28 @@ using System.Threading.Tasks;
 using MagicMedia.Extensions;
 using MagicMedia.Messaging;
 using MagicMedia.Search;
+using MagicMedia.Security;
 using MagicMedia.Store;
 using MassTransit;
-using SixLabors.ImageSharp.ColorSpaces;
 
 namespace MagicMedia
 {
     public class AlbumService : IAlbumService
     {
         private readonly IMediaStore _mediaStore;
+        private readonly IAlbumMediaIdResolver _mediaIdResolver;
+        private readonly IUserContextFactory _userContextFactory;
         private readonly IBus _bus;
 
         public AlbumService(
             IMediaStore mediaStore,
+            IAlbumMediaIdResolver mediaIdResolver,
+            IUserContextFactory userContextFactory,
             IBus bus)
         {
             _mediaStore = mediaStore;
+            _mediaIdResolver = mediaIdResolver;
+            _userContextFactory = userContextFactory;
             _bus = bus;
         }
 
@@ -68,7 +74,7 @@ namespace MagicMedia
             }
             else
             {
-                mediaId = (await GetMediaIdsAsync(album, cancellationToken))
+                mediaId = (await _mediaIdResolver.GetMediaIdsAsync(album, cancellationToken))
                     .FirstOrDefault();
             }
 
@@ -192,114 +198,17 @@ namespace MagicMedia
         }
 
         public async Task<SearchResult<Album>> SearchAsync(
-        SearchAlbumRequest request,
-        CancellationToken cancellationToken)
+            SearchAlbumRequest request,
+            CancellationToken cancellationToken)
         {
+            IUserContext userContext = await _userContextFactory.CreateAsync(cancellationToken);
+
+            if (!userContext.HasPermission(Permissions.Album.ViewAll) && userContext.UserId.HasValue)
+            {
+                request.SharedWithUserId = userContext.UserId.Value;
+            }
+
             return await _mediaStore.Albums.SearchAsync(request, cancellationToken);
-        }
-
-        public async Task<IEnumerable<Guid>> GetMediaIdsAsync(
-            Guid id,
-            CancellationToken cancellationToken)
-        {
-            Album? album = await GetByIdAsync(id, cancellationToken);
-
-            return await GetMediaIdsAsync(album, cancellationToken);
-        }
-
-        public async Task<IEnumerable<Guid>> GetMediaIdsAsync(
-            Album album,
-            CancellationToken cancellationToken)
-        {
-            HashSet<Guid> ids = new();
-
-            foreach (AlbumInclude include in album.Includes)
-            {
-                switch (include.Type)
-                {
-                    case AlbumIncludeType.Ids:
-                        ids.AddRange(include.MediaIds);
-                        break;
-                    case AlbumIncludeType.Folder:
-
-                        foreach (var folder in include.Folders!)
-                        {
-                            IEnumerable<Guid> folderIds = await _mediaStore.GetIdsByFolderAsync(folder, cancellationToken);
-                            ids.AddRange(folderIds);
-                        }
-                        break;
-                    case AlbumIncludeType.Query:
-                        IEnumerable<Guid> queryIds = await GetIdsFromFilter(include.Filters, cancellationToken);
-                        ids.AddRange(queryIds);
-                        break;
-                }
-            }
-
-            return ids;
-        }
-
-        private async Task<IEnumerable<Guid>> GetIdsFromFilter(IEnumerable<FilterDescription> filters, CancellationToken cancellationToken)
-        {
-            SearchMediaRequest request = MapToSearchRequest(filters);
-
-            return await _mediaStore.GetIdsFromSearchRequestAsync(request, cancellationToken);
-        }
-
-
-        private SearchMediaRequest MapToSearchRequest(IEnumerable<FilterDescription> filters)
-        {
-            var request = new SearchMediaRequest()
-            {
-                PageSize = 100000
-            };
-
-            foreach (FilterDescription? filter in filters)
-            {
-                switch (filter.Key.ToLower())
-                {
-                    case "folder":
-                        request.Folder = filter.Value;
-                        break;
-                    case "date":
-                        request.Date = filter.Value;
-                        break;
-                    case "persons":
-                        request.Persons = filter.Value.Split(',').Select(x => Guid.Parse(x));
-                        break;
-                    case "countries":
-                        request.Countries = filter.Value.Split(',');
-                        break;
-                    case "cities":
-                        request.Cities = filter.Value.Split(',');
-                        break;
-                    case "albumId":
-                        request.AlbumId = Guid.Parse(filter.Value);
-                        break;
-                    case "mediaTypes":
-                        request.MediaTypes = filter.Value.Split(',').Select(x => Enum.Parse<MediaType>(x, true));
-                        break;
-                    case "geoRadius":
-                        var parts = filter.Value.Split(':');
-                        var coords = parts[1].Split(',');
-                        request.GeoRadius = new GeoRadiusFilter
-                        {
-                            Distance = int.Parse(parts[0]),
-                            Latitude = double.Parse(coords[0]),
-                            Longitude = double.Parse(coords[1]),
-                        };
-                        break;
-                    case "tags":
-                        request.Tags = filter.Value.Split(',');
-                        break;
-                    case "objects":
-                        request.Objects = filter.Value.Split(',');
-                        break;
-                    default:
-                        throw new InvalidOperationException($"Invalid filter key: {filter.Key}");
-                }
-            }
-
-            return request;
         }
 
         public async Task<Album> UpdateAlbumAsync(

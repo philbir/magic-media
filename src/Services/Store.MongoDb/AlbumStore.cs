@@ -73,14 +73,20 @@ namespace MagicMedia.Store.MongoDb
         {
             FilterDefinition<Album> filter = Builders<Album>.Filter.Empty;
 
+            if (request.SharedWithUserId.HasValue)
+            {
+                filter &= Builders<Album>.Filter.AnyEq(
+                    x => x.SharedWith, request.SharedWithUserId.Value);
+            }
+
             if (!string.IsNullOrWhiteSpace(request.SearchText))
             {
                 filter &= Builders<Album>.Filter.Regex(
                     x => x.Title,
-                    new BsonRegularExpression($".*{Regex.Escape(request.SearchText)}.*" , "i"));
+                    new BsonRegularExpression($".*{Regex.Escape(request.SearchText)}.*", "i"));
             }
 
-            if ( request.Persons is { } persons && persons.Any())
+            if (request.Persons is { } persons && persons.Any())
             {
                 FilterDefinition<AlbumPerson> personFilter = Builders<AlbumPerson>.Filter
                     .In(x => x.PersonId, persons);
@@ -102,8 +108,6 @@ namespace MagicMedia.Store.MongoDb
         public async Task<IEnumerable<Album>> GetSharedWithAlbumsAsync(Guid userId, CancellationToken cancellationToken)
         {
             return null;
-
-
-        } 
+        }
     }
 }

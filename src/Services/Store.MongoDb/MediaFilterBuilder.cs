@@ -16,8 +16,6 @@ namespace MagicMedia.Store.MongoDb
     public class MediaFilterBuilder
     {
         private readonly MediaStoreContext _dbContext;
-        private readonly IUserContext _userContext;
-        private readonly IUserContextFactory _userContextFactory;
         private readonly Func<Guid, CancellationToken, Task<IEnumerable<Guid>>>? _albumMediaResolver;
         private readonly CancellationToken _cancellationToken;
         private FilterDefinition<Media> _filter;
@@ -26,47 +24,22 @@ namespace MagicMedia.Store.MongoDb
 
         public MediaFilterBuilder(
             MediaStoreContext dbContext,
-            IUserContext userContext,
             Func<Guid, CancellationToken, Task<IEnumerable<Guid>>>? albumMediaResolver,
             CancellationToken cancellationToken)
         {
             _filter = Builders<Media>.Filter.Empty;
             _tasks = new();
             _dbContext = dbContext;
-            _userContext = userContext;
             _albumMediaResolver = albumMediaResolver;
             _cancellationToken = cancellationToken;
         }
 
-        public MediaFilterBuilder AddAuthorizedOn()
+        public MediaFilterBuilder AddAuthorizedOn(IEnumerable<Guid>? ids)
         {
-            if (_userContext.HasPermission(Permissions.Media.ViewAll))
-            {
-                return this;
-            }
-
-            _tasks.Add(CreateAuthoriedOnFilter());
+            _filter &= Builders<Media>.Filter.In(x => x.Id, ids);
 
             return this;
         }
-
-        private async Task CreateAuthoriedOnFilter()
-        {
-            IEnumerable<Guid>? authorizedOnMediaIds = await _userContext
-                .GetAuthorizedMediaAsync(_cancellationToken);
-
-            if (authorizedOnMediaIds.Any())
-            {
-                _filter &= Builders<Media>.Filter.In(x => x.Id, authorizedOnMediaIds);
-            }
-            else
-            {
-                //Just add filter to return no media
-                _filter &= Builders<Media>.Filter.Eq(x => x.Id, Guid.Empty);
-            }
-        }
-
-
 
         public MediaFilterBuilder AddFolder(string? folder)
         {

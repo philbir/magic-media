@@ -10,6 +10,11 @@ namespace MagicMedia.Security
             public static readonly string ViewAll = "MEDIA_VIEW_ALL";
         }
 
+        public static class Album
+        {
+            public static readonly string ViewAll = "ALBUM_VIEW_ALL";
+        }
+
         public static readonly Dictionary<string, List<string>> RoleMap;
 
         static Permissions()
@@ -18,7 +23,8 @@ namespace MagicMedia.Security
             {
                 ["Admin"] = new List<string>
                 {
-                    Media.ViewAll
+                    Media.ViewAll,
+                    Album.ViewAll
                 }
             };
         }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MagicMedia.Security;
 using MagicMedia.Store;
 
 namespace MagicMedia
@@ -11,16 +12,29 @@ namespace MagicMedia
     public class FolderTreeService : IFolderTreeService
     {
         private readonly IMediaStore _mediaStore;
+        private readonly IUserContextFactory _userContextFactory;
 
-        public FolderTreeService(IMediaStore mediaStore)
+        public FolderTreeService(
+            IMediaStore mediaStore,
+            IUserContextFactory userContextFactory)
         {
             _mediaStore = mediaStore;
+            _userContextFactory = userContextFactory;
         }
 
 
         public async Task<FolderItem> GetTreeAsync(CancellationToken cancellationToken)
         {
-            IEnumerable<string> all = await _mediaStore.GetAllFoldersAsync(cancellationToken);
+            IUserContext userContext = await _userContextFactory.CreateAsync(cancellationToken);
+
+            IEnumerable<Guid>? ids = null;
+
+            if (!userContext.HasPermission(Permissions.Media.ViewAll))
+            {
+                ids = await userContext.GetAuthorizedMediaAsync(cancellationToken);
+            }
+
+            IEnumerable<string> all = await _mediaStore.GetAllFoldersAsync(ids, cancellationToken);
 
             List<FolderItem> flat = GetFlatList(all);
             FolderItem root = BuildStructure(flat);

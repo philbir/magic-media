@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Search;
+using MagicMedia.Security;
 using MagicMedia.Store;
 using NGeoHash;
 
@@ -12,20 +13,35 @@ namespace MagicMedia
     {
         private readonly IMediaStore _mediaStore;
         private readonly IAlbumService _albumService;
+        private readonly IAlbumMediaIdResolver _albumMediaIdResolver;
+        private readonly IUserContextFactory _userContextFactory;
 
-        public MediaSearchService(IMediaStore mediaStore, IAlbumService albumService)
+        public MediaSearchService(
+            IMediaStore mediaStore,
+            IAlbumService albumService,
+            IAlbumMediaIdResolver albumMediaIdResolver,
+            IUserContextFactory userContextFactory)
         {
             _mediaStore = mediaStore;
             _albumService = albumService;
+            _albumMediaIdResolver = albumMediaIdResolver;
+            _userContextFactory = userContextFactory;
         }
 
         public async Task<SearchResult<Media>> SearchAsync(
                 SearchMediaRequest request,
                 CancellationToken cancellationToken)
         {
+            IUserContext userContext = await _userContextFactory.CreateAsync(cancellationToken);
+
+            if (!userContext.HasPermission(Permissions.Media.ViewAll))
+            {
+                request.AuthorizedOnMedia = await userContext.GetAuthorizedMediaAsync(cancellationToken);
+            }
+
             return await _mediaStore.SearchAsync(
                 request,
-                _albumService.GetMediaIdsAsync,
+                _albumMediaIdResolver.GetMediaIdsAsync,
                 cancellationToken);
         }
 
