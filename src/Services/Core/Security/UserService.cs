@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Store;
 using MagicMedia.Store.MongoDb;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace MagicMedia.Security
 {
@@ -14,15 +15,18 @@ namespace MagicMedia.Security
         private readonly IUserStore _userStore;
         private readonly IAlbumService _albumService;
         private readonly IPersonService _personService;
+        private readonly IMemoryCache _memoryCache;
 
         public UserService(
             IUserStore userStore,
             IAlbumService albumService,
-            IPersonService personService)
+            IPersonService personService,
+            IMemoryCache memoryCache)
         {
             _userStore = userStore;
             _albumService = albumService;
             _personService = personService;
+            _memoryCache = memoryCache;
         }
 
         public async Task<User> TryGetByIdAsync(Guid id, CancellationToken cancellationToken)
@@ -50,7 +54,28 @@ namespace MagicMedia.Security
             return await _albumService.GetSharedByUserIdAsync(userId, cancellationToken);
         }
 
+
         public async Task<IEnumerable<Guid>> GetAuthorizedOnMediaIdsAsync(
+            Guid userId,
+            CancellationToken cancellationToken)
+        {
+            var cachekey = $"auth_on_media_{userId}";
+
+            IEnumerable<Guid> ids = await _memoryCache.GetOrCreateAsync(
+                cachekey,
+                async (e) =>
+                 {
+                     e.AbsoluteExpiration = DateTime.Now.AddMinutes(15);
+                     return await GetAuthorizedOnMediaIdsInternalAsync(userId, cancellationToken);
+                 });
+
+            return ids;
+        }
+
+
+
+
+        public async Task<IEnumerable<Guid>> GetAuthorizedOnMediaIdsInternalAsync(
             Guid userId,
             CancellationToken cancellationToken)
         {

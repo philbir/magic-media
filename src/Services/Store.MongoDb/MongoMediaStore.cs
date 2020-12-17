@@ -294,15 +294,32 @@ namespace MagicMedia.Store.MongoDb
 
         public async Task<IEnumerable<string>> GetAllFoldersAsync(CancellationToken cancellationToken)
         {
-
             IMongoQueryable<Media> query = _mediaStoreContext.Medias.AsQueryable()
                 .Where(x => x.Folder != null);
 
+            query = await AddAuthorizedOnFilterAsync(query, cancellationToken);
 
             return await query
                 .Select(x => x.Folder!)
                 .Distinct()
                 .ToListAsync(cancellationToken);
+        }
+
+        public async Task<IMongoQueryable<Media>> AddAuthorizedOnFilterAsync(
+            IMongoQueryable<Media> query,
+            CancellationToken cancellationToken)
+        {
+            IUserContext userContext = await _userContextFactory.CreateAsync(cancellationToken);
+
+            if (!userContext.HasPermission(Permissions.Media.ViewAll))
+            {
+                IEnumerable<Guid>? authorizedOn = await userContext
+                    .GetAuthorizedMediaAsync(cancellationToken);
+
+                query = query.Where(x => authorizedOn.Contains(x.Id));
+            }
+
+            return query;
         }
 
         public async Task<IEnumerable<Media>> GetMediaWithoutAISourceAsync( 
