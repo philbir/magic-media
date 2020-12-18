@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -12,33 +13,28 @@ namespace MagicMedia
     public class MediaSearchService : IMediaSearchService
     {
         private readonly IMediaStore _mediaStore;
-        private readonly IAlbumService _albumService;
         private readonly IAlbumMediaIdResolver _albumMediaIdResolver;
-        private readonly IUserContextFactory _userContextFactory;
+        private readonly IUserAuthorizationService _userAuthorizationService;
 
         public MediaSearchService(
             IMediaStore mediaStore,
-            IAlbumService albumService,
             IAlbumMediaIdResolver albumMediaIdResolver,
-            IUserContextFactory userContextFactory)
+            IUserAuthorizationService userAuthorizationService)
         {
             _mediaStore = mediaStore;
-            _albumService = albumService;
             _albumMediaIdResolver = albumMediaIdResolver;
-            _userContextFactory = userContextFactory;
+            _userAuthorizationService = userAuthorizationService;
         }
 
         public async Task<SearchResult<Media>> SearchAsync(
                 SearchMediaRequest request,
                 CancellationToken cancellationToken)
         {
-            IUserContext userContext = await _userContextFactory.CreateAsync(cancellationToken);
+            UserResourceAccessInfo accessInfo = await _userAuthorizationService.GetAuthorizedOnAsync(
+                ProtectedResourceType.Media,
+                cancellationToken);
 
-            if (!userContext.HasPermission(Permissions.Media.ViewAll))
-            {
-                request.AuthorizedOnMedia = await userContext.GetAuthorizedMediaAsync(cancellationToken);
-            }
-
+            request.AuthorizedOnMedia = accessInfo.Ids;
             return await _mediaStore.SearchAsync(
                 request,
                 _albumMediaIdResolver.GetMediaIdsAsync,
@@ -49,8 +45,13 @@ namespace MagicMedia
             GetGeoLocationClustersRequest request,
             CancellationToken cancellationToken)
         {
+            UserResourceAccessInfo accessInfo = await _userAuthorizationService.GetAuthorizedOnAsync(
+                ProtectedResourceType.Media,
+                cancellationToken);
+
             IEnumerable<MediaGeoLocation> medias = await _mediaStore.FindMediaInGeoBoxAsync(
                 request.Box,
+                accessInfo.Ids,
                 100000,
                 cancellationToken);
 

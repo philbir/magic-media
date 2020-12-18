@@ -27,6 +27,7 @@
               <v-row>
                 <v-col cols="12" md="6">
                   <v-text-field
+                    v-if="userActions.album.edit"
                     v-model="album.title"
                     label="Title"
                     required
@@ -176,15 +177,33 @@
       <v-divider></v-divider>
 
       <v-card-actions class="pa-1">
-        <v-btn color="blue darken-1" text @click="toggleView">
+        <v-btn
+          v-if="userActions.album.edit"
+          color="blue darken-1"
+          text
+          @click="toggleView"
+        >
           {{ view === "settings" ? "Details" : "Settings" }}
         </v-btn>
 
         <v-spacer></v-spacer>
 
-        <v-btn color="blue darken-1" text @click="cancel"> Cancel </v-btn>
-        <v-btn color="red darken-1" text @click="deleteAlbum"> Delete </v-btn>
-        <v-btn color="primary" text @click="save" :disabled="false">
+        <v-btn color="blue darken-1" text @click="cancel"> Close </v-btn>
+        <v-btn
+          v-if="userActions.album.edit"
+          color="red darken-1"
+          text
+          @click="deleteAlbum"
+        >
+          Delete
+        </v-btn>
+        <v-btn
+          v-if="userActions.album.edit"
+          color="primary"
+          text
+          @click="save"
+          :disabled="false"
+        >
           Save
         </v-btn>
       </v-card-actions>
@@ -195,7 +214,7 @@
 import { getFlagUrl } from "../../services/countryFlags";
 import { getAlbumById, getAlbumMedia } from "../../services/albumService";
 import AlbumMedia from "./AlbumMedia.vue";
-import { mapActions, mapState } from "vuex";
+import { mapActions, mapGetters, mapState } from "vuex";
 export default {
   components: { AlbumMedia },
   props: {
@@ -229,6 +248,7 @@ export default {
     },
   },
   computed: {
+    ...mapGetters("user", ["userActions"]),
     ...mapState("user", { allUsers: "all" }),
     isOpen: {
       get() {

@@ -14,6 +14,7 @@ namespace MagicMedia.Security
         private readonly IMediaStore _mediaStore;
         private readonly IMemoryCache _memoryCache;
         private readonly IAlbumMediaIdResolver _albumMediaIdResolver;
+        private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(15);
 
         public UserService(
             IMediaStore mediaStore,
@@ -27,7 +28,18 @@ namespace MagicMedia.Security
 
         public async Task<User> TryGetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
-            return await _mediaStore.Users.TryGetByIdAsync(id, cancellationToken);
+            var cachekey = $"mm_user_{id}";
+
+            User? user = await _memoryCache.GetOrCreateAsync(
+                cachekey,
+                async (e) =>
+                {
+                    e.AbsoluteExpiration = DateTime.Now.Add(_cacheExpiration);
+
+                    return await _mediaStore.Users.TryGetByIdAsync(id, cancellationToken);
+                });
+
+            return user;
         }
 
         public async Task<IEnumerable<User>> GetAllAsync(
@@ -50,6 +62,23 @@ namespace MagicMedia.Security
             return await _mediaStore.Albums.GetSharedWithUserIdAsync(userId, cancellationToken);
         }
 
+        public IEnumerable<string> GetPermissions(User user)
+        {
+            var permissions = new HashSet<string>();
+
+            if (user.Roles is { } roles && roles.Any())
+            {
+                foreach (var role in roles)
+                {
+                    if (Permissions.RoleMap.ContainsKey(role))
+                    {
+                        permissions.UnionWith(Permissions.RoleMap[role]);
+                    }
+                }
+            }
+
+            return permissions;
+        }
 
         public async Task<IEnumerable<Guid>> GetAuthorizedOnMediaIdsAsync(
             Guid userId,
@@ -61,7 +90,8 @@ namespace MagicMedia.Security
                 cachekey,
                 async (e) =>
                  {
-                     e.AbsoluteExpiration = DateTime.Now.AddMinutes(15);
+                     e.AbsoluteExpiration = DateTime.Now.Add(_cacheExpiration);
+
                      return await GetAuthorizedOnMediaIdsInternalAsync(userId, cancellationToken);
                  });
 
@@ -78,8 +108,9 @@ namespace MagicMedia.Security
                 cachekey,
                 async (e) =>
                 {
-                    e.AbsoluteExpiration = DateTime.Now.AddMinutes(15);
+                    e.AbsoluteExpiration = DateTime.Now.Add(_cacheExpiration);
                     IEnumerable<Album> albums = await GetSharedAlbumsAsync(userId, cancellationToken);
+
                     return albums.Select(x => x.Id);
                 });
 
@@ -96,7 +127,8 @@ namespace MagicMedia.Security
                 cachekey,
                 async (e) =>
                 {
-                    e.AbsoluteExpiration = DateTime.Now.AddMinutes(15);
+                    e.AbsoluteExpiration = DateTime.Now.Add(_cacheExpiration);
+
                     return await GetAuthorizedOnPersonIdsInternalAsync(userId, cancellationToken);
                 });
 

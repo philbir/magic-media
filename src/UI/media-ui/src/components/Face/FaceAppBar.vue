@@ -3,6 +3,7 @@
     <AppBarNavMenu></AppBarNavMenu>
 
     <v-switch
+      v-if="userActions.face.edit"
       dense
       @change="toggleEditMode"
       color="info"
@@ -47,6 +48,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import AppBarNavMenu from "../AppBarNavMenu";
 
 export default {
@@ -55,6 +57,7 @@ export default {
 
   data: () => ({}),
   computed: {
+    ...mapGetters("user", ["userActions"]),
     faceActions: function () {
       return [{ text: "Assign" }, { text: "Approve" }, { text: "Remove" }];
     },

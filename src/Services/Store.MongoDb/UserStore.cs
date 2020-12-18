@@ -13,7 +13,7 @@ namespace MagicMedia.Store.MongoDb
         private readonly MediaStoreContext _mediaStoreContext;
 
         public UserStore(MediaStoreContext mediaStoreContext)
-        {
+        { 
             _mediaStoreContext = mediaStoreContext;
         }
 

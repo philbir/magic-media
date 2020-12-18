@@ -22,6 +22,7 @@ namespace MagicMedia
         Task<IEnumerable<Guid>> GetAuthorizedMediaAsync(CancellationToken cancellationToken);
 
         Task<bool> IsAuthorizedAsync(object resourceId, ProtectedResourceType type, CancellationToken cancellationToken);
+        Task<IEnumerable<Guid>> GetAuthorizedAlbumAsync(CancellationToken cancellationToken);
     }
 
 
@@ -30,5 +31,14 @@ namespace MagicMedia
         Media,
         Person,
         Album
+    }
+
+    public class UserResourceAccessInfo
+    {
+        public ProtectedResourceType Type { get; set; }
+
+        public bool ViewAll { get; set; }
+
+        public IEnumerable<Guid> Ids { get; set; }
     }
 }

@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using HotChocolate.AspNetCore.Authorization;
 using HotChocolate.Types;
+using MagicMedia.Authorization;
 using MagicMedia.Search;
 using MagicMedia.Store;
 
@@ -31,6 +33,7 @@ namespace MagicMedia.GraphQL
         }
 
 
+        [Authorize(Apply = ApplyPolicy.BeforeResolver, Policy = AuthorizationPolicies.Names.AlbumView)]
         public async Task<Album> GetAlbumAsync(
             Guid id,
             CancellationToken cancellationToken)

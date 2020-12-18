@@ -180,7 +180,7 @@ export default {
           multi: e.shiftKey,
         });
       } else {
-        if (e.shiftKey) {
+        if (e.shiftKey && this.userActions.media.edit) {
           this.$store.dispatch("media/toggleEditMode", true);
           this.$store.dispatch("media/select", {
             idx: media.idx,

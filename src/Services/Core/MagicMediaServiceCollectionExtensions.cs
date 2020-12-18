@@ -64,16 +64,7 @@ namespace MagicMedia
 
             services.AddSingleton<IUserService, UserService>();
             services.AddSingleton<IAlbumMediaIdResolver, AlbumMediaIdResolver>();
-
-            //services.AddSingleton<IUserService>(c =>
-            //{
-            //    return new UserService(
-            //        c.GetRequiredService<IUserStore>(),
-            //        c.GetRequiredService<IAlbumStore>(),
-            //        c.GetRequiredService<IPersonService>(),
-            //        c.GetRequiredService<IMemoryCache>(),
-            //        
-            //});
+            services.AddSingleton<IUserAuthorizationService, UserAuthorizationService>();
 
             return services;
         }

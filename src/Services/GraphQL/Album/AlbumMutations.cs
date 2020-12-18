@@ -1,14 +1,13 @@
-using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using HotChocolate.AspNetCore.Authorization;
 using HotChocolate.Types;
-using HotChocolate.Types.Descriptors;
+using MagicMedia.Authorization;
 using MagicMedia.Store;
 
 namespace MagicMedia.GraphQL
 {
-
+    [Authorize(Apply = ApplyPolicy.BeforeResolver, Policy = AuthorizationPolicies.Names.AlbumEdit)]
     [ExtendObjectType(Name = "Mutation")]
     public class AlbumMutations
     {
@@ -41,21 +40,6 @@ namespace MagicMedia.GraphQL
         {
             Album album = await _albumService.UpdateAlbumAsync(input, cancellationToken);
             return new UpdateAlbumPayload(album);
-        }
-    }
-
-    public class UpdateAlbumPayload : Payload
-    {
-        public Album? Album { get; }
-
-        public UpdateAlbumPayload(Album album)
-        {
-            Album = album;
-        }
-
-        public UpdateAlbumPayload(IReadOnlyList<UserError>? errors)
-            : base(errors)
-        {
         }
     }
 }

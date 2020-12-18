@@ -16,27 +16,6 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace MagicMedia
 {
-    public static class AuthorizationExtensions
-    {
-        public static IServiceCollection AddAuthorization(
-            this IServiceCollection services,
-            IWebHostEnvironment env)
-        {
-            services.AddAuthorization(c =>
-            {
-                c.AddPolicy("ApiAccess", new AuthorizationPolicyBuilder()
-                    .RequireAuthenticatedUser()
-                    .Build());
-
-                c.AddPolicy("Media_View", p => p.Requirements.Add(new AuhorizedOnMediaRequirement()));
-            });
-
-            services.AddSingleton<IAuthorizationHandler, MediaAuthorizationHandler>();
-
-            return services;
-        }
-    }
-
     public static class AuthenticationExtensions
     {
         public static AuthenticationBuilder AddAuthentication(

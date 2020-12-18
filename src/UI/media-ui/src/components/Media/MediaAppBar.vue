@@ -26,7 +26,14 @@
       v-show="albumActions.length > 0"
     >
       <template v-slot:activator="{ on, attrs }">
-        <v-btn v-bind="attrs" v-on="on" color="white" icon class="mr-4">
+        <v-btn
+          v-if="userActions.media.edit"
+          v-bind="attrs"
+          v-on="on"
+          color="white"
+          icon
+          class="mr-4"
+        >
           <v-icon>mdi-image-album</v-icon>
         </v-btn>
       </template>
@@ -46,6 +53,7 @@
     </v-menu>
 
     <v-switch
+      v-if="userActions.media.edit"
       dense
       @change="toggleEditMode"
       color="info"
@@ -105,10 +113,17 @@
       {{ totalLoaded }}
     </h4>
 
-    <v-icon color="white" class="mr-2" @click="openUpload">
+    <v-icon
+      v-if="userActions.media.upload"
+      color="white"
+      class="mr-2"
+      @click="openUpload"
+    >
       mdi-cloud-upload-outline
     </v-icon>
     <NotificationMenu></NotificationMenu>
+
+    <me-menu></me-menu>
 
     <Upload :show="showUpload"></Upload>
     <MoveMediaDialog
@@ -128,6 +143,7 @@
     ></edit-media-dialog>
 
     <GlobalEvents
+      v-if="userActions.media.edit"
       @keydown="keyPressed"
       :filter="(event, handler, eventName) => event.target.tagName !== 'INPUT'"
     ></GlobalEvents>
@@ -142,6 +158,8 @@ import NotificationMenu from "../Common/NotificationMenu";
 import AddToAlbumDialog from "../Album/AddToAlbumDialog";
 import EditMediaDialog from "./EditMediaDialog";
 import GlobalEvents from "vue-global-events";
+import MeMenu from "../MeMenu.vue";
+import { mapGetters } from "vuex";
 
 export default {
   name: "App",
@@ -153,6 +171,7 @@ export default {
     AddToAlbumDialog,
     EditMediaDialog,
     GlobalEvents,
+    MeMenu,
   },
 
   data: () => ({
@@ -174,6 +193,7 @@ export default {
     showUpload: false,
   }),
   computed: {
+    ...mapGetters("user", ["userActions"]),
     mediaActions: function () {
       return [
         { text: "Add to album", action: "ADD_TO_ALBUM", icon: "mdi-plus" },
@@ -267,6 +287,10 @@ export default {
       }
     },
     keyPressed: function (e) {
+      if (!this.userActions.media.edit) {
+        return;
+      }
+
       switch (e.which) {
         case 69: //e
           this.$store.dispatch("media/toggleEditMode");

@@ -1,12 +1,13 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using MagicMedia.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MagicMedia.Api.Controllers
 {
-    [Authorize("ApiAccess")]
+    [Authorize(AuthorizationPolicies.Names.ApiAccess)]
     [Route("api/video")]
     public class VideoController : Controller
     {
@@ -17,6 +18,7 @@ namespace MagicMedia.Api.Controllers
             _videoPlayerService = videoPlayerService;
         }
 
+        [Authorize(AuthorizationPolicies.Names.MediaView)]
         [Route("preview/{id}")]
         [HttpGet]
         public IActionResult Preview(Guid id, CancellationToken cancellationToken)
@@ -26,6 +28,7 @@ namespace MagicMedia.Api.Controllers
                 { EnableRangeProcessing = true };
         }
 
+        [Authorize(AuthorizationPolicies.Names.MediaView)]
         [Route("{id}")]
         [HttpGet]
         public async Task<IActionResult> VideoAsync(Guid id, CancellationToken cancellationToken)

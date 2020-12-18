@@ -17,7 +17,7 @@ namespace MagicMedia.Operations
             _bus = bus;
             _mediaStore = mediaStore;
         }
-
+            
         public async Task MoveMediaAsync(
             MoveMediaRequest request,
             CancellationToken cancellationToken)

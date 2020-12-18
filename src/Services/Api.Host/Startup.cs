@@ -44,7 +44,7 @@ namespace MagicMedia.Api
             services.AddMvc();
             services.AddSignalR();
 
-            services.AddAuthorization(_env);
+            services.AddAuthorization();
             services.ConfigureSameSiteCookies();
             services.AddAuthentication(_env, Configuration);
             services.AddHttpContextAccessor();

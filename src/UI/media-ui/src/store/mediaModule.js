@@ -238,7 +238,10 @@ const mediaModule = {
         this.$magic.snack("Error loading", "ERROR");
       }
     },
-    async moveSelected({ commit, state, dispatch }, newLocation) {
+    async moveSelected({ commit, state, dispatch, getters }, newLocation) {
+      if (!getters["canEdit"])
+        return;
+
       try {
         const ids = getMediaIdsFromIndexes(state);
         const res = await moveMedia({
@@ -264,7 +267,11 @@ const mediaModule = {
         this.$magic.snack("Error loading", "ERROR");
       }
     },
-    async recycle({ commit, state, dispatch }, ids) {
+    async recycle({ commit, state, dispatch, getters }, ids) {
+
+      if (!getters["canEdit"])
+        return;
+
       try {
         ids = ids ?? getMediaIdsFromIndexes(state);
         const res = await recycleMedia({
@@ -289,7 +296,10 @@ const mediaModule = {
         this.$magic.snack("Error loading", "ERROR");
       }
     },
-    async delete({ commit, state, dispatch }, ids) {
+    async delete({ commit, state, dispatch, getters }, ids) {
+      if (!getters["canEdit"])
+        return;
+
       try {
         ids = ids ?? getMediaIdsFromIndexes(state);
         const res = await deleteMedia({
@@ -314,7 +324,11 @@ const mediaModule = {
         this.$magic.snack("Error loading", "ERROR");
       }
     },
-    async updateMetadata({ commit, dispatch }, input) {
+    async updateMetadata({ commit, dispatch, getters }, input) {
+
+      if (!getters["canEdit"])
+        return;
+
       try {
         const res = await updateMetadata(input);
 
@@ -381,11 +395,9 @@ const mediaModule = {
       commit("UPLOAD_DIALOG_TOGGLED", open);
     },
     toggleEditMode: function ({ commit, state }, value) {
-
       if (value === undefined) {
         value = !state.isEditMode
       }
-
       commit("EDIT_MODE_TOGGLE", value);
     },
     select: function ({ commit }, payload) {
@@ -397,12 +409,17 @@ const mediaModule = {
     clearSelected: function ({ commit }) {
       commit("CLEAR_SELECTED");
     },
-    async toggleFavorite({ commit }, media) {
+    async toggleFavorite({ commit, getters }, media) {
+      if (!getters["canEdit"])
+        return;
+
       await toggleFavorite(media.id, !media.isFavorite);
       commit("FAVORITE_TOGGLED", media);
     },
-    async analyseAI({
-      dispatch }, id) {
+    async analyseAI({ dispatch, getters }, id) {
+      if (!getters["canEdit"])
+        return;
+
       await analyseMedia(id);
 
       dispatch('loadDetails', id);
@@ -436,6 +453,9 @@ const mediaModule = {
     },
     selectedMediaIds: state => {
       return getMediaIdsFromIndexes(state);
+    },
+    canEdit: (state, getters, rootState, rootGetters) => {
+      return rootGetters["user/userActions"].media.edit;
     },
     filterDescriptions: (state, getters, rootState) => {
 

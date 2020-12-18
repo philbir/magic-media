@@ -20,6 +20,9 @@ export default {
     this.$store.dispatch("user/getAll").then(() => {
       this.preloaded = true;
     });
+    this.$store.dispatch("user/getMe").then(() => {
+      this.preloaded = true;
+    });
   },
 };
 </script>

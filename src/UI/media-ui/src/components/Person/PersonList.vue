@@ -49,7 +49,13 @@
               </v-btn>
               <v-spacer></v-spacer>
 
-              <v-btn outlined rounded text @click="editClick(person.id)">
+              <v-btn
+                v-if="userActions.person.edit"
+                outlined
+                rounded
+                text
+                @click="editClick(person.id)"
+              >
                 Edit
               </v-btn>
             </v-card-actions>
@@ -69,6 +75,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import EditPersonDialog from "./EditPersonDialog";
 
 export default {
@@ -85,6 +92,7 @@ export default {
     };
   },
   computed: {
+    ...mapGetters("user", ["userActions"]),
     persons: function () {
       return this.$store.state.person.list;
     },

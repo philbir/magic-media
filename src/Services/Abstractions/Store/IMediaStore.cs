@@ -10,27 +10,33 @@ namespace MagicMedia.Store
     public interface IMediaStore
     {
         IFaceStore Faces { get; }
-
         IPersonStore Persons { get; }
-
         IAlbumStore Albums { get; }
-
         IThumbnailBlobStore Thumbnails { get; }
         IMediaBlobStore Blob { get; }
         IMediaAIStore MediaAI { get; }
         IUserStore Users { get; }
 
         Task DeleteAsync(Guid id, CancellationToken cancellationToken);
+
         Task<IEnumerable<MediaGeoLocation>> FindMediaInGeoBoxAsync(
             GeoBox box,
+            IEnumerable<Guid>? mediaIds,
             int limit,
             CancellationToken cancellation);
 
-        Task<IEnumerable<string>> GetAllFoldersAsync(IEnumerable<Guid>? ids, CancellationToken cancellationToken);
-        Task<Media> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+        Task<IEnumerable<string>> GetAllFoldersAsync(
+            IEnumerable<Guid>? ids,
+            CancellationToken cancellationToken);
+
+        Task<Media> GetByIdAsync(
+            Guid id,
+            CancellationToken cancellationToken);
+
         Task<IEnumerable<SearchFacetItem>> GetGroupedCitiesAsync(
             IEnumerable<Guid>? mediaIds,
             CancellationToken cancellationToken);
+
         Task<IEnumerable<SearchFacetItem>> GetGroupedCountriesAsync(
             IEnumerable<Guid>? mediaIds,
             CancellationToken cancellationToken);

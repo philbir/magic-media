@@ -79,7 +79,10 @@
               </template>
 
               <v-list>
-                <v-list-group prepend-icon="mdi-face-recognition">
+                <v-list-group
+                  v-if="userActions.media.edit"
+                  prepend-icon="mdi-face-recognition"
+                >
                   <template v-slot:activator>
                     <v-list-item>
                       <v-list-item-content>
@@ -104,7 +107,10 @@
                     </v-list-item>
                   </template>
                 </v-list-group>
-                <v-list-group prepend-icon="mdi-image-edit">
+                <v-list-group
+                  v-if="userActions.media.edit"
+                  prepend-icon="mdi-image-edit"
+                >
                   <template v-slot:activator>
                     <v-list-item>
                       <v-list-item-content>
@@ -218,7 +224,7 @@ import MediaInfo from "./MediaInfo";
 import FaceBox from "../Face/FaceBox";
 import GlobalEvents from "vue-global-events";
 import { DateTime } from "luxon";
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import AIObjects from "./AIObjects";
 
 export default {
@@ -307,6 +313,7 @@ export default {
     },
   },
   computed: {
+    ...mapGetters("user", ["userActions"]),
     thumbnail: function () {
       if (this.$store) {
         const existing = this.$store.state.media.list.filter(

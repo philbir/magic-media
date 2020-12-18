@@ -1,0 +1,42 @@
+using MagicMedia.Authorization;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace MagicMedia
+{
+    public static class AuthorizationExtensions
+    {
+        public static IServiceCollection AddAuthorization(
+            this IServiceCollection services)
+        {
+            services.AddAuthorization(o =>
+            {
+                o.AddPolicy(
+                    AuthorizationPolicies.Names.ApiAccess,
+                    AuthorizationPolicies.ApiAccessPolicy);
+
+                o.AddPolicy(
+                    AuthorizationPolicies.Names.MediaView,
+                    AuthorizationPolicies.MediaViewPolicy);
+
+                o.AddPolicy(
+                    AuthorizationPolicies.Names.MediaEdit,
+                    AuthorizationPolicies.MediaEditPolicy);
+
+                o.AddPolicy(
+                    AuthorizationPolicies.Names.AlbumView,
+                    AuthorizationPolicies.AlbumViewPolicy);
+
+                o.AddPolicy(
+                    AuthorizationPolicies.Names.AlbumEdit,
+                    AuthorizationPolicies.AlbumViewPolicy);
+            });
+
+            services.AddSingleton<IAuthorizationHandler, MediaAuthorizationHandler>();
+            services.AddSingleton<IAuthorizationHandler, AlbumAuthorizationHandler>();
+            services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
+
+            return services;
+        }
+    }
+}

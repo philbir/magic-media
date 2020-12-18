@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,60 +10,54 @@ namespace MagicMedia
     public class SearchFacetService : ISearchFacetService
     {
         private readonly IMediaStore _mediaStore;
-        private readonly IUserContextFactory _userContextFactory;
+        private readonly IUserAuthorizationService _userAuthorizationService;
 
         public SearchFacetService(
             IMediaStore mediaStore,
-            IUserContextFactory userContextFactory)
+            IUserAuthorizationService userAuthorizationService)
         {
             _mediaStore = mediaStore;
-            _userContextFactory = userContextFactory;
+            _userAuthorizationService = userAuthorizationService;
         }
 
         public async Task<IEnumerable<SearchFacetItem>> GetCountryFacetsAsync(
             CancellationToken cancellationToken)
         {
-            IEnumerable<Guid>? ids = await GetAuthorizedOnMediaAync(cancellationToken);
+            UserResourceAccessInfo accessInfo = await _userAuthorizationService.GetAuthorizedOnAsync(
+                ProtectedResourceType.Media,
+                cancellationToken);
 
-            return await _mediaStore.GetGroupedCountriesAsync(ids, cancellationToken);
+            return await _mediaStore.GetGroupedCountriesAsync(accessInfo.Ids, cancellationToken);
         }
 
         public async Task<IEnumerable<SearchFacetItem>> GetCityFacetsAsync(
             CancellationToken cancellationToken)
         {
-            IEnumerable<Guid>? ids = await GetAuthorizedOnMediaAync(cancellationToken);
+            UserResourceAccessInfo accessInfo = await _userAuthorizationService.GetAuthorizedOnAsync(
+                ProtectedResourceType.Media,
+                cancellationToken);
 
-            return await _mediaStore.GetGroupedCitiesAsync(ids, cancellationToken);
-        }
-
-        private async Task<IEnumerable<Guid>?> GetAuthorizedOnMediaAync(CancellationToken cancellationToken)
-        {
-            IUserContext userContext = await _userContextFactory.CreateAsync(cancellationToken);
-
-            IEnumerable<Guid>? ids = null;
-
-            if (!userContext.HasPermission(Permissions.Media.ViewAll))
-            {
-                ids = await userContext.GetAuthorizedMediaAsync(cancellationToken);
-            }
-
-            return ids;
+            return await _mediaStore.GetGroupedCitiesAsync(accessInfo.Ids, cancellationToken);
         }
 
         public async Task<IEnumerable<SearchFacetItem>> GetAITagFacetsAsync(
             CancellationToken cancellationToken)
         {
-            IEnumerable<Guid>? ids = await GetAuthorizedOnMediaAync(cancellationToken);
+            UserResourceAccessInfo accessInfo = await _userAuthorizationService.GetAuthorizedOnAsync(
+                ProtectedResourceType.Media,
+                cancellationToken);
 
-            return await _mediaStore.MediaAI.GetGroupedAITagsAsync(ids, cancellationToken);
+            return await _mediaStore.MediaAI.GetGroupedAITagsAsync(accessInfo.Ids, cancellationToken);
         }
 
         public async Task<IEnumerable<SearchFacetItem>> GetAIObjectsFacetsAsync(
             CancellationToken cancellationToken)
         {
-            IEnumerable<Guid>? ids = await GetAuthorizedOnMediaAync(cancellationToken);
+            UserResourceAccessInfo accessInfo = await _userAuthorizationService.GetAuthorizedOnAsync(
+                ProtectedResourceType.Media,
+                cancellationToken);
 
-            return await _mediaStore.MediaAI.GetGroupedAIObjectsAsync(ids, cancellationToken);
+            return await _mediaStore.MediaAI.GetGroupedAIObjectsAsync(accessInfo.Ids, cancellationToken);
         }
     }
 }

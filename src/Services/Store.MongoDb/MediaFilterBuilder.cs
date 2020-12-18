@@ -36,7 +36,10 @@ namespace MagicMedia.Store.MongoDb
 
         public MediaFilterBuilder AddAuthorizedOn(IEnumerable<Guid>? ids)
         {
-            _filter &= Builders<Media>.Filter.In(x => x.Id, ids);
+            if (ids != null)
+            {
+                _filter &= Builders<Media>.Filter.In(x => x.Id, ids);
+            }
 
             return this;
         }

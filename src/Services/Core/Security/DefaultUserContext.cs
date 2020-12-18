@@ -22,15 +22,7 @@ namespace MagicMedia.Security
 
         private void SetAllPermissions()
         {
-            _allPermissions = new HashSet<string>();
-
-            foreach ( var role in _user.Roles)
-            {
-                if (Permissions.RoleMap.ContainsKey(role))
-                {
-                    _allPermissions.UnionWith(Permissions.RoleMap[role]);
-                }
-            }
+            _allPermissions = new HashSet<string>(_userService.GetPermissions(_user));
         }
 
         public bool IsAuthenticated => true;
@@ -50,6 +42,11 @@ namespace MagicMedia.Security
             return await _userService.GetAuthorizedOnMediaIdsAsync(UserId!.Value, cancellationToken);
         }
 
+        public async Task<IEnumerable<Guid>> GetAuthorizedAlbumAsync(CancellationToken cancellationToken)
+        {
+            return await _userService.GetAuthorizedOnAlbumIdsAsync(UserId!.Value, cancellationToken);
+        }
+
         public bool HasRole(string role)
         {
             return Roles.Contains(role, StringComparer.InvariantCulture);
@@ -62,6 +59,9 @@ namespace MagicMedia.Security
                 case ProtectedResourceType.Media:
                     IEnumerable<Guid> ids = await GetAuthorizedMediaAsync(cancellationToken);
                     return ids.Contains((Guid)resourceId);
+                case ProtectedResourceType.Album:
+                    IEnumerable<Guid> albumIds = await GetAuthorizedAlbumAsync(cancellationToken);
+                    return albumIds.Contains((Guid)resourceId);
             }
 
             return false;

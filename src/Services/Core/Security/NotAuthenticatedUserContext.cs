@@ -28,5 +28,8 @@ namespace MagicMedia.Security
 
         public bool HasPermission(string permission)
             => throw new UnauthorizedAccessException(_message);
+
+        public Task<IEnumerable<Guid>> GetAuthorizedAlbumAsync(CancellationToken cancellationToken)
+            => throw new UnauthorizedAccessException(_message);
     }
 }

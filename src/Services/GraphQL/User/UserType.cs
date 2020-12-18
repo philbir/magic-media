@@ -12,6 +12,10 @@ namespace MagicMedia.GraphQL
                .ResolveWith<UserResolvers>(x => x.GetPersonAsync(default!, default!));
 
             descriptor
+               .Field("permissions")
+               .ResolveWith<UserResolvers>(x => x.GetPermissions(default!));
+
+            descriptor
                .Field("sharedAlbums")
                .ResolveWith<UserResolvers>(x => x.GetSharedAlbumsAsync(default!, default!));
 

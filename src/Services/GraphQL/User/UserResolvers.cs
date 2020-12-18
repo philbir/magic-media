@@ -31,6 +31,11 @@ namespace MagicMedia.GraphQL
             return null;
         }
 
+        public IEnumerable<string> GetPermissions(User user)
+        {
+            return _userService.GetPermissions(user);
+        }
+
         public Task<IEnumerable<Album>> GetSharedAlbumsAsync(
             User user,
             CancellationToken cancellationToken)
