@@ -14,5 +14,8 @@ namespace MagicMedia.Store
         public IEnumerable<FaceRecognitionType>? RecognitionTypes { get; set; }
 
         public IEnumerable<Guid>? Persons { get; set; }
+
+        public IEnumerable<Guid>? AuthorizedOnMedia { get; set; }
+
     }
 }

@@ -18,6 +18,7 @@ namespace MagicMedia.Store
         IThumbnailBlobStore Thumbnails { get; }
         IMediaBlobStore Blob { get; }
         IMediaAIStore MediaAI { get; }
+        IUserStore Users { get; }
 
         Task DeleteAsync(Guid id, CancellationToken cancellationToken);
         Task<IEnumerable<MediaGeoLocation>> FindMediaInGeoBoxAsync(

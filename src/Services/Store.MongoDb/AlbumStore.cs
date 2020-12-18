@@ -43,7 +43,7 @@ namespace MagicMedia.Store.MongoDb
                 .ToListAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<Album>> GetSharedByUserIdAsync(
+        public async Task<IEnumerable<Album>> GetSharedWithUserIdAsync(
             Guid userId,
             CancellationToken cancellationToken)
         {

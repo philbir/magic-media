@@ -39,14 +39,15 @@ namespace MagicMedia.Security
 
         public IEnumerable<string> Roles => _user.Roles;
 
-        public Task<IEnumerable<Guid>> GetAuthorizedPersonsAsync(CancellationToken cancellationToken)
+        public async Task<IEnumerable<Guid>> GetAuthorizedPersonsAsync(
+            CancellationToken cancellationToken)
         {
-            return null;
+            return await _userService.GetAuthorizedOnPersonIdsAsync(UserId!.Value, cancellationToken);
         }
 
         public async Task<IEnumerable<Guid>> GetAuthorizedMediaAsync(CancellationToken cancellationToken)
         {
-            return await _userService.GetAuthorizedOnMediaIdsAsync(UserId.Value, cancellationToken);
+            return await _userService.GetAuthorizedOnMediaIdsAsync(UserId!.Value, cancellationToken);
         }
 
         public bool HasRole(string role)

@@ -51,6 +51,15 @@ namespace MagicMedia
 
         public async Task<IEnumerable<Album>> GetAllAsync(CancellationToken cancellationToken)
         {
+            IUserContext userContext = await _userContextFactory.CreateAsync(cancellationToken);
+
+            if (!userContext.HasPermission(Permissions.Album.ViewAll))
+            {
+                return await _mediaStore.Albums.GetSharedWithUserIdAsync(
+                    userContext.UserId!.Value,
+                    cancellationToken);
+            }
+
             return await _mediaStore.Albums.GetAllAsync(cancellationToken);
         }
 
@@ -58,7 +67,7 @@ namespace MagicMedia
             Guid userId,
             CancellationToken cancellationToken)
         {
-            return await _mediaStore.Albums.GetSharedByUserIdAsync(userId, cancellationToken);
+            return await _mediaStore.Albums.GetSharedWithUserIdAsync(userId, cancellationToken);
         }
 
         public async Task<MediaThumbnail?> GetThumbnailAsync(

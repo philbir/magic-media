@@ -54,6 +54,11 @@ namespace MagicMedia.Store.MongoDb
                 filter = filter & Builders<Person>.Filter.In(nameof(Person.Groups), groups);
             }
 
+            if (request.AuthorizedOn is { } authorized && authorized.Any())
+            {
+                filter = filter & Builders<Person>.Filter.In(x => x.Id, authorized);
+            }
+
             IFindFluent<Person, Person>? cursor = _mediaStoreContext.Persons.Find(filter);
             long totalCount = await cursor.CountDocumentsAsync(cancellationToken);
 
@@ -65,7 +70,7 @@ namespace MagicMedia.Store.MongoDb
             return new SearchResult<Person>(persons, (int)totalCount);
         }
 
-        public async Task<Person> GetByIdAsnc(
+        public async Task<Person> GetByIdAsync(
             Guid id,
             CancellationToken cancellationToken)
         {

@@ -24,14 +24,7 @@ namespace MagicMedia
         public async Task<IEnumerable<SearchFacetItem>> GetCountryFacetsAsync(
             CancellationToken cancellationToken)
         {
-            IUserContext userContext = await _userContextFactory.CreateAsync(cancellationToken);
-
-            IEnumerable<Guid>? ids = null;
-
-            if (!userContext.HasPermission(Permissions.Media.ViewAll))
-            {
-                ids = await userContext.GetAuthorizedMediaAsync(cancellationToken);
-            }
+            IEnumerable<Guid>? ids = await GetAuthorizedOnMediaAync(cancellationToken);
 
             return await _mediaStore.GetGroupedCountriesAsync(ids, cancellationToken);
         }
@@ -39,6 +32,13 @@ namespace MagicMedia
         public async Task<IEnumerable<SearchFacetItem>> GetCityFacetsAsync(
             CancellationToken cancellationToken)
         {
+            IEnumerable<Guid>? ids = await GetAuthorizedOnMediaAync(cancellationToken);
+
+            return await _mediaStore.GetGroupedCitiesAsync(ids, cancellationToken);
+        }
+
+        private async Task<IEnumerable<Guid>?> GetAuthorizedOnMediaAync(CancellationToken cancellationToken)
+        {
             IUserContext userContext = await _userContextFactory.CreateAsync(cancellationToken);
 
             IEnumerable<Guid>? ids = null;
@@ -48,19 +48,23 @@ namespace MagicMedia
                 ids = await userContext.GetAuthorizedMediaAsync(cancellationToken);
             }
 
-            return await _mediaStore.GetGroupedCitiesAsync(ids, cancellationToken);
+            return ids;
         }
 
         public async Task<IEnumerable<SearchFacetItem>> GetAITagFacetsAsync(
             CancellationToken cancellationToken)
         {
-            return await _mediaStore.MediaAI.GetGroupedAITagsAsync(cancellationToken);
+            IEnumerable<Guid>? ids = await GetAuthorizedOnMediaAync(cancellationToken);
+
+            return await _mediaStore.MediaAI.GetGroupedAITagsAsync(ids, cancellationToken);
         }
 
         public async Task<IEnumerable<SearchFacetItem>> GetAIObjectsFacetsAsync(
             CancellationToken cancellationToken)
         {
-            return await _mediaStore.MediaAI.GetGroupedAIObjectsAsync(cancellationToken);
+            IEnumerable<Guid>? ids = await GetAuthorizedOnMediaAync(cancellationToken);
+
+            return await _mediaStore.MediaAI.GetGroupedAIObjectsAsync(ids, cancellationToken);
         }
     }
 }

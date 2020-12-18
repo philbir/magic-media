@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using MagicMedia.Search;
 using MagicMedia.Store;
 
 namespace MagicMedia.Face
@@ -27,6 +28,7 @@ namespace MagicMedia.Face
             double? distance,
             CancellationToken cancellationToken);
         Task<IEnumerable<(MediaFace face, bool hasMatch)>> PredictPersonsByMediaAsync(Guid mediaId, double? distance, CancellationToken cancellationToken);
+        Task<SearchResult<MediaFace>> SearchAsync(SearchFacesRequest request, CancellationToken cancellationToken);
         Task<IEnumerable<MediaFace>> UnassignAllPredictedByMediaAsync(Guid mediaId, CancellationToken cancellationToken);
         Task<MediaFace> UnAssignPersonAsync(Guid id, CancellationToken cancellationToken);
     }

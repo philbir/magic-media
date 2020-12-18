@@ -23,7 +23,8 @@ namespace MagicMedia.Store.MongoDb
             IAlbumStore albumStore,
             ICameraStore cameraStore,
             IPersonStore personStore,
-            IMediaAIStore mediaAIStore)
+            IMediaAIStore mediaAIStore,
+            IUserStore userStore)
         {
             _mediaStoreContext = mediaStoreContext;
             Thumbnails = thumbnailBlobStore;
@@ -33,6 +34,7 @@ namespace MagicMedia.Store.MongoDb
             Cameras = cameraStore;
             Persons = personStore;
             MediaAI = mediaAIStore;
+            Users = userStore;
         }
 
         public IFaceStore Faces { get; }
@@ -44,6 +46,8 @@ namespace MagicMedia.Store.MongoDb
         public IPersonStore Persons { get; }
 
         public IMediaAIStore MediaAI { get; }
+
+        public IUserStore Users { get; }
 
         public IThumbnailBlobStore Thumbnails { get; }
 
@@ -319,8 +323,7 @@ namespace MagicMedia.Store.MongoDb
             IEnumerable<Guid>? mediaIds,
             CancellationToken cancellationToken)
         {
-
-            BsonDocument? idMatch = GetMediaIdMatch(mediaIds);
+            BsonDocument? idMatch = AggregationPipelineFactory.CreateMatchInStage(mediaIds);
 
             IEnumerable<BsonDocument> docs = await _mediaStoreContext.ExecuteAggregation(
                 CollectionNames.Media,
@@ -346,29 +349,7 @@ namespace MagicMedia.Store.MongoDb
             return result.OrderByDescending(x => x.Count);
         }
 
-        private BsonDocument? GetMediaIdMatch(IEnumerable<Guid>? mediaIds)
-        {
-            if (mediaIds != null)
-            {
-                return new BsonDocument
-                {
-                    {
-                        "$match",
-                        new BsonDocument
-                            {
-                                {"_id", new BsonDocument
-                                {
-                                    {
-                                        "$in", new BsonArray(mediaIds)
-                                    }
-                                }}
-                            }
-                    }
-                };
-            }
 
-            return null;
-        }
 
         public async Task<IEnumerable<Guid>> GetIdsByFolderAsync(
             string folder,
@@ -393,7 +374,7 @@ namespace MagicMedia.Store.MongoDb
             IEnumerable<Guid>? mediaIds,
             CancellationToken cancellationToken)
         {
-            BsonDocument? idMatch = GetMediaIdMatch(mediaIds);
+            BsonDocument? idMatch = AggregationPipelineFactory.CreateMatchInStage(mediaIds);
 
             IEnumerable<BsonDocument> docs = await _mediaStoreContext.ExecuteAggregation(
                 CollectionNames.Media,

@@ -38,6 +38,11 @@ namespace MagicMedia.Store.MongoDb
                 filter = filter & Builders<MediaFace>.Filter.In(nameof(MediaFace.PersonId), persons);
             }
 
+            if (request.AuthorizedOnMedia is { } authorized && authorized.Any())
+            {
+                filter = filter & Builders<MediaFace>.Filter.In(x => x.MediaId, authorized);
+            }
+
             IFindFluent<MediaFace, MediaFace> cursor = _mediaStoreContext.Faces.Find(filter);
 
             long totalCount = await cursor.CountDocumentsAsync(cancellationToken);
@@ -100,6 +105,19 @@ namespace MagicMedia.Store.MongoDb
                 .FirstAsync(cancellationToken);
 
             return face;
+        }
+
+        public async Task<IEnumerable<Guid>> GetPersonsIdsByMediaAsync(
+            IEnumerable<Guid> mediaIds,
+            CancellationToken cancellationToken)
+        {
+            List<Guid> persons = await _mediaStoreContext.Faces.AsQueryable()
+                .Where(x => mediaIds.Contains(x.MediaId) && x.PersonId.HasValue)
+                .Select(x => x.PersonId.Value)
+                .Distinct()
+                .ToListAsync(cancellationToken);
+
+            return persons;
         }
 
         public async Task UpdateAsync(MediaFace face, CancellationToken cancellationToken)

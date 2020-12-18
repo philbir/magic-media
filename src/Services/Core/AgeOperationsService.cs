@@ -22,7 +22,7 @@ namespace MagicMedia
             Guid personId,
             CancellationToken cancellationToken)
         {
-            Person person = await _mediaStore.Persons.GetByIdAsnc(personId, cancellationToken);
+            Person person = await _mediaStore.Persons.GetByIdAsync(personId, cancellationToken);
 
             await UpdateAgesByPersonAsync(person, cancellationToken);
         }

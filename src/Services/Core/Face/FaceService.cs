@@ -5,6 +5,8 @@ using System.Reflection.Metadata.Ecma335;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Messaging;
+using MagicMedia.Search;
+using MagicMedia.Security;
 using MagicMedia.Store;
 using MassTransit;
 using Serilog;
@@ -16,6 +18,7 @@ namespace MagicMedia.Face
         private readonly IFaceStore _faceStore;
         private readonly IPersonService _personService;
         private readonly IMediaStore _mediaStore;
+        private readonly IUserContextFactory _userContextFactory;
         private readonly IFaceDetectionService _faceDetectionService;
         private readonly IAgeOperationsService _ageOperationsService;
         private readonly IBus _bus;
@@ -24,6 +27,7 @@ namespace MagicMedia.Face
             IFaceStore faceStore,
             IPersonService personStore,
             IMediaStore mediaStore,
+            IUserContextFactory userContextFactory,
             IFaceDetectionService faceDetectionService,
             IAgeOperationsService ageOperationsService,
             IBus bus)
@@ -31,6 +35,7 @@ namespace MagicMedia.Face
             _faceStore = faceStore;
             _personService = personStore;
             _mediaStore = mediaStore;
+            _userContextFactory = userContextFactory;
             _faceDetectionService = faceDetectionService;
             _ageOperationsService = ageOperationsService;
             _bus = bus;
@@ -59,12 +64,26 @@ namespace MagicMedia.Face
             return face;
         }
 
-        private async Task UpdateAgeAsync(
-            MediaFace face,
-            Guid personId,
+        public async Task<SearchResult<MediaFace>> SearchAsync(
+            SearchFacesRequest request,
             CancellationToken cancellationToken)
         {
-            Person person = await _mediaStore.Persons.GetByIdAsnc(personId, cancellationToken);
+            IUserContext userContext = await _userContextFactory.CreateAsync(cancellationToken);
+
+            if (!userContext.HasPermission(Permissions.Media.ViewAll))
+            {
+                request.AuthorizedOnMedia = await userContext.GetAuthorizedMediaAsync(cancellationToken);
+            }
+
+            return await _faceStore.SearchAsync(request, cancellationToken);
+        }
+
+        private async Task UpdateAgeAsync(
+           MediaFace face,
+           Guid personId,
+           CancellationToken cancellationToken)
+        {
+            Person person = await _mediaStore.Persons.GetByIdAsync(personId, cancellationToken);
 
             await UpdateAgeAsync(face, person, cancellationToken);
         }
@@ -97,7 +116,7 @@ namespace MagicMedia.Face
 
             var results = new List<(MediaFace face, bool hasMatch)>();
 
-            foreach (MediaFace face in faces.Where( x => x.PersonId == null))
+            foreach (MediaFace face in faces.Where(x => x.PersonId == null))
             {
                 (MediaFace face, bool hasMatch) faceResult = await PredictPersonAsync(
                     face,

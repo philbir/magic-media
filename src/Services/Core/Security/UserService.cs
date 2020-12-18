@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Store;
@@ -10,50 +11,45 @@ namespace MagicMedia.Security
 {
     public class UserService : IUserService
     {
-        private readonly IUserStore _userStore;
-        private readonly IAlbumStore _albumStore;
-        private readonly IPersonService _personService;
+        private readonly IMediaStore _mediaStore;
         private readonly IMemoryCache _memoryCache;
         private readonly IAlbumMediaIdResolver _albumMediaIdResolver;
 
         public UserService(
-            IUserStore userStore,
-            IAlbumStore albumStore,
-            IPersonService personService,
+            IMediaStore mediaStore,
             IMemoryCache memoryCache,
             IAlbumMediaIdResolver albumMediaIdResolver)
         {
-            _userStore = userStore;
-            _albumStore = albumStore;
-            _personService = personService;
+            _mediaStore = mediaStore;
             _memoryCache = memoryCache;
             _albumMediaIdResolver = albumMediaIdResolver;
         }
 
         public async Task<User> TryGetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
-            return await _userStore.TryGetByIdAsync(id, cancellationToken);
+            return await _mediaStore.Users.TryGetByIdAsync(id, cancellationToken);
         }
 
         public async Task<IEnumerable<User>> GetAllAsync(
             CancellationToken cancellationToken)
         {
-            return await _userStore.GetAllAsync(cancellationToken);
+            return await _mediaStore.Users.GetAllAsync(cancellationToken);
         }
 
         public async Task<User> TryGetByPersonIdAsync(
             Guid personId,
             CancellationToken cancellationToken)
         {
-            return await _userStore.TryGetByPersonIdAsync(personId, cancellationToken);
+            return await _mediaStore.Users.TryGetByPersonIdAsync(personId, cancellationToken);
         }
 
         public async Task<IEnumerable<Album>> GetSharedAlbumsAsync(
             Guid userId,
             CancellationToken cancellationToken)
         {
-            return await _albumStore.GetSharedByUserIdAsync(userId, cancellationToken);
+            return await _mediaStore.Albums.GetSharedWithUserIdAsync(userId, cancellationToken);
         }
+
 
         public async Task<IEnumerable<Guid>> GetAuthorizedOnMediaIdsAsync(
             Guid userId,
@@ -72,7 +68,42 @@ namespace MagicMedia.Security
             return ids;
         }
 
-        public async Task<IEnumerable<Guid>> GetAuthorizedOnMediaIdsInternalAsync(
+        public async Task<IEnumerable<Guid>> GetAuthorizedOnAlbumIdsAsync(
+            Guid userId,
+            CancellationToken cancellationToken)
+        {
+            var cachekey = $"auth_on_album_{userId}";
+
+            IEnumerable<Guid> ids = await _memoryCache.GetOrCreateAsync(
+                cachekey,
+                async (e) =>
+                {
+                    e.AbsoluteExpiration = DateTime.Now.AddMinutes(15);
+                    IEnumerable<Album> albums = await GetSharedAlbumsAsync(userId, cancellationToken);
+                    return albums.Select(x => x.Id);
+                });
+
+            return ids;
+        }
+
+        public async Task<IEnumerable<Guid>> GetAuthorizedOnPersonIdsAsync(
+            Guid userId,
+            CancellationToken cancellationToken)
+        {
+            var cachekey = $"auth_on_person_{userId}";
+
+            IEnumerable<Guid> ids = await _memoryCache.GetOrCreateAsync(
+                cachekey,
+                async (e) =>
+                {
+                    e.AbsoluteExpiration = DateTime.Now.AddMinutes(15);
+                    return await GetAuthorizedOnPersonIdsInternalAsync(userId, cancellationToken);
+                });
+
+            return ids;
+        }
+
+        private async Task<IEnumerable<Guid>> GetAuthorizedOnMediaIdsInternalAsync(
             Guid userId,
             CancellationToken cancellationToken)
         {
@@ -90,11 +121,27 @@ namespace MagicMedia.Security
             return ids;
         }
 
+
+        private async Task<IEnumerable<Guid>> GetAuthorizedOnPersonIdsInternalAsync(
+            Guid userId,
+            CancellationToken cancellationToken)
+        {
+            IEnumerable<Guid> mediaIds = await GetAuthorizedOnMediaIdsAsync(
+                userId,
+                cancellationToken);
+
+            IEnumerable<Guid> persons = await _mediaStore.Faces.GetPersonsIdsByMediaAsync(
+                mediaIds,
+                cancellationToken);
+
+            return persons;
+        }
+
         public async Task<User> CreateFromPersonAsync(CreateUserFromPersonRequest request, CancellationToken cancellationToken)
         {
             //TODO: Validate if there is allready a user for this person
 
-            Person person = await _personService.GetByIdAsync(request.PersonId, cancellationToken);
+            Person person = await _mediaStore.Persons.GetByIdAsync(request.PersonId, cancellationToken);
 
             var user = new User
             {
@@ -104,7 +151,7 @@ namespace MagicMedia.Security
                 PersonId = person.Id
             };
 
-            await _userStore.AddAsync(user, cancellationToken);
+            await _mediaStore.Users.AddAsync(user, cancellationToken);
 
             return user;
         }

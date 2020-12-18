@@ -65,11 +65,17 @@ namespace MagicMedia.Store.MongoDb
 
 
         public async Task<IEnumerable<SearchFacetItem>> GetGroupedAITagsAsync(
+            IEnumerable<Guid>? mediaIds,
             CancellationToken cancellationToken)
         {
+            BsonDocument? idMatch = AggregationPipelineFactory.CreateMatchInStage(
+                mediaIds,
+                "MediaId");
+
             IEnumerable<BsonDocument> docs = await _mediaStoreContext.ExecuteAggregation(
                 CollectionNames.MediaAI,
                 "MediaAI_GroupByTag",
+                idMatch,
                 cancellationToken);
 
             var result = new List<SearchFacetItem>();
@@ -91,11 +97,17 @@ namespace MagicMedia.Store.MongoDb
         }
 
         public async Task<IEnumerable<SearchFacetItem>> GetGroupedAIObjectsAsync(
+            IEnumerable<Guid>? mediaIds,
             CancellationToken cancellationToken)
         {
+            BsonDocument? idMatch = AggregationPipelineFactory.CreateMatchInStage(
+                mediaIds,
+                "MediaId");
+
             IEnumerable<BsonDocument> docs = await _mediaStoreContext.ExecuteAggregation(
                 CollectionNames.MediaAI,
                 "MediaAI_GroupByObject",
+                idMatch,
                 cancellationToken);
 
             var result = new List<SearchFacetItem>();

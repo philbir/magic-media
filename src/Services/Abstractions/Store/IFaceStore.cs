@@ -31,5 +31,6 @@ namespace MagicMedia.Store
             CancellationToken cancellationToken);
 
         Task UpdateAsync(MediaFace face, CancellationToken cancellationToken);
+        Task<IEnumerable<Guid>> GetPersonsIdsByMediaAsync(IEnumerable<Guid> mediaIds, CancellationToken cancellationToken);
     }
 }
