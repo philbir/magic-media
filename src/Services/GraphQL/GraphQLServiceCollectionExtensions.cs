@@ -1,5 +1,6 @@
 using HotChocolate.Execution.Configuration;
 using HotChocolate.Types;
+using MagicMedia.Authorization;
 using MagicMedia.GraphQL;
 using MagicMedia.GraphQL.DataLoaders;
 using MagicMedia.GraphQL.Face;
@@ -23,25 +24,31 @@ namespace MagicMedia
             this IRequestExecutorBuilder builder)
         {
             builder
-                .AddQueryType(d => d.Name("Query"))
+                .AddQueryType(d => d.Name("Query")
+                    .Authorize(AuthorizationPolicies.Names.ApiAccess))
                 .AddType<MediaQueries>()
                 .AddType<FaceQueries>()
                 .AddType<PersonQueries>()
+                .AddType<UserQueries>()
                 .AddType<SearchFacetQueries>()
                 .AddType<AlbumQueries>()
-                .AddMutationType(d => d.Name("Mutation"))
+                .AddMutationType(d => d.Name("Mutation")
+                    .Authorize(AuthorizationPolicies.Names.ApiAccess))
                 .AddType<FaceMutations>()
                 .AddType<MediaMutations>()
                 .AddType<PersonMutations>()
                 .AddType<AlbumMutations>()
+                .AddType<UserMutations>()
                 .AddType<MediaType>()
                 .AddType<VideoInfoType>()
                 .AddType<FaceType>()
                 .AddType<PersonType>()
+                .AddType<UserType>()
                 .AddType<AlbumType>()
                 .AddType<ThumbnailType>()
                 .AddType<SearchFacetType>()
                 .RenameRequestToInput<RemoveFoldersFromAlbumRequest>()
+                .RenameRequestToInput<CreateUserFromPersonRequest>()
                 .AddDataLoader<CameraByIdDataLoader>()
                 .AddDataLoader<ThumbnailByMediaIdDataLoader>()
                 .AddDataLoader<MediaByIdDataLoader>()

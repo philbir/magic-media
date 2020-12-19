@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using MongoDB.Bson;
@@ -17,6 +19,40 @@ namespace MagicMedia.Store.MongoDb
                 .Create(stages.Select(x => BsonDocument.Parse(x.ToString())));
 
             return pipeline;
+        }
+
+        public static IEnumerable<BsonDocument> CreateStages(string name)
+        {
+            var json = GetResource(name);
+            var stages = JArray.Parse(json);
+
+            return stages.Select(x => BsonDocument.Parse(x.ToString()));
+        }
+
+        public static BsonDocument? CreateMatchInStage(
+            IEnumerable<Guid>? ids,
+            string fieldName = "_id")
+        {
+            if (ids != null)
+            {
+                return new BsonDocument
+                {
+                    {
+                        "$match",
+                        new BsonDocument
+                            {
+                                {fieldName, new BsonDocument
+                                {
+                                    {
+                                        "$in", new BsonArray(ids)
+                                    }
+                                }}
+                            }
+                    }
+                };
+            }
+
+            return null;
         }
 
         private static string GetResource(string name)

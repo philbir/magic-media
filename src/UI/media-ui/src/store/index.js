@@ -8,6 +8,7 @@ import mapModule from "./mapModule";
 import mediaModule from "./mediaModule";
 import personModule from "./personModule";
 import snackbarModule from "./snackbarModule";
+import userModule from "./userModule";
 
 Vue.use(Vuex);
 
@@ -30,6 +31,7 @@ export default new Vuex.Store({
     face: faceModule,
     person: personModule,
     album: albumModule,
-    map: mapModule
+    map: mapModule,
+    user: userModule
   }
 });

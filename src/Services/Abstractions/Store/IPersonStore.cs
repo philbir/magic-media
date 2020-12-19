@@ -10,7 +10,7 @@ namespace MagicMedia.Store
     {
         Task<Person> AddAsync(Person person, CancellationToken cancellationToken);
         Task<IEnumerable<Person>> GetAllAsync(CancellationToken cancellationToken);
-        Task<Person> GetByIdAsnc(Guid id, CancellationToken cancellationToken);
+        Task<Person> GetByIdAsync(Guid id, CancellationToken cancellationToken);
         Task<IEnumerable<Person>> GetPersonsAsync(
             IEnumerable<Guid> ids,
             CancellationToken cancellationToken);

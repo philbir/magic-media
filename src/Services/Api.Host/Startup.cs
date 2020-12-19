@@ -1,9 +1,9 @@
-using Elastic.Apm.AspNetCore;
-using Elastic.Apm.DiagnosticSource;
+using MagicMedia.Api.Security;
 using MagicMedia.AspNetCore;
 using MagicMedia.BingMaps;
 using MagicMedia.Hubs;
 using MagicMedia.Messaging;
+using MagicMedia.Security;
 using MagicMedia.Store.MongoDb;
 using MagicMedia.Stores;
 using MassTransit;
@@ -42,9 +42,12 @@ namespace MagicMedia.Api
             services.AddMvc();
             services.AddSignalR();
 
-            services.AddAuthorization(_env);
+            services.AddAuthorization();
             services.ConfigureSameSiteCookies();
-            services.AddAuthentication(Configuration);
+            services.AddAuthentication(_env, Configuration);
+            services.AddHttpContextAccessor();
+
+            services.AddSingleton<IUserContextFactory, ClaimsPrincipalUserContextFactory>();
         }
 
         public void Configure(
@@ -63,8 +66,8 @@ namespace MagicMedia.Api
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                app.UseElasticApm(Configuration,
-                    new HttpDiagnosticsSubscriber());
+                //app.UseElasticApm(Configuration,
+                //    new HttpDiagnosticsSubscriber());
             }
 
             app.UseSerilogRequestLogging();

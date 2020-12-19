@@ -11,6 +11,8 @@ namespace MagicMedia
 
         public IEnumerable<Guid>? Persons { get; set; }
 
-        public string SearchText { get; set; }
+        public string? SearchText { get; set; }
+
+        public Guid? SharedWithUserId { get; set; }
     }
 }

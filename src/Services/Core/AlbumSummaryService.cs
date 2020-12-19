@@ -12,13 +12,16 @@ namespace MagicMedia
     {
         private readonly IMediaStore _mediaStore;
         private readonly IAlbumService _albumService;
+        private readonly IAlbumMediaIdResolver _albumMediaIdResolver;
 
         public AlbumSummaryService(
             IMediaStore mediaStore,
-            IAlbumService albumService)
+            IAlbumService albumService,
+            IAlbumMediaIdResolver albumMediaIdResolver)
         {
             _mediaStore = mediaStore;
             _albumService = albumService;
+            _albumMediaIdResolver = albumMediaIdResolver;
         }
 
         public async Task<Album> UpdateAsync(Guid id, CancellationToken cancellationToken)
@@ -53,7 +56,7 @@ namespace MagicMedia
             Album album,
             CancellationToken cancellationToken)
         {
-            IEnumerable<Guid> mediaIds = await _albumService.GetMediaIdsAsync(
+            IEnumerable<Guid> mediaIds = await _albumMediaIdResolver.GetMediaIdsAsync(
                 album,
                 cancellationToken);
 

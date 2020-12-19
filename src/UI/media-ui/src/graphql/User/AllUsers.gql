@@ -1,0 +1,8 @@
+query allUsers {
+  allUsers {
+    id
+    name
+    email
+    personId
+  }
+}

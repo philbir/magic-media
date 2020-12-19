@@ -1,11 +1,12 @@
 using System;
+using System.IdentityModel.Tokens.Jwt;
 using System.Threading.Tasks;
 using IdentityModel;
 using MagicMedia.Api;
+using MagicMedia.Api.DevTokenAuthentication;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,52 +15,24 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace MagicMedia
 {
-    public static class AuthorizationExtensions
-    {
-        public static IServiceCollection AddAuthorization(
-            this IServiceCollection services,
-            IWebHostEnvironment env)
-        {
-            services.AddAuthorization(c =>
-            {
-                if (env.IsDevelopment())
-                {
-                    c.AddPolicy("ApiAccess", new AuthorizationPolicyBuilder()
-                        .RequireAssertion(_ => true)
-                        .Build());
-
-                    //c.DefaultPolicy = new AuthorizationPolicyBuilder()
-                    //    .RequireAssertion(_ => true)
-                    //    .Build();
-                }
-                else
-                {
-                    c.AddPolicy("ApiAccess", new AuthorizationPolicyBuilder()
-                        .RequireAuthenticatedUser()
-                        .Build());
-
-                    //c.DefaultPolicy = new AuthorizationPolicyBuilder()
-                    //    .RequireAuthenticatedUser()
-                    //    .Build();
-                }
-            });
-
-            return services;
-        }
-    }
-
-    public static class AuthenticationExtensions
+    public static partial class AuthenticationExtensions
     {
         public static AuthenticationBuilder AddAuthentication(
             this IServiceCollection services,
+            IWebHostEnvironment env,
             IConfiguration configuration)
         {
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
             SecurityOptions secOptions = configuration.GetSection("MagicMedia:Security")
                 .Get<SecurityOptions>();
 
             AuthenticationBuilder authBuilder = services.AddAuthentication(options =>
             {
-                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultScheme = env.IsDevelopment() ?
+                    DevTokenDefaults.AuthenticationScheme :
+                    CookieAuthenticationDefaults.AuthenticationScheme;
+
                 options.DefaultChallengeScheme = "oidc";
             });
 
@@ -113,7 +86,14 @@ namespace MagicMedia
             //        options.Audience = "api.magic";
             //    });
 
+            if (env.IsDevelopment())
+            {
+                SetupDevelopmentAuthentication(authBuilder);
+            }
+
             return authBuilder;
         }
+
+        static partial void SetupDevelopmentAuthentication(AuthenticationBuilder builder);
     }
 }

@@ -33,6 +33,16 @@ namespace MagicMedia.Store.MongoDb
             _cancellationToken = cancellationToken;
         }
 
+        public MediaFilterBuilder AddAuthorizedOn(IEnumerable<Guid>? ids)
+        {
+            if (ids != null)
+            {
+                _filter &= Builders<Media>.Filter.In(x => x.Id, ids);
+            }
+
+            return this;
+        }
+
         public MediaFilterBuilder AddFolder(string? folder)
         {
             if (!string.IsNullOrEmpty(folder))

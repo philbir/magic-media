@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace MagicMedia
@@ -12,5 +12,7 @@ namespace MagicMedia
         public IEnumerable<Guid>? Groups { get; set; }
 
         public string SearchText { get; set; }
+
+        public IEnumerable<Guid>? AuthorizedOn { get; set; }
     }
 }

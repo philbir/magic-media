@@ -1,13 +1,14 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using MagicMedia.Authorization;
 using MagicMedia.Store;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MagicMedia.Api.Controllers
 {
-    [Authorize("ApiAccess")]
+    [Authorize(AuthorizationPolicies.Names.ApiAccess)]
     [Route("api/person")]
     public class PersonController : Controller
     {
@@ -17,7 +18,6 @@ namespace MagicMedia.Api.Controllers
         {
             _personService = personService;
         }
-
 
         [HttpGet]
         [Route("thumbnail/{id}")]

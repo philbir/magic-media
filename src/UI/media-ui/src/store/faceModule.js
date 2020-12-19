@@ -13,6 +13,8 @@ import {
   unAssignPerson
 } from "../services/faceService";
 
+import { excuteGraphQL } from "./graphqlClient"
+
 const faceModule = {
   namespaced: true,
   state: () => ({
@@ -134,15 +136,17 @@ const faceModule = {
     }
   },
   actions: {
-    async search({ commit, state }) {
-      try {
-        commit("SET_LIST_LOADING", true);
+    async search({ commit, state, dispatch }) {
+      commit("SET_LIST_LOADING", true);
+      const result = await excuteGraphQL(() => searchFaces(state.filter), dispatch);
 
-        const res = await searchFaces(state.filter);
-        commit("LIST_LOADED", res.data.searchFaces);
-      } catch (ex) {
-        this.$magic.snack("Error loading", "ERROR");
+      if (result.success) {
+        commit("LIST_LOADED", result.data.searchFaces);
       }
+      else {
+        commit("SET_LIST_LOADING", false);
+      }
+
     },
     async loadMore({ commit, state, dispatch }) {
       if (state.hasMore) {
@@ -181,133 +185,163 @@ const faceModule = {
       commit("FACE_EDIT_CLOSED");
     },
     async setName({ commit, dispatch }, data) {
-      const result = await assignPerson(data.id, data.name);
-      const { face } = result.data.assignPersonByHuman;
 
-      commit("FACE_UPDATED", face);
-      commit("person/PERSON_ADDED", face.person, { root: true });
+      const result = excuteGraphQL(() => assignPerson(data.id, data.name), dispatch);
 
-      dispatch("media/faceUpdated", face, {
-        root: true
-      });
+      if (result.success) {
+        const { face } = result.data.assignPersonByHuman;
+
+        commit("FACE_UPDATED", face);
+        commit("person/PERSON_ADDED", face.person, { root: true });
+
+        dispatch("media/faceUpdated", face, {
+          root: true
+        });
+      }
     },
     async unassignPerson({ commit, dispatch }, id) {
-      const result = await unAssignPerson(id);
-      const { face } = result.data.unAssignPersonFromFace;
 
-      commit("FACE_UPDATED", face);
-      dispatch("media/faceUpdated", face, {
-        root: true
-      });
+      const result = await excuteGraphQL(() => unAssignPerson(id), dispatch);
+
+      if (result.success) {
+        const { face } = result.data.unAssignPersonFromFace;
+
+        commit("FACE_UPDATED", face);
+        dispatch("media/faceUpdated", face, {
+          root: true
+        });
+      }
+
     },
     async approve({ commit, dispatch }, id) {
-      const result = await approveFace(id);
-      const { face } = result.data.approveFaceComputer;
 
-      commit("FACE_UPDATED", face);
-      dispatch("media/faceUpdated", face, {
-        root: true
-      });
+      const result = await excuteGraphQL(() => approveFace(id), dispatch);
+
+      if (result.success) {
+        const { face } = result.data.approveFaceComputer;
+
+        commit("FACE_UPDATED", face);
+        dispatch("media/faceUpdated", face, {
+          root: true
+        });
+      }
     },
     async approveAllByMedia({ commit, dispatch }, mediaId) {
-      const result = await approveAllByMedia(mediaId);
-      const { faces } = result.data.approveAllFacesByMedia;
+      const result = await excuteGraphQL(() => approveAllByMedia(mediaId), dispatch);
 
-      faces.forEach(face => {
-        commit("FACE_UPDATED", face);
-      });
+      if (result.success) {
+        const { faces } = result.data.approveAllFacesByMedia;
 
-      //TODO: Better patch currentDetails
-      dispatch("media/loadDetails", mediaId, {
-        root: true
-      });
+        faces.forEach(face => {
+          commit("FACE_UPDATED", face);
+        });
+
+        //TODO: Better patch currentDetails
+        dispatch("media/loadDetails", mediaId, {
+          root: true
+        });
+      }
     },
     async unAssignPredictedByMedia({ commit, dispatch }, mediaId) {
-      const result = await unAssignAllPrecictedByMedia(mediaId);
-      const { faces } = result.data.unAssignAllPredictedPersonsByMedia;
+      const result = await excuteGraphQL(() => unAssignAllPrecictedByMedia(mediaId), dispatch);
 
-      faces.forEach(face => {
-        commit("FACE_UPDATED", face);
-      });
+      if (result.success) {
+        const { faces } = result.data.unAssignAllPredictedPersonsByMedia;
 
-      //TODO: Better patch currentDetails
-      dispatch("media/loadDetails", mediaId, {
-        root: true
-      });
+        faces.forEach(face => {
+          commit("FACE_UPDATED", face);
+        });
+
+        //TODO: Better patch currentDetails
+        dispatch("media/loadDetails", mediaId, {
+          root: true
+        });
+      }
+
     },
     async predictPerson({ commit, dispatch }, id) {
-      const result = await predictPerson(id);
-      const { face, hasMatch } = result.data.predictPerson;
+      const result = await excuteGraphQL(() => predictPerson(id), dispatch);
 
-      commit("FACE_UPDATED", face);
-      dispatch("media/faceUpdated", face, {
-        root: true
-      });
+      if (result.success) {
+        const { face, hasMatch } = result.data.predictPerson;
 
-      if (hasMatch) {
-        dispatch(
-          "snackbar/addSnack",
-          { text: face.person.name + " found.", type: "SUCCESS" },
-          { root: true }
-        );
-      } else {
-        dispatch(
-          "snackbar/addSnack",
-          { text: "No person found.", type: "INFO" },
-          { root: true }
-        );
+        commit("FACE_UPDATED", face);
+        dispatch("media/faceUpdated", face, {
+          root: true
+        });
+
+        if (hasMatch) {
+          dispatch(
+            "snackbar/addSnack",
+            { text: face.person.name + " found.", type: "SUCCESS" },
+            { root: true }
+          );
+        } else {
+          dispatch(
+            "snackbar/addSnack",
+            { text: "No person found.", type: "INFO" },
+            { root: true }
+          );
+        }
       }
     },
     async predictPersonsByMedia({ dispatch }, mediaId) {
-      const result = await predictPersonsByMedia(mediaId);
-      const { media, matchCount } = result.data.predictPersonsByMedia;
 
-      //TODO: Better patch currentDetails
-      dispatch("media/loadDetails", media.id, {
-        root: true
-      });
+      const result = await excuteGraphQL(() => predictPersonsByMedia(mediaId), dispatch);
 
-      if (matchCount > 0) {
+      if (result.success) {
+        const { media, matchCount } = result.data.predictPersonsByMedia;
+
+        //TODO: Better patch currentDetails
+        dispatch("media/loadDetails", media.id, {
+          root: true
+        });
+
+        if (matchCount > 0) {
+          dispatch(
+            "snackbar/addSnack",
+            { text: `${matchCount} persons found.`, type: "SUCCESS" },
+            { root: true }
+          );
+        } else {
+          dispatch(
+            "snackbar/addSnack",
+            { text: "No persons found.", type: "INFO" },
+            { root: true }
+          );
+        }
+      }
+    },
+    async deleteFace({ commit, dispatch }, face) {
+      const result = await excuteGraphQL(() => deleteFace(face.id), dispatch);
+
+      if (result.success) {
+        commit("FACE_DELETED", face.id);
         dispatch(
-          "snackbar/addSnack",
-          { text: `${matchCount} persons found.`, type: "SUCCESS" },
-          { root: true }
-        );
-      } else {
-        dispatch(
-          "snackbar/addSnack",
-          { text: "No persons found.", type: "INFO" },
-          { root: true }
+          "media/faceUpdated",
+          { mediaId: face.mediaId },
+          {
+            root: true
+          }
         );
       }
 
-
-    },
-    async deleteFace({ commit, dispatch }, face) {
-      await deleteFace(face.id);
-
-      commit("FACE_DELETED", face.id);
-      dispatch(
-        "media/faceUpdated",
-        { mediaId: face.mediaId },
-        {
-          root: true
-        }
-      );
     },
     async deleteUnassignedByMedia({ commit, dispatch }, mediaId) {
-      const res = await deleteUnassignedByMedia(mediaId);
+      const result = await excuteGraphQL(() => deleteUnassignedByMedia(mediaId), dispatch);
 
-      const faceIds = res.data.deleteUnassignedFacesByMedia.ids;
+      if (result.success) {
+        const faceIds = result.data.deleteUnassignedFacesByMedia.ids;
 
-      faceIds.forEach(id => {
-        commit("FACE_DELETED", id);
-      });
+        faceIds.forEach(id => {
+          commit("FACE_DELETED", id);
+        });
 
-      //TODO: Better patch currentDetails
-      dispatch("media/loadDetails", mediaId, {
-        root: true
-      });
+        //TODO: Better patch currentDetails
+        dispatch("media/loadDetails", mediaId, {
+          root: true
+        });
+      }
     }
   },
   getters: {

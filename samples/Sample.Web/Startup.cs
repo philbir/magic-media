@@ -3,7 +3,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Threading.Tasks;
 using IdentityModel;
 using MagicMedia;
-using MagicMedia.AzureAI;
 using MagicMedia.BingMaps;
 using MagicMedia.Face;
 using MagicMedia.Store.MongoDb;

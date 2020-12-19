@@ -5,10 +5,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Messaging;
 using MagicMedia.Search;
+using MagicMedia.Security;
 using MagicMedia.Store;
 using MassTransit;
 using Serilog;
-using SixLabors.ImageSharp.ColorSpaces;
 
 namespace MagicMedia
 {
@@ -18,6 +18,7 @@ namespace MagicMedia
         private readonly IGroupService _groupService;
         private readonly IFaceStore _faceStore;
         private readonly IThumbnailBlobStore _thumbnailBlob;
+        private readonly IUserContextFactory _userContextFactory;
         private readonly IBus _bus;
 
         public PersonService(
@@ -25,12 +26,14 @@ namespace MagicMedia
             IGroupService groupService,
             IFaceStore faceStore,
             IThumbnailBlobStore thumbnailBlob,
+            IUserContextFactory userContextFactory,
             IBus bus)
         {
             _personStore = personStore;
             _groupService = groupService;
             _faceStore = faceStore;
             _thumbnailBlob = thumbnailBlob;
+            _userContextFactory = userContextFactory;
             _bus = bus;
         }
 
@@ -38,7 +41,7 @@ namespace MagicMedia
             Guid id,
             CancellationToken cancellationToken)
         {
-            return await _personStore.GetByIdAsnc(id, cancellationToken);
+            return await _personStore.GetByIdAsync(id, cancellationToken);
         }
 
         public async Task<IEnumerable<Person>> GetPersonsAsync(
@@ -51,19 +54,44 @@ namespace MagicMedia
         public async Task<IEnumerable<Person>> GetAllAsync(
             CancellationToken cancellationToken)
         {
+
+            IEnumerable<Guid>? ids = await GetAuthorizedOnPersonsAsync(cancellationToken);
+
+            if (ids != null)
+            {
+                return await _personStore.GetPersonsAsync(ids, cancellationToken);
+            }
+
             return await _personStore.GetAllAsync(cancellationToken);
         }
+
 
         public async Task<SearchResult<Person>> SearchAsync(
             SearchPersonRequest request,
             CancellationToken cancellationToken)
         {
+            request.AuthorizedOn = await GetAuthorizedOnPersonsAsync(cancellationToken);
+
             return await _personStore.SearchAsync(request, cancellationToken);
         }
 
+        private async Task<IEnumerable<Guid>?> GetAuthorizedOnPersonsAsync(CancellationToken cancellationToken)
+        {
+            IUserContext userContext = await _userContextFactory.CreateAsync(cancellationToken);
+
+            IEnumerable<Guid>? ids = null;
+
+            if (!userContext.HasPermission(Permissions.Media.ViewAll))
+            {
+                ids = await userContext.GetAuthorizedPersonsAsync(cancellationToken);
+            }
+
+            return ids;
+        }
+
         public async Task<Person> UpdatePersonAsync(
-            UpdatePersonRequest request,
-            CancellationToken cancellationToken)
+        UpdatePersonRequest request,
+        CancellationToken cancellationToken)
         {
             List<Guid> userGroups = request.Groups?.ToList() ?? new List<Guid>();
 
@@ -76,7 +104,7 @@ namespace MagicMedia
                 }
             }
 
-            Person person = await _personStore.GetByIdAsnc(request.Id, cancellationToken);
+            Person person = await _personStore.GetByIdAsync(request.Id, cancellationToken);
 
             person.Name = request.Name;
             person.Groups = userGroups;

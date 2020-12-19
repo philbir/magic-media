@@ -10,7 +10,6 @@ using MagicMedia.Store.MongoDb;
 using MagicMedia.Stores;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using MongoDB.Bson;
 using Serilog;
 
 namespace Playground
@@ -34,10 +33,10 @@ namespace Playground
 
             //await updater.UpdateMediaAISummaryAsync(default);
 
-            await hasher.HashAsync();
+            //await hasher.HashAsync();
 
-            //await faceScanner.RunAsync(default);
-        }
+            await faceScanner.RunAsync(default);
+          }
 
         private static IServiceProvider BuildServiceProvider()
         {

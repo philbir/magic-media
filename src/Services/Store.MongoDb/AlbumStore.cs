@@ -43,6 +43,17 @@ namespace MagicMedia.Store.MongoDb
                 .ToListAsync(cancellationToken);
         }
 
+        public async Task<IEnumerable<Album>> GetSharedWithUserIdAsync(
+            Guid userId,
+            CancellationToken cancellationToken)
+        {
+            List<Album> albums = await _mediaStoreContext.Albums.AsQueryable()
+                .Where(x => x.SharedWith.Contains(userId))
+                .ToListAsync(cancellationToken);
+
+            return albums;
+        }
+
         public async Task<Album> UpdateAsync(
             Album album,
             CancellationToken cancellationToken)
@@ -62,14 +73,20 @@ namespace MagicMedia.Store.MongoDb
         {
             FilterDefinition<Album> filter = Builders<Album>.Filter.Empty;
 
+            if (request.SharedWithUserId.HasValue)
+            {
+                filter &= Builders<Album>.Filter.AnyEq(
+                    x => x.SharedWith, request.SharedWithUserId.Value);
+            }
+
             if (!string.IsNullOrWhiteSpace(request.SearchText))
             {
                 filter &= Builders<Album>.Filter.Regex(
                     x => x.Title,
-                    new BsonRegularExpression($".*{Regex.Escape(request.SearchText)}.*" , "i"));
+                    new BsonRegularExpression($".*{Regex.Escape(request.SearchText)}.*", "i"));
             }
 
-            if ( request.Persons is { } persons && persons.Any())
+            if (request.Persons is { } persons && persons.Any())
             {
                 FilterDefinition<AlbumPerson> personFilter = Builders<AlbumPerson>.Filter
                     .In(x => x.PersonId, persons);
@@ -86,6 +103,11 @@ namespace MagicMedia.Store.MongoDb
                 .ToListAsync();
 
             return new SearchResult<Album>(medias, (int)totalCount);
+        }
+
+        public async Task<IEnumerable<Album>> GetSharedWithAlbumsAsync(Guid userId, CancellationToken cancellationToken)
+        {
+            return null;
         }
     }
 }

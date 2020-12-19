@@ -8,23 +8,9 @@ using MagicMedia.Search;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
-using SixLabors.ImageSharp.ColorSpaces;
 
 namespace MagicMedia.Store.MongoDb
 {
-    public class DefaultMongoOptions
-    {
-        public static UpdateOptions Update => new UpdateOptions();
-
-        public static DeleteOptions Delete => new DeleteOptions();
-
-        public static InsertOneOptions InsertOne => new InsertOneOptions();
-
-        public static InsertManyOptions InsertMany => new InsertManyOptions();
-
-        public static ReplaceOptions Replace => new ReplaceOptions();
-    }
-
     public class MongoMediaStore : IMediaStore
     {
         private readonly MediaStoreContext _mediaStoreContext;
@@ -37,7 +23,8 @@ namespace MagicMedia.Store.MongoDb
             IAlbumStore albumStore,
             ICameraStore cameraStore,
             IPersonStore personStore,
-            IMediaAIStore mediaAIStore)
+            IMediaAIStore mediaAIStore,
+            IUserStore userStore)
         {
             _mediaStoreContext = mediaStoreContext;
             Thumbnails = thumbnailBlobStore;
@@ -47,6 +34,7 @@ namespace MagicMedia.Store.MongoDb
             Cameras = cameraStore;
             Persons = personStore;
             MediaAI = mediaAIStore;
+            Users = userStore;
         }
 
         public IFaceStore Faces { get; }
@@ -58,6 +46,8 @@ namespace MagicMedia.Store.MongoDb
         public IPersonStore Persons { get; }
 
         public IMediaAIStore MediaAI { get; }
+
+        public IUserStore Users { get; }
 
         public IThumbnailBlobStore Thumbnails { get; }
 
@@ -108,13 +98,15 @@ namespace MagicMedia.Store.MongoDb
         }
 
         private async Task<FilterDefinition<Media>> BuildFilterFromRequestAsync(
-            SearchMediaRequest request, Func<Guid, CancellationToken, Task<IEnumerable<Guid>>>? albumMediaResolver,
+            SearchMediaRequest request,
+            Func<Guid, CancellationToken, Task<IEnumerable<Guid>>>? albumMediaResolver,
             CancellationToken cancellationToken)
         {
             FilterDefinition<Media>? filter = await new MediaFilterBuilder(
                 _mediaStoreContext,
                 albumMediaResolver,
                 cancellationToken)
+                .AddAuthorizedOn(request.AuthorizedOnMedia)
                 .AddFolder(request.Folder)
                 .AddPersons(request.Persons)
                 .AddCities(request.Cities)
@@ -287,16 +279,32 @@ namespace MagicMedia.Store.MongoDb
                 .ToListAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<string>> GetAllFoldersAsync(CancellationToken cancellationToken)
+        public async Task<IEnumerable<string>> GetAllFoldersAsync(
+            IEnumerable<Guid>? ids,
+            CancellationToken cancellationToken)
         {
-            return await _mediaStoreContext.Medias.AsQueryable()
-                .Where(x => x.Folder != null)
+            IMongoQueryable<Media> query = _mediaStoreContext.Medias.AsQueryable()
+                .Where(x => x.Folder != null);
+
+            query = AddAuthorizedOnFilterAsync(query, ids);
+
+            return await query
                 .Select(x => x.Folder!)
                 .Distinct()
                 .ToListAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<Media>> GetMediaWithoutAISourceAsync( 
+        public IMongoQueryable<Media> AddAuthorizedOnFilterAsync(IMongoQueryable<Media> query, IEnumerable<Guid>? ids)
+        {
+            if (ids != null)
+            {
+                query = query.Where(x => ids.Contains(x.Id));
+            }
+
+            return query;
+        }
+
+        public async Task<IEnumerable<Media>> GetMediaWithoutAISourceAsync(
             AISource source,
             int limit,
             CancellationToken cancellationToken)
@@ -312,11 +320,15 @@ namespace MagicMedia.Store.MongoDb
         }
 
         public async Task<IEnumerable<SearchFacetItem>> GetGroupedCitiesAsync(
-                CancellationToken cancellationToken)
+            IEnumerable<Guid>? mediaIds,
+            CancellationToken cancellationToken)
         {
+            BsonDocument? idMatch = AggregationPipelineFactory.CreateMatchInStage(mediaIds);
+
             IEnumerable<BsonDocument> docs = await _mediaStoreContext.ExecuteAggregation(
                 CollectionNames.Media,
                 "Media_GroupByCity",
+                idMatch,
                 cancellationToken);
 
             var result = new List<SearchFacetItem>();
@@ -337,6 +349,8 @@ namespace MagicMedia.Store.MongoDb
             return result.OrderByDescending(x => x.Count);
         }
 
+
+
         public async Task<IEnumerable<Guid>> GetIdsByFolderAsync(
             string folder,
             CancellationToken cancellationToken)
@@ -352,15 +366,20 @@ namespace MagicMedia.Store.MongoDb
 
             IAsyncCursor<BsonDocument> cursor = await _mediaStoreContext.Medias.FindAsync(filter, options, cancellationToken);
             List<BsonDocument> docs = await cursor.ToListAsync(cancellationToken);
+
             return docs.Select(x => x["_id"].AsGuid);
         }
 
         public async Task<IEnumerable<SearchFacetItem>> GetGroupedCountriesAsync(
+            IEnumerable<Guid>? mediaIds,
             CancellationToken cancellationToken)
         {
+            BsonDocument? idMatch = AggregationPipelineFactory.CreateMatchInStage(mediaIds);
+
             IEnumerable<BsonDocument> docs = await _mediaStoreContext.ExecuteAggregation(
                 CollectionNames.Media,
                 "Media_GroupByCountry",
+                idMatch,
                 cancellationToken);
 
             var result = new List<SearchFacetItem>();
@@ -409,6 +428,7 @@ namespace MagicMedia.Store.MongoDb
 
         public async Task<IEnumerable<MediaGeoLocation>> FindMediaInGeoBoxAsync(
             GeoBox box,
+            IEnumerable<Guid>? mediaIds,
             int limit,
             CancellationToken cancellation)
         {
@@ -418,6 +438,11 @@ namespace MagicMedia.Store.MongoDb
                box.SouthWest.Latitude,
                box.NorthEast.Longitude,
                box.NorthEast.Latitude);
+
+            if (mediaIds != null)
+            {
+                filter  &= Builders<Media>.Filter.In(x => x.Id, mediaIds);
+            }
 
             var medias = await _mediaStoreContext.Medias.Find(filter)
                 .Limit(limit)

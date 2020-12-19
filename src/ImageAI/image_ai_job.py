@@ -13,7 +13,6 @@ class ImageAIJob:
 
     def __init__(self):
         self.detector = ObjectDetector()
-        # 'http://host.docker.internal:5000/api/' #
         self.base_url = os.environ["MEDIA_API_URL"]
         print("API Url: {}".format(self.base_url))
 
@@ -22,6 +21,8 @@ class ImageAIJob:
         r = requests.get(
             '{}ai/MediaWithoutImageAISource'.format(self.base_url))
         medias = r.json()
+
+        print("Found {} images without ImageAI".format(len(medias)))
 
         for media in medias:
 
@@ -60,6 +61,8 @@ class ImageAIJob:
             r_save = requests.post(
                 '{}ai/save'.format(self.base_url), json=result)
 
+        return len(medias)
+
 
 if __name__ == "__main__":
     job = ImageAIJob()
@@ -67,7 +70,9 @@ if __name__ == "__main__":
     error_count = 0
     while True:
         try:
-            job.run()
+            count = job.run()
+            if count == 0:
+                time.sleep(600)
         except Exception as e:
             print(str(e))
             time.sleep(5)

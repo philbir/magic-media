@@ -27,6 +27,7 @@
               <v-row>
                 <v-col cols="12" md="6">
                   <v-text-field
+                    v-if="userActions.album.edit"
                     v-model="album.title"
                     label="Title"
                     required
@@ -55,7 +56,7 @@
                             <v-list-item-avatar size="32">
                               <img
                                 :alt="person.name"
-                                :src="`/api/media/thumbnail/face/${person.faceId}`"
+                                :src="`/api/face/${person.faceId}/thumbnail`"
                               />
                             </v-list-item-avatar>
                             <v-list-item-content>
@@ -141,7 +142,33 @@
                 </v-chip>
               </div>
             </v-col>
-            <v-col sm="6"><h4>Shared with</h4></v-col>
+            <v-col sm="6">
+              <h4>Shared with</h4>
+
+              <v-autocomplete
+                v-model="sharedWithUsers"
+                :items="allUsers"
+                text-color="white"
+                chips
+                item-text="name"
+                multiple
+                return-object
+              >
+                <template v-slot:selection="data">
+                  <v-chip
+                    v-bind="data.attrs"
+                    :input-value="data.selected"
+                    text-color="white"
+                    color="blue darken-4"
+                    close
+                    @click="data.select"
+                    @click:close="removeSharedWith(data.item)"
+                  >
+                    {{ data.item.name }}
+                  </v-chip>
+                </template>
+              </v-autocomplete>
+            </v-col>
           </v-row>
         </div>
       </v-card-text>
@@ -150,19 +177,32 @@
       <v-divider></v-divider>
 
       <v-card-actions class="pa-1">
-        <v-btn color="blue darken-1" text @click="toggleView">
+        <v-btn
+          v-if="userActions.album.edit"
+          color="blue darken-1"
+          text
+          @click="toggleView"
+        >
           {{ view === "settings" ? "Details" : "Settings" }}
         </v-btn>
 
         <v-spacer></v-spacer>
 
-        <v-btn color="blue darken-1" text @click="cancel"> Cancel </v-btn>
-        <v-btn color="red darken-1" text @click="deleteAlbum"> Delete </v-btn>
+        <v-btn color="blue darken-1" text @click="cancel"> Close </v-btn>
         <v-btn
+          v-if="userActions.album.edit"
+          color="red darken-1"
+          text
+          @click="deleteAlbum"
+        >
+          Delete
+        </v-btn>
+        <v-btn
+          v-if="userActions.album.edit"
           color="primary"
           text
           @click="save"
-          :disabled="album.title == originalTitle"
+          :disabled="false"
         >
           Save
         </v-btn>
@@ -174,7 +214,7 @@
 import { getFlagUrl } from "../../services/countryFlags";
 import { getAlbumById, getAlbumMedia } from "../../services/albumService";
 import AlbumMedia from "./AlbumMedia.vue";
-import { mapActions } from "vuex";
+import { mapActions, mapGetters, mapState } from "vuex";
 export default {
   components: { AlbumMedia },
   props: {
@@ -193,6 +233,7 @@ export default {
       valid: true,
       originalTitle: null,
       view: "details",
+      sharedWithUsers: [],
     };
   },
   watch: {
@@ -202,10 +243,13 @@ export default {
       } else {
         this.album = {};
         this.medias = [];
+        this.sharedWithUsers = [];
       }
     },
   },
   computed: {
+    ...mapGetters("user", ["userActions"]),
+    ...mapState("user", { allUsers: "all" }),
     isOpen: {
       get() {
         return this.show;
@@ -247,6 +291,9 @@ export default {
       const res = await getAlbumById(id);
       this.album = res.data.album;
       this.originalTitle = this.album.title;
+      this.sharedWithUsers = this.allUsers.filter((x) =>
+        this.album.sharedWith.includes(x.id)
+      );
 
       const mediaRes = await getAlbumMedia(id);
 
@@ -256,6 +303,7 @@ export default {
       this.saveAlbum({
         title: this.album.title,
         id: this.album.id,
+        sharedWith: this.sharedWithUsers.map((x) => x.id),
       });
       this.close();
     },
@@ -279,6 +327,10 @@ export default {
     removeFilter: function (key) {
       const idx = this.album.filters.findIndex((x) => x.key === key);
       this.album.filters.splice(idx, 1);
+    },
+    removeSharedWith: function (user) {
+      const idx = this.sharedWithUsers.findIndex((x) => x.id == user.id);
+      this.sharedWithUsers.splice(idx, 1);
     },
     flagUrl: function (country) {
       return getFlagUrl(country.code, 32);

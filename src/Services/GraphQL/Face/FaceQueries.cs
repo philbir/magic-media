@@ -10,12 +10,10 @@ namespace MagicMedia.GraphQL.Face
     [ExtendObjectType(Name = "Query")]
     public class FaceQueries
     {
-        private readonly IMediaStore _mediaStore;
         private readonly IFaceService _faceService;
 
-        public FaceQueries(IMediaStore mediaStore, IFaceService faceService)
+        public FaceQueries(IFaceService faceService)
         {
-            _mediaStore = mediaStore;
             _faceService = faceService;
         }
 
@@ -23,7 +21,7 @@ namespace MagicMedia.GraphQL.Face
             SearchFacesRequest request,
             CancellationToken cancellationToken)
         {
-            return await _mediaStore.Faces.SearchAsync(request, cancellationToken);
+            return await _faceService.SearchAsync(request, cancellationToken);
         }
     }
 }

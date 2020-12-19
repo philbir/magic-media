@@ -1,5 +1,5 @@
 <template>
-  <v-card tile flat>
+  <v-card tile flat v-if="items.length > 1">
     <v-card-title v-if="!showFilter">
       <v-subheader>{{ title }}</v-subheader>
     </v-card-title>
@@ -86,7 +86,7 @@ export default {
     },
   },
   created() {
-    this.expanded = this.open;
+    this.expanded = this.open || !this.showFilter;
   },
   data() {
     return {

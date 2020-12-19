@@ -9,7 +9,7 @@
           <v-spacer></v-spacer>
           <v-col sm="3">
             <img
-              :src="'/api/media/thumbnail/' + face.thumbnail.id"
+              :src="`/api/face/${face.id}/thumbnail/${face.thumbnail.id}`"
               class="dialog-face-image"
             />
           </v-col>
@@ -94,6 +94,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
   created() {
     this.faceData = this.face;
@@ -109,7 +110,7 @@ export default {
   },
   watch: {
     faceId: function (newValue) {
-      if (newValue) {
+      if (newValue /*&& this.userActions.face.edit*/) {
         this.dialog = true;
       }
     },
@@ -120,6 +121,7 @@ export default {
     },
   },
   computed: {
+    ...mapGetters("user", ["userActions"]),
     personNames: function () {
       return this.$store.state.person.persons.map((item) => item.name);
     },

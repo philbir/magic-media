@@ -10,10 +10,14 @@ namespace MagicMedia.GraphQL
     public class AlbumResolvers
     {
         private readonly IAlbumService _albumService;
+        private readonly IAlbumMediaIdResolver _albumMediaIdResolver;
 
-        public AlbumResolvers(IAlbumService albumService)
+        public AlbumResolvers(
+            IAlbumService albumService,
+            IAlbumMediaIdResolver albumMediaIdResolver)
         {
             _albumService = albumService;
+            _albumMediaIdResolver = albumMediaIdResolver;
         }
 
         public async Task<MediaThumbnail?> GetThumbnailAsync(
@@ -43,7 +47,7 @@ namespace MagicMedia.GraphQL
             Album album,
             CancellationToken cancellationToken)
         {
-            return await _albumService.GetMediaIdsAsync(album, cancellationToken);
+            return await _albumMediaIdResolver.GetMediaIdsAsync(album, cancellationToken);
         }
     }
 }

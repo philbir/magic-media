@@ -4,7 +4,7 @@
       class="thumb"
       v-for="id in medias"
       :key="id"
-      :src="`/api/media/thumbnail/media/${id}/S`"
+      :src="`/api/media/${id}/thumbnail/S`"
       :ref="'img' + id"
       @click="onClick(id)"
     />

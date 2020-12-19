@@ -1,6 +1,5 @@
 query searchPersons($input: SearchPersonRequestInput!) {
  searchPersons(input: $input) {
-    
     items {
       id
       name
@@ -10,7 +9,6 @@ query searchPersons($input: SearchPersonRequestInput!) {
         name
       }
       thumbnail{
-
         dataUrl
       }
       summary{

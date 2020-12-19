@@ -30,6 +30,8 @@ namespace MagicMedia.Store
         public GeoRadiusFilter? GeoRadius { get; set; }
 
         public string? Date { get; set; }
+
+        public IEnumerable<Guid>? AuthorizedOnMedia { get; set; }
     }
 
     public class GeoRadiusFilter

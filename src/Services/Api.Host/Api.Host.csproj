@@ -15,11 +15,17 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\AspNetCore\Shared.AspNetCore.csproj" />
+    <ProjectReference Include="..\Authorization\Authorization.csproj" />
     <ProjectReference Include="..\AzureAI\AzureAI.csproj" />
     <ProjectReference Include="..\BingMaps\BingMaps.csproj" />
     <ProjectReference Include="..\Core\Core.csproj" />
     <ProjectReference Include="..\GraphQL\GraphQL.csproj" />
     <ProjectReference Include="..\Store.MongoDb\Store.MongoDb.csproj" />
+  </ItemGroup>
+
+
+  <ItemGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <Compile Remove="AuthenticationExtensions.Dev.cs" />
   </ItemGroup>
 
 </Project>

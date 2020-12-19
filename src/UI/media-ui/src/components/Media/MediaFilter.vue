@@ -13,8 +13,10 @@
       </v-btn>
     </v-row>
 
-    <FolderTree v-if="activeTabId == 'folder'"></FolderTree>
-
+    <div v-if="activeTabId == 'folder'">
+      <FolderTree></FolderTree>
+      <album-filter></album-filter>
+    </div>
     <date-filter v-if="activeTabId == 'date'"></date-filter>
 
     <div v-if="activeTabId == 'person'">
@@ -31,7 +33,6 @@
       <AITagsFilter></AITagsFilter>
 
       <AIObjectsFilter></AIObjectsFilter>
-      <album-filter></album-filter>
 
       <media-type-filter></media-type-filter>
     </div>

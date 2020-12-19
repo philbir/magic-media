@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Extensions;
@@ -25,7 +24,7 @@ namespace MagicMedia
         {
             var ages = new List<PersonTimelineAge>();
 
-            Person person = await _store.Persons.GetByIdAsnc(personId, cancellationToken);
+            Person person = await _store.Persons.GetByIdAsync(personId, cancellationToken);
 
             IEnumerable<MediaFace> faces = await _store.Faces.GetFacesByPersonAsync(
                 personId,

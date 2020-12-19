@@ -1,6 +1,7 @@
 import Vue from "vue";
 
 import { createGroup, getAllPersons, updatePerson, getAllGroups, search, buildModel } from "../services/personService";
+import { excuteGraphQL } from "./graphqlClient"
 
 const personModule = {
   namespaced: true,
@@ -56,69 +57,62 @@ const personModule = {
     }
   },
   actions: {
-    async search({ commit, state }) {
-      try {
-        commit("SET_SEARCH_LOADING", true);
-        const res = await search(state.filter);
-        commit("SEARCH_COMPLETED", res.data.searchPersons);
-      } catch (ex) {
-        this.$magic.snack("Error loading", "ERROR");
+    async search({ commit, state, dispatch }) {
+      commit("SET_SEARCH_LOADING", true);
+      const result = await excuteGraphQL(() => search(state.filter), dispatch);
+
+      if (result.success) {
+        commit("SEARCH_COMPLETED", result.data.searchPersons);
+
+      }
+      commit("SET_SEARCH_LOADING", false);
+    },
+    async getAll({ commit, dispatch }) {
+      const result = await excuteGraphQL(() => getAllPersons(), dispatch);
+
+      if (result.success) {
+        commit("PERSONS_LOADED", result.data.persons);
       }
     },
-    async getAll({ commit }) {
-      try {
-        const res = await getAllPersons();
-        commit("PERSONS_LOADED", res.data.persons);
-      } catch (ex) {
-        console.error(ex);
+    async getAllGroups({ commit, dispatch }) {
+      const result = await excuteGraphQL(() => getAllGroups(), dispatch);
+
+      if (result.success) {
+        commit("GROUPS_LOADED", result.data.groups);
       }
     },
-    async getAllGroups({ commit }) {
-      try {
-        const res = await getAllGroups();
-        commit("GROUPS_LOADED", res.data.groups);
-      } catch (ex) {
-        console.error(ex);
-      }
-    },
-    async update({ commit }, input) {
-      try {
-        const res = await updatePerson(input);
-        commit("PERSON_UPDATED", res.data.updatePerson.person);
+    async update({ commit, dispatch }, input) {
+      const result = await excuteGraphQL(() => updatePerson(input), dispatch);
+
+      if (result.success) {
+        commit("PERSON_UPDATED", result.data.updatePerson.person);
 
         if (input.newGroups.length > 0) {
-          res.data.updatePerson.person.groups.forEach(group => {
+          result.data.updatePerson.person.groups.forEach(group => {
             commit('GROUP_ADDED', group)
           });
         }
-
-      } catch (ex) {
-        console.error(ex);
       }
     },
-    async addGroup({ commit }, name) {
-      try {
-        const res = await createGroup(name);
-        commit("GROUP_ADDED", res.data.createGroup.group);
-      } catch (ex) {
-        console.error(ex);
+    async addGroup({ commit, dispatch }, name) {
+      const result = await excuteGraphQL(() => createGroup(name), dispatch);
+
+      if (result.success) {
+        commit("GROUP_ADDED", result.data.createGroup.group);
       }
     },
     async buildModel({ dispatch }) {
-      try {
-        const res = await buildModel();
+      const result = await excuteGraphQL(() => buildModel(), dispatch);
 
+      if (result.success) {
         dispatch(
           "snackbar/addSnack",
           {
-            text: `Person model build. (${res.data.buildPersonModel.faceCount} faces)`,
+            text: `Person model build. (${result.data.buildPersonModel.faceCount} faces)`,
             type: "SUCCESS"
           },
           { root: true }
         );
-
-      } catch (ex) {
-        console.error(ex);
       }
     },
     filter: function ({ commit, dispatch }, filter) {
