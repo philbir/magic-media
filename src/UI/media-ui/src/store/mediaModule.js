@@ -14,6 +14,8 @@ import {
 } from "../services/mediaService";
 
 import MediaFilterManager from '../services/mediaFilterManager';
+import { excuteGraphQL } from "./graphqlClient"
+import { mediaOperationTypeMap } from "../services/mediaOperationService";
 
 const getMediaIdsFromIndexes = state => {
   const ids = [];
@@ -22,7 +24,6 @@ const getMediaIdsFromIndexes = state => {
   }
   return ids;
 };
-
 
 const fm = new MediaFilterManager();
 
@@ -38,6 +39,7 @@ const mediaModule = {
       name: "Home",
       children: []
     },
+    viewerHeaderLoading: false,
     current: null,
     totalLoaded: 0,
     currentMediaId: null,
@@ -144,6 +146,9 @@ const mediaModule = {
         state.selectedIndexes = [];
       }
     },
+    SET_HEADER_LOADING: function (state, loading) {
+      state.viewerHeaderLoading = loading;
+    },
     SELECTED: function (state, payload) {
       const { idx, multi } = payload;
       const current = [...state.selectedIndexes];
@@ -206,14 +211,17 @@ const mediaModule = {
     }
   },
   actions: {
-    async search({ commit, state }) {
-      try {
-        commit("SET_MEDIALIST_LOADING", true);
+    async search({ commit, state, dispatch }) {
+      commit("SET_MEDIALIST_LOADING", true);
 
-        const res = await searchMedia(state.filter, state.thumbnailSize);
-        commit("MEDIAITEMS_LOADED", res.data.searchMedia);
-      } catch (ex) {
-        this.$magic.snack("Error loading", "ERROR");
+      const result = await excuteGraphQL(() => searchMedia(state.filter, state.thumbnailSize), dispatch);
+
+      if (result.success) {
+
+        commit("MEDIAITEMS_LOADED", result.data.searchMedia);
+      }
+      else {
+        commit("SET_MEDIALIST_LOADING", false);
       }
     },
     async loadMore({ commit, state, dispatch }) {
@@ -222,133 +230,109 @@ const mediaModule = {
         dispatch("search");
       }
     },
-    async show({ commit }, id) {
-      try {
-        const res = await getById(id);
-        commit("DETAILS_LOADED", res.data.mediaById);
-      } catch (ex) {
-        console.error(ex);
+    async show({ commit, dispatch }, id) {
+      const result = await excuteGraphQL(() => getById(id), dispatch);
+
+      if (result.success) {
+        commit("DETAILS_LOADED", result.data.mediaById);
       }
     },
-    async getFolderTree({ commit }) {
-      try {
-        const res = await getFolderTree();
-        commit("FOLDER_TREE_LOADED", res.data.folderTree);
-      } catch (ex) {
-        this.$magic.snack("Error loading", "ERROR");
+    async getFolderTree({ commit, dispatch }) {
+      const result = await excuteGraphQL(() => getFolderTree(), dispatch);
+
+      if (result.success) {
+        commit("FOLDER_TREE_LOADED", result.data.folderTree);
       }
+
     },
-    async moveSelected({ commit, state, dispatch, getters }, newLocation) {
+    async startOperation({ commit, dispatch }, operation) {
+      const result = await excuteGraphQL(() => operation.api, dispatch);
+
+      if (result.success) {
+        const operationId = result.data[operation.dataField].operationId;
+
+        commit("OPERATION_COMMITED", operationId);
+
+        dispatch(
+          "snackbar/operationStarted",
+          {
+            id: operationId,
+            type: "INFO",
+            title: mediaOperationTypeMap[operation.type].title,
+            totalCount: operation.ids.length,
+            text: mediaOperationTypeMap[operation.type].title
+          },
+          { root: true }
+        );
+      }
+
+    },
+
+    async moveSelected({ state, dispatch, getters }, newLocation) {
       if (!getters["canEdit"])
         return;
 
-      try {
-        const ids = getMediaIdsFromIndexes(state);
-        const res = await moveMedia({
+      const ids = getMediaIdsFromIndexes(state);
+
+      const operation = {
+        type: 0,
+        api: moveMedia({
           ids,
           newLocation
-        });
-
-        commit("OPERATION_COMMITED", res.data.moveMedia.operationId);
-
-        dispatch(
-          "snackbar/operationStarted",
-          {
-            id: res.data.moveMedia.operationId,
-            type: "INFO",
-            title: "Move media",
-            totalCount: ids.length,
-            text: "Move media"
-          },
-          { root: true }
-        );
-      } catch (ex) {
-        console.error(ex);
-        this.$magic.snack("Error loading", "ERROR");
+        }),
+        dataField: "moveMedia",
+        ids: ids,
       }
+
+      dispatch('startOperation', operation);
     },
-    async recycle({ commit, state, dispatch, getters }, ids) {
+    async recycle({ state, dispatch, getters }, ids) {
 
       if (!getters["canEdit"])
         return;
 
-      try {
-        ids = ids ?? getMediaIdsFromIndexes(state);
-        const res = await recycleMedia({
+      ids = ids ?? getMediaIdsFromIndexes(state);
+      const operation = {
+        type: 1,
+        api: recycleMedia({
           ids
-        });
-
-        commit("OPERATION_COMMITED", res.data.recycleMedia.operationId);
-
-        dispatch(
-          "snackbar/operationStarted",
-          {
-            id: res.data.recycleMedia.operationId,
-            type: "INFO",
-            title: "Recycle media",
-            totalCount: ids.length,
-            text: "Recycle media"
-          },
-          { root: true }
-        );
-      } catch (ex) {
-        console.error(ex);
-        this.$magic.snack("Error loading", "ERROR");
+        }),
+        dataField: "recycleMedia",
+        ids: ids,
       }
+
+      dispatch('startOperation', operation);
+
     },
-    async delete({ commit, state, dispatch, getters }, ids) {
+    async delete({ state, dispatch, getters }, ids) {
       if (!getters["canEdit"])
         return;
 
-      try {
-        ids = ids ?? getMediaIdsFromIndexes(state);
-        const res = await deleteMedia({
+      ids = ids ?? getMediaIdsFromIndexes(state);
+
+      const operation = {
+        type: 4,
+        api: deleteMedia({
           ids
-        });
-
-        commit("OPERATION_COMMITED", res.data.deleteMedia.operationId);
-
-        dispatch(
-          "snackbar/operationStarted",
-          {
-            id: res.data.deleteMedia.operationId,
-            type: "INFO",
-            title: "Delete media",
-            totalCount: ids.length,
-            text: "Delete media"
-          },
-          { root: true }
-        );
-      } catch (ex) {
-        console.error(ex);
-        this.$magic.snack("Error loading", "ERROR");
+        }),
+        dataField: "deleteMedia",
+        ids: ids,
       }
+
+      dispatch('startOperation', operation);
     },
-    async updateMetadata({ commit, dispatch, getters }, input) {
+    async updateMetadata({ dispatch, getters }, input) {
 
       if (!getters["canEdit"])
         return;
 
-      try {
-        const res = await updateMetadata(input);
-
-        commit("OPERATION_COMMITED", res.data.updateMediaMetadata.operationId);
-
-        dispatch(
-          "snackbar/operationStarted",
-          {
-            id: res.data.updateMediaMetadata.operationId,
-            type: "INFO",
-            title: "Update metadata",
-            totalCount: input.ids.length,
-            text: "Update metadata"
-          },
-          { root: true }
-        );
-      } catch (ex) {
-        console.error(ex);
-        this.$magic.snack("Error loading", "ERROR");
+      const operation = {
+        type: 2,
+        api: updateMetadata(input),
+        dataField: "updateMediaMetadata",
+        ids: input.ids,
       }
+      dispatch('startOperation', operation);
     },
     close({ commit }) {
       commit("MEDIA_CLOSED");
@@ -375,21 +359,22 @@ const mediaModule = {
       commit("FILTER_REMOVED", key);
       dispatch("search");
     },
-    async loadDetails({ commit }, id) {
-      try {
-        const res = await getById(id);
-        commit("DETAILS_LOADED", res.data.mediaById);
-      } catch (ex) {
-        console.error(ex);
+    async loadDetails({ commit, dispatch }, id) {
+
+      const result = await excuteGraphQL(() => getById(id), dispatch);
+
+      if (result.success) {
+        commit("DETAILS_LOADED", result.data.mediaById);
       }
+
     },
-    async getSearchFacets({ commit }) {
-      try {
-        const res = await getSearchFacets();
-        commit("SEARCH_FACETS_LOADED", res.data.facets);
-      } catch (ex) {
-        console.error(ex);
+    async getSearchFacets({ commit, dispatch }) {
+      const result = await excuteGraphQL(() => getSearchFacets(), dispatch);
+
+      if (result.success) {
+        commit("SEARCH_FACETS_LOADED", result.data.facets);
       }
+
     },
     toggleUploadDialog: function ({ commit }, open) {
       commit("UPLOAD_DIALOG_TOGGLED", open);
@@ -409,26 +394,34 @@ const mediaModule = {
     clearSelected: function ({ commit }) {
       commit("CLEAR_SELECTED");
     },
-    async toggleFavorite({ commit, getters }, media) {
+    async toggleFavorite({ commit, getters, dispatch }, media) {
       if (!getters["canEdit"])
         return;
 
-      await toggleFavorite(media.id, !media.isFavorite);
-      commit("FAVORITE_TOGGLED", media);
+      const result = await excuteGraphQL(() => toggleFavorite(media.id, !media.isFavorite), dispatch);
+
+      if (result.success) {
+        commit("FAVORITE_TOGGLED", media);
+      }
     },
-    async analyseAI({ dispatch, getters }, id) {
+    async analyseAI({ dispatch, getters, commit }, id) {
       if (!getters["canEdit"])
         return;
 
-      await analyseMedia(id);
+      commit('SET_HEADER_LOADING', true);
+      const result = await excuteGraphQL(() => analyseMedia(id), dispatch);
 
-      dispatch('loadDetails', id);
+      if (result.success) {
+        dispatch('loadDetails', id);
 
-      dispatch(
-        "snackbar/addSnack",
-        { text: "Cloud AI analyze completed.", type: "SUCCESS" },
-        { root: true }
-      );
+        dispatch(
+          "snackbar/addSnack",
+          { text: "Cloud AI analyze completed.", type: "SUCCESS" },
+          { root: true }
+        );
+      }
+
+      commit('SET_HEADER_LOADING', false);
 
     },
     faceUpdated: function ({ dispatch }, face) {
@@ -463,7 +456,6 @@ const mediaModule = {
         return fm.buildDescriptions(rootState, state, state.filter.folder);
       }
       return [];
-
     }
   },
 

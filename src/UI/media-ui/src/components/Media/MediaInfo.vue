@@ -85,7 +85,7 @@
                   <v-col sm="6">
                     <img
                       class="face-image"
-                      :src="'/api/media/thumbnail/' + face.thumbnail.id"
+                      :src="`/api/face/${face.id}/thumbnail/${face.thumbnail.id}`"
                     />
                   </v-col>
                   <v-col sm="6">

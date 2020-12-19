@@ -12,6 +12,10 @@ namespace MagicMedia.Authorization
             public const string MediaView = nameof(MediaViewPolicy);
             public const string MediaEdit = nameof(MediaEditPolicy);
 
+            public const string FaceView = nameof(FaceViewPolicy);
+            public const string FaceEdit = nameof(FaceEditPolicy);
+
+
             public const string AlbumView = nameof(AlbumViewPolicy);
             public const string AlbumEdit = nameof(AlbumEditPolicy);
 
@@ -54,6 +58,27 @@ namespace MagicMedia.Authorization
             {
                 return new AuthorizationPolicyBuilder()
                     .RequirePermission(Permissions.Album.Edit)
+                    .Build();
+            }
+        }
+
+
+        public static AuthorizationPolicy FaceViewPolicy
+        {
+            get
+            {
+                return new AuthorizationPolicyBuilder()
+                    .AddRequirements(new AuhorizedOnFaceRequirement())
+                    .Build();
+            }
+        }
+
+        public static AuthorizationPolicy FaceEditPolicy
+        {
+            get
+            {
+                return new AuthorizationPolicyBuilder()
+                    .RequirePermission(Permissions.Face.Edit)
                     .Build();
             }
         }

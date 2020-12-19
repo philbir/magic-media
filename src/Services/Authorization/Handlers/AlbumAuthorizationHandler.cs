@@ -10,7 +10,6 @@ namespace MagicMedia.Authorization
     {
         private readonly IUserContextFactory _userContextFactory;
 
-
         public AlbumAuthorizationHandler(IUserContextFactory userContextFactory)
         {
             _userContextFactory = userContextFactory;

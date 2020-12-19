@@ -24,6 +24,14 @@ namespace MagicMedia
                     AuthorizationPolicies.MediaEditPolicy);
 
                 o.AddPolicy(
+                    AuthorizationPolicies.Names.FaceView,
+                    AuthorizationPolicies.FaceViewPolicy);
+
+                o.AddPolicy(
+                    AuthorizationPolicies.Names.FaceEdit,
+                    AuthorizationPolicies.FaceEditPolicy);
+
+                o.AddPolicy(
                     AuthorizationPolicies.Names.AlbumView,
                     AuthorizationPolicies.AlbumViewPolicy);
 
@@ -34,6 +42,7 @@ namespace MagicMedia
 
             services.AddSingleton<IAuthorizationHandler, MediaAuthorizationHandler>();
             services.AddSingleton<IAuthorizationHandler, AlbumAuthorizationHandler>();
+            services.AddSingleton<IAuthorizationHandler, FaceAuthorizationHandler>();
             services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
 
             return services;

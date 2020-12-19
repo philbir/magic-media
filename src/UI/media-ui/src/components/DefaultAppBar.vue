@@ -11,14 +11,15 @@
       class="mr-4 ml-1"
       v-show="loading"
     ></v-progress-circular>
+    <me-menu></me-menu>
   </v-app-bar>
 </template>
 
 <script>
 import AppBarNavMenu from "./AppBarNavMenu";
-
+import MeMenu from "./MeMenu";
 export default {
-  components: { AppBarNavMenu },
+  components: { AppBarNavMenu, MeMenu },
 
   data: () => ({}),
   computed: {

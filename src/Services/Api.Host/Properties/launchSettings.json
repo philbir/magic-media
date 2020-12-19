@@ -9,6 +9,16 @@
       },
       "dotnetRunMessages": "true",
       "applicationUrl": "http://localhost:5000/"
+    },
+    "Api.Host.Release": {
+      "commandName": "Project",
+      "launchBrowser": false,
+      "launchUrl": "graphql",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Production"
+      },
+      "dotnetRunMessages": "true",
+      "applicationUrl": "http://localhost:5000/"
     }
   }
 }

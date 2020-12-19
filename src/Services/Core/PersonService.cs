@@ -9,7 +9,6 @@ using MagicMedia.Security;
 using MagicMedia.Store;
 using MassTransit;
 using Serilog;
-using SixLabors.ImageSharp.ColorSpaces;
 
 namespace MagicMedia
 {

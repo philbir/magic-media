@@ -44,16 +44,17 @@
     <h4 class="white--text mr-4" v-if="totalLoaded > 0">
       {{ totalLoaded }} / {{ totalCount }}
     </h4>
+    <me-menu></me-menu>
   </v-app-bar>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
 import AppBarNavMenu from "../AppBarNavMenu";
-
+import MeMenu from "../MeMenu";
 export default {
   name: "App",
-  components: { AppBarNavMenu },
+  components: { AppBarNavMenu, MeMenu },
 
   data: () => ({}),
   computed: {

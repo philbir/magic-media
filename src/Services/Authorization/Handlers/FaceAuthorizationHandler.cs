@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Security;
 using Microsoft.AspNetCore.Authorization;
@@ -6,21 +7,24 @@ using Serilog;
 
 namespace MagicMedia.Authorization
 {
-
-    public class MediaAuthorizationHandler : AuthorizationHandler<AuhorizedOnMediaRequirement>
+    public class FaceAuthorizationHandler : AuthorizationHandler<AuhorizedOnFaceRequirement>
     {
         private readonly IUserContextFactory _userContextFactory;
 
-        public MediaAuthorizationHandler(IUserContextFactory userContextFactory)
+        public FaceAuthorizationHandler(IUserContextFactory userContextFactory)
         {
             _userContextFactory = userContextFactory;
         }
 
-        protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, AuhorizedOnMediaRequirement requirement)
+        protected override async Task HandleRequirementAsync(
+            AuthorizationHandlerContext context,
+            AuhorizedOnFaceRequirement requirement)
         {
-            IUserContext userContext = await _userContextFactory.CreateAsync(context.User, default);
+            IUserContext userContext = await _userContextFactory.CreateAsync(
+                context.User,
+                CancellationToken.None);
 
-            if (userContext.HasPermission(Permissions.Media.ViewAll))
+            if (userContext.HasPermission(Permissions.Face.ViewAll))
             {
                 context.Succeed(requirement);
             }
@@ -28,11 +32,14 @@ namespace MagicMedia.Authorization
             {
                 try
                 {
-                    Guid? mediaId = AuthorizationResourceIdResolver.TryGetId(context.Resource);
+                    Guid? faceId = AuthorizationResourceIdResolver.TryGetId(context.Resource);
 
-                    if (mediaId.HasValue)
+                    if (faceId.HasValue)
                     {
-                        bool isAuthorized = await userContext.IsAuthorizedAsync(mediaId, ProtectedResourceType.Media, default);
+                        bool isAuthorized = await userContext.IsAuthorizedAsync(
+                            faceId,
+                            ProtectedResourceType.Face,
+                            CancellationToken.None);
 
                         if (isAuthorized)
                         {

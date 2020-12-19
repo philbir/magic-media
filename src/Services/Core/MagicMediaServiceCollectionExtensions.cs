@@ -1,13 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using MagicMedia.Face;
 using MagicMedia.Metadata;
 using MagicMedia.Operations;
 using MagicMedia.Processing;
 using MagicMedia.Security;
-using MagicMedia.Store.MongoDb;
 using MagicMedia.Thumbnail;
 using MagicMedia.Video;
 using Microsoft.Extensions.Caching.Memory;

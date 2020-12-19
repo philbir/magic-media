@@ -1,4 +1,5 @@
 import Vue from "vue";
+import { excuteGraphQL } from "./graphqlClient"
 
 import {
   addItems,
@@ -46,70 +47,64 @@ const albumModule = {
   },
   actions: {
     async addItems({ commit, dispatch }, input) {
-      try {
-        const res = await addItems(input);
-        commit("ITEM_ADDED", res.data.addItemsToAlbum.album);
+      const result = await excuteGraphQL(() => addItems(input), dispatch);
+
+      if (result.success) {
+        commit("ITEM_ADDED", result.data.addItemsToAlbum.album);
 
         dispatch(
           "snackbar/addSnack",
           {
-            text: `Media aded to: Album ${res.data.addItemsToAlbum.album.title}`,
+            text: `Media aded to: Album ${result.data.addItemsToAlbum.album.title}`,
             type: "SUCCESS"
           },
           { root: true }
         );
-      } catch (ex) {
-        console.error(ex);
       }
     },
     async removeFolders({ dispatch }, input) {
-      try {
-        const res = await removeFolders(input);
+      const result = await excuteGraphQL(() => removeFolders(input), dispatch);
 
+      if (result.success) {
         dispatch(
           "snackbar/addSnack",
           {
-            text: `Folder removed from album: ${res.data.removeFoldersFromAlbum.album.title}`,
+            text: `Folder removed from album: ${result.data.removeFoldersFromAlbum.album.title}`,
             type: "SUCCESS"
           },
           { root: true }
         );
-      } catch (ex) {
-        console.error(ex);
       }
     },
     async update({ commit, dispatch }, input) {
-      try {
-        const res = await updateAlbum(input);
+      const result = await excuteGraphQL(() => updateAlbum(input), dispatch);
 
-        commit("ALBUM_UPDATED", res.data.updateAlbum.album);
+      if (result.success) {
+        commit("ALBUM_UPDATED", result.data.updateAlbum.album);
 
         dispatch(
           "snackbar/addSnack",
           {
-            text: `Album saved: ${res.data.updateAlbum.album.title}`,
+            text: `Album saved: ${result.data.updateAlbum.album.title}`,
             type: "SUCCESS"
           },
           { root: true }
         );
-      } catch (ex) {
-        console.error(ex);
       }
     },
-    async getAll({ commit }) {
-      try {
-        const res = await getAllAlbums();
-        commit("ALL_ALBUMS_LOADED", res.data.allAlbums);
-      } catch (ex) {
-        console.error(ex);
+    async getAll({ commit, dispatch }) {
+      const result = await excuteGraphQL(() => getAllAlbums(), dispatch);
+
+      if (result.success) {
+        commit("ALL_ALBUMS_LOADED", result.data.allAlbums);
+
       }
     },
-    async search({ state, commit }) {
-      try {
-        const res = await searchAlbums(state.filter);
-        commit("SEARCH_ITEMS_LOADED", res.data.searchAlbums);
-      } catch (ex) {
-        console.error(ex);
+    async search({ state, commit, dispatch }) {
+      const result = await excuteGraphQL(() => searchAlbums(state.filter), dispatch);
+
+      if (result.success) {
+        commit("SEARCH_ITEMS_LOADED", result.data.searchAlbums);
       }
     },
     filter: function ({ commit, dispatch }, filter) {

@@ -54,6 +54,14 @@
           </v-col>
           <v-spacer></v-spacer>
           <v-col class="mr-4" sm="2" align="right">
+            <v-progress-circular
+              indeterminate
+              :size="22"
+              :width="2"
+              color="white"
+              class="mr-4 ml-1"
+              v-show="headerLoading"
+            ></v-progress-circular>
             <v-icon
               :color="media.isFavorite ? 'red' : 'white'"
               class="mr-4"
@@ -314,6 +322,9 @@ export default {
   },
   computed: {
     ...mapGetters("user", ["userActions"]),
+    headerLoading: function () {
+      return this.$store.state.media.viewerHeaderLoading;
+    },
     thumbnail: function () {
       if (this.$store) {
         const existing = this.$store.state.media.list.filter(

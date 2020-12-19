@@ -2,5 +2,5 @@
 
 namespace MagicMedia.Authorization
 {
-    public class AuhorizedOnAlbumRequirement : IAuthorizationRequirement { }
+    public class AuhorizedOnFaceRequirement : IAuthorizationRequirement { }
 }

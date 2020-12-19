@@ -10,7 +10,6 @@ using MagicMedia.Store.MongoDb;
 using MagicMedia.Stores;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using MongoDB.Bson;
 using Serilog;
 
 namespace Playground

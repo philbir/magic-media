@@ -22,6 +22,7 @@
 
       <v-card-actions>
         <v-icon class="ml-2">mdi-tune-variant</v-icon>
+        <v-icon class="ml-4">mdi-help-circle-outline</v-icon>
 
         <v-spacer></v-spacer>
         <v-icon class="mr-0">mdi-logout</v-icon>

@@ -56,7 +56,7 @@
                             <v-list-item-avatar size="32">
                               <img
                                 :alt="person.name"
-                                :src="`/api/media/thumbnail/face/${person.faceId}`"
+                                :src="`/api/face/${person.faceId}/thumbnail`"
                               />
                             </v-list-item-avatar>
                             <v-list-item-content>

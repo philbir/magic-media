@@ -27,47 +27,14 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+import { resources, getAuthorized } from "../services/resources";
 export default {
   data: () => ({}),
   computed: {
+    ...mapState("user", ["me"]),
     navMenuItems: function () {
-      return [
-        {
-          text: "Media",
-          icon: "mdi-image",
-          route: "Home",
-        },
-        {
-          text: "Face",
-          icon: "mdi-face-recognition",
-          route: "Faces",
-        },
-        {
-          text: "Persons",
-          icon: "mdi-account-details",
-          route: "Persons",
-        },
-        {
-          text: "Albums",
-          icon: "mdi-image-album",
-          route: "Albums",
-        },
-        {
-          text: "Map",
-          icon: "mdi-map-search-outline",
-          route: "Map",
-        },
-        {
-          text: "Users",
-          icon: "mdi-account",
-          route: "Users",
-        },
-        {
-          text: "Settings",
-          icon: "mdi-tune-variant",
-          route: "Settings",
-        },
-      ];
+      return getAuthorized(resources.navMenu, this.me.permissions);
     },
   },
 };

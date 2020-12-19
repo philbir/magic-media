@@ -63,7 +63,7 @@ namespace MagicMedia.Api.Controllers
 
         [Authorize(AuthorizationPolicies.Names.MediaView)]
         [HttpGet]
-        [Route("thumbnail/media/{id}/{size?}")]
+        [Route("{id}/thumbnail/{size?}")]
         public async Task<IActionResult> ThumbnailByMediaAsync(
             Guid id,
             ThumbnailSizeName size = ThumbnailSizeName.M,
@@ -80,16 +80,6 @@ namespace MagicMedia.Api.Controllers
         }
 
 
-        [HttpGet]
-        [Route("thumbnail/face/{faceId}")]
-        public async Task<IActionResult> ThumbnailByFaceAsync(
-            Guid faceId,
-            CancellationToken cancellationToken)
-        {
-            MediaThumbnail thumb = await _faceService.GetThumbnailAsync(faceId, cancellationToken);
-
-            return new FileContentResult(thumb.Data, $"image/{thumb.Format}".ToLower());
-        }
 
         [HttpPost]
         [Route("upload")]

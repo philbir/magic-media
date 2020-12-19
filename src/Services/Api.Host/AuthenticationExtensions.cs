@@ -1,13 +1,12 @@
 using System;
+using System.IdentityModel.Tokens.Jwt;
 using System.Threading.Tasks;
 using IdentityModel;
 using MagicMedia.Api;
 using MagicMedia.Api.DevTokenAuthentication;
-using MagicMedia.Api.Security;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,13 +15,15 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace MagicMedia
 {
-    public static class AuthenticationExtensions
+    public static partial class AuthenticationExtensions
     {
         public static AuthenticationBuilder AddAuthentication(
             this IServiceCollection services,
             IWebHostEnvironment env,
             IConfiguration configuration)
         {
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
             SecurityOptions secOptions = configuration.GetSection("MagicMedia:Security")
                 .Get<SecurityOptions>();
 
@@ -87,11 +88,12 @@ namespace MagicMedia
 
             if (env.IsDevelopment())
             {
-                authBuilder.AddDevToken();
+                SetupDevelopmentAuthentication(authBuilder);
             }
-
 
             return authBuilder;
         }
+
+        static partial void SetupDevelopmentAuthentication(AuthenticationBuilder builder);
     }
 }

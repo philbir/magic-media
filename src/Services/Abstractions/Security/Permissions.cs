@@ -5,10 +5,23 @@ namespace MagicMedia.Security
 {
     public static class Permissions
     {
+        public static class General
+        {
+            public static readonly string Settings = "GENERAL_SETTINGS";
+        }
+
+
         public static class Media
         {
             public static readonly string ViewAll = "MEDIA_VIEW_ALL";
             public static readonly string Edit = "MEDIA_EDIT";
+        }
+
+        public static class Face
+        {
+            public static readonly string ViewAll = "FACE_VIEW_ALL";
+
+            public static readonly string Edit = "FACE_EDIT";
         }
 
         public static class Album
@@ -20,6 +33,7 @@ namespace MagicMedia.Security
         public static class Person
         {
             public static readonly string ViewAll = "PERSON_VIEW_ALL";
+            public static readonly string Edit = "PERSON_EDIT";
         }
 
         public static class User
@@ -37,9 +51,13 @@ namespace MagicMedia.Security
                 {
                     Media.ViewAll,
                     Media.Edit,
+                    Face.ViewAll,
+                    Face.Edit,
                     Album.ViewAll,
                     Album.Edit,
-                    Person.ViewAll
+                    Person.ViewAll,
+                    Person.Edit,
+                    General.Settings
                 }
             };
         }

@@ -31,5 +31,8 @@ namespace MagicMedia.Security
 
         public Task<IEnumerable<Guid>> GetAuthorizedAlbumAsync(CancellationToken cancellationToken)
             => throw new UnauthorizedAccessException(_message);
+
+        public Task<IEnumerable<Guid>> GetAuthorizedFaceAsync(CancellationToken cancellationToken)
+           => throw new UnauthorizedAccessException(_message);
     }
 }

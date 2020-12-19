@@ -158,7 +158,7 @@ import NotificationMenu from "../Common/NotificationMenu";
 import AddToAlbumDialog from "../Album/AddToAlbumDialog";
 import EditMediaDialog from "./EditMediaDialog";
 import GlobalEvents from "vue-global-events";
-import MeMenu from "../MeMenu.vue";
+import MeMenu from "../MeMenu";
 import { mapGetters } from "vuex";
 
 export default {

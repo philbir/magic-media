@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Store;
-using MagicMedia.Store.MongoDb;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace MagicMedia.Security
@@ -94,6 +93,27 @@ namespace MagicMedia.Security
 
                      return await GetAuthorizedOnMediaIdsInternalAsync(userId, cancellationToken);
                  });
+
+            return ids;
+        }
+
+        public async Task<IEnumerable<Guid>> GetAuthorizedOnFaceIdsAsync(
+            Guid userId,
+            CancellationToken cancellationToken)
+        {
+            var cachekey = $"auth_on_face_{userId}";
+
+            IEnumerable<Guid> ids = await _memoryCache.GetOrCreateAsync(
+                cachekey,
+                async (e) =>
+                {
+                    e.AbsoluteExpiration = DateTime.Now.Add(_cacheExpiration);
+                    IEnumerable<Guid> mediaIds = await GetAuthorizedOnMediaIdsAsync(
+                        userId,
+                        cancellationToken);
+
+                    return await _mediaStore.Faces.GetIdsByMediaAsync(mediaIds, cancellationToken);
+                });
 
             return ids;
         }

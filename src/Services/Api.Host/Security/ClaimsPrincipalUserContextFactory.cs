@@ -30,12 +30,22 @@ namespace MagicMedia.Api.Security
             return await CreateAsync(principal, cancellationToken);
         }
 
-        public async Task<IUserContext> CreateAsync(ClaimsPrincipal? principal, CancellationToken cancellationToken)
+        public async Task<IUserContext> CreateAsync(
+            ClaimsPrincipal? principal,
+            CancellationToken cancellationToken)
         {
             if (principal != null && principal.Identity != null && principal.Identity.IsAuthenticated)
             {
                 var subject = principal.Claims.FirstOrDefault(x => x.Type == "sub")?.Value;
-                User? user = await _userService.TryGetByIdAsync(Guid.Parse(subject), cancellationToken);
+
+                if (subject == null)
+                {
+                    throw new ApplicationException("No sub claim found");
+                }
+
+                User? user = await _userService.TryGetByIdAsync(
+                    Guid.Parse(subject),
+                    cancellationToken);
 
                 if (user != null)
                 {

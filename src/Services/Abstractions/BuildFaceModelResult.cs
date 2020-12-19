@@ -1,5 +1,3 @@
-using System;
-
 namespace MagicMedia.Face
 {
     public class BuildFaceModelResult

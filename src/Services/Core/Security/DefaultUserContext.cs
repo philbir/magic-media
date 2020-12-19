@@ -42,6 +42,11 @@ namespace MagicMedia.Security
             return await _userService.GetAuthorizedOnMediaIdsAsync(UserId!.Value, cancellationToken);
         }
 
+        public async Task<IEnumerable<Guid>> GetAuthorizedFaceAsync(CancellationToken cancellationToken)
+        {
+            return await _userService.GetAuthorizedOnFaceIdsAsync(UserId!.Value, cancellationToken);
+        }
+
         public async Task<IEnumerable<Guid>> GetAuthorizedAlbumAsync(CancellationToken cancellationToken)
         {
             return await _userService.GetAuthorizedOnAlbumIdsAsync(UserId!.Value, cancellationToken);
@@ -52,13 +57,19 @@ namespace MagicMedia.Security
             return Roles.Contains(role, StringComparer.InvariantCulture);
         }
 
-        public async Task<bool> IsAuthorizedAsync(object resourceId, ProtectedResourceType type, CancellationToken cancellationToken)
+        public async Task<bool> IsAuthorizedAsync(
+            object resourceId,
+            ProtectedResourceType type,
+            CancellationToken cancellationToken)
         {
             switch (type)
             {
                 case ProtectedResourceType.Media:
                     IEnumerable<Guid> ids = await GetAuthorizedMediaAsync(cancellationToken);
                     return ids.Contains((Guid)resourceId);
+                case ProtectedResourceType.Face:
+                    IEnumerable<Guid> faceIds = await GetAuthorizedFaceAsync(cancellationToken);
+                    return faceIds.Contains((Guid)resourceId);
                 case ProtectedResourceType.Album:
                     IEnumerable<Guid> albumIds = await GetAuthorizedAlbumAsync(cancellationToken);
                     return albumIds.Contains((Guid)resourceId);

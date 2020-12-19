@@ -5,7 +5,6 @@ using MagicMedia;
 using MagicMedia.AzureAI;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models;
 using SixLabors.ImageSharp;
 
 namespace Sample.Web.Controllers

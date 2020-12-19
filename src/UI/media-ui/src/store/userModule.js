@@ -1,11 +1,12 @@
 
 import { createUserFromPerson, getAllUsers, getMe } from "../services/userService";
+import { excuteGraphQL } from "./graphqlClient"
 
 const userModule = {
     namespaced: true,
     state: () => ({
         all: [],
-        me: {}
+        me: null
     }),
     mutations: {
         USER_ADDED: function (state, user) {
@@ -19,28 +20,25 @@ const userModule = {
         }
     },
     actions: {
-        async getAll({ commit }) {
-            try {
-                const res = await getAllUsers();
-                commit("ALL_USERS_LOADED", res.data.allUsers);
-            } catch (ex) {
-                console.error(ex);
+        async getAll({ commit, dispatch }) {
+            const result = await excuteGraphQL(() => getAllUsers(), dispatch);
+
+            if (result.success) {
+                commit("ALL_USERS_LOADED", result.data.allUsers);
             }
         },
-        async getMe({ commit }) {
-            try {
-                const res = await getMe();
-                commit("ME_LOADED", res.data.me);
-            } catch (ex) {
-                console.error(ex);
+        async getMe({ commit, dispatch }) {
+            const result = await excuteGraphQL(() => getMe(), dispatch);
+
+            if (result.success) {
+                commit("ME_LOADED", result.data.me);
             }
         },
-        async createFromPerson({ commit }, payload) {
-            try {
-                const res = await createUserFromPerson(payload.personId, payload.email);
-                commit("USER_ADDED", res.data.User_CreateFromPerson.user);
-            } catch (ex) {
-                console.error(ex);
+        async createFromPerson({ commit, dispatch }, payload) {
+            const result = await excuteGraphQL(() => createUserFromPerson(payload.personId, payload.email), dispatch);
+
+            if (result.success) {
+                commit("USER_ADDED", result.data.User_CreateFromPerson.user);
             }
         },
     },

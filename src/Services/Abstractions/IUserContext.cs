@@ -23,12 +23,13 @@ namespace MagicMedia
 
         Task<bool> IsAuthorizedAsync(object resourceId, ProtectedResourceType type, CancellationToken cancellationToken);
         Task<IEnumerable<Guid>> GetAuthorizedAlbumAsync(CancellationToken cancellationToken);
+        Task<IEnumerable<Guid>> GetAuthorizedFaceAsync(CancellationToken cancellationToken);
     }
-
 
     public enum ProtectedResourceType
     {
         Media,
+        Face,
         Person,
         Album
     }
