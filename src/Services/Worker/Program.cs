@@ -5,6 +5,7 @@ using MagicMedia.Discovery;
 using MagicMedia.Jobs;
 using MagicMedia.Messaging;
 using MagicMedia.Scheduling;
+using MagicMedia.Security;
 using MagicMedia.Store.MongoDb;
 using MagicMedia.Stores;
 using MassTransit;
@@ -65,6 +66,9 @@ namespace Worker
                         .AddWorkerMessaging()
                         .AddScheduler()
                         .AddJobs();
+
+                    services.AddSingleton<IUserContextFactory, WorkerUserContextFactory>();
+                    services.AddMemoryCache();
 
                     services.AddMassTransitHostedService();
                     services.AddHostedService<JobWorker>();

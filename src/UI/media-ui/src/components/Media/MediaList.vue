@@ -74,7 +74,7 @@
 import justified from "justified-layout";
 import { mediaListViewMap } from "../../services/mediaListViewMap";
 import { debounce } from "lodash";
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   components: {},
@@ -87,6 +87,7 @@ export default {
     this.onScroll = debounce(this.onScroll, 50);
   },
   computed: {
+    ...mapGetters("user", ["userActions"]),
     layout: function () {
       const items = this.$store.state.media.list;
       const viewMap = mediaListViewMap[this.$store.state.media.thumbnailSize];

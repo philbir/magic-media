@@ -7,6 +7,10 @@ using MagicMedia.Identity.Services;
 using Microsoft.AspNetCore.Mvc;
 using MagicMedia.Identity.Data;
 using Microsoft.AspNetCore.Authentication;
+using IdentityServer4;
+using IdentityServer4.Extensions;
+using System.Security.Claims;
+using IdentityModel;
 
 namespace MagicMedia.Identity
 {
@@ -24,19 +28,10 @@ namespace MagicMedia.Identity
             _schemeProvider = schemeProvider;
         }
 
-        [Route("test")]
-        public async Task<IActionResult> Test(CancellationToken cancellationToken)
-        {
-            Invite invite = await _inviteService.CreateInviteAsync(new CreateInviteRequest(
-                Guid.NewGuid(), "Charly", "tree@gmx.ch"), cancellationToken);
-
-            return Ok(invite);
-        }
-
-         [Route("{invitationCode}")]
-        public async Task<IActionResult> IndexAsync(
-            string invitationCode,
-            CancellationToken cancellationToken)
+        [Route("{invitationCode}")]
+        public async Task<IActionResult> Index(
+           string invitationCode,
+           CancellationToken cancellationToken)
         {
             InviteViewModel vm = new();
 
@@ -65,15 +60,79 @@ namespace MagicMedia.Identity
 
             return View(vm);
         }
+
+        [HttpGet]
+        [Route("Challenge/{scheme}/{invite}")]
+        public IActionResult Challenge(string scheme, Guid invite)
+        {
+            var props = new AuthenticationProperties
+            {
+                RedirectUri = Url.Action(nameof(Callback)),
+                Items =
+                {
+                    { "scheme", scheme },
+                    { "invite", invite.ToString("N")}
+                }
+            };
+
+            return Challenge(props, scheme);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Callback(CancellationToken cancellationToken)
+        {
+            AuthenticateResult result = await HttpContext.AuthenticateAsync(
+                IdentityServerConstants.ExternalCookieAuthenticationScheme);
+
+            ConfirmUserViewModel vm = new();
+            vm.Id = Guid.Parse(result.Properties.Items["invite"]);
+
+            Invite invite = await _inviteService.GetByIdAsync(vm.Id, cancellationToken);
+
+            ClaimsPrincipal principal = result!.Principal!;
+
+            Claim userIdClaim = principal!.FindFirst(JwtClaimTypes.Subject) ??
+                  principal.FindFirst(ClaimTypes.NameIdentifier) ??
+                  throw new Exception("Unknown userid");
+
+
+            invite.ProviderUserId = userIdClaim.Value;
+            invite.Provider = result.Properties.Items["scheme"];
+
+            await _inviteService.UpdateAsync(invite, cancellationToken);
+
+            vm.Success = result?.Succeeded == true;
+
+            if (vm.Success)
+            {
+                vm.Provider = invite.Provider;
+                vm.Name = result.Principal.GetDisplayName();
+            }
+
+            await HttpContext.SignOutAsync(IdentityServerConstants.ExternalCookieAuthenticationScheme);
+
+            return View("ConfirmUser", vm);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ConfirmUser(
+            ConfirmUserViewModel vm,
+            CancellationToken cancellationToken)
+        {
+            await _inviteService.CreateAccountAsync(vm.Id, cancellationToken);
+
+            return View("Completed");
+        }
     }
 
-
-    public class InviteViewModel
+    public class ConfirmUserViewModel
     {
+        public bool Success { get; set; }
+
         public Guid Id { get; set; }
 
         public string Name { get; set; }
-        public bool IsValid { get; internal set; }
-        public List<ExternalProvider> Providers { get; internal set; }
+
+        public string Provider { get; set; }
     }
 }

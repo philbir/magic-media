@@ -57,7 +57,8 @@ namespace MagicMedia.Security
                     Album.Edit,
                     Person.ViewAll,
                     Person.Edit,
-                    General.Settings
+                    General.Settings,
+                    User.Manage
                 }
             };
         }

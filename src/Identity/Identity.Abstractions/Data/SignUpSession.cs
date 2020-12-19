@@ -31,6 +31,8 @@ namespace MagicMedia.Identity.Data
         public string Name { get; set; }
 
         public DateTime? UsedAt { get; set; }
+        public string? ProviderUserId { get; set; }
+        public string? Provider { get; set; }
     }
 
 }
