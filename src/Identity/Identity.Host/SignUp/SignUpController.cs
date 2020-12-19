@@ -14,7 +14,8 @@ namespace MagicMedia.Identity.SignUp
             _signUpService = signUpService;
         }
 
-        public IActionResult Index()
+        [Route("/{invitationCode}")]
+        public IActionResult Index(string invitationCode)
         {
             //return View(new SignUpViewModel
             //{

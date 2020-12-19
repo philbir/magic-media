@@ -1,0 +1,31 @@
+@model InviteViewModel
+
+<div class="login-page" data-test-id="page:invite">
+  <div class="row">
+    <div class="col-sm-6">
+      <div class="card">
+        <div class="card-header">
+          <h2>Welcome @Model.Name!</h2>
+        </div>
+        <div class="card-body">
+          <div class="card-body">
+            <p>Please choose how you want to register.</p>
+
+            <ul class="list-inline">
+              @foreach (var provider in Model.Providers)
+              {
+                <li class="list-inline-item">
+                  <a class="btn btn-secondary"
+                     asp-controller="External"
+                     asp-action="Challenge"
+                     asp-route-scheme="@provider.AuthenticationScheme">
+                    @provider.DisplayName
+                  </a>
+                </li>
+              }
+            </ul>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>

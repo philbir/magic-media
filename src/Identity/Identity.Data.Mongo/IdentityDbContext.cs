@@ -19,6 +19,7 @@ namespace MagicMedia.Identity.Data.Mongo
         private IMongoCollection<MagicApiResource>? _apiResources = null;
         private IMongoCollection<SignUpSession>? _signUpSessions = null;
         private IMongoCollection<User>? _users = null;
+        private IMongoCollection<Invite>? _invites = null;
 
         public IMongoCollection<MagicClient> Clients
         {
@@ -80,6 +81,16 @@ namespace MagicMedia.Identity.Data.Mongo
             }
         }
 
+        public IMongoCollection<Invite> Invites
+        {
+            get
+            {
+                if (_invites == null)
+                    _invites = CreateCollection<Invite>();
+                return _invites;
+            }
+        }
+
         public IMongoCollection<User> Users
         {
             get
@@ -103,6 +114,7 @@ namespace MagicMedia.Identity.Data.Mongo
                     .ConfigureCollection(new ApiResourceCollectionConfiguration())
                     .ConfigureCollection(new SignUpSessionCollectionConfiguration())
                     .ConfigureCollection(new UserCollectionConfiguration())
+                    .ConfigureCollection(new InviteCollectionConfiguration())
                     .ConfigureCollection(new OneLoginClientCollectionConfiguration());
         }
     }
