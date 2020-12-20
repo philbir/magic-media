@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using MagicMedia.Search;
 using MagicMedia.Store;
 
 namespace MagicMedia.Security
@@ -16,6 +17,7 @@ namespace MagicMedia.Security
         Task<IEnumerable<Guid>> GetAuthorizedOnPersonIdsAsync(Guid userId, CancellationToken cancellationToken);
         IEnumerable<string> GetPermissions(User user);
         Task<IEnumerable<Album>> GetSharedAlbumsAsync(Guid userId, CancellationToken cancellationToken);
+        Task<SearchResult<User>> SearchAsync(SearchUserRequest request, CancellationToken cancellationToken);
         Task<User> TryGetByIdAsync(Guid id, CancellationToken cancellationToken);
         Task<User> TryGetByPersonIdAsync(Guid personId, CancellationToken cancellationToken);
     }

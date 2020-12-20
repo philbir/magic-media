@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using MagicMedia.Search;
 
 namespace MagicMedia.Store.MongoDb
 {
@@ -12,5 +13,6 @@ namespace MagicMedia.Store.MongoDb
         Task<IEnumerable<User>> GetAllAsync(CancellationToken cancellationToken);
         Task<User> TryGetByIdAsync(Guid id, CancellationToken cancellationToken);
         Task<User> TryGetByPersonIdAsync(Guid personId, CancellationToken cancellationToken);
+        Task<SearchResult<User>> SearchAsync(SearchUserRequest request, CancellationToken cancellationToken);
     }
 }

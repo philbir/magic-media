@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MagicMedia.Search;
 using MagicMedia.Store;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -39,6 +40,14 @@ namespace MagicMedia.Security
                 });
 
             return user;
+        }
+
+        public async Task<SearchResult<User>> SearchAsync(
+            SearchUserRequest request,
+            CancellationToken cancellationToken)
+        {
+
+            return await _mediaStore.Users.SearchAsync(request, cancellationToken);
         }
 
         public async Task<IEnumerable<User>> GetAllAsync(

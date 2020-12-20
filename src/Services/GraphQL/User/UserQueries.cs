@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using HotChocolate.AspNetCore.Authorization;
 using HotChocolate.Types;
 using MagicMedia.Authorization;
+using MagicMedia.Search;
 using MagicMedia.Security;
 using MagicMedia.Store;
 
@@ -50,6 +51,12 @@ namespace MagicMedia.GraphQL
         public async Task<User> GetUserAsync(Guid id, CancellationToken cancellationToken)
         {
             return await _userService.TryGetByIdAsync(id, cancellationToken);
+        }
+
+        [Authorize(Apply = ApplyPolicy.BeforeResolver, Policy = AuthorizationPolicies.Names.ManageUsers)]
+        public async Task<SearchResult<User>> SearchAsync(SearchUserRequest input, CancellationToken cancellationToken)
+        {
+            return await _userService.SearchAsync(input, cancellationToken);
         }
     }
 }
