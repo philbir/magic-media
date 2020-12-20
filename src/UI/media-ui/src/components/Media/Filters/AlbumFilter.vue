@@ -1,5 +1,6 @@
 <template>
   <FilterList
+    v-if="albums"
     :multiple="false"
     :items="albums"
     title="Albums"
@@ -21,7 +22,7 @@ export default {
       set(value) {
         this.setFilter({
           key: "albumId",
-          value: value,
+          value: value !== undefined ? value : null,
         });
       },
       get() {

@@ -112,6 +112,7 @@ namespace MagicMedia.Store.MongoDb
                 .AddCities(request.Cities)
                 .AddCountries(request.Countries)
                 .AddMediaTypes(request.MediaTypes)
+                .AddCameras(request.Cameras)
                 .AddAlbum(request.AlbumId)
                 .AddGeoRadius(request.GeoRadius)
                 .AddDate(request.Date)
@@ -349,6 +350,40 @@ namespace MagicMedia.Store.MongoDb
             return result.OrderByDescending(x => x.Count);
         }
 
+
+        public async Task<IEnumerable<SearchFacetItem>> GetGroupedCamerasAsync(
+            IEnumerable<Guid>? mediaIds,
+            CancellationToken cancellationToken)
+        {
+            BsonDocument? idMatch = AggregationPipelineFactory.CreateMatchInStage(mediaIds);
+
+            IEnumerable<BsonDocument> docs = await _mediaStoreContext.ExecuteAggregation(
+                CollectionNames.Media,
+                "Media_GroupByCamera",
+                idMatch,
+                cancellationToken);
+
+            var result = new List<SearchFacetItem>();
+
+            foreach (BsonDocument doc in docs)
+            {
+                try
+                {
+                    var item = new SearchFacetItem();
+                    item.Count = doc["Count"].AsInt32;
+
+                    if (doc["Text"] != BsonNull.Value)
+                    {
+                        item.Text = doc["Text"].AsString;
+                        item.Value = doc["Value"].AsGuid.ToString("N");
+                        result.Add(item);
+                    }
+                }
+                catch { }
+            }
+
+            return result.OrderByDescending(x => x.Count);
+        }
 
 
         public async Task<IEnumerable<Guid>> GetIdsByFolderAsync(

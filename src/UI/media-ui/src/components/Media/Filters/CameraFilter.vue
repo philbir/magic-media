@@ -1,11 +1,9 @@
 <template>
   <FilterList
-    :items="persons"
-    title="Person"
+    :items="cameras"
+    title="Camera"
     max-height="250"
-    value-field="id"
-    text-field="name"
-    v-model="selectedPersons"
+    v-model="selectedCameras"
   ></FilterList>
 </template>
 
@@ -15,7 +13,22 @@ import { mapActions } from "vuex";
 
 export default {
   components: { FilterList },
-  computed: {},
+  computed: {
+    selectedCameras: {
+      set(value) {
+        this.setFilter({
+          key: "cameras",
+          value: value ? value : [],
+        });
+      },
+      get() {
+        return this.$store.state.media.filter.cameras;
+      },
+    },
+    cameras: function () {
+      return this.$store.state.media.facets.camera;
+    },
+  },
   methods: {
     ...mapActions("media", ["setFilter"]),
   },

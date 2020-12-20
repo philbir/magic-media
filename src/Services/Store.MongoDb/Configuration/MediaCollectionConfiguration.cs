@@ -48,12 +48,21 @@ namespace MagicMedia.Store.MongoDb.Configuration
                             .Descending(c => c.DateTaken),
                         new CreateIndexOptions { Unique = false });
 
+                    collection.Indexes.CreateOne(folderIndex);
+
                     var importedAtIndex = new CreateIndexModel<Media>(
                          Builders<Media>.IndexKeys
                              .Descending(c => c.Source.ImportedAt),
                          new CreateIndexOptions { Unique = false });
 
-                    collection.Indexes.CreateOne(folderIndex);
+                    collection.Indexes.CreateOne(importedAtIndex);
+
+                    var cameraIndex = new CreateIndexModel<Media>(
+                         Builders<Media>.IndexKeys
+                             .Ascending(c => c.CameraId),
+                         new CreateIndexOptions { Unique = false });
+
+                    collection.Indexes.CreateOne(cameraIndex);
                 });
         }
     }

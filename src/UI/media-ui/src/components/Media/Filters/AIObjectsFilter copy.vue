@@ -1,13 +1,10 @@
-      <template>
+<template>
   <FilterList
-    v-if="persons"
-    :items="persons"
-    :open="true"
-    title="Person"
+    v-if="objects"
+    :items="objects"
+    title="Objects"
     max-height="250"
-    value-field="id"
-    text-field="name"
-    v-model="selectedPersons"
+    v-model="selectedObjects"
   ></FilterList>
 </template>
 
@@ -18,24 +15,19 @@ import { mapActions } from "vuex";
 export default {
   components: { FilterList },
   computed: {
-    selectedPersons: {
+    selectedObjects: {
       set(value) {
         this.setFilter({
-          key: "persons",
+          key: "objects",
           value: value,
         });
       },
       get() {
-        return this.$store.state.media.filter.persons;
+        return this.$store.state.media.filter.objects;
       },
     },
-    persons: function () {
-      return this.$store.state.person.persons.map((p) => {
-        return {
-          name: p.name,
-          id: p.id,
-        };
-      });
+    objects: function () {
+      return this.$store.state.media.facets.aiObjects;
     },
   },
   methods: {

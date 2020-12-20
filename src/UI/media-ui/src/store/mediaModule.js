@@ -72,6 +72,13 @@ const mediaModule = {
     }
   }),
   mutations: {
+    MOBILE_DETECTED(state, mobile) {
+      if (mobile) {
+        state.viewer.showFaceBox = false;
+        state.viewer.showFaceList = false;
+        state.thumbnailSize = 'SQ_S'
+      }
+    },
     MEDIAITEMS_LOADED(state, result) {
       const max = 1000;
       const current = [...state.list];
@@ -88,6 +95,7 @@ const mediaModule = {
     DETAILS_LOADED(state, media) {
       state.currentMediaId = media.id;
       state.current = Object.assign({}, media);
+      state.viewerHeaderLoading = false
     },
     FOLDER_TREE_LOADED(state, tree) {
       state.folderTree = Object.assign({}, tree);
@@ -231,6 +239,7 @@ const mediaModule = {
       }
     },
     async show({ commit, dispatch }, id) {
+      commit('SET_HEADER_LOADING', true)
       const result = await excuteGraphQL(() => getById(id), dispatch);
 
       if (result.success) {

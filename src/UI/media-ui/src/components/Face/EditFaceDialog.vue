@@ -110,7 +110,7 @@ export default {
   },
   watch: {
     faceId: function (newValue) {
-      if (newValue /*&& this.userActions.face.edit*/) {
+      if (newValue && this.userActions.face.edit) {
         this.dialog = true;
       }
     },

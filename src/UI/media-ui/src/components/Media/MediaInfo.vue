@@ -4,8 +4,8 @@
       <img :src="`/api/media/webimage/${mediaId}`" />
     </div>
     <v-toolbar v-if="!loading" color="gray" dense dark>
-      <h4>{{ media ? media.filename : "" }}</h4>
-      <v-tabs v-model="tab" dark class="ml-8">
+      <h4 class="d-none d-lg-inline">{{ media ? media.filename : "" }}</h4>
+      <v-tabs v-model="tab" dark class="ml-lg-8 ml-sm-0">
         <v-tab href="#attributes"> Attributes </v-tab>
         <v-tab href="#location" v-if="hasLocation"> Location </v-tab>
         <v-tab href="#faces" v-if="media.faces.length > 0"> Faces </v-tab>
@@ -44,7 +44,7 @@
                 class="ma-2 pa-4 card-details-content"
               >
                 <v-row>
-                  <v-col sm="5">
+                  <v-col lg="5" sm="0" class="d-none d-lg-block">
                     <v-row v-for="(item, i) in location" :key="i">
                       <v-col cols="12" sm="2">{{ item.label }}</v-col>
                       <v-col cols="12" sm="10" class="font-weight-bold">{{
@@ -53,7 +53,8 @@
                     </v-row></v-col
                   >
                   <v-col
-                    sm="7"
+                    lg="7"
+                    sm="12"
                     style="background-color: #fff; z-index: 1000"
                     class="ma-0 pa-0"
                   >

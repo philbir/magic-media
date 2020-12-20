@@ -1,0 +1,34 @@
+[
+  {
+    "$group": {
+      "_id": "$CameraId",
+      "Count": { "$sum": 1 }
+    }
+  },
+  {
+    "$lookup": {
+      "from": "camera",
+      "localField": "_id",
+      "foreignField": "_id",
+      "as": "Camera"
+    }
+  },
+  {
+    "$unwind": {
+      "path": "$Camera"
+    }
+  },
+  {
+    "$project": {
+      "Value": "$_id",
+      "Text": "$Camera.Title",
+      "Count": 1,
+      "_id": 0
+    }
+  },
+  {
+    "$sort": {
+      "Count": -1
+    }
+  }
+]

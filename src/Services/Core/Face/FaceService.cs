@@ -254,7 +254,7 @@ namespace MagicMedia.Face
                 .Where(x =>
                     x.PersonId.HasValue &&
                     x.RecognitionType == FaceRecognitionType.Computer &&
-                    x.State == FaceState.Predicted);
+                    x.State !=  FaceState.Validated);
 
 
             foreach (MediaFace face in filtered)
@@ -272,9 +272,7 @@ namespace MagicMedia.Face
             IEnumerable<MediaFace> faces = await _faceStore.GetFacesByMediaAsync(mediaId, cancellationToken);
 
             IEnumerable<MediaFace> filtered = faces
-                .Where(x =>
-                    x.PersonId.HasValue == false &&
-                    x.State == FaceState.New);
+                .Where(x => x.PersonId.HasValue == false);
 
             foreach (MediaFace face in filtered)
             {

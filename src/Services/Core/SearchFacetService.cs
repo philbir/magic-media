@@ -40,6 +40,16 @@ namespace MagicMedia
             return await _mediaStore.GetGroupedCitiesAsync(accessInfo.Ids, cancellationToken);
         }
 
+        public async Task<IEnumerable<SearchFacetItem>> GetCameraFacetsAsync(
+            CancellationToken cancellationToken)
+        {
+            UserResourceAccessInfo accessInfo = await _userAuthorizationService.GetAuthorizedOnAsync(
+                ProtectedResourceType.Media,
+                cancellationToken);
+
+            return await _mediaStore.GetGroupedCamerasAsync(accessInfo.Ids, cancellationToken);
+        }
+
         public async Task<IEnumerable<SearchFacetItem>> GetAITagFacetsAsync(
             CancellationToken cancellationToken)
         {

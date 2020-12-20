@@ -85,7 +85,7 @@ export default {
       default: "text",
     },
   },
-  created() {
+  mounted() {
     this.expanded = this.open || !this.showFilter;
   },
   data() {

@@ -32,6 +32,7 @@ namespace MagicMedia
                 .AddType<UserQueries>()
                 .AddType<SearchFacetQueries>()
                 .AddType<AlbumQueries>()
+                .AddType<CameraQueries>()
                 .AddMutationType(d => d.Name("Mutation")
                     .Authorize(AuthorizationPolicies.Names.ApiAccess))
                 .AddType<FaceMutations>()

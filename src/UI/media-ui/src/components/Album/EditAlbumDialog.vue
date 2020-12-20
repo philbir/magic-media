@@ -1,5 +1,9 @@
 <template>
-  <v-dialog width="800" v-model="isOpen">
+  <v-dialog
+    width="800"
+    v-model="isOpen"
+    :fullscreen="$vuetify.breakpoint.mobile"
+  >
     <v-card
       elevation="2"
       min-height="560"

@@ -3,7 +3,7 @@
     <Upload :show="showUpload"></Upload>
     <v-app>
       <router-view name="appbar"></router-view>
-      <v-navigation-drawer clipped v-if="showSidebar" app>
+      <v-navigation-drawer clipped v-if="showSidebar" app v-model="nav">
         <router-view name="left"></router-view>
       </v-navigation-drawer>
 
@@ -70,8 +70,12 @@ export default {
       );
     });
   },
+  mounted() {
+    this.$store.dispatch("setMobile", this.$vuetify.breakpoint.mobile);
+  },
   data: () => ({
     dialog: true,
+    nav: null,
     sizes: [
       {
         text: "Square XS",
@@ -86,6 +90,9 @@ export default {
     mediaViewerOpen: false,
   }),
   computed: {
+    navDrawerOpen: function () {
+      return this.$store.state.navDrawerOpen;
+    },
     mediaActions: function () {
       return [
         { text: "Add to album" },
@@ -180,6 +187,16 @@ export default {
   watch: {
     currentMediaId: function (newValue) {
       this.mediaViewerOpen = newValue !== null;
+    },
+    navDrawerOpen: function (newValue) {
+      if (newValue) {
+        this.nav = true;
+      }
+    },
+    nav: function (newValue) {
+      if (!newValue) {
+        this.$store.dispatch("openNavDrawer", false);
+      }
     },
   },
   methods: {
