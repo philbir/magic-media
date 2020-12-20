@@ -125,7 +125,7 @@ const faceModule = {
 
       const listIdx = state.list.findIndex(x => x.id == face.id);
       if (listIdx > -1) {
-        state.list[listIdx] = face;
+        state.list[listIdx] = Object.assign(face, { media: { id: face.mediaId } });
       }
     },
     FACE_DELETED: function (state, id) {
@@ -345,7 +345,6 @@ const faceModule = {
   },
   getters: {
     next: (state, getters, rootState) => step => {
-
 
       const currentId = rootState.media.current.id;
       const idx = state.list.findIndex(x => x.media.id == currentId);

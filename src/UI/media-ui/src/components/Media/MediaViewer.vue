@@ -61,6 +61,7 @@
               @ {{ media.dateTaken | dateformat("DATE_MED") }}
             </span>
           </v-col>
+          <v-spacer v-if="$vuetify.breakpoint.mdAndUp"></v-spacer>
           <v-col class="mr-1" xs="11" lg="2" align="right">
             <v-progress-circular
               indeterminate
