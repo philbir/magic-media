@@ -168,6 +168,18 @@ namespace MagicMedia.Store.MongoDb
             return this;
         }
 
+        public MediaFilterBuilder AddCameras(IEnumerable<Guid>? cameras)
+        {
+            if (cameras is { } c && c.Any())
+            {
+                _filter &= Builders<Media>.Filter.In(
+                    nameof(Media.CameraId),
+                    c);
+            }
+
+            return this;
+        }
+
         public MediaFilterBuilder AddMediaTypes(IEnumerable<MediaType>? mediaTypes)
         {
             if (mediaTypes is { } types && types.Any() && types.Count() < 2)

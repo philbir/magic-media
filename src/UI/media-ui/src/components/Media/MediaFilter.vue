@@ -33,6 +33,7 @@
       <AITagsFilter></AITagsFilter>
 
       <AIObjectsFilter></AIObjectsFilter>
+      <camera-filter></camera-filter>
 
       <media-type-filter></media-type-filter>
     </div>
@@ -51,6 +52,7 @@ import MapFilter from "./Filters/MapFilter.vue";
 import MediaTypeFilter from "./Filters/MediaTypeFilter.vue";
 import AITagsFilter from "./Filters/AITagsFilter.vue";
 import AIObjectsFilter from "./Filters/AIObjectsFilter.vue";
+import CameraFilter from "./Filters/CameraFilter.vue";
 
 export default {
   components: {
@@ -64,6 +66,7 @@ export default {
     MediaTypeFilter,
     AITagsFilter,
     AIObjectsFilter,
+    CameraFilter,
   },
   created() {
     this.$store.dispatch("media/getSearchFacets");

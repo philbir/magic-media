@@ -84,6 +84,9 @@ namespace MagicMedia
                     case "persons":
                         request.Persons = filter.Value.Split(',').Select(x => Guid.Parse(x));
                         break;
+                    case "cameras":
+                        request.Cameras = filter.Value.Split(',').Select(x => Guid.Parse(x));
+                        break;
                     case "countries":
                         request.Countries = filter.Value.Split(',');
                         break;

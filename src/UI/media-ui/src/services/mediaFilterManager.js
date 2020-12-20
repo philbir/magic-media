@@ -2,9 +2,6 @@
 import Vue from "vue";
 
 class MediaFilterManager {
-    /*
-      state.filter.cameras = [];
-    */
     constructor() {
         this.definitions = {
             folder: {
@@ -37,6 +34,15 @@ class MediaFilterManager {
                 stringValue: (state) => state.filter.cities.join(','),
                 valueText: (rootState) => rootState.media.facets.city.filter(x =>
                     rootState.media.filter.cities.includes(x.value))
+                    .map(x => x.text)
+                    .join(' | ')
+            },
+            cameras: {
+                name: "Camera",
+                default: [],
+                stringValue: (state) => state.filter.cameras.join(','),
+                valueText: (rootState) => rootState.media.facets.camera.filter(x =>
+                    rootState.media.filter.cameras.includes(x.value))
                     .map(x => x.text)
                     .join(' | ')
             },

@@ -1,7 +1,7 @@
 <template>
   <FilterList
     :items="cameras"
-    title="Person"
+    title="Camera"
     max-height="250"
     v-model="selectedCameras"
   ></FilterList>
@@ -25,7 +25,7 @@ export default {
         return this.$store.state.media.filter.cameras;
       },
     },
-    objects: function () {
+    cameras: function () {
       return this.$store.state.media.facets.camera;
     },
   },

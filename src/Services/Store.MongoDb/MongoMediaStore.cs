@@ -112,6 +112,7 @@ namespace MagicMedia.Store.MongoDb
                 .AddCities(request.Cities)
                 .AddCountries(request.Countries)
                 .AddMediaTypes(request.MediaTypes)
+                .AddCameras(request.Cameras)
                 .AddAlbum(request.AlbumId)
                 .AddGeoRadius(request.GeoRadius)
                 .AddDate(request.Date)
