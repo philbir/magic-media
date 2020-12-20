@@ -14,7 +14,8 @@ namespace MagicMedia.Identity.SignUp
             _signUpService = signUpService;
         }
 
-        public IActionResult Index()
+        [Route("/{invitationCode}")]
+        public IActionResult Index(string invitationCode)
         {
             //return View(new SignUpViewModel
             //{
@@ -26,16 +27,18 @@ namespace MagicMedia.Identity.SignUp
         }
 
         [HttpPost]
-        public async Task<IActionResult> SignUpAsync(SignUpViewModel vm, CancellationToken cancellationToken)
+        public async Task<IActionResult> SignUpAsync(
+            SignUpViewModel vm,
+            CancellationToken cancellationToken)
         {
-            Guid sessionId = await _signUpService.SendSmsCodeAsync(
-                vm.Email,
-                vm.Mobile,
-                cancellationToken);
+            //Guid sessionId = await _signUpService.SendSmsCodeAsync(
+            //    vm.Email,
+            //    vm.Mobile,
+            //    cancellationToken);
 
             return View("ValidateMobile", new ValidateMobileViewModel
             {
-                SessionId = sessionId
+                SessionId = Guid.NewGuid()
             });
         }
 

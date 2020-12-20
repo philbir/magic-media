@@ -12,7 +12,7 @@ namespace MagicMedia
         public static void Configure(string serviceName)
         {
             LoggerConfiguration logConfig = new LoggerConfiguration()
-                .MinimumLevel.Information()
+                .MinimumLevel.Debug()
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
                 .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
                 .Enrich.FromLogContext()
@@ -37,6 +37,5 @@ namespace MagicMedia
 
             Log.Logger = logConfig.CreateLogger();
         }
-
     }
 }

@@ -22,6 +22,7 @@ namespace MagicMedia.Identity.Data.Mongo
             services.AddSingleton<IApiResourceRepository, ApiResourceRepository>();
             services.AddSingleton<IIdentityResourceRepository, IdentityResourceRepository>();
             services.AddSingleton<IUserRepository, UserRepository>();
+            services.AddSingleton<IInviteRepository, InviteRepository>();
 
             services.AddSingleton<DataSeeder>();
 

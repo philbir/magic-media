@@ -20,10 +20,10 @@ namespace MagicMedia.Identity
 
             services.AddSingleton<IUserFactory, UserFactory>();
             services.AddSingleton<ITotpCodeService, TotpCodeService>();
+            services.AddSingleton<IInviteService, InviteService>();
             services.AddECallSms(configuration);
 
             return services;
         }
-
     }
 }

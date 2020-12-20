@@ -1,0 +1,29 @@
+@model ConfirmUserViewModel
+
+<div class="login-page" data-test-id="page:confirm">
+  <div class="lead">
+  </div>
+  <div class="row">
+    <div class="col-sm-6">
+      <div class="card">
+        <div class="card-header">
+          <h2>Confirm data</h2>
+        </div>
+
+        <div class="card-body">
+          <div class="card-body">
+            <p>Please check the data below:</p>
+
+            <span>Provider: <strong>@Model.Provider</strong></span><br />
+            <span>User: <strong>@Model.Name</strong> </span>
+            <br />
+            <br />
+            <form method="post" asp-action="ConfirmUser" asp-controller="Invite">
+              <input type="hidden" asp-for="Id" />
+              <button class="btn btn-primary" name="button">Complete</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

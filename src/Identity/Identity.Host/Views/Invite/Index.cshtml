@@ -1,0 +1,45 @@
+@model InviteViewModel
+
+<div class="login-page" data-test-id="page:invite">
+  <div class="row">
+    <div class="col-sm-6">
+      @if (Model.IsValid)
+      {
+      <div class="card">
+
+        <div class="card-header">
+          <h2>Welcome @Model.Name!</h2>
+        </div>
+        <div class="card-body">
+          <p>Please choose how you want to register.</p>
+
+          <ul class="list-inline">
+            @foreach (var provider in Model.Providers)
+            {
+              <li class="list-inline-item">
+                <a class="btn btn-secondary"
+                   asp-controller="Invite"
+                   asp-action="Challenge"
+                   asp-route-scheme="@provider.AuthenticationScheme"
+                   asp-route-invite="@Model.Id">
+                  @provider.DisplayName
+                </a>
+              </li>
+            }
+          </ul>
+        </div>
+      </div> }
+      else
+      {
+    <div class="alert alert-warning">
+      <strong>Invalid invite... 😢</strong><br /><br />
+      Looks like your invite is invalid or has expired, please ask for new one.
+      <br />
+      <br />
+      Do you allready have an account? <br/><a href="https://magic-media.birbaum.me">Login here.</a> 
+
+    </div>}
+
+    </div>
+
+  </div>
