@@ -32,7 +32,7 @@ namespace MagicMedia.Store
         Task<Media> GetByIdAsync(
             Guid id,
             CancellationToken cancellationToken);
-
+        Task<IEnumerable<SearchFacetItem>> GetGroupedCamerasAsync(IEnumerable<Guid>? mediaIds, CancellationToken cancellationToken);
         Task<IEnumerable<SearchFacetItem>> GetGroupedCitiesAsync(
             IEnumerable<Guid>? mediaIds,
             CancellationToken cancellationToken);

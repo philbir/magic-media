@@ -15,6 +15,10 @@ namespace MagicMedia.GraphQL.SearchFacets
                 .ResolveWith<SearchFacetResolvers>(x => x.GetCitiesAsync(default!));
 
             descriptor
+                .Field("camera")
+                .ResolveWith<SearchFacetResolvers>(x => x.GetCamerasAsync(default!));
+
+            descriptor
                .Field("aiTags")
                .ResolveWith<SearchFacetResolvers>(x => x.GetAITagsAsync(default!));
 

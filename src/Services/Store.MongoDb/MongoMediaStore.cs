@@ -350,6 +350,43 @@ namespace MagicMedia.Store.MongoDb
         }
 
 
+        public async Task<IEnumerable<SearchFacetItem>> GetGroupedCamerasAsync(
+            IEnumerable<Guid>? mediaIds,
+            CancellationToken cancellationToken)
+        {
+            BsonDocument? idMatch = AggregationPipelineFactory.CreateMatchInStage(mediaIds);
+
+            IEnumerable<BsonDocument> docs = await _mediaStoreContext.ExecuteAggregation(
+                CollectionNames.Media,
+                "Media_GroupByCamera",
+                idMatch,
+                cancellationToken);
+
+            var result = new List<SearchFacetItem>();
+
+            foreach (BsonDocument doc in docs)
+            {
+                try
+                {
+                    var item = new SearchFacetItem();
+                    item.Count = doc["Count"].AsInt32;
+
+                    if (doc["Text"] != BsonNull.Value)
+                    {
+                        item.Text = doc["Text"].AsString;
+                        item.Value = doc["Value"].AsGuid.ToString("N");
+                        result.Add(item);
+                    }
+                }
+                catch ( Exception ex)
+                {
+                    Exception a = ex;
+                }
+            }
+
+            return result.OrderByDescending(x => x.Count);
+        }
+
 
         public async Task<IEnumerable<Guid>> GetIdsByFolderAsync(
             string folder,

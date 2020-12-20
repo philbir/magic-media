@@ -6,6 +6,9 @@ query facets {
     city {
       ...facet
     },
+    camera {
+      ...facet
+    },
     aiTags{
       ... facet
     },
