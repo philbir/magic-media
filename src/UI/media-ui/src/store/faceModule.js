@@ -186,8 +186,7 @@ const faceModule = {
     },
     async setName({ commit, dispatch }, data) {
 
-      const result = excuteGraphQL(() => assignPerson(data.id, data.name), dispatch);
-
+      const result = await excuteGraphQL(() => assignPerson(data.id, data.name), dispatch);
       if (result.success) {
         const { face } = result.data.assignPersonByHuman;
 

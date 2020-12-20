@@ -67,8 +67,13 @@ class MediaFilterManager {
             albumId: {
                 name: "Album",
                 default: null,
-                valueText: (rootState) => rootState.album.allAlbums.filter(x =>
-                    x.id === rootState.media.filter.albumId)[0].title
+                valueText: (rootState) => {
+                    if (rootState.media.filter.albumId) {
+                        return rootState.album.allAlbums.filter(x =>
+                            x.id === rootState.media.filter.albumId)[0].title
+                    }
+                    return null;
+                }
             },
             mediaTypes: {
                 name: "Media type",

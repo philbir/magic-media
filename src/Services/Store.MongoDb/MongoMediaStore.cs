@@ -379,10 +379,7 @@ namespace MagicMedia.Store.MongoDb
                         result.Add(item);
                     }
                 }
-                catch ( Exception ex)
-                {
-                    Exception a = ex;
-                }
+                catch { }
             }
 
             return result.OrderByDescending(x => x.Count);

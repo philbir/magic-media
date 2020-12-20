@@ -18,7 +18,7 @@ export default {
       set(value) {
         this.setFilter({
           key: "cameras",
-          value: value,
+          value: value ? value : [],
         });
       },
       get() {
