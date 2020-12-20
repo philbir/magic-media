@@ -13,9 +13,22 @@ import userModule from "./userModule";
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-  state: {},
-  mutations: {},
-  actions: {},
+  state: {
+    navDrawerOpen: false
+  },
+  mutations: {
+    NAV_DRAWER_OPEN(state, isOpen) {
+      state.navDrawerOpen = isOpen;
+    }
+  },
+  actions: {
+    setMobile: function ({ commit }, isMobile) {
+      commit('media/MOBILE_DETECTED', isMobile, { root: true })
+    },
+    openNavDrawer: function ({ commit }, open) {
+      commit('NAV_DRAWER_OPEN', open)
+    }
+  },
   getters: {
     next: (state, getters, rootState, rootGetters) => step => {
       if (router.currentRoute.name === "Faces") {

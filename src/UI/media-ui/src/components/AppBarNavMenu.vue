@@ -9,6 +9,14 @@
     </template>
 
     <v-list dense nav width="200">
+      <v-list-item @click="openNavDrawer" v-if="$vuetify.breakpoint.mdAndDown">
+        <v-list-item-icon>
+          <v-icon>mdi-filter-menu-outline</v-icon>
+        </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title>Show filters</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
       <v-list-item
         v-for="item in navMenuItems"
         :key="item.text"
@@ -35,6 +43,11 @@ export default {
     ...mapState("user", ["me"]),
     navMenuItems: function () {
       return getAuthorized(resources.navMenu, this.me.permissions);
+    },
+  },
+  methods: {
+    openNavDrawer: function () {
+      this.$store.dispatch("openNavDrawer", true);
     },
   },
 };

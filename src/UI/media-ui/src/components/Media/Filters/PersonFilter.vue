@@ -1,5 +1,6 @@
       <template>
   <FilterList
+    v-if="persons"
     :items="persons"
     :open="true"
     title="Person"

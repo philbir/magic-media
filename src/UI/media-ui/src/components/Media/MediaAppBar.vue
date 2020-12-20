@@ -32,7 +32,7 @@
           v-on="on"
           color="white"
           icon
-          class="mr-4"
+          class="mr-4 d-none d-md-block"
         >
           <v-icon>mdi-image-album</v-icon>
         </v-btn>

@@ -1,5 +1,9 @@
 <template>
-  <v-dialog width="500" v-model="isOpen">
+  <v-dialog
+    width="500"
+    v-model="isOpen"
+    :fullscreen="$vuetify.breakpoint.mobile"
+  >
     <v-card elevation="2">
       <v-card-title> {{ title }}</v-card-title>
       <v-card-text>

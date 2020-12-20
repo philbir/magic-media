@@ -7,7 +7,16 @@
 
   <div v-resize="onResize" v-else>
     <v-progress-linear v-if="loading" indeterminate color="blue" top />
-    <div v-else class="media-wrapper">
+    <div
+      v-else
+      class="media-wrapper"
+      v-touch="{
+        left: () => swipe('left'),
+        right: () => swipe('right'),
+        up: () => swipe('up'),
+        down: () => swipe('down'),
+      }"
+    >
       <GlobalEvents
         @keydown="keyPressed"
         :filter="
@@ -32,12 +41,12 @@
       </div>
       <div class="head">
         <v-row>
-          <v-col class="ml-2" sm="9">
+          <v-col class="ml-2" xs="1" lg="9">
             <v-icon @click="handleHome" color="white" class="mr-2">
               mdi-home
             </v-icon>
             <span
-              class="path"
+              class="path d-none d-md-inline"
               v-for="(path, i) in pathInfo"
               :key="path.path"
               @click="setFolderFilter(path.path)"
@@ -45,32 +54,31 @@
               <span v-if="i < pathInfo.length - 1"> | </span>
             </span>
             <span
-              class="path"
+              class="path d-none d-md-inline"
               v-if="media.dateTaken"
               @click="setDateFilter(media.dateTaken)"
             >
               @ {{ media.dateTaken | dateformat("DATE_MED") }}
             </span>
           </v-col>
-          <v-spacer></v-spacer>
-          <v-col class="mr-4" sm="2" align="right">
+          <v-col class="mr-1" xs="11" lg="2" align="right">
             <v-progress-circular
               indeterminate
               :size="22"
               :width="2"
               color="white"
-              class="mr-4 ml-1"
+              class="mr-2 mr-lg-4"
               v-show="headerLoading"
             ></v-progress-circular>
             <v-icon
               :color="media.isFavorite ? 'red' : 'white'"
-              class="mr-4"
+              class="mr-2 mr-lg-4"
               @click="toggleFavorite(media)"
             >
               mdi-heart
             </v-icon>
 
-            <v-icon class="mr-4" color="white" @click="toggleInfo">
+            <v-icon class="mr-2 mr-lg-4" color="white" @click="toggleInfo">
               mdi-information-outline
             </v-icon>
 
@@ -81,7 +89,7 @@
               offset-y
             >
               <template v-slot:activator="{ on, attrs }">
-                <v-icon v-bind="attrs" v-on="on" color="white">
+                <v-icon v-bind="attrs" v-on="on" class="mr-0" color="white">
                   mdi-cog-outline
                 </v-icon>
               </template>
@@ -309,7 +317,15 @@ export default {
       windowWidth: window.innerWidth,
     };
   },
-
+  mounted() {
+    document.addEventListener("backbutton", this.handleHome, false);
+    history.pushState(null, "Magic Media | view", location.href);
+    window.addEventListener("popstate", this.handleHome);
+  },
+  beforeDestroy() {
+    document.removeEventListener("backbutton", this.handleHome);
+    document.removeEventListener("popstate", this.handleHome);
+  },
   created() {
     //this.onResize = debounce(this.onResize, 1000);
     //this.onMouseMove = debounce(this.onMouseMove, 500);
@@ -412,6 +428,11 @@ export default {
   },
   methods: {
     ...mapActions("media", ["setFilter"]),
+    browserBackClicked: function (e) {
+      console.log("BACK");
+      e.preventDefault();
+      return false;
+    },
     onImgLoaded() {
       this.$nextTick(() => {
         window.setTimeout(() => {
@@ -428,6 +449,22 @@ export default {
           offsetTop: this.$refs.img.offsetTop - this.$refs.img.height / 2,
           loaded: true,
         };
+      }
+    },
+    swipe: function (direction) {
+      switch (direction) {
+        case "left":
+          this.navigate(+1);
+          break;
+        case "right":
+          this.navigate(-1);
+          break;
+        case "down":
+          this.handleHome();
+          break;
+        case "up":
+          this.toggleFavorite();
+          break;
       }
     },
     handlePrevious: function () {
@@ -511,6 +548,9 @@ export default {
               showObjects: !this.$store.state.media.viewer.showObjects,
             })
           );
+          break;
+        case 68: //d
+          console.log(this.$vuetify.breakpoint);
           break;
         default:
           console.log("KEYPress viewer", e.which);

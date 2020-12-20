@@ -1,7 +1,13 @@
 <template>
   <v-menu offset-y v-if="me">
     <template v-slot:activator="{ on, attrs }">
-      <v-btn color="white" icon v-bind="attrs" v-on="on">
+      <v-btn
+        color="white"
+        icon
+        v-bind="attrs"
+        v-on="on"
+        @contextmenu="debug($event)"
+      >
         <v-icon>mdi-account</v-icon>
       </v-btn>
     </template>
@@ -45,6 +51,12 @@ export default {
   }),
   computed: {
     ...mapState("user", ["me"]),
+  },
+  methods: {
+    debug: function (e) {
+      e.preventDefault();
+      console.log(this.$vuetify);
+    },
   },
 };
 </script>

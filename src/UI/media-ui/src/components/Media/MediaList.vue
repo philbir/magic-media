@@ -4,6 +4,7 @@
     ref="container"
     v-scroll.self="onScroll"
     :style="{ height: layout.clientHeight + 'px' }"
+    v-longpress="longpress"
   >
     <v-progress-linear v-if="loading" indeterminate color="blue" top />
     <v-row class="filter-row">
@@ -215,6 +216,9 @@ export default {
       }
 
       this.previousScroll = percent;
+    },
+    longpress: function () {
+      this.$store.dispatch("openNavDrawer", true);
     },
   },
 };
