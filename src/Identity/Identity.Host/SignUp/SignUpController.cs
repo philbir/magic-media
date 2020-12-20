@@ -27,16 +27,18 @@ namespace MagicMedia.Identity.SignUp
         }
 
         [HttpPost]
-        public async Task<IActionResult> SignUpAsync(SignUpViewModel vm, CancellationToken cancellationToken)
+        public async Task<IActionResult> SignUpAsync(
+            SignUpViewModel vm,
+            CancellationToken cancellationToken)
         {
-            Guid sessionId = await _signUpService.SendSmsCodeAsync(
-                vm.Email,
-                vm.Mobile,
-                cancellationToken);
+            //Guid sessionId = await _signUpService.SendSmsCodeAsync(
+            //    vm.Email,
+            //    vm.Mobile,
+            //    cancellationToken);
 
             return View("ValidateMobile", new ValidateMobileViewModel
             {
-                SessionId = sessionId
+                SessionId = Guid.NewGuid()
             });
         }
 

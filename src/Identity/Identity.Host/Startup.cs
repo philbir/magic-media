@@ -2,7 +2,9 @@ using System.IdentityModel.Tokens.Jwt;
 using MagicMedia.AspNetCore;
 using MagicMedia.Identity.Data.Mongo;
 using MagicMedia.Identity.Data.Mongo.Seeding;
+using MagicMedia.Identity.Messaging;
 using MagicMedia.Identity.SignUp;
+using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -37,6 +39,9 @@ namespace MagicMedia.Identity
 
             services.AddControllersWithViews()
                 .AddRazorRuntimeCompilation();
+
+            services.AddMessaging(Configuration);
+            services.AddMassTransitHostedService();
         }
 
         public void Configure(
