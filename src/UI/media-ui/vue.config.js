@@ -8,6 +8,16 @@ module.exports = {
       lintGQL: false
     }
   },
+  pwa: {
+    name: 'Magic Media',
+    themeColor: '#1a237e',
+    msTileColor: '#FFFFFF',
+    appleMobileWebAppCapable: 'yes',
+    appleMobileWebAppStatusBarStyle: 'black',
+
+    // configure the workbox plugin
+    workboxPluginMode: 'GenerateSW',
+  },
   transpileDependencies: ["vuetify"],
   devServer: {
     proxy: {

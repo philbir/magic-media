@@ -1,2 +1,4 @@
       /* eslint-disable no-debugger */
       debugger;
+
+      npx vue-pwa-asset-generator -a "C:\Users\tree\Pictures\mm_pwa.png" -o public\img\icons

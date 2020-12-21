@@ -22,6 +22,7 @@ namespace MagicMedia.Identity.Data.Mongo
                     var nameIndex = new CreateIndexModel<MagicApiScope>(
                         Builders<MagicApiScope>.IndexKeys.Ascending(c => c.Name),
                         new CreateIndexOptions { Unique = true });
+
                     collection.Indexes.CreateOne(nameIndex);
                 });
         }
