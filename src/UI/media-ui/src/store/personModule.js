@@ -1,5 +1,4 @@
 import Vue from "vue";
-
 import { createGroup, getAllPersons, updatePerson, getAllGroups, search, buildModel } from "../services/personService";
 import { excuteGraphQL } from "./graphqlClient"
 
@@ -27,7 +26,6 @@ const personModule = {
 
       state.hasMore = result.totalCount > state.totalLoaded;
       Vue.set(state, "list", [...result.items]);
-
     },
     SET_SEARCH_LOADING(state, loading) {
       state.listLoading = loading;
@@ -51,9 +49,7 @@ const personModule = {
       if (groups.length === 0) state.groups.push(group);
     },
     FILTER_SET(state, filter) {
-
       state.filter = Object.assign(state.filter, filter);
-
     }
   },
   actions: {
@@ -118,7 +114,6 @@ const personModule = {
     filter: function ({ commit, dispatch }, filter) {
       commit("FILTER_SET", filter)
       dispatch('search');
-
     }
   },
   getters: {

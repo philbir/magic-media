@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,6 +25,16 @@ namespace MagicMedia.GraphQL
             CancellationToken cancellationToken)
         {
             User user = await _userService.CreateFromPersonAsync(input, cancellationToken);
+
+            return new UpdateUserPayload(user);
+        }
+
+        [GraphQLName("User_CreateInvite")]
+        public async Task<UpdateUserPayload> CreateIniteAsync(
+            Guid id,
+            CancellationToken cancellationToken)
+        {
+            User user = await _userService.CreateInviteAsync(id, cancellationToken);
 
             return new UpdateUserPayload(user);
         }

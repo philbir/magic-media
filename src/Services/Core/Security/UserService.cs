@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MagicMedia.Messaging;
 using MagicMedia.Search;
 using MagicMedia.Store;
+using MassTransit;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace MagicMedia.Security
@@ -13,20 +15,23 @@ namespace MagicMedia.Security
     {
         private readonly IMediaStore _mediaStore;
         private readonly IMemoryCache _memoryCache;
+        private readonly IBus _bus;
         private readonly IAlbumMediaIdResolver _albumMediaIdResolver;
         private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(15);
 
         public UserService(
             IMediaStore mediaStore,
             IMemoryCache memoryCache,
+            IBus bus,
             IAlbumMediaIdResolver albumMediaIdResolver)
         {
             _mediaStore = mediaStore;
             _memoryCache = memoryCache;
+            _bus = bus;
             _albumMediaIdResolver = albumMediaIdResolver;
         }
 
-        public async Task<User> TryGetByIdAsync(Guid id, CancellationToken cancellationToken)
+        public async Task<User> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
             var cachekey = $"mm_user_{id}";
 
@@ -198,6 +203,17 @@ namespace MagicMedia.Security
             return persons;
         }
 
+        public async Task<User> CreateInviteAsync(Guid userId, CancellationToken cancellationToken)
+        {
+            User user = await GetByIdAsync(userId, cancellationToken);
+
+            var message = new InviteUserRequestedMessage(user.Id, user.Name, user.Email);
+
+            await _bus.Publish(message);
+
+            return user;
+        }
+
         public async Task<User> CreateFromPersonAsync(CreateUserFromPersonRequest request, CancellationToken cancellationToken)
         {
             //TODO: Validate if there is allready a user for this person
@@ -215,6 +231,11 @@ namespace MagicMedia.Security
             await _mediaStore.Users.AddAsync(user, cancellationToken);
 
             return user;
+        }
+
+        public Task<User> UpdateAsync(User user, CancellationToken cancellationToken)
+        {
+            return _mediaStore.Users.UpdateAsync(user, cancellationToken);
         }
     }
 }

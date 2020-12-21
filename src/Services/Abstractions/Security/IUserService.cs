@@ -15,10 +15,12 @@ namespace MagicMedia.Security
         Task<IEnumerable<Guid>> GetAuthorizedOnFaceIdsAsync(Guid userId, CancellationToken cancellationToken);
         Task<IEnumerable<Guid>> GetAuthorizedOnMediaIdsAsync(Guid userId, CancellationToken cancellationToken);
         Task<IEnumerable<Guid>> GetAuthorizedOnPersonIdsAsync(Guid userId, CancellationToken cancellationToken);
+        Task<User> UpdateAsync(User user, CancellationToken cancellationToken);
         IEnumerable<string> GetPermissions(User user);
         Task<IEnumerable<Album>> GetSharedAlbumsAsync(Guid userId, CancellationToken cancellationToken);
         Task<SearchResult<User>> SearchAsync(SearchUserRequest request, CancellationToken cancellationToken);
-        Task<User> TryGetByIdAsync(Guid id, CancellationToken cancellationToken);
+        Task<User> GetByIdAsync(Guid id, CancellationToken cancellationToken);
         Task<User> TryGetByPersonIdAsync(Guid personId, CancellationToken cancellationToken);
+        Task<User> CreateInviteAsync(Guid userId, CancellationToken cancellationToken);
     }
 }

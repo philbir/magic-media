@@ -55,7 +55,7 @@ namespace MagicMedia.Store.MongoDb
             return user;
         }
 
-        public async Task<User> AddUpdateAsync(User user, CancellationToken cancellationToken)
+        public async Task<User> UpdateAsync(User user, CancellationToken cancellationToken)
         {
             await _mediaStoreContext.Users.ReplaceOneAsync(
                 x => x.Id == user.Id,
