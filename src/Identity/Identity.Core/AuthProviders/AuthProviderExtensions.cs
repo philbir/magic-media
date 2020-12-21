@@ -32,6 +32,9 @@ namespace MagicMedia.Identity.AuthProviders
                     case "GitHub":
                         authBuilder.AddGitHub(option);
                         break;
+                    case "Microsoft":
+                        authBuilder.AddMicrosoftAccount(option);
+                        break;
                 }
             }
 

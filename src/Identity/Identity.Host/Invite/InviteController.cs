@@ -65,6 +65,8 @@ namespace MagicMedia.Identity
         [Route("Challenge/{scheme}/{invite}")]
         public IActionResult Challenge(string scheme, Guid invite)
         {
+            HttpContext.SetPreferedIdp(scheme);
+
             var props = new AuthenticationProperties
             {
                 RedirectUri = Url.Action(nameof(Callback)),

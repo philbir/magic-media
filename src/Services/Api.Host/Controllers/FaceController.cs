@@ -28,6 +28,7 @@ namespace MagicMedia.Api.Controllers
         [Authorize(AuthorizationPolicies.Names.FaceView)]
         [HttpGet]
         [Route("{id}/thumbnail/{thumbnailId}")]
+        [ResponseCache(Duration = OutputCacheOptions.Duration, Location = ResponseCacheLocation.Client, NoStore = false)]
         public async Task<IActionResult> GetThumbnailAsync(
             Guid id, //Needed for authorization
             Guid thumbnailId,
@@ -41,6 +42,7 @@ namespace MagicMedia.Api.Controllers
         [Authorize(AuthorizationPolicies.Names.FaceView)]
         [HttpGet]
         [Route("{id}/thumbnail")]
+        [ResponseCache(Duration = OutputCacheOptions.Duration, Location = ResponseCacheLocation.Client, NoStore = false)]
         public async Task<IActionResult> GetThumbnailAsync(
             Guid id,
             CancellationToken cancellationToken)

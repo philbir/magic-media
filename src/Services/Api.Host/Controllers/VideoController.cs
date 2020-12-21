@@ -21,6 +21,7 @@ namespace MagicMedia.Api.Controllers
         [Authorize(AuthorizationPolicies.Names.MediaView)]
         [Route("preview/{id}")]
         [HttpGet]
+        [ResponseCache(Duration = OutputCacheOptions.Duration, Location = ResponseCacheLocation.Client, NoStore = false)]
         public IActionResult Preview(Guid id, CancellationToken cancellationToken)
         {
             MediaStream? mediaStream = _videoPlayerService.GetVideoPreview(id, cancellationToken);

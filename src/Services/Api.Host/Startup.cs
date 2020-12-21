@@ -1,3 +1,5 @@
+using Elastic.Apm.AspNetCore;
+using Elastic.Apm.DiagnosticSource;
 using MagicMedia.Api.Security;
 using MagicMedia.AspNetCore;
 using MagicMedia.BingMaps;
@@ -46,16 +48,13 @@ namespace MagicMedia.Api
             services.ConfigureSameSiteCookies();
             services.AddAuthentication(_env, Configuration);
             services.AddHttpContextAccessor();
-
             services.AddSingleton<IUserContextFactory, ClaimsPrincipalUserContextFactory>();
+            services.AddMassTransitHostedService();
         }
 
         public void Configure(
-            IApplicationBuilder app,
-            IBusControl busControl)
+            IApplicationBuilder app)
         {
-            busControl.Start();
-
             app.UseDefaultForwardedHeaders();
             app.UseCookiePolicy();
 
@@ -66,8 +65,8 @@ namespace MagicMedia.Api
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                //app.UseElasticApm(Configuration,
-                //    new HttpDiagnosticsSubscriber());
+                app.UseElasticApm(Configuration,
+                    new HttpDiagnosticsSubscriber());
             }
 
             app.UseSerilogRequestLogging();
@@ -90,9 +89,6 @@ namespace MagicMedia.Api
 
             app.UseSpa(spa =>
             {
-                // To learn more about options for serving an Angular SPA from ASP.NET Core,
-                // see https://go.microsoft.com/fwlink/?linkid=864501
-                //spa.Options.SourcePath = "ClientApp";
             });
         }
     }

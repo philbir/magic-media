@@ -47,7 +47,7 @@ namespace MagicMedia.Authorization
                 Resource = new AuditResource
                 {
                     Type = ResourceType,
-                    Id = ResourceInfo!.Id.ToString(),
+                    Id = ResourceInfo!.Id?.ToString(),
                     Raw = ResourceInfo.Raw
                 }
             };

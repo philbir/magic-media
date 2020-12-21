@@ -29,7 +29,8 @@ namespace MagicMedia.Authorization
                 Resource = new Store.AuditResource
                 {
                     Id = resourceInfo.Id?.ToString(),
-                    Raw = resourceInfo.Raw
+                    Raw = resourceInfo.Raw,
+                    Type = resourceInfo.Type.GetValueOrDefault()
                 }
             };
 

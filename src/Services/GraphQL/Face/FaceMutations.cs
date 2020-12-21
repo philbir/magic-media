@@ -17,18 +17,15 @@ namespace MagicMedia.GraphQL.Face
     {
         private readonly IFaceService _faceService;
         private readonly IFaceModelBuilderService _faceModelBuilder;
-        private readonly IFaceDetectionService _faceDetectionService;
         private readonly IMediaService _mediaService;
 
         public FaceMutations(
             IFaceService faceService,
             IFaceModelBuilderService faceModelBuilder,
-            IFaceDetectionService faceDetectionService,
             IMediaService mediaService)
         {
             _faceService = faceService;
             _faceModelBuilder = faceModelBuilder;
-            _faceDetectionService = faceDetectionService;
             _mediaService = mediaService;
         }
 
