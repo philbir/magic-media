@@ -38,7 +38,7 @@ namespace MagicMedia
 
             authBuilder.AddCookie(options =>
             {
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+                options.SlidingExpiration = true;
                 options.Cookie.Name = "mm-id";
             })
             .AddOpenIdConnect("oidc", options =>

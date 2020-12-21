@@ -37,7 +37,7 @@ namespace MagicMedia
 
                 o.AddPolicy(
                     AuthorizationPolicies.Names.AlbumEdit,
-                    AuthorizationPolicies.AlbumViewPolicy);
+                    AuthorizationPolicies.AlbumEditPolicy);
 
                 o.AddPolicy(
                     AuthorizationPolicies.Names.ManageUsers,

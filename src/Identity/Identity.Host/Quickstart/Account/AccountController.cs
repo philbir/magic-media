@@ -53,16 +53,26 @@ namespace MagicMedia.Identity
         {
             LoginViewModel vm = await BuildLoginViewModelAsync(returnUrl);
 
+            string? preferedIdp = HttpContext.GetPreferedIdp();
+            if (preferedIdp != null)
+            {
+                return ChallengeExternal(preferedIdp, returnUrl);
+            }
+
             if (vm.IsExternalLoginOnly)
             {
-                // we only have one option for logging in and it's an external provider
-                return RedirectToAction(
-                    "Challenge",
-                    "External",
-                    new { scheme = vm.ExternalLoginScheme, returnUrl });
+                return ChallengeExternal(vm.ExternalLoginScheme, returnUrl);
             }
 
             return View(vm);
+        }
+
+        private IActionResult ChallengeExternal(string scheme, string returnUrl)
+        {
+            return RedirectToAction(
+                "Challenge",
+                "External",
+                new { scheme = scheme, returnUrl });
         }
 
         /// <summary>
@@ -159,7 +169,7 @@ namespace MagicMedia.Identity
                     }
                 }
 
-                await _events.RaiseAsync(new UserLoginFailureEvent(model.Username, "invalid credentials", clientId:context?.Client.ClientId));
+                await _events.RaiseAsync(new UserLoginFailureEvent(model.Username, "invalid credentials", clientId: context?.Client.ClientId));
                 ModelState.AddModelError(string.Empty, AccountOptions.InvalidCredentialsErrorMessage);
             }
 
@@ -168,7 +178,7 @@ namespace MagicMedia.Identity
             return View(vm);
         }
 
-        
+
         /// <summary>
         /// Show logout page
         /// </summary>
@@ -235,7 +245,7 @@ namespace MagicMedia.Identity
             AuthorizationRequest context = await _interaction.GetAuthorizationContextAsync(returnUrl);
             if (context?.IdP != null && await _schemeProvider.GetSchemeAsync(context.IdP) != null)
             {
-                var local = context.IdP == IdentityServer4.IdentityServerConstants.LocalIdentityProvider;
+                var local = context.IdP == IdentityServerConstants.LocalIdentityProvider;
 
                 // this is meant to short circuit the UI and only trigger the one external IdP
                 var vm = new LoginViewModel

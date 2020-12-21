@@ -72,7 +72,6 @@ namespace MagicMedia.Identity
             };
 
             return Challenge(props, scheme);
-
         }
 
         /// <summary>
@@ -95,6 +94,8 @@ namespace MagicMedia.Identity
             AuthenticateUserResult authResult = await _userAccountService.AuthenticateExternalUserAsync(
                 authRequest,
                 cancellationToken);
+
+            HttpContext.SetPreferedIdp(authRequest.Provider);
 
             if (authResult.Success)
             {
