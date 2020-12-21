@@ -3,6 +3,7 @@ using MagicMedia.Identity.Exceptions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Extensions.Context;
+using Serilog;
 
 namespace MagicMedia.Identity.Data.Mongo
 {
@@ -57,6 +58,8 @@ namespace MagicMedia.Identity.Data.Mongo
                     $@"DatabaseName can not be null, make sure
                       key: '{sectionName}:Database:DatabaseName' is defined");
             }
+
+            Log.Information("MongoDb: {ConnectionString}", options.ConnectionString);
 
             return options;
         }

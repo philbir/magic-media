@@ -9,6 +9,7 @@ import vuetify from "./plugins/vuetify";
 import router from "./router";
 import signalrHub from "./signalrHub";
 import store from "./store";
+import './registerServiceWorker'
 
 Vue.config.productionTip = false;
 

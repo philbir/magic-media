@@ -8,3 +8,4 @@
 !/src/Versions.props
 !/global.json
 !/Directory.Build.props
+**/appsettings.local.json

@@ -9,6 +9,8 @@
     <PackageReference Include="IdentityServer4" Version="$(IdentityServerVersion)" />
     <PackageReference Include="MongoDB.Extensions.Context" Version="0.3.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
+    <PackageReference Include="Serilog" Version="$(SerilogVersion)" />
+
   </ItemGroup>
 
   <ItemGroup>
