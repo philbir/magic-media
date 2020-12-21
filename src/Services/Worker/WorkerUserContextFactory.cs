@@ -66,5 +66,10 @@ namespace MagicMedia
         {
             return Task.FromResult(true);
         }
+
+        public ClientInfo GetClientInfo()
+        {
+            return new ClientInfo();
+        }
     }
 }

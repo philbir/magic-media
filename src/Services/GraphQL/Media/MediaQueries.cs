@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using HotChocolate.AspNetCore.Authorization;
 using HotChocolate.Types;
+using MagicMedia.Audit;
 using MagicMedia.Authorization;
 using MagicMedia.Search;
 using MagicMedia.Store;
@@ -16,22 +17,26 @@ namespace MagicMedia.GraphQL
         private readonly IMediaStore _mediaStore;
         private readonly IFolderTreeService _folderTreeService;
         private readonly IMediaSearchService _mediaSearchService;
+        private readonly IAuditService _auditService;
 
         public MediaQueries(
             IMediaStore mediaStore,
             IFolderTreeService folderTreeService,
-            IMediaSearchService mediaSearchService)
+            IMediaSearchService mediaSearchService,
+            IAuditService auditService)
         {
             _mediaStore = mediaStore;
             _folderTreeService = folderTreeService;
             _mediaSearchService = mediaSearchService;
+            _auditService = auditService;
         }
-
 
         public async Task<SearchResult<Media>> SearchMediaAsync(
             SearchMediaRequest request,
             CancellationToken cancellationToken)
         {
+            await AuditSearch(request, cancellationToken);
+
             return await _mediaSearchService.SearchAsync(request, cancellationToken);
         }
 
@@ -53,6 +58,21 @@ namespace MagicMedia.GraphQL
         public async Task<FolderItem> GetFolderTreeAsync(CancellationToken cancellationToken)
         {
             return await _folderTreeService.GetTreeAsync(cancellationToken);
+        }
+
+        private async Task AuditSearch(SearchMediaRequest request, CancellationToken cancellationToken)
+        {
+            var auditRequest = new LogAuditEventRequest
+            {
+                Action = "Search",
+                Success = true,
+                Resource = new AuditResource
+                {
+                    Type = ProtectedResourceType.Media,
+                }
+            };
+
+            await _auditService.LogEventAsync(auditRequest, cancellationToken);
         }
     }
 }

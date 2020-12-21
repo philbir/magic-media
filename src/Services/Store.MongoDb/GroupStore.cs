@@ -8,6 +8,7 @@ using MongoDB.Driver.Linq;
 
 namespace MagicMedia.Store.MongoDb
 {
+
     public class GroupStore : IGroupStore
     {
         private readonly MediaStoreContext _mediaStoreContext;

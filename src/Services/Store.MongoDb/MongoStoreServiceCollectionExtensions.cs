@@ -36,6 +36,7 @@ namespace MagicMedia.Store.MongoDb
             services.AddSingleton<IGroupStore, GroupStore>();
             services.AddSingleton<IAlbumStore, AlbumStore>();
             services.AddSingleton<IMediaAIStore, MediaAIStore>();
+            services.AddSingleton<IAuditEventStore, AuditEventStore>();
 
             return services;
         }

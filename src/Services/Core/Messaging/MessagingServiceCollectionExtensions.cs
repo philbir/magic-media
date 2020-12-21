@@ -1,6 +1,8 @@
+using System;
 using MagicMedia.Messaging.Consumers;
 using MassTransit;
 using MassTransit.ExtensionsDependencyInjectionIntegration;
+using MassTransit.RabbitMqTransport;
 using Microsoft.Extensions.Configuration;
 
 namespace MagicMedia.Messaging
@@ -67,10 +69,21 @@ namespace MagicMedia.Messaging
                         c.Username(options.ServiceBus.Username);
                         c.Password(options.ServiceBus.Password);
                     });
-                    
+
                     cfg.ReceiveEndpoint(queueName, e =>
                     {
                         e.ConfigureConsumers(provider);
+                        e.PrefetchCount = 10;
+
+                        if (queueName!.Contains("worker"))
+                        {
+                            e.Batch<NewAuditEventMessage>(b =>
+                            {
+                                b.MessageLimit = 10;
+                                b.TimeLimit = TimeSpan.FromSeconds(60);
+                                b.Consumer<NewAuditEventBatchConsumer, NewAuditEventMessage>(provider);
+                            });
+                        }
                     });
                 }));
             };
@@ -91,6 +104,8 @@ namespace MagicMedia.Messaging
 
             busConfigurator.AddConsumer<InviteUserCreatedConsumer>();
             busConfigurator.AddConsumer<UserAccountCreatedConsumer>();
+
+            busConfigurator.AddConsumer<NewAuditEventBatchConsumer>();
         }
 
         private static void AddApiConsumers(this IServiceCollectionBusConfigurator busConfigurator)

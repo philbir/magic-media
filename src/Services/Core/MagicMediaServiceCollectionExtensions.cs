@@ -1,3 +1,4 @@
+using MagicMedia.Audit;
 using MagicMedia.Face;
 using MagicMedia.Metadata;
 using MagicMedia.Operations;
@@ -60,6 +61,7 @@ namespace MagicMedia
             services.AddSingleton<IUserService, UserService>();
             services.AddSingleton<IAlbumMediaIdResolver, AlbumMediaIdResolver>();
             services.AddSingleton<IUserAuthorizationService, UserAuthorizationService>();
+            services.AddSingleton<IAuditService, AuditService>();
 
             return services;
         }
