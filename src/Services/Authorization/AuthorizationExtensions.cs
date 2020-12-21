@@ -38,6 +38,10 @@ namespace MagicMedia
                 o.AddPolicy(
                     AuthorizationPolicies.Names.AlbumEdit,
                     AuthorizationPolicies.AlbumViewPolicy);
+
+                o.AddPolicy(
+                    AuthorizationPolicies.Names.ManageUsers,
+                    AuthorizationPolicies.ManageUsersPolicy);
             });
 
             services.AddSingleton<IAuthorizationHandler, MediaAuthorizationHandler>();

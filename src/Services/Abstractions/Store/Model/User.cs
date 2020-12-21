@@ -11,15 +11,19 @@ namespace MagicMedia.Store
 
         public string Email { get; set; }
 
+        public UserState State { get; set; }
+
         public Guid? PersonId { get; set; }
 
         public IEnumerable<string> Roles { get; set; } = new List<string>();
+        public string? InvitationCode { get; set; }
     }
 
-    public class UserRole
+    public enum UserState
     {
-        public string Id { get; set; }
-
-        public IEnumerable<string> Permissions { get; set; }
+        New,
+        Invited,
+        Active,
+        Disabled
     }
 }

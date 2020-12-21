@@ -4,6 +4,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Identity.Data;
 using MagicMedia.Identity.Data.Mongo;
+using MagicMedia.Messaging;
+using MassTransit;
 
 namespace MagicMedia.Identity.Services
 {
@@ -11,13 +13,16 @@ namespace MagicMedia.Identity.Services
     {
         private readonly IInviteRepository _repository;
         private readonly IUserRepository _userRepository;
+        private readonly IBus _bus;
 
         public InviteService(
             IInviteRepository repository,
-            IUserRepository userRepository)
+            IUserRepository userRepository,
+            IBus bus)
         {
             _repository = repository;
             _userRepository = userRepository;
+            _bus = bus;
         }
 
         public async Task<Invite> CreateInviteAsync(
@@ -85,6 +90,8 @@ namespace MagicMedia.Identity.Services
             await _userRepository.AddAsync(user, cancellationToken);
 
             await UpdateAsync(invite, cancellationToken);
+
+            await _bus.Publish(new UserAccountCreatedMessage(user.Id), cancellationToken);
         }
 
         public User CreateUserFromInvite(

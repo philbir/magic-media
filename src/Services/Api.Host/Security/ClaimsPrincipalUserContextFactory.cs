@@ -43,7 +43,7 @@ namespace MagicMedia.Api.Security
                     throw new ApplicationException("No sub claim found");
                 }
 
-                User? user = await _userService.TryGetByIdAsync(
+                User? user = await _userService.GetByIdAsync(
                     Guid.Parse(subject),
                     cancellationToken);
 

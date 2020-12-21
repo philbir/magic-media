@@ -1,0 +1,12 @@
+mutation createInvite($id: Uuid!) {
+  User_CreateInvite(id: $id) {
+    user {
+      id
+      name
+    }
+    errors {
+      code
+      message
+    }
+  }
+}

@@ -11,7 +11,7 @@ namespace MagicMedia
 
         public IEnumerable<Guid>? Groups { get; set; }
 
-        public string SearchText { get; set; }
+        public string? SearchText { get; set; }
 
         public IEnumerable<Guid>? AuthorizedOn { get; set; }
     }

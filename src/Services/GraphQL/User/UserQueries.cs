@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using HotChocolate.AspNetCore.Authorization;
 using HotChocolate.Types;
 using MagicMedia.Authorization;
+using MagicMedia.Search;
 using MagicMedia.Security;
 using MagicMedia.Store;
 
@@ -27,7 +28,7 @@ namespace MagicMedia.GraphQL
         public async Task<User> GetMeAsync(CancellationToken cancellationToken)
         {
             IUserContext context = await _userContextFactory.CreateAsync(cancellationToken);
-            User user = await _userService.TryGetByIdAsync(context.UserId.Value, cancellationToken);
+            User user = await _userService.GetByIdAsync(context.UserId.Value, cancellationToken);
 
             return user;
         }
@@ -49,7 +50,15 @@ namespace MagicMedia.GraphQL
         [Authorize(Apply = ApplyPolicy.BeforeResolver, Policy = AuthorizationPolicies.Names.ManageUsers)]
         public async Task<User> GetUserAsync(Guid id, CancellationToken cancellationToken)
         {
-            return await _userService.TryGetByIdAsync(id, cancellationToken);
+            return await _userService.GetByIdAsync(id, cancellationToken);
+        }
+
+        [Authorize(Apply = ApplyPolicy.BeforeResolver, Policy = AuthorizationPolicies.Names.ManageUsers)]
+        public async Task<SearchResult<User>> SearchUsersAsync(
+            SearchUserRequest input,
+            CancellationToken cancellationToken)
+        {
+            return await _userService.SearchAsync(input, cancellationToken);
         }
     }
 }

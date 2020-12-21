@@ -88,6 +88,9 @@ namespace MagicMedia.Messaging
             busConfigurator.AddConsumer<UpdateMediaMetadataConsumer>();
             busConfigurator.AddConsumer<NewMediaAddedConsumer>();
             busConfigurator.AddConsumer<RescanFacesMessageConsumer>();
+
+            busConfigurator.AddConsumer<InviteUserCreatedConsumer>();
+            busConfigurator.AddConsumer<UserAccountCreatedConsumer>();
         }
 
         private static void AddApiConsumers(this IServiceCollectionBusConfigurator busConfigurator)

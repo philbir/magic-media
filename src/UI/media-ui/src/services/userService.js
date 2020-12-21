@@ -1,7 +1,9 @@
 import apollo from "../apollo";
 import MUTATION_CREATE_FROM_PERSON from "../graphql/User/CreateFromPerson.gql";
+import MUTATION_CREATE_INVITE from "../graphql/User/CreateInvite.gql";
 import QUERY_ALL_USERS from "../graphql/User/AllUsers.gql"
 import QUERY_ME from "../graphql/User/Me.gql"
+import QUERY_SEARCH from "../graphql/User/Search.gql"
 
 export const createUserFromPerson = async (personId, email) => {
     return await apollo.mutate({
@@ -11,6 +13,15 @@ export const createUserFromPerson = async (personId, email) => {
                 personId,
                 email
             }
+        }
+    });
+};
+
+export const createInvite = async (id) => {
+    return await apollo.mutate({
+        mutation: MUTATION_CREATE_INVITE,
+        variables: {
+            id
         }
     });
 };
@@ -26,5 +37,12 @@ export const getMe = async () => {
     return await apollo.query({
         query: QUERY_ME,
         variables: {}
+    });
+};
+
+export const search = async (input) => {
+    return await apollo.query({
+        query: QUERY_SEARCH,
+        variables: { input }
     });
 };

@@ -16,6 +16,7 @@ import FaceList from "../components/Face/FaceList.vue";
 import MediaList from "../components/Media/MediaList";
 import PersonList from "../components/Person/PersonList";
 import UserList from "../components/User/UserList";
+import UserFilter from "../components/User/UserFilter";
 import Playground from "../components/Playground/Playground";
 import PersonTimeline from "../components/Person/PersonTimeline"
 import SettingsPage from "../components/Settings/SettingsPage"
@@ -85,7 +86,7 @@ const routes = [
     name: "Users",
     components: {
       default: UserList,
-      left: null,
+      left: UserFilter,
       appbar: DefaultAppBar
     }
   },

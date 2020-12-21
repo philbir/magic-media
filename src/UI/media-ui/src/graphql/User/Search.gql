@@ -1,0 +1,20 @@
+query searchUsers($input: SearchUserInput!) {
+  searchUsers(input: $input) {
+    items {
+      id
+      name
+      email
+      roles
+      state
+      person{
+        id
+        thumbnail{
+          dataUrl
+        }
+
+      }
+    }
+    totalCount
+    hasMore
+  }
+}

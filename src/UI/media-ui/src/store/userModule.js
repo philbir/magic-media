@@ -1,14 +1,37 @@
-
-import { createUserFromPerson, getAllUsers, getMe } from "../services/userService";
+import Vue from "vue";
+import { createInvite, createUserFromPerson, getAllUsers, getMe, search } from "../services/userService";
 import { excuteGraphQL } from "./graphqlClient"
 
 const userModule = {
     namespaced: true,
     state: () => ({
         all: [],
-        me: null
+        me: null,
+        hasMore: true,
+        listLoading: false,
+        totalCount: 0,
+        list: [],
+        filter: {
+            pageNr: 0,
+            pageSize: 50,
+            searchText: ''
+        }
     }),
     mutations: {
+        SEARCH_COMPLETED(state, result) {
+
+            state.listLoading = false;
+            state.totalCount = result.totalCount;
+
+            state.hasMore = result.totalCount > state.totalLoaded;
+            Vue.set(state, "list", [...result.items]);
+        },
+        SET_SEARCH_LOADING(state, loading) {
+            state.listLoading = loading;
+        },
+        FILTER_SET(state, filter) {
+            state.filter = Object.assign(state.filter, filter);
+        },
         USER_ADDED: function (state, user) {
             state.all.push(user);
         },
@@ -20,6 +43,20 @@ const userModule = {
         }
     },
     actions: {
+        async search({ commit, state, dispatch }) {
+            commit("SET_SEARCH_LOADING", true);
+            const result = await excuteGraphQL(() => search(state.filter), dispatch);
+
+            if (result.success) {
+                commit("SEARCH_COMPLETED", result.data.searchUsers);
+            }
+
+            commit("SET_SEARCH_LOADING", false);
+        },
+        filter: function ({ commit, dispatch }, filter) {
+            commit("FILTER_SET", filter)
+            dispatch('search');
+        },
         async getAll({ commit, dispatch }) {
             const result = await excuteGraphQL(() => getAllUsers(), dispatch);
 
@@ -39,6 +76,18 @@ const userModule = {
 
             if (result.success) {
                 commit("USER_ADDED", result.data.User_CreateFromPerson.user);
+            }
+        },
+        async createInvite({ dispatch }, id) {
+            const result = await excuteGraphQL(() => createInvite(id), dispatch);
+
+            if (result.success) {
+                //commit("INVITE_CREATED", result.data.User_CreateInvite.user);
+                dispatch(
+                    "snackbar/addSnack",
+                    { text: `Invite created for ${result.data.User_CreateInvite.user.name}`, type: "SUCCESS" },
+                    { root: true }
+                );
             }
         },
     },
