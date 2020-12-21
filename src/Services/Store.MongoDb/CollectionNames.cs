@@ -13,5 +13,6 @@ namespace MagicMedia.Store.MongoDb
         public static readonly string MediaOperation = "operation";
 
         public static readonly string MediaAI = "media_ai";
+        public static readonly string AuditEvent = "audit_event";
     }
 }

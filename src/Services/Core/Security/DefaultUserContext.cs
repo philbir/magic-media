@@ -11,12 +11,14 @@ namespace MagicMedia.Security
     {
         private readonly User _user;
         private readonly IUserService _userService;
+        private readonly IUserClientInfoResolver _clientInfoResolver;
         private HashSet<string> _allPermissions = new();
 
-        public DefaultUserContext(User user, IUserService userService)
+        public DefaultUserContext(User user, IUserService userService, IUserClientInfoResolver clientInfoResolver)
         {
             _user = user ?? throw new ArgumentNullException(nameof(user));
             _userService = userService;
+            _clientInfoResolver = clientInfoResolver;
             SetAllPermissions();
         }
 
@@ -81,6 +83,11 @@ namespace MagicMedia.Security
         public bool HasPermission(string permission)
         {
             return _allPermissions.Contains(permission);
+        }
+
+        public ClientInfo GetClientInfo()
+        {
+            return _clientInfoResolver.Resolve();
         }
     }
 }

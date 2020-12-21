@@ -49,7 +49,10 @@ namespace MagicMedia.Api.Security
 
                 if (user != null)
                 {
-                    return new DefaultUserContext(user, _userService);
+                    return new DefaultUserContext(
+                        user,
+                        _userService,
+                        new HttpContextClientInfoResolver(_httpContextAccessor.HttpContext!));
                 }
             }
 

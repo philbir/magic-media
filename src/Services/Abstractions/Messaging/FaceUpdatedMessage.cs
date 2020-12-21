@@ -1,4 +1,5 @@
 using System;
+using MagicMedia.Store;
 
 namespace MagicMedia.Messaging
 {
@@ -22,4 +23,6 @@ namespace MagicMedia.Messaging
             PersonId = personId;
         }
     }
+
+    public record NewAuditEventMessage(AuditEvent Event);
 }

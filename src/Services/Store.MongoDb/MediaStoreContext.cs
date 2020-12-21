@@ -32,6 +32,7 @@ namespace MagicMedia.Store.MongoDb
                 .ConfigureCollection(new GroupCollectionConfiguration())
                 .ConfigureCollection(new AlbumCollectionConfiguration())
                 .ConfigureCollection(new MediaAICollectionConfiguration())
+                .ConfigureCollection(new AuditEventCollectionConfiguration())
                 .ConfigureCollection(new GeoAddressCacheCollectionConfiguration())
                 .ConfigureCollection(new MediaCollectionConfiguration());
         }
@@ -105,6 +106,14 @@ namespace MagicMedia.Store.MongoDb
             get
             {
                 return CreateCollection<Album>();
+            }
+        }
+
+        public IMongoCollection<AuditEvent> AuditEvents
+        {
+            get
+            {
+                return CreateCollection<AuditEvent>();
             }
         }
 

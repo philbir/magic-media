@@ -34,5 +34,10 @@ namespace MagicMedia.Security
 
         public Task<IEnumerable<Guid>> GetAuthorizedFaceAsync(CancellationToken cancellationToken)
            => throw new UnauthorizedAccessException(_message);
+
+        public ClientInfo GetClientInfo()
+        {
+            return new ClientInfo();
+        }
     }
 }
