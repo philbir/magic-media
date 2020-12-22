@@ -29,6 +29,16 @@
           <v-icon @click="snack.show = false" color="white"> mdi-close </v-icon>
         </template>
       </v-snackbar>
+      <v-snackbar
+        top
+        centered
+        :value="updateExists"
+        :timeout="-1"
+        color="primary"
+      >
+        An update is available
+        <v-btn text @click="refreshApp"> Update </v-btn>
+      </v-snackbar>
     </v-app>
     <v-dialog v-model="mediaViewerOpen" fullscreen>
       <MediaViewer v-if="mediaViewerOpen"></MediaViewer>
@@ -68,12 +78,26 @@ export default {
         `${opType.completedText} (${data.successCount} items)`,
         "SUCCESS"
       );
+
+      document.addEventListener("swUpdated", this.updateAvailable, {
+        once: true,
+      });
+      navigator.serviceWorker.addEventListener("controllerchange", () => {
+        if (this.refreshing) return;
+        this.refreshing = true;
+        // Here the actual reload of the page occurs
+        //window.location.reload();
+        console.log("controller change");
+      });
     });
   },
   mounted() {
     this.$store.dispatch("setMobile", this.$vuetify.breakpoint.mobile);
   },
   data: () => ({
+    refreshing: false,
+    registration: null,
+    updateExists: false,
     dialog: true,
     nav: null,
     sizes: [
@@ -211,6 +235,19 @@ export default {
     },
     selectAll: function () {
       this.$store.dispatch("media/selectAll");
+    },
+    updateAvailable(event) {
+      this.registration = event.detail;
+      this.updateExists = true;
+      //https://dev.to/drbragg/handling-service-worker-updates-in-your-vue-pwa-1pip
+      console.log("UPDATE Availlable", event.detail);
+    },
+    refreshApp: function () {
+      this.updateExists = false;
+      // Make sure we only send a 'skip waiting' message if the SW is waiting
+      if (!this.registration || !this.registration.waiting) return;
+      // send message to SW to skip the waiting and activate the new SW
+      this.registration.waiting.postMessage({ type: "SKIP_WAITING" });
     },
   },
 };

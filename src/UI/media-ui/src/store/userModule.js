@@ -99,7 +99,6 @@ const userModule = {
             return false;
         },
         userActions: (state, getters) => {
-            console.log(state)
             return {
                 media: {
                     edit: getters["hasPermission"]('MEDIA_EDIT'),

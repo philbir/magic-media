@@ -2,12 +2,17 @@
 
 import { register } from 'register-service-worker'
 
-if (process.env.NODE_ENV === 'production_future') {
-  register(`${process.env.BASE_URL}service-worker.js`, {
+//const enable_sw = process.env.NODE_ENV === 'production'
+//const sw = 'service-worker.js';
+
+const enable_sw = true;
+const sw = 'sw-dev.js';
+
+if (enable_sw) {
+  register(`${process.env.BASE_URL}${sw}`, {
     ready() {
       console.log(
-        'App is being served from cache by a service worker.\n' +
-        'For more details, visit https://goo.gl/AFskqB'
+        'App is being served from cache by a service worker.'
       )
     },
     registered() {
@@ -19,8 +24,11 @@ if (process.env.NODE_ENV === 'production_future') {
     updatefound() {
       console.log('New content is downloading.')
     },
-    updated() {
-      console.log('New content is available; please refresh.')
+    updated(registration) {
+      console.log('New content is available; please refresh Now!.')
+      document.dispatchEvent(
+        new CustomEvent('swUpdated', { detail: registration })
+      )
     },
     offline() {
       console.log('No internet connection found. App is running in offline mode.')
