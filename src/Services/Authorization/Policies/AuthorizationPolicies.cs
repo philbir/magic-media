@@ -20,6 +20,8 @@ namespace MagicMedia.Authorization
             public const string AlbumEdit = nameof(AlbumEditPolicy);
 
             public const string ManageUsers = nameof(ManageUsersPolicy);
+
+            public const string ImageAI = nameof(ImageAIPolicy);
         }
 
         public static AuthorizationPolicy MediaViewPolicy
@@ -89,6 +91,17 @@ namespace MagicMedia.Authorization
             {
                 return new AuthorizationPolicyBuilder()
                     .RequirePermission(Permissions.User.Manage)
+                    .Build();
+            }
+        }
+
+        public static AuthorizationPolicy ImageAIPolicy
+        {
+            get
+            {
+                return new AuthorizationPolicyBuilder()
+                    .RequireClaim("scope", "api.magic.imageai")
+                    .AddAuthenticationSchemes("jwt")
                     .Build();
             }
         }

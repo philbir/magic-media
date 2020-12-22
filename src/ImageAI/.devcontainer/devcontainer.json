@@ -12,6 +12,9 @@
 	},
 	"containerEnv": {
 		"MEDIA_API_URL": "http://host.docker.internal:5000/api/",
+		"MEDIA_AUTHORITY": "XXX",
+		"MEDIA_CLIENT_ID": "ImageAI.Job",
+		"MEDIA_CLIENT_SECRET": "XXX",
 	},
 	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [

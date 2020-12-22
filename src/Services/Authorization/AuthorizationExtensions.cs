@@ -42,6 +42,10 @@ namespace MagicMedia
                 o.AddPolicy(
                     AuthorizationPolicies.Names.ManageUsers,
                     AuthorizationPolicies.ManageUsersPolicy);
+
+                o.AddPolicy(
+                    AuthorizationPolicies.Names.ImageAI,
+                    AuthorizationPolicies.ImageAIPolicy);
             });
 
             services.AddSingleton<IAuthorizationHandler, MediaAuthorizationHandler>();

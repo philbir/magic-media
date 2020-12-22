@@ -1,4 +1,5 @@
 from object_detection import ObjectDetector
+from ai_client import AIClient
 import requests
 import pprint as pp
 from PIL import Image
@@ -8,19 +9,15 @@ import json
 import sys
 import time
 
-
 class ImageAIJob:
 
     def __init__(self):
         self.detector = ObjectDetector()
-        self.base_url = os.environ["MEDIA_API_URL"]
-        print("API Url: {}".format(self.base_url))
+        self.client = AIClient()
 
     def run(self):
 
-        r = requests.get(
-            '{}ai/MediaWithoutImageAISource'.format(self.base_url))
-        medias = r.json()
+        medias = self.client.get_without_ai()
 
         print("Found {} images without ImageAI".format(len(medias)))
 
@@ -30,16 +27,10 @@ class ImageAIJob:
             result = {}
             result["mediaId"] = id
             print("detect items for media: {}".format(id))
-
             filename = "./tmp/{}.jpg".format(id)
 
             try:
-                imageR = requests.get(
-                    '{}ai/image/{}'.format(self.base_url, id), stream=True)
-
-                imageR.raise_for_status()
-                img = imageR.raw.read()
-
+                img = self.client.get_image(id)
                 with open(filename, 'wb') as f:
                     f.write(img)
 
@@ -58,8 +49,7 @@ class ImageAIJob:
                 result["error"] = str(e)
                 print(result["error"])
 
-            r_save = requests.post(
-                '{}ai/save'.format(self.base_url), json=result)
+            self.client.save_ai_data(result)
 
         return len(medias)
 
@@ -72,6 +62,7 @@ if __name__ == "__main__":
         try:
             count = job.run()
             if count == 0:
+                print('No media without ImageAI found, taking a 10 min nap...')
                 time.sleep(600)
         except Exception as e:
             print(str(e))
