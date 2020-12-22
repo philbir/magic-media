@@ -77,14 +77,13 @@ namespace MagicMedia
                     NameClaimType = JwtClaimTypes.Name,
                     RoleClaimType = JwtClaimTypes.Role,
                 };
+            })
+            .AddJwtBearer("jwt", options =>
+            {
+                options.RequireHttpsMetadata = false;
+                options.Authority = secOptions.Authority;
+                options.Audience = "api.magic";
             });
-
-            //.AddJwtBearer("jwt", options =>
-            //    {
-            //        options.RequireHttpsMetadata = false;
-            //        options.Authority = secOptions.Authority;
-            //        options.Audience = "api.magic";
-            //    });
 
             if (env.IsDevelopment())
             {

@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MagicMedia.Authorization;
 using MagicMedia.ImageAI;
 using MagicMedia.Store;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MagicMedia.Api.Controllers
 {
     [Route("api/ai")]
+    [Authorize(AuthorizationPolicies.Names.ImageAI)]
     public class MediaAIController : Controller
     {
         private readonly IMediaAIService _mediaAIService;

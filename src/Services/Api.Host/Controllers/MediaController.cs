@@ -32,7 +32,7 @@ namespace MagicMedia.Api.Controllers
         [Authorize(AuthorizationPolicies.Names.MediaView)]
         [HttpGet]
         [Route("webimage/{id}")]
-        [ResponseCache( Duration = OutputCacheOptions.Duration, Location = ResponseCacheLocation.Client, NoStore = false)]
+        [ResponseCache(Duration = OutputCacheOptions.Duration, Location = ResponseCacheLocation.Client, NoStore = false)]
         public async Task<IActionResult> WebImageAsync(Guid id, CancellationToken cancellationToken)
         {
             MediaBlobData data = await _mediaBlobStore.GetAsync(
@@ -42,8 +42,6 @@ namespace MagicMedia.Api.Controllers
                     Filename = id.ToString("N") + ".webp"
                 },
                 cancellationToken);
-
-
 
             return new FileContentResult(data.Data, "image/webp") { EnableRangeProcessing = true };
         }
