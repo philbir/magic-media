@@ -21,7 +21,9 @@ namespace MagicMedia.Api
 
         public async Task InvokeAsync(HttpContext context)
         {
-            if (_env.IsDevelopment())
+            if (_env.IsDevelopment()
+                || context.Request.Path.StartsWithSegments("/api/session")
+                || context.Request.Path.StartsWithSegments("/home/error") )
             {
                 await _next(context);
             }

@@ -89,7 +89,7 @@ namespace MagicMedia.Playground
                 Console.WriteLine($"{todo} - {mediaAI.MediaId}");
 
                 if ( mediaAI.SourceInfo.Count() == 1)
-                {
+                {   
                     await _dbContext.MediaAI.DeleteOneAsync(x => x.Id == mediaAI.Id);
                 }
                 else

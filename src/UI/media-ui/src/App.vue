@@ -78,17 +78,23 @@ export default {
         `${opType.completedText} (${data.successCount} items)`,
         "SUCCESS"
       );
+    });
 
-      document.addEventListener("swUpdated", this.updateAvailable, {
-        once: true,
-      });
-      navigator.serviceWorker.addEventListener("controllerchange", () => {
-        if (this.refreshing) return;
-        this.refreshing = true;
-        // Here the actual reload of the page occurs
-        //window.location.reload();
-        console.log("controller change");
-      });
+    document.addEventListener("swUpdated", this.updateAvailable, {
+      once: true,
+    });
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      if (this.refreshing) return;
+      this.refreshing = true;
+      window.location.reload();
+      console.log("controller change");
+    });
+
+    navigator.serviceWorker.addEventListener("message", (event) => {
+      if (!event.data.msg.isAuthenticated) {
+        console.log("Session not authorized redirect...");
+        location.href = "/api/session/auth";
+      }
     });
   },
   mounted() {

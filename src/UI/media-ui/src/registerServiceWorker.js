@@ -2,17 +2,21 @@
 
 import { register } from 'register-service-worker'
 
-//const enable_sw = process.env.NODE_ENV === 'production'
-//const sw = 'service-worker.js';
+let enable_sw = process.env.NODE_ENV === 'production'
+let sw = 'sw.js';
 
-const enable_sw = true;
-const sw = 'sw-dev.js';
+if (process.env.VUE_APP_DEV_SW) {
+  enable_sw = true;
+  sw = process.env.VUE_APP_DEV_SW
+
+  console.warn("using DEV service-worker!")
+}
 
 if (enable_sw) {
   register(`${process.env.BASE_URL}${sw}`, {
     ready() {
       console.log(
-        'App is being served from cache by a service worker.'
+        'App is being served from cache by a service worker. To disable in development set ENV VUE_APP_DEV_SW to false'
       )
     },
     registered() {
