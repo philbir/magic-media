@@ -1,3 +1,4 @@
+using HotChocolate;
 using HotChocolate.Types;
 using MagicMedia.Store;
 
@@ -18,6 +19,11 @@ namespace MagicMedia.GraphQL
                     .Type(typeof(bool)))
                 .ResolveWith<ThumbnailResolvers>(x => x
                     .GetThumbnailAsync(default!, default!, default!, default!, default!));
+                //.Use(next => async context => 
+                //{
+                //   await next(context);
+                //   context.SetScopedValue("mediaId", context.Parent<Media>().Id);
+                //});
 
             descriptor
                 .Field("camera")

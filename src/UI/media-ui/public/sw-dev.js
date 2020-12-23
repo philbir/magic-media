@@ -16,6 +16,26 @@ if (workbox) {
     // https://stackoverflow.com/questions/49963982/vue-router-history-mode-with-pwa-in-offline-mode
     //workbox.routing.registerNavigationRoute('/index.html')
 
+
+    workbox.routing.registerRoute(
+        ({ url }) => url.pathname.startsWith('/api/media/webimage'),
+        new workbox.strategies.StaleWhileRevalidate({
+            cacheName: 'images',
+            plugins: [
+                new workbox.cacheableResponse.Plugin({
+                    statuses: [200],
+                    headers: {
+                        'X-Sw-Cache-Image': 'true',
+                    },
+                }),
+                new workbox.expiration.Plugin({
+                    maxEntries: 1000,
+                    maxAgeSeconds: 60 * 60 * 24 * 30, // 30 Days
+                }),
+            ],
+        }),
+    );
+
     workbox.routing.registerRoute(
         /^https:\/\/fonts\.gstatic\.com/,
         new workbox.strategies.CacheFirst({
@@ -33,19 +53,18 @@ if (workbox) {
     )
 
     workbox.routing.registerRoute(
-        // Check to see if the request's destination is style for an image
-        //({ request }) => request.destination === 'image',
         ({ url }) => url.pathname.startsWith('/api/media/'),
-        // Use a Cache First caching strategy
         new workbox.strategies.StaleWhileRevalidate({
-            // Put all cached files in a cache named 'images'
-            cacheName: 'images',
+            cacheName: 'thumbnails',
             plugins: [
                 new workbox.cacheableResponse.Plugin({
                     statuses: [200],
+                    headers: {
+                        'X-Sw-Cache-Thumbnail': 'true',
+                    },
                 }),
                 new workbox.expiration.Plugin({
-                    maxEntries: 10000,
+                    maxEntries: 25000,
                     maxAgeSeconds: 60 * 60 * 24 * 90, // 90 Days
                 }),
             ],
@@ -64,50 +83,40 @@ setInterval(() => {
     fetch('api/session').then(response => {
         response.json().then(data => {
 
-            self.clients.matchAll().then(clients => {
-                clients.forEach(client => {
-                    client.postMessage({ msg: data })
-                });
-            })
+            if (!data.isAuthenticated) {
+                self.clients.matchAll().then(clients => {
+                    clients.forEach(client => {
+                        sendClientAction(client, { action: 'ROUTE', value: 'SessionExpired' })
+                    });
+                })
+            }
         })
     })
 
-}, 300000)
+}, 1000 * 60 * 3)
 
 addEventListener('fetch', event => {
-    // Prevent the default, and handle the request ourselves.
+
     const requestUrl = new URL(event.request.url);
 
     if (requestUrl.pathname.startsWith("/graphql")) {
 
-        return fetch(event.request).then((response) => {
-
-            if (response.status > 400) {
-
-                if (requestUrl.pathname.startsWith("/graphql")) {
-
-                    const clonedResponse = response.clone();
-                    response.json().then(data => {
-
-                        if (isGraphQLNotAuth(data)) {
-                            console.log(data);
-                            console.log('GraphQL Not authenticated');
-
-                            self.clients.get(event.clientId).then(client => {
-                                client.postMessage({ msg: { isAuthenticated: false } })
-                            });
-                        }
+        event.respondWith(
+            fetch(event.request).then(function (response) {
+                if (response.status === 403) {
+                    self.clients.get(event.clientId).then(client => {
+                        sendClientAction(client, { action: 'ROUTE', value: 'SessionExpired' })
                     });
-
-                    return clonedResponse;
                 }
-            }
 
-            return response;
-        });
+                return response;
+            }));
     }
-
 });
+
+const sendClientAction = (client, message) => {
+    client.postMessage(message);
+}
 
 const isGraphQLNotAuth = (data) => {
 

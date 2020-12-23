@@ -36,6 +36,7 @@ namespace MagicMedia.Api.Controllers
         {
             byte[] data = await _thumbnailBlobStore.GetAsync(thumbnailId, cancellationToken);
 
+            Response.Headers["X-Sw-Cache-Thumbnail"] = "true";
             return new FileContentResult(data, "image/jpg");
         }
 
@@ -49,6 +50,7 @@ namespace MagicMedia.Api.Controllers
         {
             MediaThumbnail thumb = await _faceService.GetThumbnailAsync(id, cancellationToken);
 
+            Response.Headers["X-Sw-Cache-Thumbnail"] = "true";
             return new FileContentResult(thumb.Data, $"image/{thumb.Format}".ToLower());
         }
     }

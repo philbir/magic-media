@@ -17,6 +17,8 @@ namespace MagicMedia
             builder.Services.AddGraphQLServer()
                 .AddMagicMediaGrapQL();
 
+            builder.Services.AddHttpResultSerializer<ForbiddenHttpResultSerializer>();
+
             return builder;
         }
 

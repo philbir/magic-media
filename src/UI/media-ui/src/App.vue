@@ -36,8 +36,12 @@
         :timeout="-1"
         color="primary"
       >
-        An update is available
-        <v-btn text @click="refreshApp"> Update </v-btn>
+        <v-icon class="mr-4"> mdi-gift-outline</v-icon>
+        <span>An new version is availlable...</span>
+
+        <v-btn elevation="4" class="ml-4" outlined text @click="refreshApp">
+          Update now</v-btn
+        >
       </v-snackbar>
     </v-app>
     <v-dialog v-model="mediaViewerOpen" fullscreen>
@@ -90,8 +94,15 @@ export default {
     });
 
     navigator.serviceWorker.addEventListener("message", (event) => {
-      if (!event.data.msg.isAuthenticated) {
-        location.href = "/session/expired";
+      switch (event.data.action) {
+        case "ROUTE":
+          if (this.$route.name != event.data.value) {
+            this.$router.push({ name: event.data.value });
+          }
+          break;
+        default:
+          console.warn("Unknown action", event.data);
+          break;
       }
     });
   },
@@ -243,14 +254,10 @@ export default {
     updateAvailable(event) {
       this.registration = event.detail;
       this.updateExists = true;
-      //https://dev.to/drbragg/handling-service-worker-updates-in-your-vue-pwa-1pip
-      console.log("UPDATE Availlable", event.detail);
     },
     refreshApp: function () {
       this.updateExists = false;
-      // Make sure we only send a 'skip waiting' message if the SW is waiting
       if (!this.registration || !this.registration.waiting) return;
-      // send message to SW to skip the waiting and activate the new SW
       this.registration.waiting.postMessage({ type: "SKIP_WAITING" });
     },
   },

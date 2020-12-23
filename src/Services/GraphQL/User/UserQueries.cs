@@ -43,7 +43,7 @@ namespace MagicMedia.GraphQL
             }
             else
             {
-                return new List<User>();
+                return Array.Empty<User>();
             }
         }
 

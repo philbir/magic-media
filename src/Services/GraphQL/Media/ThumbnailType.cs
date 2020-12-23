@@ -14,20 +14,7 @@ namespace MagicMedia.GraphQL
             descriptor
                 .Field("dataUrl")
                 .Type(typeof(string))
-                .Resolve(ctx =>
-               {
-                   MediaThumbnail thumbnail = ctx.Parent<MediaThumbnail>();
-
-                   if (thumbnail.Data != null)
-                   {
-                       return thumbnail.Data.ToDataUrl(thumbnail.Format);
-                   }
-                   else
-                   {
-                       return $"api/media/{Guid.Empty}/thumbnailbyid/{thumbnail.Id}";
-                   }
-               });
-                //.ResolveWith<ThumbnailResolvers>(x => x.GetDataUrl(default!, default!));
+                .ResolveWith<ThumbnailResolvers>(x => x.GetDataUrl(default!));
         }
     }
 }

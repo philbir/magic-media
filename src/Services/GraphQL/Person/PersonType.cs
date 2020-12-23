@@ -13,7 +13,12 @@ namespace MagicMedia.GraphQL
 
             descriptor
                 .Field("thumbnail")
-                .ResolveWith<PersonResolvers>(x => x.GetThumbnailAsync(default!, default!));
+                .ResolveWith<PersonResolvers>(x => x.GetThumbnailAsync(default!, default!))
+                .Use(next => async context =>
+               {
+                   await next(context);
+                   var thumb = context.Result;
+               });
 
             descriptor
                 .Field("user")

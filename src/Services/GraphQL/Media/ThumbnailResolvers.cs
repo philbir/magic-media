@@ -11,18 +11,14 @@ namespace MagicMedia.GraphQL
     internal class ThumbnailResolvers
     {
         private readonly IMediaService _mediaService;
-        private readonly IThumbnailBlobStore _thumbnailBlobStore;
 
         public ThumbnailResolvers(
-            IMediaService mediaService,
-            IThumbnailBlobStore thumbnailBlobStore)
+            IMediaService mediaService)
         {
             _mediaService = mediaService;
-            _thumbnailBlobStore = thumbnailBlobStore;
         }
 
         public string GetDataUrl(
-            [Parent] Media media,
             MediaThumbnail thumbnail)
         {
             if (thumbnail.Data != null)
@@ -31,15 +27,20 @@ namespace MagicMedia.GraphQL
             }
             else
             {
-                return $"api/media/{media.Id}/thumbnailbyid/{thumbnail.Id}";
-            }
+                string url = "";
 
-            //if (thumbnail.Data == null)
-            //{
-            //    thumbnail.Data = await _thumbnailBlobStore.GetAsync(
-            //        thumbnail.Id,
-            //        cancellationToken);
-            //}
+                switch (thumbnail.Owner.Type)
+                {
+                    case ThumbnailOwnerType.Media:
+                        url = $"api/media/{thumbnail.Owner.Id}/thumbnailbyid/{thumbnail.Id}";
+                        break;
+                    case ThumbnailOwnerType.Face:
+                        url = $"api/face/{thumbnail.Owner.Id}/thumbnail/{thumbnail.Id}";
+                        break;
+                }
+
+                return url;
+            }
         }
 
         public async Task<MediaThumbnail?> GetThumbnailAsync(
@@ -53,6 +54,12 @@ namespace MagicMedia.GraphQL
 
             if (thumb != null)
             {
+                thumb.Owner = new ThumbnailOwner
+                {
+                    Type = ThumbnailOwnerType.Face,
+                    Id = media.Id
+                };
+
                 if (loadData)
                 {
                     return await thumbnailLoader.LoadAsync(thumb, cancellationToken);

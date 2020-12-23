@@ -430,7 +430,6 @@ export default {
   methods: {
     ...mapActions("media", ["setFilter"]),
     browserBackClicked: function (e) {
-      console.log("BACK");
       e.preventDefault();
       return false;
     },
@@ -554,7 +553,6 @@ export default {
           console.log(this.$vuetify.breakpoint);
           break;
         default:
-          console.log("KEYPress viewer", e.which);
           break;
       }
     },

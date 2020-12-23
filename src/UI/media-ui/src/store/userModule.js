@@ -9,6 +9,7 @@ const userModule = {
         me: null,
         hasMore: true,
         listLoading: false,
+        error: false,
         totalCount: 0,
         list: [],
         filter: {
@@ -40,6 +41,12 @@ const userModule = {
         },
         ME_LOADED: function (state, user) {
             state.me = user;
+        },
+        ERROR: function (state) {
+            state.error = true;
+        },
+        ERROR_RESET: function (state) {
+            state.error = false;
         }
     },
     actions: {
@@ -70,6 +77,12 @@ const userModule = {
             if (result.success) {
                 commit("ME_LOADED", result.data.me);
             }
+            else {
+                commit("ERROR");
+            }
+        },
+        resetError: function ({ commit }) {
+            commit("ERROR_RESET");
         },
         async createFromPerson({ commit, dispatch }, payload) {
             const result = await excuteGraphQL(() => createUserFromPerson(payload.personId, payload.email), dispatch);

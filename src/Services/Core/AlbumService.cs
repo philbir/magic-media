@@ -95,8 +95,20 @@ namespace MagicMedia
                     size,
                     cancellationToken);
 
-                return thumbs.Values.FirstOrDefault();
+                MediaThumbnail? thumbnail = thumbs.Values.FirstOrDefault();
+
+                if ( thumbnail != null)
+                {
+                    thumbnail.Owner = new ThumbnailOwner
+                    {
+                        Id = mediaId.Value,
+                        Type = ThumbnailOwnerType.Media
+                    };
+                }
+
+                return thumbnail;
             }
+
 
             return null;
         }

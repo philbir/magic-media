@@ -13,7 +13,7 @@
           >
             Sorry that this happened! 😢 But an error prevents the app from
             loading. <br />
-            <v-btn class="mt-8" @click="login">Try again </v-btn>
+            <v-btn class="mt-8" @click="retry">Try again </v-btn>
           </v-alert></v-col
         >
       </v-row>
@@ -24,8 +24,9 @@
 <script>
 export default {
   methods: {
-    login: function () {
-      window.location.href = "/api/session/auth";
+    retry: function () {
+      this.$store.dispatch("user/resetError");
+      window.location.href = "/";
     },
   },
 };

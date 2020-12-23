@@ -43,19 +43,21 @@ namespace MagicMedia.Api.Controllers
                 },
                 cancellationToken);
 
+            Response.Headers["X-Sw-Cache-Image"] = "true";
             return new FileContentResult(data.Data, "image/webp") { EnableRangeProcessing = true };
         }
 
-        [HttpGet]
-        [Route("thumbnail/{id}")]
-        [ResponseCache(Duration = OutputCacheOptions.Duration, Location = ResponseCacheLocation.Client, NoStore = false)]
-        public async Task<IActionResult> ThumbnailAsync(Guid id, CancellationToken cancellationToken)
-        {
-            //TODO: Authorize Thumb
-            byte[] data = await _thumbnailBlobStore.GetAsync(id, cancellationToken);
+        //[HttpGet]
+        //[Route("thumbnail/{id}")]
+        //[ResponseCache(Duration = OutputCacheOptions.Duration, Location = ResponseCacheLocation.Client, NoStore = false)]
+        //public async Task<IActionResult> ThumbnailAsync(Guid id, CancellationToken cancellationToken)
+        //{
+        //    //TODO: Authorize Thumb
+        //    byte[] data = await _thumbnailBlobStore.GetAsync(id, cancellationToken);
 
-            return new FileContentResult(data, "image/jpg");
-        }
+        //    Response.Headers["X-Is-Cacheable"] = "true";
+        //    return new FileContentResult(data, "image/jpg");
+        //}
 
         [Authorize(AuthorizationPolicies.Names.MediaView)]
         [HttpGet]
@@ -73,19 +75,22 @@ namespace MagicMedia.Api.Controllers
                 return NotFound();
             }
 
+            Response.Headers["X-Sw-Cache-Thumbnail"] = "true";
             return new FileContentResult(thumb?.Data, "image/jpg");
         }
 
+        [Authorize(AuthorizationPolicies.Names.MediaView)]
         [HttpGet]
-        [Route("{mediaId}/thumbnailbyid/{id}")]
+        [Route("{id}/thumbnailbyid/{thumbnailId}")]
         [ResponseCache(Duration = OutputCacheOptions.Duration, Location = ResponseCacheLocation.Client, NoStore = false)]
         public async Task<IActionResult> ThumbnailByIdAsync(
-            Guid mediaId,
-            Guid id,
+            Guid id, //required for auth,
+            Guid thumbnailId,
             CancellationToken cancellationToken = default)
         {
-            byte[] data = await _thumbnailBlobStore.GetAsync(id, cancellationToken);
+            byte[] data = await _thumbnailBlobStore.GetAsync(thumbnailId, cancellationToken);
 
+            Response.Headers["X-Sw-Cache-Thumbnail"] = "true";
             return new FileContentResult(data, "image/webp");
         }
 

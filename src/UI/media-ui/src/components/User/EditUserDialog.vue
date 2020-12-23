@@ -71,7 +71,6 @@ export default {
   },
   watch: {
     userId: function (newValue) {
-      console.log(newValue);
       if (newValue) {
         this.user = this.$store.state.user.list.find((x) => x.id === newValue);
       } else {

@@ -12,9 +12,7 @@ export default {
     };
   },
   methods: {
-    touchHandler: function () {
-      console.log("TOUCH");
-    },
+    touchHandler: function () {},
   },
 };
 </script>
