@@ -13,12 +13,13 @@ import MUTATION_ANALYSE_MEDIA from "../graphql/Media/AnalyseMedia.gql";
 import QUERY_GEO_LOCATION_CLUSTERS from "../graphql/Media/geoLocationClusters.gql";
 import QUERY_SEARCH_FACETS from "../graphql/SearchFacets.gql";
 
-export const searchMedia = async (request, size) => {
+export const searchMedia = async (request, size, loadThumbnailData) => {
   return await apollo.query({
     query: QUERY_SEARCH,
     variables: {
       request: request,
-      size: size
+      size: size,
+      loadThumbnailData: loadThumbnailData
     }
   });
 };

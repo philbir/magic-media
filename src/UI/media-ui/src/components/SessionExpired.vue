@@ -7,11 +7,12 @@
             class="text-center"
             border="top"
             colored-border
-            type="success"
+            type="info"
             elevation="2"
             width="400"
           >
-            You are now logged out.<br />
+            Your session has expired and you have been automatically logged
+            out.<br />
             <v-btn class="mt-8" @click="login">Login </v-btn>
           </v-alert></v-col
         >

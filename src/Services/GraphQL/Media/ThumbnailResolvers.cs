@@ -1,5 +1,7 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
+using HotChocolate;
 using MagicMedia.Extensions;
 using MagicMedia.GraphQL.DataLoaders;
 using MagicMedia.Store;
@@ -19,31 +21,44 @@ namespace MagicMedia.GraphQL
             _thumbnailBlobStore = thumbnailBlobStore;
         }
 
-        public async Task<string> GetDataUrl(
-            MediaThumbnail thumbnail,
-            CancellationToken cancellationToken)
+        public string GetDataUrl(
+            [Parent] Media media,
+            MediaThumbnail thumbnail)
         {
-            if (thumbnail.Data == null)
+            if (thumbnail.Data != null)
             {
-                thumbnail.Data = await _thumbnailBlobStore.GetAsync(
-                    thumbnail.Id,
-                    cancellationToken);
+                return thumbnail.Data.ToDataUrl(thumbnail.Format);
+            }
+            else
+            {
+                return $"api/media/{media.Id}/thumbnailbyid/{thumbnail.Id}";
             }
 
-            return thumbnail.Data.ToDataUrl(thumbnail.Format);
+            //if (thumbnail.Data == null)
+            //{
+            //    thumbnail.Data = await _thumbnailBlobStore.GetAsync(
+            //        thumbnail.Id,
+            //        cancellationToken);
+            //}
         }
 
         public async Task<MediaThumbnail?> GetThumbnailAsync(
             Media media,
             ThumbnailDataDataLoader thumbnailLoader,
             ThumbnailSizeName size,
+            bool loadData,
             CancellationToken cancellationToken)
         {
             MediaThumbnail? thumb = _mediaService.GetThumbnail(media, size);
 
-            if ( thumb != null)
+            if (thumb != null)
             {
-                return await thumbnailLoader.LoadAsync(thumb, cancellationToken);
+                if (loadData)
+                {
+                    return await thumbnailLoader.LoadAsync(thumb, cancellationToken);
+                }
+
+                return thumb;
             }
 
             return null;

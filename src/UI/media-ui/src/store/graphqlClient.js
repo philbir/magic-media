@@ -20,5 +20,9 @@ export const excuteGraphQL = async (call, dispatch) => {
             { text: "An API error has accoured.", type: "ERROR" },
             { root: true }
         );
+
+        return {
+            success: false,
+        }
     }
 } 

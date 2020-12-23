@@ -13,8 +13,11 @@ namespace MagicMedia.GraphQL
                 .Argument("size", a => a
                     .DefaultValue(ThumbnailSizeName.M)
                     .Type(typeof(ThumbnailSizeName)))
+                .Argument("loadData", a => a
+                    .DefaultValue(false)
+                    .Type(typeof(bool)))
                 .ResolveWith<ThumbnailResolvers>(x => x
-                    .GetThumbnailAsync(default!, default!, default!, default!));
+                    .GetThumbnailAsync(default!, default!, default!, default!, default!));
 
             descriptor
                 .Field("camera")

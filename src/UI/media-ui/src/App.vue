@@ -87,13 +87,11 @@ export default {
       if (this.refreshing) return;
       this.refreshing = true;
       window.location.reload();
-      console.log("controller change");
     });
 
     navigator.serviceWorker.addEventListener("message", (event) => {
       if (!event.data.msg.isAuthenticated) {
-        console.log("Session not authorized redirect...");
-        location.href = "/api/session/auth";
+        location.href = "/session/expired";
       }
     });
   },

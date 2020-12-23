@@ -76,6 +76,18 @@ namespace MagicMedia.Api.Controllers
             return new FileContentResult(thumb?.Data, "image/jpg");
         }
 
+        [HttpGet]
+        [Route("{mediaId}/thumbnailbyid/{id}")]
+        [ResponseCache(Duration = OutputCacheOptions.Duration, Location = ResponseCacheLocation.Client, NoStore = false)]
+        public async Task<IActionResult> ThumbnailByIdAsync(
+            Guid mediaId,
+            Guid id,
+            CancellationToken cancellationToken = default)
+        {
+            byte[] data = await _thumbnailBlobStore.GetAsync(id, cancellationToken);
+
+            return new FileContentResult(data, "image/webp");
+        }
 
 
         [HttpPost]

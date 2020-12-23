@@ -7,12 +7,13 @@
             class="text-center"
             border="top"
             colored-border
-            type="success"
+            type="error"
             elevation="2"
-            width="400"
+            width="500"
           >
-            You are now logged out.<br />
-            <v-btn class="mt-8" @click="login">Login </v-btn>
+            Sorry that this happened! 😢 But an error prevents the app from
+            loading. <br />
+            <v-btn class="mt-8" @click="login">Try again </v-btn>
           </v-alert></v-col
         >
       </v-row>

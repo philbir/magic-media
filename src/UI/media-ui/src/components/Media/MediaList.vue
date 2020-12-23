@@ -235,6 +235,7 @@ export default {
   background-repeat: no-repeat;
   background-size: 100% 100%;
   border-radius: 3px;
+  background-color: #ececec;
 }
 
 .media-row {

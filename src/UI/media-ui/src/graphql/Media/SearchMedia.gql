@@ -1,4 +1,8 @@
-query search($request: SearchMediaRequestInput!, $size: ThumbnailSizeName) {
+query search(
+  $request: SearchMediaRequestInput!
+  $size: ThumbnailSizeName
+  $loadThumbnailData: Boolean!
+) {
   searchMedia(request: $request) {
     items {
       id
@@ -19,7 +23,7 @@ query search($request: SearchMediaRequestInput!, $size: ThumbnailSizeName) {
         height
         width
       }
-      thumbnail(size: $size) {
+      thumbnail(size: $size, loadData: $loadThumbnailData) {
         size
         dataUrl
         dimensions {

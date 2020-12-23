@@ -49,6 +49,7 @@ const mediaModule = {
     hasMore: true,
     isEditMode: false,
     thumbnailSize: "M",
+    loadThumbnailData: true,
     filter: {
       pageNr: 0,
       pageSize: 200,
@@ -144,6 +145,9 @@ const mediaModule = {
       state.filter.folder = null;
       state.filter.date = null;
     },
+    LOAD_TUMBNAIL_DATA_TOGGLED: function (state) {
+      state.loadThumbnailData = !state.loadThumbnailData;
+    },
     MEDIA_CLOSED: function (state) {
       state.currentMediaId = null;
       state.current = null;
@@ -222,7 +226,10 @@ const mediaModule = {
     async search({ commit, state, dispatch }) {
       commit("SET_MEDIALIST_LOADING", true);
 
-      const result = await excuteGraphQL(() => searchMedia(state.filter, state.thumbnailSize), dispatch);
+      const result = await excuteGraphQL(() => searchMedia(
+        state.filter,
+        state.thumbnailSize,
+        state.loadThumbnailData), dispatch);
 
       if (result.success) {
 
@@ -366,6 +373,11 @@ const mediaModule = {
     removeFilter({ dispatch, commit }, key) {
       commit("RESET_FILTER");
       commit("FILTER_REMOVED", key);
+      dispatch("search");
+    },
+    toggleLoadThumbnailData({ dispatch, commit }) {
+      commit("RESET_FILTER");
+      commit("LOAD_TUMBNAIL_DATA_TOGGLED");
       dispatch("search");
     },
     async loadDetails({ commit, dispatch }, id) {
