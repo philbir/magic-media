@@ -49,7 +49,7 @@ const mediaModule = {
     hasMore: true,
     isEditMode: false,
     thumbnailSize: "M",
-    loadThumbnailData: true,
+    loadThumbnailData: false,
     filter: {
       pageNr: 0,
       pageSize: 200,

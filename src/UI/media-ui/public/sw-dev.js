@@ -16,7 +16,6 @@ if (workbox) {
     // https://stackoverflow.com/questions/49963982/vue-router-history-mode-with-pwa-in-offline-mode
     //workbox.routing.registerNavigationRoute('/index.html')
 
-
     workbox.routing.registerRoute(
         ({ url }) => url.pathname.startsWith('/api/media/webimage'),
         new workbox.strategies.StaleWhileRevalidate({

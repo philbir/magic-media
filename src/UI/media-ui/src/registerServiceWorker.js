@@ -9,14 +9,14 @@ if (process.env.VUE_APP_DEV_SW) {
   enable_sw = true;
   sw = process.env.VUE_APP_DEV_SW
 
-  console.warn("using DEV service-worker!")
+  console.warn("using DEV service-worker! To disable in development set environment: VUE_APP_DEV_SW to false'")
 }
 
 if (enable_sw) {
   register(`${process.env.BASE_URL}${sw}`, {
     ready() {
       console.log(
-        'App is being served from cache by a service worker. To disable in development set ENV VUE_APP_DEV_SW to false'
+        'App is being served from cache by a service worker.'
       )
     },
     registered() {

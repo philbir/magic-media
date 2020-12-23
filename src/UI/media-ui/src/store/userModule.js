@@ -79,6 +79,7 @@ const userModule = {
             }
             else {
                 commit("ERROR");
+                console.log('Load ME Error')
             }
         },
         resetError: function ({ commit }) {

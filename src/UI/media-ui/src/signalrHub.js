@@ -7,7 +7,6 @@ export default {
             .configureLogging(LogLevel.Information)
             .build()
 
-        connection.start()
         Vue.prototype.$socket = connection;
     }
 }

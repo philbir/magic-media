@@ -1,55 +1,64 @@
 <template>
-  <AppPreLoader>
-    <Upload :show="showUpload"></Upload>
-    <v-app>
-      <router-view name="appbar"></router-view>
-      <v-navigation-drawer clipped v-if="showSidebar" app v-model="nav">
-        <router-view name="left"></router-view>
-      </v-navigation-drawer>
+  <me-loader>
+    <template slot="error">
+      <v-app>
+        <router-view name="root"></router-view>
+      </v-app>
+    </template>
+    <AppPreLoader>
+      <Upload :show="showUpload"></Upload>
+      <v-app>
+        <router-view name="appbar"></router-view>
+        <v-navigation-drawer clipped v-if="showSidebar" app v-model="nav">
+          <router-view name="left"></router-view>
+        </v-navigation-drawer>
 
-      <v-main :class="{ fullscreen: isFullscreen }">
-        <vue-page-transition>
-          <router-view />
-        </vue-page-transition>
-      </v-main>
+        <v-main :class="{ fullscreen: isFullscreen }">
+          <vue-page-transition>
+            <router-view />
+          </vue-page-transition>
+        </v-main>
 
-      <v-snackbar
-        v-for="(snack, i) in snacks"
-        :key="'snack' + i"
-        :value="snack.show"
-        rounded
-        app
-        bottom
-        :color="snack.color"
-      >
-        <v-icon> {{ snack.icon }}</v-icon>
-        {{ snack.text }}
-
-        <template v-slot:action="">
-          <v-icon @click="snack.show = false" color="white"> mdi-close </v-icon>
-        </template>
-      </v-snackbar>
-      <v-snackbar
-        top
-        centered
-        :value="updateExists"
-        :timeout="-1"
-        color="primary"
-      >
-        <v-icon class="mr-4"> mdi-gift-outline</v-icon>
-        <span>An new version is availlable...</span>
-
-        <v-btn elevation="4" class="ml-4" outlined text @click="refreshApp">
-          Update now</v-btn
+        <v-snackbar
+          v-for="(snack, i) in snacks"
+          :key="'snack' + i"
+          :value="snack.show"
+          rounded
+          app
+          bottom
+          :color="snack.color"
         >
-      </v-snackbar>
-    </v-app>
-    <v-dialog v-model="mediaViewerOpen" fullscreen>
-      <MediaViewer v-if="mediaViewerOpen"></MediaViewer>
-    </v-dialog>
+          <v-icon> {{ snack.icon }}</v-icon>
+          {{ snack.text }}
 
-    <edit-face-dialog></edit-face-dialog>
-  </AppPreLoader>
+          <template v-slot:action="">
+            <v-icon @click="snack.show = false" color="white">
+              mdi-close
+            </v-icon>
+          </template>
+        </v-snackbar>
+        <v-snackbar
+          top
+          centered
+          :value="updateExists"
+          :timeout="-1"
+          color="primary"
+        >
+          <v-icon class="mr-4"> mdi-gift-outline</v-icon>
+          <span>An new version is availlable...</span>
+
+          <v-btn elevation="4" class="ml-4" outlined text @click="refreshApp">
+            Update now</v-btn
+          >
+        </v-snackbar>
+        <signal-shell></signal-shell>
+      </v-app>
+      <v-dialog v-model="mediaViewerOpen" fullscreen>
+        <MediaViewer v-if="mediaViewerOpen"></MediaViewer>
+      </v-dialog>
+      <edit-face-dialog></edit-face-dialog>
+    </AppPreLoader>
+  </me-loader>
 </template>
 
 <script>
@@ -58,32 +67,24 @@ import Upload from "./components/Media/Upload";
 import MediaViewer from "./components/Media/MediaViewer";
 import VuePageTransition from "vue-page-transition";
 import Vue from "vue";
-import { mediaOperationTypeMap } from "./services/mediaOperationService";
 import EditFaceDialog from "./components/Face/EditFaceDialog.vue";
+import MeLoader from "./components/User/MeLoader";
+import SignalShell from "./components/SignalShell";
 
 Vue.use(VuePageTransition);
 
 export default {
   name: "App",
-  components: { AppPreLoader, Upload, MediaViewer, EditFaceDialog },
+  components: {
+    MeLoader,
+    AppPreLoader,
+    Upload,
+    MediaViewer,
+    EditFaceDialog,
+    SignalShell,
+  },
+
   created() {
-    const self = this;
-    this.$socket.on("mediaOperationCompleted", (data) => {
-      self.$store.dispatch("snackbar/mediaOperationCompleted", data);
-    });
-    this.$socket.on("mediaOperationRequestCompleted", (data) => {
-      self.$store.dispatch("snackbar/mediaOperationRequestCompleted", data);
-
-      this.$store.dispatch("media/getFolderTree");
-
-      var opType = mediaOperationTypeMap[data.type];
-
-      this.$magic.snack(
-        `${opType.completedText} (${data.successCount} items)`,
-        "SUCCESS"
-      );
-    });
-
     document.addEventListener("swUpdated", this.updateAvailable, {
       once: true,
     });

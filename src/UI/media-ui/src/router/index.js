@@ -4,7 +4,6 @@ import VueRouter from "vue-router";
 import AlbumFilter from "../components/Album/AlbumFilter";
 import AlbumList from "../components/Album/AlbumList";
 import DefaultAppBar from "../components/DefaultAppBar";
-import EmptyAppBar from "../components/EmptyAppBar";
 import FaceAppBar from "../components/Face/FaceAppBar";
 import FaceFilter from "../components/Face/FaceFilter";
 import MapView from "../components/Map/MapView";
@@ -126,31 +125,34 @@ const routes = [
     path: "/loggedout",
     name: "LoggedOut",
     components: {
-      default: LoggedOut,
+      root: LoggedOut,
+      default: null,
       left: null,
-      appbar: EmptyAppBar
+      appbar: null,
     },
-    meta: { hideSidebar: true }
+    meta: { hideSidebar: true, isRoot: true }
   },
   {
     path: "/session/expired",
     name: "SessionExpired",
     components: {
-      default: SessionExpired,
+      root: SessionExpired,
+      default: null,
       left: null,
-      appbar: EmptyAppBar
+      appbar: null
     },
-    meta: { hideSidebar: true }
+    meta: { hideSidebar: true, isRoot: true }
   },
   {
     path: "/error",
     name: "Error",
     components: {
-      default: ErrorPage,
+      root: ErrorPage,
+      default: null,
       left: null,
-      appbar: EmptyAppBar
+      appbar: null
     },
-    meta: { hideSidebar: true }
+    meta: { hideSidebar: true, isRoot: true }
   }
 ];
 

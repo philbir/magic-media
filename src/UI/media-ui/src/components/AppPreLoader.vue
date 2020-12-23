@@ -5,30 +5,17 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
 export default {
   name: "AppPreLoader",
   data: () => ({
     preloaded: false,
   }),
   computed: {
-    ...mapState("user", ["me", "error"]),
     ready: function () {
-      return this.preloaded && this.me != null;
-    },
-  },
-  watch: {
-    error: function (newValue) {
-      if (newValue) {
-        this.$router.push({ name: "Error" });
-      }
+      return this.preloaded;
     },
   },
   created() {
-    if (this.error) return;
-
-    this.$store.dispatch("user/getMe");
-
     this.$store.dispatch("person/getAll").then(() => {
       this.preloaded = true;
     });
