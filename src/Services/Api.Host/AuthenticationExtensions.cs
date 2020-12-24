@@ -44,15 +44,17 @@ namespace MagicMedia
             .AddOpenIdConnect("oidc", options =>
             {
                 options.Authority = secOptions.Authority;
-                options.RequireHttpsMetadata = false;
+                options.RequireHttpsMetadata = env.IsProduction();
 
                 options.ClientSecret = secOptions.Secret;
                 options.ClientId = secOptions.ClientId;
+                options.ClaimActions.MapUniqueJsonKey("scope", "scope");
                 options.ResponseType = "code";
-
                 options.Scope.Clear();
                 options.Scope.Add("openid");
                 options.Scope.Add("profile");
+                options.Scope.Add("api.magic.read");
+                options.Scope.Add("api.magic.write");
 
                 options.ClaimActions.MapAllExcept("iss", "nbf", "exp", "aud", "nonce", "iat", "c_hash");
 
@@ -80,7 +82,7 @@ namespace MagicMedia
             })
             .AddJwtBearer("jwt", options =>
             {
-                options.RequireHttpsMetadata = false;
+                options.RequireHttpsMetadata = env.IsProduction();
                 options.Authority = secOptions.Authority;
                 options.Audience = "api.magic";
             });

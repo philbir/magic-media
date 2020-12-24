@@ -13,12 +13,6 @@ namespace MagicMedia.Identity
             this IServiceCollection services,
             IConfiguration configuration)
         {
-            //LoginOptions loginOptions = configuration.GetLoginOptions();
-            //CachingOptions? cacheOptions = loginOptions.Caching;
-
-            //services.AddSingleton(loginOptions);
-            //services.AddSingleton(cacheOptions);
-
             IIdentityServerBuilder builder = services.AddIdentityServer(options =>
            {
                options.Caching.ClientStoreExpiration = TimeSpan.FromMinutes(30);
@@ -30,6 +24,7 @@ namespace MagicMedia.Identity
                options.Events.RaiseSuccessEvents = true;
                options.Endpoints.EnableIntrospectionEndpoint = true;
            })
+            .AddDeveloperSigningCredential(persistKey: true, filename: "sign_key.jwk")
             .AddInMemoryCaching()
             .AddResourceStoreCache<ResourceStore>()
             .AddPersistedGrantStore<PersistedGrantStore>()

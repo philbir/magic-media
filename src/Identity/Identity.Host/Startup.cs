@@ -47,16 +47,11 @@ namespace MagicMedia.Identity
         public void Configure(
             IApplicationBuilder app,
             IWebHostEnvironment env,
-            DataSeeder dataSeeder,
-            IBusControl busControl)
+            DataSeeder dataSeeder)
         {
-            //TODO: Move to hosted service
-            dataSeeder.SeedIntialDataAsync(default).GetAwaiter().GetResult();
-
-            //busControl.Start();
-
             if (env.IsDevelopment())
             {
+                dataSeeder.SeedIntialDataAsync(default).GetAwaiter().GetResult();
                 app.UseDeveloperExceptionPage();
             }
             else

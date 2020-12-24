@@ -310,3 +310,5 @@ ffprobe.exe
 ._ffmpeg.exe
 ._ffprobe.exe
 samples/Migration**
+sign_key.jwk
+tempkey.jwk
