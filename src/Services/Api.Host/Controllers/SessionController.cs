@@ -21,9 +21,16 @@ namespace MagicMedia.Api.Controllers
 
         [AllowAnonymous]
         [Route("auth")]
-        public IActionResult Authenticate()
+        public async Task<IActionResult> AuthenticateAsync()
         {
-            return Redirect("/");
+            if (User.Identity.IsAuthenticated)
+            {
+                return Redirect("/");
+            }
+            else
+            {
+                return Challenge();
+            }
         }
 
         [AllowAnonymous]

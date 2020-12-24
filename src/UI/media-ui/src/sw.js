@@ -12,7 +12,7 @@ if (workbox) {
     // Make sure to return a specific response for all navigation requests.
     // Since we have a SPA here, this should be index.html always.
     // https://stackoverflow.com/questions/49963982/vue-router-history-mode-with-pwa-in-offline-mode
-    //workbox.routing.registerNavigationRoute('/index.html')
+    workbox.routing.registerNavigationRoute('/index.html')
 
     workbox.routing.registerRoute(
         ({ url }) => url.pathname.startsWith('/api/media/webimage'),
@@ -66,6 +66,16 @@ if (workbox) {
                 }),
             ],
         }),
+    );
+
+    workbox.routing.registerRoute(
+        ({ url }) => url.pathname.startsWith('/session') || url.pathname === '/',
+        new workbox.strategies.NetworkOnly()
+    );
+
+    workbox.routing.registerRoute(
+        ({ url }) => url.pathname === '/',
+        new workbox.strategies.NetworkFirst()
     );
 }
 

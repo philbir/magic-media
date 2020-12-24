@@ -69,6 +69,16 @@ if (workbox) {
             ],
         }),
     );
+
+    workbox.routing.registerRoute(
+        ({ url }) => url.pathname.startsWith('/session') || url.pathname === '/',
+        new workbox.strategies.NetworkOnly()
+    );
+
+    workbox.routing.registerRoute(
+        ({ url }) => url.pathname === '/',
+        new workbox.strategies.NetworkFirst()
+    );
 }
 
 self.addEventListener('message', (event) => {

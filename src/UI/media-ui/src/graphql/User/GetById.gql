@@ -1,0 +1,22 @@
+query getUserById($id: Uuid!) {
+  user(id: $id) {
+    id
+    email
+    name
+    state
+    invitationCode
+    person {
+      id
+      name
+    }
+    sharedAlbums {
+      id
+      title
+    }
+    inAlbum{
+      id
+      title
+    }
+    authorizedOnMediaCount
+  }
+}

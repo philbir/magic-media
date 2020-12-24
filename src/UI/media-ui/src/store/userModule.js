@@ -1,6 +1,7 @@
 import Vue from "vue";
-import { createInvite, createUserFromPerson, getAllUsers, getMe, search } from "../services/userService";
+import { createInvite, createUserFromPerson, getAllUsers, getMe, saveSharedAlbums, search } from "../services/userService";
 import { excuteGraphQL } from "./graphqlClient"
+import { addSnack } from "./snackService"
 
 const userModule = {
     namespaced: true,
@@ -97,11 +98,14 @@ const userModule = {
 
             if (result.success) {
                 //commit("INVITE_CREATED", result.data.User_CreateInvite.user);
-                dispatch(
-                    "snackbar/addSnack",
-                    { text: `Invite created for ${result.data.User_CreateInvite.user.name}`, type: "SUCCESS" },
-                    { root: true }
-                );
+                addSnack(dispatch, `Invite created for ${result.data.User_CreateInvite.user.name}`)
+            }
+        },
+        async saveSharedAlbums({ dispatch }, input) {
+            const result = await excuteGraphQL(() => saveSharedAlbums(input), dispatch);
+
+            if (result.success) {
+                addSnack(dispatch, `Shared albums saved.`)
             }
         },
     },

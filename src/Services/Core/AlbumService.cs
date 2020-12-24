@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Extensions;
@@ -68,6 +69,13 @@ namespace MagicMedia
             CancellationToken cancellationToken)
         {
             return await _mediaStore.Albums.GetSharedWithUserIdAsync(userId, cancellationToken);
+        }
+
+        public async Task<IEnumerable<Album>> GetWithPersonAsync(
+            Guid personId,
+            CancellationToken cancellationToken)
+        {
+            return await _mediaStore.Albums.GetWithPersonAsync(personId, cancellationToken);
         }
 
         public async Task<MediaThumbnail?> GetThumbnailAsync(
@@ -232,6 +240,59 @@ namespace MagicMedia
             return await _mediaStore.Albums.SearchAsync(request, cancellationToken);
         }
 
+        public async Task AddSharedWithUserAsync(
+            Guid albumId,
+            Guid userId,
+            CancellationToken cancellationToken)
+        {
+            Album album = await GetByIdAsync(albumId, cancellationToken);
+
+            var sharedWith = new HashSet<Guid>(album.SharedWith ?? Array.Empty<Guid>());
+            sharedWith.Add(userId);
+            album.SharedWith = sharedWith;
+
+            await _mediaStore.Albums.UpdateAsync(album, cancellationToken);
+        }
+
+
+        public async Task<IEnumerable<Album>> GetSharedAlbumsAsync(
+            Guid userId,
+            CancellationToken cancellationToken)
+        {
+            return await _mediaStore.Albums.GetSharedWithUserIdAsync(userId, cancellationToken);
+        }
+
+        public async Task SaveUserSharedAlbumsAsync(
+            SaveUserSharedAlbumsRequest request,
+            CancellationToken cancellationToken)
+        {
+            IEnumerable<Album> existing = await _mediaStore.Albums.GetSharedWithUserIdAsync(
+                request.UserId,
+                cancellationToken);
+
+            foreach (Guid albumId in request.Albums)
+            {
+                if (!existing.Any(x => x.Id == albumId))
+                {
+                    await AddSharedWithUserAsync(
+                        albumId,
+                        request.UserId,
+                        cancellationToken);
+                }
+            }
+
+            foreach (Album album in existing)
+            {
+                if (!request.Albums.Contains(album.Id))
+                {
+                    await RemoveSharedWithUserAsync(
+                        album.Id,
+                        request.UserId,
+                        cancellationToken);
+                }
+            }
+        }
+
         public async Task<Album> UpdateAlbumAsync(
             UpdateAlbumRequest request,
             CancellationToken cancellationToken)
@@ -243,6 +304,20 @@ namespace MagicMedia
             await _mediaStore.Albums.UpdateAsync(album, cancellationToken);
 
             return album;
+        }
+
+        private async Task RemoveSharedWithUserAsync(
+            Guid albumId,
+            Guid userId,
+            CancellationToken cancellationToken)
+        {
+            Album album = await GetByIdAsync(albumId, cancellationToken);
+
+            var sharedWith = new List<Guid>(album.SharedWith ?? Array.Empty<Guid>());
+            sharedWith.RemoveAll(x => x == userId);
+            album.SharedWith = sharedWith;
+
+            await _mediaStore.Albums.UpdateAsync(album, cancellationToken);
         }
     }
 

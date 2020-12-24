@@ -13,10 +13,14 @@ namespace MagicMedia.GraphQL
     public class UserMutations
     {
         private readonly IUserService _userService;
+        private readonly IAlbumService _albumService;
 
-        public UserMutations(IUserService userService)
+        public UserMutations(
+            IUserService userService,
+            IAlbumService albumService)
         {
             _userService = userService;
+            _albumService = albumService;
         }   
 
         [GraphQLName("User_CreateFromPerson")]
@@ -35,6 +39,18 @@ namespace MagicMedia.GraphQL
             CancellationToken cancellationToken)
         {
             User user = await _userService.CreateInviteAsync(id, cancellationToken);
+
+            return new UpdateUserPayload(user);
+        }
+
+
+        [GraphQLName("User_SaveSharedAlbums")]
+        public async Task<UpdateUserPayload> SaveSharedAlbumsAsync(
+            SaveUserSharedAlbumsRequest input,
+            CancellationToken cancellationToken)
+        {
+            await _albumService.SaveUserSharedAlbumsAsync(input, cancellationToken);
+            User user = await _userService.GetByIdAsync(input.UserId, cancellationToken);
 
             return new UpdateUserPayload(user);
         }

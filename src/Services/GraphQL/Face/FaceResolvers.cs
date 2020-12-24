@@ -27,5 +27,21 @@ namespace MagicMedia.GraphQL.Face
         {
             return await dataLoader.LoadAsync(face.MediaId, cancellationToken);
         }
+
+        public MediaThumbnail? GetThumbnail(
+            MediaFace face)
+        {
+            MediaThumbnail? thumb = face.Thumbnail;
+            if (thumb != null)
+            {
+                thumb.Owner = new ThumbnailOwner
+                {
+                    Id = face.Id,
+                    Type = ThumbnailOwnerType.Face
+                };
+            }
+
+            return thumb;
+        }
     }
 }

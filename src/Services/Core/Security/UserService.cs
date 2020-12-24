@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using MagicMedia.Messaging;
 using MagicMedia.Search;
 using MagicMedia.Store;
+using MagicMedia.Store.MongoDb;
 using MassTransit;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -16,6 +17,7 @@ namespace MagicMedia.Security
         private readonly IMediaStore _mediaStore;
         private readonly IMemoryCache _memoryCache;
         private readonly IBus _bus;
+        private readonly IAlbumStore _albumStore;
         private readonly IAlbumMediaIdResolver _albumMediaIdResolver;
         private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(15);
 
@@ -23,11 +25,13 @@ namespace MagicMedia.Security
             IMediaStore mediaStore,
             IMemoryCache memoryCache,
             IBus bus,
+            IAlbumStore albumStore,
             IAlbumMediaIdResolver albumMediaIdResolver)
         {
             _mediaStore = mediaStore;
             _memoryCache = memoryCache;
             _bus = bus;
+            _albumStore = albumStore;
             _albumMediaIdResolver = albumMediaIdResolver;
         }
 
@@ -68,13 +72,6 @@ namespace MagicMedia.Security
             return await _mediaStore.Users.TryGetByPersonIdAsync(personId, cancellationToken);
         }
 
-        public async Task<IEnumerable<Album>> GetSharedAlbumsAsync(
-            Guid userId,
-            CancellationToken cancellationToken)
-        {
-            return await _mediaStore.Albums.GetSharedWithUserIdAsync(userId, cancellationToken);
-        }
-
         public IEnumerable<string> GetPermissions(User user)
         {
             var permissions = new HashSet<string>();
@@ -91,6 +88,13 @@ namespace MagicMedia.Security
             }
 
             return permissions;
+        }
+
+        public async Task<IEnumerable<Album>> GetSharedAlbumsAsync(
+            Guid userId,
+            CancellationToken cancellationToken)
+        {
+            return await _mediaStore.Albums.GetSharedWithUserIdAsync(userId, cancellationToken);
         }
 
         public async Task<IEnumerable<Guid>> GetAuthorizedOnMediaIdsAsync(

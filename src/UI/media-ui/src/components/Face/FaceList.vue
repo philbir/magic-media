@@ -217,6 +217,7 @@ const getTitle = (face) => {
   height: 120px;
   width: 120px;
   margin: auto;
+  background-color: #e8e8e8;
 }
 
 .face-item-title {

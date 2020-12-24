@@ -53,6 +53,7 @@ namespace MagicMedia
                 .RenameRequestToInput<RemoveFoldersFromAlbumRequest>()
                 .RenameRequestToInput<CreateUserFromPersonRequest>()
                 .RenameRequestToInput<SearchUserRequest>()
+                .RenameRequestToInput<SaveUserSharedAlbumsRequest>()
                 .AddDataLoader<CameraByIdDataLoader>()
                 .AddDataLoader<ThumbnailByMediaIdDataLoader>()
                 .AddDataLoader<MediaByIdDataLoader>()
