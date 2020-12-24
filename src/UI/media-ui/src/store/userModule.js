@@ -1,6 +1,7 @@
 import Vue from "vue";
-import { createInvite, createUserFromPerson, getAllUsers, getMe, search } from "../services/userService";
+import { createInvite, createUserFromPerson, getAllUsers, getMe, saveSharedAlbums, search } from "../services/userService";
 import { excuteGraphQL } from "./graphqlClient"
+import { addSnack } from "./snackService"
 
 const userModule = {
     namespaced: true,
@@ -9,6 +10,7 @@ const userModule = {
         me: null,
         hasMore: true,
         listLoading: false,
+        error: false,
         totalCount: 0,
         list: [],
         filter: {
@@ -40,6 +42,12 @@ const userModule = {
         },
         ME_LOADED: function (state, user) {
             state.me = user;
+        },
+        ERROR: function (state) {
+            state.error = true;
+        },
+        ERROR_RESET: function (state) {
+            state.error = false;
         }
     },
     actions: {
@@ -70,6 +78,13 @@ const userModule = {
             if (result.success) {
                 commit("ME_LOADED", result.data.me);
             }
+            else {
+                commit("ERROR");
+                console.log('Load ME Error')
+            }
+        },
+        resetError: function ({ commit }) {
+            commit("ERROR_RESET");
         },
         async createFromPerson({ commit, dispatch }, payload) {
             const result = await excuteGraphQL(() => createUserFromPerson(payload.personId, payload.email), dispatch);
@@ -83,11 +98,14 @@ const userModule = {
 
             if (result.success) {
                 //commit("INVITE_CREATED", result.data.User_CreateInvite.user);
-                dispatch(
-                    "snackbar/addSnack",
-                    { text: `Invite created for ${result.data.User_CreateInvite.user.name}`, type: "SUCCESS" },
-                    { root: true }
-                );
+                addSnack(dispatch, `Invite created for ${result.data.User_CreateInvite.user.name}`)
+            }
+        },
+        async saveSharedAlbums({ dispatch }, input) {
+            const result = await excuteGraphQL(() => saveSharedAlbums(input), dispatch);
+
+            if (result.success) {
+                addSnack(dispatch, `Shared albums saved.`)
             }
         },
     },
@@ -99,7 +117,6 @@ const userModule = {
             return false;
         },
         userActions: (state, getters) => {
-            console.log(state)
             return {
                 media: {
                     edit: getters["hasPermission"]('MEDIA_EDIT'),

@@ -1,0 +1,11 @@
+mutation saveUserSharedAlbums($input: SaveUserSharedAlbumsInput!) {
+  User_SaveSharedAlbums(input: $input) {
+    user {
+      id
+    }
+    errors {
+      code
+      message
+    }
+  }
+}

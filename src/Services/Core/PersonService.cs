@@ -207,6 +207,12 @@ namespace MagicMedia
             {
                 face.Thumbnail.Data = await _thumbnailBlob.GetAsync(face.Thumbnail.Id, cancellationToken);
 
+                face.Thumbnail.Owner = new ThumbnailOwner
+                {
+                    Type = ThumbnailOwnerType.Face,
+                    Id = face.Id
+                };
+
                 return face.Thumbnail;
             }
 

@@ -54,6 +54,17 @@ namespace MagicMedia.Store.MongoDb
             return albums;
         }
 
+        public async Task<IEnumerable<Album>> GetWithPersonAsync(
+            Guid personId,
+            CancellationToken cancellationToken)
+        {
+            List<Album> albums = await _mediaStoreContext.Albums.AsQueryable()
+                .Where(x => x.Persons.Any( p => p.PersonId == personId))
+                .ToListAsync(cancellationToken);
+
+            return albums;
+        }
+
         public async Task<Album> UpdateAsync(
             Album album,
             CancellationToken cancellationToken)

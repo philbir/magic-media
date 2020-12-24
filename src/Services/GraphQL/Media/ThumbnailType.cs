@@ -1,4 +1,6 @@
+using System;
 using HotChocolate.Types;
+using MagicMedia.Extensions;
 using MagicMedia.Store;
 
 namespace MagicMedia.GraphQL
@@ -12,7 +14,7 @@ namespace MagicMedia.GraphQL
             descriptor
                 .Field("dataUrl")
                 .Type(typeof(string))
-                .ResolveWith<ThumbnailResolvers>(x => x.GetDataUrl(default!, default!));
+                .ResolveWith<ThumbnailResolvers>(x => x.GetDataUrl(default!));
         }
     }
 }

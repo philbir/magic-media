@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.Text.Json;
-using HotChocolate;
 using HotChocolate.Resolvers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;

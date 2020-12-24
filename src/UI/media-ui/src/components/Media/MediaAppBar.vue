@@ -307,6 +307,9 @@ export default {
         case 77: //m
           this.$store.dispatch("person/buildModel");
           break;
+        case 68: //d
+          this.$store.dispatch("media/toggleLoadThumbnailData");
+          break;
         default:
           console.log("KEYPress MediaBar", e.which);
       }

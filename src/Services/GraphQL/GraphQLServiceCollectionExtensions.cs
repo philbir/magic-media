@@ -17,6 +17,8 @@ namespace MagicMedia
             builder.Services.AddGraphQLServer()
                 .AddMagicMediaGrapQL();
 
+            builder.Services.AddHttpResultSerializer<ForbiddenHttpResultSerializer>();
+
             return builder;
         }
 
@@ -51,6 +53,7 @@ namespace MagicMedia
                 .RenameRequestToInput<RemoveFoldersFromAlbumRequest>()
                 .RenameRequestToInput<CreateUserFromPersonRequest>()
                 .RenameRequestToInput<SearchUserRequest>()
+                .RenameRequestToInput<SaveUserSharedAlbumsRequest>()
                 .AddDataLoader<CameraByIdDataLoader>()
                 .AddDataLoader<ThumbnailByMediaIdDataLoader>()
                 .AddDataLoader<MediaByIdDataLoader>()

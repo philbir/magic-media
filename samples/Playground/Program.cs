@@ -6,6 +6,7 @@ using MagicMedia.BingMaps;
 using MagicMedia.Discovery;
 using MagicMedia.Messaging;
 using MagicMedia.Playground;
+using MagicMedia.Security;
 using MagicMedia.Store.MongoDb;
 using MagicMedia.Stores;
 using Microsoft.Extensions.Configuration;
@@ -35,7 +36,9 @@ namespace Playground
 
             //await hasher.HashAsync();
 
-            await faceScanner.RunAsync(default);
+            //await faceScanner.RunAsync(default);
+
+            await updater.ResetMediaAIErrorsAsync();
           }
 
         private static IServiceProvider BuildServiceProvider()
@@ -64,6 +67,7 @@ namespace Playground
             services.AddSingleton<BulkMediaUpdater>();
             services.AddSingleton<ImageHasher>();
 
+            services.AddSingleton<IUserContextFactory, NoOpUserContextFactory>();
 
             return services.BuildServiceProvider();
         }

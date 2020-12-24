@@ -5,16 +5,14 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
 export default {
   name: "AppPreLoader",
   data: () => ({
     preloaded: false,
   }),
   computed: {
-    ...mapState("user", ["me"]),
     ready: function () {
-      return this.preloaded && this.me != null;
+      return this.preloaded;
     },
   },
   created() {
@@ -27,7 +25,6 @@ export default {
     this.$store.dispatch("user/getAll").then(() => {
       this.preloaded = true;
     });
-    this.$store.dispatch("user/getMe");
   },
 };
 </script>

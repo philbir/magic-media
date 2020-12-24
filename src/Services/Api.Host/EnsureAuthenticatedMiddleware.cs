@@ -21,7 +21,10 @@ namespace MagicMedia.Api
 
         public async Task InvokeAsync(HttpContext context)
         {
-            if (_env.IsDevelopment())
+            if (_env.IsDevelopment()
+                || context.Request.Path.StartsWithSegments("/api")
+                || context.Request.Path.StartsWithSegments("/graphql")
+                || context.Request.Path.StartsWithSegments("/error") )
             {
                 await _next(context);
             }

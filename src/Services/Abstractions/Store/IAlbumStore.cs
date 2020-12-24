@@ -12,6 +12,7 @@ namespace MagicMedia.Store.MongoDb
         Task<IEnumerable<Album>> GetAllAsync(CancellationToken cancellationToken);
         Task<Album> GetByIdAsync(Guid id, CancellationToken cancellationToken);
         Task<IEnumerable<Album>> GetSharedWithUserIdAsync(Guid userId, CancellationToken cancellationToken);
+        Task<IEnumerable<Album>> GetWithPersonAsync(Guid personId, CancellationToken cancellationToken);
         Task<SearchResult<Album>> SearchAsync(SearchAlbumRequest request, CancellationToken cancellationToken);
         Task<Album> UpdateAsync(Album album, CancellationToken cancellationToken);
     }

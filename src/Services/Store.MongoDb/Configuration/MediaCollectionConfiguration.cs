@@ -21,6 +21,7 @@ namespace MagicMedia.Store.MongoDb.Configuration
                 {
                     cm.AutoMap();
                     cm.UnmapMember(x => x.Data);
+                    cm.UnmapMember(x => x.Owner);
                 })
                 .AddBsonClassMap<GeoPoint>(cm =>
                 {

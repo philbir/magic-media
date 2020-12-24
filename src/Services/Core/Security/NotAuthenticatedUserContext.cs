@@ -9,6 +9,8 @@ namespace MagicMedia.Security
     {
         private const string _message = "User is not authenticated";
 
+        private IEnumerable<Guid> _emptyList = new List<Guid>();
+
         public bool IsAuthenticated => false;
 
         public Guid? UserId => null;
@@ -16,24 +18,24 @@ namespace MagicMedia.Security
         public IEnumerable<string> Roles => new string[0];
 
         public Task<IEnumerable<Guid>> GetAuthorizedPersonsAsync(CancellationToken cancellationToken)
-            => throw new UnauthorizedAccessException(_message);
+            => Task.FromResult(_emptyList);
 
         public Task<IEnumerable<Guid>> GetAuthorizedMediaAsync(CancellationToken cancellationToken)
-            => throw new UnauthorizedAccessException(_message);
+            => Task.FromResult(_emptyList);
 
         public bool HasRole(string role) => throw new UnauthorizedAccessException(_message);
 
         public Task<bool> IsAuthorizedAsync(object resourceId, ProtectedResourceType type, CancellationToken cancellationToken)
-            => throw new UnauthorizedAccessException(_message);
+            => Task.FromResult(false);
 
         public bool HasPermission(string permission)
-            => throw new UnauthorizedAccessException(_message);
+            => false;
 
         public Task<IEnumerable<Guid>> GetAuthorizedAlbumAsync(CancellationToken cancellationToken)
-            => throw new UnauthorizedAccessException(_message);
+            => Task.FromResult(_emptyList);
 
         public Task<IEnumerable<Guid>> GetAuthorizedFaceAsync(CancellationToken cancellationToken)
-           => throw new UnauthorizedAccessException(_message);
+           => Task.FromResult(_emptyList);
 
         public ClientInfo GetClientInfo()
         {

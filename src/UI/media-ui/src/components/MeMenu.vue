@@ -31,7 +31,7 @@
         <v-icon class="ml-4">mdi-help-circle-outline</v-icon>
 
         <v-spacer></v-spacer>
-        <v-icon class="mr-0">mdi-logout</v-icon>
+        <v-icon class="mr-0" @click="logout">mdi-logout</v-icon>
       </v-card-actions>
     </v-card>
   </v-menu>
@@ -56,6 +56,9 @@ export default {
     debug: function (e) {
       e.preventDefault();
       console.log(this.$vuetify);
+    },
+    logout: function () {
+      window.location = "/api/session/logout";
     },
   },
 };

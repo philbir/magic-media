@@ -13,17 +13,20 @@ namespace MagicMedia.GraphQL
         private readonly IPersonTimelineService _personTimelineService;
         private readonly IGroupService _groupService;
         private readonly IUserService _userService;
+        private readonly IAlbumService _albumService;
 
         public PersonResolvers(
             IPersonService personService,
             IPersonTimelineService personTimelineService,
             IGroupService groupService,
-            IUserService userService)
+            IUserService userService,
+            IAlbumService albumService)
         {
             _personService = personService;
             _personTimelineService = personTimelineService;
             _groupService = groupService;
             _userService = userService;
+            _albumService = albumService;
         }
 
         public async Task<User?> GetUserAsync(Person person, CancellationToken cancellationToken)
@@ -60,6 +63,15 @@ namespace MagicMedia.GraphQL
             return await _personTimelineService.BuildTimelineAsync(
                 person.Id,
                 itemsPerYear,
+                cancellationToken);
+        }
+
+        public async Task<IEnumerable<Album>> GetInAlbumAsync(
+            Person person,
+            CancellationToken cancellationToken)
+        {
+            return await _albumService.GetWithPersonAsync(
+                person.Id,
                 cancellationToken);
         }
     }

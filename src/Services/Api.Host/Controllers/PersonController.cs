@@ -27,6 +27,8 @@ namespace MagicMedia.Api.Controllers
 
             if ( thumb != null)
             {
+                Response.Headers["X-Sw-Cache-Thumbnail"] = "true";
+
                 return new FileContentResult(thumb.Data, "image/jpg");
             }
 

@@ -64,9 +64,9 @@ namespace MagicMedia.Api
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
-                app.UseElasticApm(Configuration,
-                    new HttpDiagnosticsSubscriber());
+                app.UseExceptionHandler("/server/error");
+                //app.UseElasticApm(Configuration,
+                //    new HttpDiagnosticsSubscriber());
             }
 
             app.UseSerilogRequestLogging();

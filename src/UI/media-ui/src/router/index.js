@@ -21,6 +21,9 @@ import Playground from "../components/Playground/Playground";
 import PersonTimeline from "../components/Person/PersonTimeline"
 import SettingsPage from "../components/Settings/SettingsPage"
 import MediaViewLaucher from "../components/Media/MediaViewLauncher"
+import LoggedOut from "../components/LoggedOut"
+import SessionExpired from "../components/SessionExpired"
+import ErrorPage from "../components/ErrorPage"
 
 Vue.use(VueRouter);
 
@@ -117,6 +120,39 @@ const routes = [
       left: null,
       appbar: DefaultAppBar
     }
+  },
+  {
+    path: "/loggedout",
+    name: "LoggedOut",
+    components: {
+      root: LoggedOut,
+      default: null,
+      left: null,
+      appbar: null,
+    },
+    meta: { hideSidebar: true, isRoot: true }
+  },
+  {
+    path: "/session/expired",
+    name: "SessionExpired",
+    components: {
+      root: SessionExpired,
+      default: null,
+      left: null,
+      appbar: null
+    },
+    meta: { hideSidebar: true, isRoot: true }
+  },
+  {
+    path: "/error",
+    name: "Error",
+    components: {
+      root: ErrorPage,
+      default: null,
+      left: null,
+      appbar: null
+    },
+    meta: { hideSidebar: true, isRoot: true }
   }
 ];
 
