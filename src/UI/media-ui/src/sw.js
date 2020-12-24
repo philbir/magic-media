@@ -48,9 +48,8 @@ if (workbox) {
             ],
         })
     )
-
     workbox.routing.registerRoute(
-        ({ url }) => url.pathname.startsWith('/api/media/'),
+        ({ url }) => url.pathname.startsWith('/api/media/') || url.pathname.startsWith('/api/face/'),
         new workbox.strategies.StaleWhileRevalidate({
             cacheName: 'thumbnails',
             plugins: [

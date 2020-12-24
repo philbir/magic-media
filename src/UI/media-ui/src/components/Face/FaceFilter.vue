@@ -6,7 +6,7 @@
       max-height="250"
       value-field="id"
       text-field="name"
-      @change="onSelectPerson"
+      v-model="selectedPersons"
     ></FilterList>
 
     <v-card flat>
@@ -16,6 +16,7 @@
         </v-row>
         <v-row>
           <v-btn-toggle
+            color="blue"
             v-model="recognitionTypes"
             multiple
             @change="onRecognitionTypeChange"
@@ -39,7 +40,12 @@
           <v-subheader>State</v-subheader>
         </v-row>
         <v-row>
-          <v-btn-toggle v-model="states" multiple @change="onStateChange">
+          <v-btn-toggle
+            color="blue"
+            v-model="states"
+            multiple
+            @change="onStateChange"
+          >
             <v-btn value="NEW">
               <v-icon>mdi-new-box</v-icon>
             </v-btn>
@@ -63,12 +69,19 @@ export default {
   created() {},
   data() {
     return {
-      selectedPersons: [],
       states: [],
       recognitionTypes: [],
     };
   },
   computed: {
+    selectedPersons: {
+      set(value) {
+        this.$store.dispatch("face/setPersonFilter", value);
+      },
+      get() {
+        return this.$store.state.media.filter.persons;
+      },
+    },
     persons: function () {
       return this.$store.state.person.persons.map((p) => {
         return {
@@ -80,10 +93,6 @@ export default {
   },
 
   methods: {
-    onSelectPerson: function (persons) {
-      const selected = persons.map((x) => x.id);
-      this.$store.dispatch("face/setPersonFilter", selected);
-    },
     onRecognitionTypeChange: function () {
       this.$store.dispatch(
         "face/setRecognitionTypeFilter",

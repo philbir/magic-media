@@ -4,7 +4,7 @@
     :items="persons"
     :open="true"
     title="Person"
-    max-height="250"
+    max-height="500"
     value-field="id"
     text-field="name"
     v-model="selectedPersons"
