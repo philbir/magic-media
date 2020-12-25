@@ -119,6 +119,7 @@ namespace MagicMedia.Store.MongoDb
             long totalCount = await cursor.CountDocumentsAsync(cancellationToken);
 
             List<Album> medias = await cursor
+                .SortByDescending(x => x.StartDate)
                 .Skip(request.PageNr * request.PageSize)
                 .Limit(request.PageSize)
                 .ToListAsync();
