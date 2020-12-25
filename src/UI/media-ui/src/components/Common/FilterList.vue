@@ -1,9 +1,7 @@
 <template>
-  <v-card tile flat v-if="items.length > 1">
-    <v-card-title v-if="!showFilter">
-      <v-subheader>{{ title }}</v-subheader>
-    </v-card-title>
-    <v-card-text>
+  <v-card tile flat v-if="items.length > 0">
+    <v-subheader class="my-0 py-0" v-if="!showFilter">{{ title }}</v-subheader>
+    <v-card-text class="my-0 py-0">
       <v-row v-if="showFilter" class="my-0 py-0">
         <v-col sm="10" class="my-0 py-0">
           <v-text-field
@@ -86,6 +84,7 @@ export default {
     },
   },
   mounted() {
+    console.log("Show filter:", this.showFilter);
     this.expanded = this.open || !this.showFilter;
   },
   data() {

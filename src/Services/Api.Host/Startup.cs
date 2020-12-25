@@ -50,11 +50,15 @@ namespace MagicMedia.Api
             services.AddHttpContextAccessor();
             services.AddSingleton<IUserContextFactory, ClaimsPrincipalUserContextFactory>();
             services.AddMassTransitHostedService();
+
+            Log.Information("Services reqistration complete");
         }
 
         public void Configure(
             IApplicationBuilder app)
         {
+            Log.Information("Start configure...");
+
             app.UseDefaultForwardedHeaders();
             app.UseCookiePolicy();
 

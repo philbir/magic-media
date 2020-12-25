@@ -32,10 +32,10 @@ namespace MagicMedia.GraphQL
                 switch (thumbnail.Owner.Type)
                 {
                     case ThumbnailOwnerType.Media:
-                        url = $"api/media/{thumbnail.Owner.Id}/thumbnailbyid/{thumbnail.Id}";
+                        url = $"/api/media/{thumbnail.Owner.Id}/thumbnailbyid/{thumbnail.Id}";
                         break;
                     case ThumbnailOwnerType.Face:
-                        url = $"api/face/{thumbnail.Owner.Id}/thumbnail/{thumbnail.Id}";
+                        url = $"/api/face/{thumbnail.Owner.Id}/thumbnail/{thumbnail.Id}";
                         break;
                 }
 

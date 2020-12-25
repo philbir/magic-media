@@ -180,6 +180,7 @@ namespace MagicMedia
         {
             IEnumerable<MediaFace> faces = await _faceStore.GetFacesByPersonAsync(
                 person.Id,
+                faceIds: null,
                 cancellationToken);
 
             PersonSummary summary = new();

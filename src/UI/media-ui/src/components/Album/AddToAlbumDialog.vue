@@ -107,9 +107,7 @@ export default {
     },
     context: String,
   },
-  created() {
-    this.$store.dispatch("album/getAll");
-  },
+  created() {},
   data() {
     return {
       searchText: "",

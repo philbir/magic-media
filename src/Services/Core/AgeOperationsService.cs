@@ -38,6 +38,7 @@ namespace MagicMedia
 
             IEnumerable<MediaFace> faces = await _mediaStore.Faces.GetFacesByPersonAsync(
                 person.Id,
+                null,
                 cancellationToken);
 
             IEnumerable<MediaHeaderData>? medias = await _mediaStore.GetHeaderDataAsync(

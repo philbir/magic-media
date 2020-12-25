@@ -248,9 +248,6 @@ export default {
       this.loading = false;
       this.user = result.data.user;
       this.tabs = 0;
-      if (this.allAlbums.length === 0) {
-        this.$store.dispatch("album/getAll");
-      }
     },
     save: function () {
       this.$store.dispatch("user/update", this.user);

@@ -54,6 +54,7 @@ export default {
         this.$store.dispatch("user/getAll").then(() => {
           this.preloaded = true;
         });
+        this.$store.dispatch("album/getAll");
       }
     },
     error: function (newValue) {

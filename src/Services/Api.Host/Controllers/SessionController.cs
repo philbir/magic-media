@@ -38,6 +38,7 @@ namespace MagicMedia.Api.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignOutAsync("oidc");
 
             return Redirect("/loggedout");
         }
