@@ -56,7 +56,7 @@ namespace MagicMedia.GraphQL
             {
                 thumb.Owner = new ThumbnailOwner
                 {
-                    Type = ThumbnailOwnerType.Face,
+                    Type = ThumbnailOwnerType.Media,
                     Id = media.Id
                 };
 

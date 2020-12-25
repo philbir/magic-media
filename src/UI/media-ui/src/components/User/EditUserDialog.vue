@@ -110,7 +110,7 @@
 
                   <br />
                   <a
-                    href="`https://id.birbaum.me/invite/${user.invitationCode}`"
+                    :href="`https://id.birbaum.me/invite/${user.invitationCode}`"
                     v-text="
                       `https://id.birbaum.me/invite/${user.invitationCode}`
                     "

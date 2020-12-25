@@ -29,6 +29,8 @@ namespace MagicMedia.Messaging.Consumers
 
             await _userService.UpdateAsync(user, context.CancellationToken);
 
+            _userService.InvalidateUserCacheAsync(user.Id);
+
             //We could send an email here...
         }
     }
