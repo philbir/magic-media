@@ -9,6 +9,7 @@ namespace MagicMedia
 {
     public interface IPersonService
     {
+        Task DeleteAsync(Guid id, CancellationToken cancellationToken);
         Task<IEnumerable<Person>> GetAllAsync(CancellationToken cancellationToken);
         Task<Person> GetByIdAsync(Guid id, CancellationToken cancellationToken);
         Task<Person> GetOrCreatePersonAsync(string name, CancellationToken cancellationToken);

@@ -1,6 +1,7 @@
 import Vue from "vue";
-import { createGroup, getAllPersons, updatePerson, getAllGroups, search, buildModel } from "../services/personService";
+import { createGroup, getAllPersons, updatePerson, getAllGroups, search, buildModel, deletePerson } from "../services/personService";
 import { excuteGraphQL } from "./graphqlClient"
+import { addSnack } from "./snackService"
 
 const personModule = {
   namespaced: true,
@@ -88,6 +89,8 @@ const personModule = {
             commit('GROUP_ADDED', group)
           });
         }
+        addSnack(dispatch, `${result.data.updatePerson.person.name} saved.`);
+
       }
     },
     async addGroup({ commit, dispatch }, name) {
@@ -97,18 +100,18 @@ const personModule = {
         commit("GROUP_ADDED", result.data.createGroup.group);
       }
     },
+    async delete({ dispatch }, id) {
+      const result = await excuteGraphQL(() => deletePerson(id), dispatch);
+
+      if (result.success) {
+        addSnack(dispatch, 'Person deleted');
+      }
+    },
     async buildModel({ dispatch }) {
       const result = await excuteGraphQL(() => buildModel(), dispatch);
 
       if (result.success) {
-        dispatch(
-          "snackbar/addSnack",
-          {
-            text: `Person model build. (${result.data.buildPersonModel.faceCount} faces)`,
-            type: "SUCCESS"
-          },
-          { root: true }
-        );
+        addSnack(dispatch, `Person model build. (${result.data.buildPersonModel.faceCount} faces)`)
       }
     },
     filter: function ({ commit, dispatch }, filter) {

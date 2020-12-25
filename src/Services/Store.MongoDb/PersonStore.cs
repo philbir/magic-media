@@ -104,6 +104,16 @@ namespace MagicMedia.Store.MongoDb
             return person;
         }
 
+        public async Task DeleteAsync(
+            Guid id,
+            CancellationToken cancellationToken)
+        {
+            await _mediaStoreContext.Persons.DeleteOneAsync(
+                x => x.Id == id,
+                DefaultMongoOptions.Delete,
+                cancellationToken);
+        }
+
         public async Task<Person> UpdateAsync(
             Person person,
             CancellationToken cancellationToken)

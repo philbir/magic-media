@@ -11,7 +11,7 @@
       max-height="250"
       value-field="id"
       text-field="name"
-      @change="onSelectGroup"
+      v-model="selectedGroups"
     ></FilterList>
   </div>
 </template>
@@ -24,7 +24,6 @@ export default {
   created() {},
   data() {
     return {
-      selectedGroups: [],
       searchText: "",
     };
   },
@@ -37,19 +36,22 @@ export default {
     }, 500),
   },
   computed: {
+    selectedGroups: {
+      set(value) {
+        this.$store.dispatch("person/filter", {
+          searchText: this.searchText,
+          groups: value,
+        });
+      },
+      get() {
+        return this.$store.state.media.filter.groups;
+      },
+    },
     groups: function () {
       return this.$store.state.person.groups;
     },
   },
-  methods: {
-    onSelectGroup: function (groups) {
-      const selected = groups.map((x) => x.id);
-      this.$store.dispatch("person/filter", {
-        searchText: this.searchText,
-        groups: selected,
-      });
-    },
-  },
+  methods: {},
 };
 </script>
 

@@ -9,6 +9,7 @@ namespace MagicMedia.Store
     public interface IPersonStore
     {
         Task<Person> AddAsync(Person person, CancellationToken cancellationToken);
+        Task DeleteAsync(Guid id, CancellationToken cancellationToken);
         Task<IEnumerable<Person>> GetAllAsync(CancellationToken cancellationToken);
         Task<Person> GetByIdAsync(Guid id, CancellationToken cancellationToken);
         Task<IEnumerable<Person>> GetPersonsAsync(

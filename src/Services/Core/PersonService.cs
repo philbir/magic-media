@@ -139,8 +139,19 @@ namespace MagicMedia
             return person;
         }
 
-        public async Task UpdateAllSummaryAsync(
+        public async Task DeleteAsync(
+            Guid id,
             CancellationToken cancellationToken)
+        {
+            await _personStore.DeleteAsync(id, cancellationToken);
+
+            IUserContext userContext = await _userContextFactory.CreateAsync(cancellationToken);
+
+            await _bus.Publish(new PersonDeletedMessage(id, userContext.GetClientInfo()));
+        }
+
+        public async Task UpdateAllSummaryAsync(
+        CancellationToken cancellationToken)
         {
             IEnumerable<Person> allpersons = await GetAllAsync(cancellationToken);
 

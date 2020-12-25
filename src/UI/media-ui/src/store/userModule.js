@@ -91,6 +91,9 @@ const userModule = {
 
             if (result.success) {
                 commit("USER_ADDED", result.data.User_CreateFromPerson.user);
+
+                addSnack(dispatch, `User created ${result.data.User_CreateFromPerson.user.email}`)
+
             }
         },
         async createInvite({ dispatch }, id) {
