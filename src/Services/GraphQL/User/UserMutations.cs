@@ -50,6 +50,9 @@ namespace MagicMedia.GraphQL
             CancellationToken cancellationToken)
         {
             await _albumService.SaveUserSharedAlbumsAsync(input, cancellationToken);
+
+            _userService.InvalidateUserCacheAsync(input.UserId);
+
             User user = await _userService.GetByIdAsync(input.UserId, cancellationToken);
 
             return new UpdateUserPayload(user);

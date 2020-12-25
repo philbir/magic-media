@@ -35,6 +35,17 @@ namespace MagicMedia.Security
             _albumMediaIdResolver = albumMediaIdResolver;
         }
 
+
+        public void InvalidateUserCacheAsync(Guid id)
+        {
+            string[] keys = new[] { "mm_user", "auth_on_media", "auth_on_face", "auth_on_album", "auth_on_person" };
+
+            foreach ( var key in keys)
+            {
+                _memoryCache.Remove($"{key}_{id}");
+            }
+        }
+
         public async Task<User> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
             var cachekey = $"mm_user_{id}";

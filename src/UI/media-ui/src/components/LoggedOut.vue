@@ -22,6 +22,9 @@
 
 <script>
 export default {
+  created() {
+    console.log("LLL");
+  },
   methods: {
     login: function () {
       window.location.href = "/api/session/auth";

@@ -9,3 +9,5 @@
 !/global.json
 !/Directory.Build.props
 **/appsettings.local.json
+**/sign_key.jwk
+**/tempkey.jwk

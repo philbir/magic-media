@@ -1,7 +1,7 @@
 <template>
   <div>
     <slot v-if="ready"></slot>
-    <slot v-if="error" name="error"></slot>
+    <slot v-if="isRootSlot" name="error"></slot>
   </div>
 </template>
 
@@ -12,7 +12,10 @@ export default {
   computed: {
     ...mapState("user", ["me", "error"]),
     ready: function () {
-      return this.me != null;
+      return this.me != null && !this.$route.meta.isRoot;
+    },
+    isRootSlot: function () {
+      return this.error || this.$route.meta.isRoot;
     },
   },
   created() {
