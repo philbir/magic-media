@@ -56,6 +56,7 @@ const mediaModule = {
       countries: [],
       cities: [],
       persons: [],
+      groups: [],
       tags: [],
       objects: [],
       mediaTypes: [],
@@ -137,6 +138,7 @@ const mediaModule = {
       state.filter.cities = [];
       state.filter.tags = [];
       state.filter.objects = [];
+      state.filter.groups = [];
       state.filter.persons = [];
       state.filter.mediaTypes = [];
       state.filter.cameras = [];

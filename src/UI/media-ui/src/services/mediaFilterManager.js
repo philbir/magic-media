@@ -17,6 +17,14 @@ class MediaFilterManager {
                     .map(x => x.name)
                     .join(' | ')
             },
+            groups: {
+                name: "Groups",
+                default: [],
+                stringValue: (state) => state.filter.groups.join(','),
+                valueText: (rootState) => rootState.person.groups.filter(x => rootState.media.filter.groups.includes(x.id))
+                    .map(x => x.name)
+                    .join(' | ')
+            },
             countries: {
                 name: "Country",
                 default: [],

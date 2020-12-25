@@ -21,6 +21,7 @@
 
     <div v-if="activeTabId == 'person'">
       <person-filter></person-filter>
+      <group-filter></group-filter>
     </div>
 
     <div v-if="activeTabId == 'geo'">
@@ -53,6 +54,7 @@ import MediaTypeFilter from "./Filters/MediaTypeFilter.vue";
 import AITagsFilter from "./Filters/AITagsFilter.vue";
 import AIObjectsFilter from "./Filters/AIObjectsFilter.vue";
 import CameraFilter from "./Filters/CameraFilter.vue";
+import GroupFilter from "./Filters/GroupFilter.vue";
 
 export default {
   components: {
@@ -67,6 +69,7 @@ export default {
     AITagsFilter,
     AIObjectsFilter,
     CameraFilter,
+    GroupFilter,
   },
   created() {
     this.$store.dispatch("media/getSearchFacets");

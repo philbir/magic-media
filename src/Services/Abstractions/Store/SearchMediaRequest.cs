@@ -11,6 +11,8 @@ namespace MagicMedia.Store
 
         public IEnumerable<Guid>? Persons { get; set; }
 
+        public IEnumerable<Guid>? Groups { get; set; }
+
         public IEnumerable<string>? Countries { get; set; }
 
         public IEnumerable<string>? Cities { get; set; }

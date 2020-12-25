@@ -109,6 +109,7 @@ namespace MagicMedia.Store.MongoDb
                 .AddAuthorizedOn(request.AuthorizedOnMedia)
                 .AddFolder(request.Folder)
                 .AddPersons(request.Persons)
+                .AddGroups(request.Groups)
                 .AddCities(request.Cities)
                 .AddCountries(request.Countries)
                 .AddMediaTypes(request.MediaTypes)

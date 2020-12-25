@@ -136,6 +136,16 @@ namespace MagicMedia.Store.MongoDb
             return this;
         }
 
+        public MediaFilterBuilder AddGroups(IEnumerable<Guid>? groups)
+        {
+            if (groups is { } g && g.Any())
+            {
+                _tasks.Add(CreateGroupFilter(g));
+            }
+
+            return this;
+        }
+
         public MediaFilterBuilder AddAITags(IEnumerable<string>? tags)
         {
             if (tags is { } t && t.Any())
@@ -264,6 +274,24 @@ namespace MagicMedia.Store.MongoDb
             }
         }
 
+        private async Task CreateGroupFilter(
+            IEnumerable<Guid> groups)
+        {
+            IEnumerable<Guid> persons = await GetPersonByGroups(groups, _cancellationToken);
+
+            if (persons.Any())
+            {
+                IEnumerable<Guid> mediaIds = await GetMediaIdsByPersons(
+                    persons,
+                    _cancellationToken);
+
+                if (mediaIds.Any())
+                {
+                    _filter &= Builders<Media>.Filter.In(x => x.Id, mediaIds);
+                }
+            }
+        }
+
         private async Task CreateAITagsFilter(
             IEnumerable<string> tags)
         {
@@ -297,6 +325,27 @@ namespace MagicMedia.Store.MongoDb
                 .ToListAsync(cancellationToken);
 
             return ids;
+        }
+
+        private async Task<IEnumerable<Guid>> GetPersonByGroups(
+            IEnumerable<Guid> groups,
+            CancellationToken cancellationToken)
+        {
+            FilterDefinition<Person> filter = Builders<Person>.Filter.In("Groups", groups);
+
+            ProjectionDefinition<Person> projection = Builders<Person>.Projection
+                .Include(x => x.Id);
+
+            var options = new FindOptions<Person, BsonDocument> { Projection = projection };
+
+            IAsyncCursor<BsonDocument> cursor = await _dbContext.Persons.FindAsync(
+                filter,
+                options,
+                cancellationToken);
+
+            List<BsonDocument> docs = await cursor.ToListAsync(cancellationToken);
+
+            return docs.Select(x => x["_id"].AsGuid);
         }
 
 
