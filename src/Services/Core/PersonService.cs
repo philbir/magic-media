@@ -19,6 +19,7 @@ namespace MagicMedia
         private readonly IFaceStore _faceStore;
         private readonly IThumbnailBlobStore _thumbnailBlob;
         private readonly IUserContextFactory _userContextFactory;
+        private readonly IUserContextMessagePublisher _publisher;
         private readonly IBus _bus;
 
         public PersonService(
@@ -27,6 +28,7 @@ namespace MagicMedia
             IFaceStore faceStore,
             IThumbnailBlobStore thumbnailBlob,
             IUserContextFactory userContextFactory,
+            IUserContextMessagePublisher publisher,
             IBus bus)
         {
             _personStore = personStore;
@@ -34,6 +36,7 @@ namespace MagicMedia
             _faceStore = faceStore;
             _thumbnailBlob = thumbnailBlob;
             _userContextFactory = userContextFactory;
+            _publisher = publisher;
             _bus = bus;
         }
 
@@ -145,9 +148,7 @@ namespace MagicMedia
         {
             await _personStore.DeleteAsync(id, cancellationToken);
 
-            IUserContext userContext = await _userContextFactory.CreateAsync(cancellationToken);
-
-            await _bus.Publish(new PersonDeletedMessage(id, userContext.GetClientInfo()));
+            await _publisher.PublishAsync(new PersonDeletedMessage(id), cancellationToken);
         }
 
         public async Task UpdateAllSummaryAsync(

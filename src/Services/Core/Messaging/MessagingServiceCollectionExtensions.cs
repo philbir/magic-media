@@ -4,6 +4,7 @@ using MassTransit;
 using MassTransit.ExtensionsDependencyInjectionIntegration;
 using MassTransit.RabbitMqTransport;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace MagicMedia.Messaging
 {
@@ -27,7 +28,7 @@ namespace MagicMedia.Messaging
             this IMagicMediaServerBuilder builder)
         {
             MessagingOptions options = builder.GetOptions();
-
+            builder.Services.AddSingleton<IUserContextMessagePublisher, UserContextMessagePublisher>();
             builder.Services.AddMassTransit(s =>
             {
                 s.AddApiConsumers();

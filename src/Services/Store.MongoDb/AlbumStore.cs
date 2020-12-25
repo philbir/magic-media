@@ -78,6 +78,16 @@ namespace MagicMedia.Store.MongoDb
             return album;
         }
 
+        public async Task DeleteAsync(
+            Guid id,
+            CancellationToken cancellationToken)
+        {
+            await _mediaStoreContext.Albums.DeleteOneAsync(
+                x => x.Id == id,
+                DefaultMongoOptions.Delete,
+                cancellationToken);
+        }
+
         public async Task<SearchResult<Album>> SearchAsync(
             SearchAlbumRequest request,
             CancellationToken cancellationToken)

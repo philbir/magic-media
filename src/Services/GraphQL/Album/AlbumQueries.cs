@@ -38,7 +38,10 @@ namespace MagicMedia.GraphQL
             Guid id,
             CancellationToken cancellationToken)
         {
-            return await _albumService.GetByIdAsync(id, cancellationToken);
+            Album album = await _albumService.GetByIdAsync(id, cancellationToken);
+            album.SharedWith = album.SharedWith ?? Array.Empty<Guid>();
+
+            return album;
         }
     }
 }

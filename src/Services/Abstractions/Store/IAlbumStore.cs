@@ -9,6 +9,7 @@ namespace MagicMedia.Store.MongoDb
     public interface IAlbumStore
     {
         Task<Album> AddAsync(Album album, CancellationToken cancellationToken);
+        Task DeleteAsync(Guid id, CancellationToken cancellationToken);
         Task<IEnumerable<Album>> GetAllAsync(CancellationToken cancellationToken);
         Task<Album> GetByIdAsync(Guid id, CancellationToken cancellationToken);
         Task<IEnumerable<Album>> GetSharedWithUserIdAsync(Guid userId, CancellationToken cancellationToken);

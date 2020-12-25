@@ -197,7 +197,7 @@
           v-if="userActions.album.edit"
           color="red darken-1"
           text
-          @click="deleteAlbum"
+          @click="onClickDelete"
         >
           Delete
         </v-btn>
@@ -290,6 +290,7 @@ export default {
     ...mapActions("album", {
       removeFolders: "removeFolders",
       saveAlbum: "update",
+      deleteAlbum: "delete",
     }),
     async loadAlbum(id) {
       const res = await getAlbumById(id);
@@ -317,7 +318,8 @@ export default {
     cancel: function () {
       this.close();
     },
-    deleteAlbum: function () {
+    onClickDelete: function () {
+      this.deleteAlbum(this.album.id);
       this.close();
     },
     removeFolder: function (folder) {

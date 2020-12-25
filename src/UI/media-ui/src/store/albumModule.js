@@ -1,8 +1,10 @@
 import Vue from "vue";
 import { excuteGraphQL } from "./graphqlClient"
+import { addSnack } from "./snackService"
 
 import {
   addItems,
+  deleteAlbum,
   getAllAlbums,
   removeFolders,
   searchAlbums,
@@ -35,6 +37,16 @@ const albumModule = {
         state.albums[idx].title = album.title;
       }
     },
+    ALBUM_DELETED(state, id) {
+      let idx = state.allAlbums.findIndex(x => x.id == id);
+      if (idx > -1) {
+        state.allAlbums.splice(idx, 1);
+      }
+      idx = state.albums.findIndex(x => x.id == id);
+      if (idx > -1) {
+        state.albums.splice(idx, 1)
+      }
+    },
     ALL_ALBUMS_LOADED(state, albums) {
       state.allAlbums = [...albums];
     },
@@ -52,28 +64,15 @@ const albumModule = {
       if (result.success) {
         commit("ITEM_ADDED", result.data.addItemsToAlbum.album);
 
-        dispatch(
-          "snackbar/addSnack",
-          {
-            text: `Media aded to: Album ${result.data.addItemsToAlbum.album.title}`,
-            type: "SUCCESS"
-          },
-          { root: true }
-        );
+        addSnack(dispatch, `Media aded to: Album ${result.data.addItemsToAlbum.album.title}`);
       }
     },
     async removeFolders({ dispatch }, input) {
       const result = await excuteGraphQL(() => removeFolders(input), dispatch);
 
       if (result.success) {
-        dispatch(
-          "snackbar/addSnack",
-          {
-            text: `Folder removed from album: ${result.data.removeFoldersFromAlbum.album.title}`,
-            type: "SUCCESS"
-          },
-          { root: true }
-        );
+        addSnack(dispatch, `Folder removed from album: ${result.data.removeFoldersFromAlbum.album.title}`);
+
       }
     },
     async update({ commit, dispatch }, input) {
@@ -82,14 +81,16 @@ const albumModule = {
       if (result.success) {
         commit("ALBUM_UPDATED", result.data.updateAlbum.album);
 
-        dispatch(
-          "snackbar/addSnack",
-          {
-            text: `Album saved: ${result.data.updateAlbum.album.title}`,
-            type: "SUCCESS"
-          },
-          { root: true }
-        );
+        addSnack(dispatch, `Album saved: ${result.data.updateAlbum.album.title}`);
+      }
+    },
+    async delete({ commit, dispatch }, id) {
+      const result = await excuteGraphQL(() => deleteAlbum(id), dispatch);
+
+      if (result.success) {
+        commit("ALBUM_DELETED", id);
+
+        addSnack(dispatch, `Album deleted.`);
       }
     },
     async getAll({ commit, dispatch }) {
