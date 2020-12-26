@@ -283,9 +283,7 @@ const mediaModule = {
           { root: true }
         );
       }
-
     },
-
     async moveSelected({ state, dispatch, getters }, newLocation) {
       if (!getters["canEdit"])
         return;
@@ -318,7 +316,6 @@ const mediaModule = {
         dataField: "recycleMedia",
         ids: ids,
       }
-
       dispatch('startOperation', operation);
 
     },
@@ -372,6 +369,12 @@ const mediaModule = {
       commit("FILTER_SET", filter);
       dispatch("search");
     },
+    viewAlbum({ dispatch, commit }, albumId) {
+      commit("RESET_FILTER");
+      commit("RESET_FILTER_VALUES");
+      commit("FILTER_SET", { key: 'albumId', value: albumId });
+      dispatch("search");
+    },
     removeFilter({ dispatch, commit }, key) {
       commit("RESET_FILTER");
       commit("FILTER_REMOVED", key);
@@ -381,6 +384,7 @@ const mediaModule = {
       commit("RESET_FILTER");
       commit("LOAD_TUMBNAIL_DATA_TOGGLED");
       dispatch("search");
+
     },
     async loadDetails({ commit, dispatch }, id) {
 

@@ -28,7 +28,6 @@ namespace MagicMedia.Messaging
             this IMagicMediaServerBuilder builder)
         {
             MessagingOptions options = builder.GetOptions();
-            builder.Services.AddSingleton<IUserContextMessagePublisher, UserContextMessagePublisher>();
             builder.Services.AddMassTransit(s =>
             {
                 s.AddApiConsumers();
