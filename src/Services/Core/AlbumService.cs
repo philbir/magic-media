@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Extensions;
@@ -18,17 +17,20 @@ namespace MagicMedia
         private readonly IMediaStore _mediaStore;
         private readonly IAlbumMediaIdResolver _mediaIdResolver;
         private readonly IUserContextFactory _userContextFactory;
+        private readonly IUserContextMessagePublisher _publisher;
         private readonly IBus _bus;
 
         public AlbumService(
             IMediaStore mediaStore,
             IAlbumMediaIdResolver mediaIdResolver,
             IUserContextFactory userContextFactory,
+            IUserContextMessagePublisher publisher,
             IBus bus)
         {
             _mediaStore = mediaStore;
             _mediaIdResolver = mediaIdResolver;
             _userContextFactory = userContextFactory;
+            _publisher = publisher;
             _bus = bus;
         }
 
@@ -224,6 +226,15 @@ namespace MagicMedia
 
                 folderInclude.Folders = toAdd;
             }
+        }
+
+        public async Task DeleteAsync(
+            Guid id,
+            CancellationToken cancellationToken)
+        {
+            await _mediaStore.Albums.DeleteAsync(id, cancellationToken);
+
+            await _publisher.PublishAsync(new AlbumDeletedMessage(id), cancellationToken);
         }
 
         public async Task<SearchResult<Album>> SearchAsync(

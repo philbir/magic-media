@@ -19,6 +19,7 @@ namespace MagicMedia
         private readonly IFaceStore _faceStore;
         private readonly IThumbnailBlobStore _thumbnailBlob;
         private readonly IUserContextFactory _userContextFactory;
+        private readonly IUserContextMessagePublisher _publisher;
         private readonly IBus _bus;
 
         public PersonService(
@@ -27,6 +28,7 @@ namespace MagicMedia
             IFaceStore faceStore,
             IThumbnailBlobStore thumbnailBlob,
             IUserContextFactory userContextFactory,
+            IUserContextMessagePublisher publisher,
             IBus bus)
         {
             _personStore = personStore;
@@ -34,6 +36,7 @@ namespace MagicMedia
             _faceStore = faceStore;
             _thumbnailBlob = thumbnailBlob;
             _userContextFactory = userContextFactory;
+            _publisher = publisher;
             _bus = bus;
         }
 
@@ -139,8 +142,17 @@ namespace MagicMedia
             return person;
         }
 
-        public async Task UpdateAllSummaryAsync(
+        public async Task DeleteAsync(
+            Guid id,
             CancellationToken cancellationToken)
+        {
+            await _personStore.DeleteAsync(id, cancellationToken);
+
+            await _publisher.PublishAsync(new PersonDeletedMessage(id), cancellationToken);
+        }
+
+        public async Task UpdateAllSummaryAsync(
+        CancellationToken cancellationToken)
         {
             IEnumerable<Person> allpersons = await GetAllAsync(cancellationToken);
 
@@ -168,6 +180,7 @@ namespace MagicMedia
         {
             IEnumerable<MediaFace> faces = await _faceStore.GetFacesByPersonAsync(
                 person.Id,
+                faceIds: null,
                 cancellationToken);
 
             PersonSummary summary = new();

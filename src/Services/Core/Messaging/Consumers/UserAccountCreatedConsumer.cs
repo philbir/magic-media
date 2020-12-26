@@ -24,8 +24,6 @@ namespace MagicMedia.Messaging.Consumers
             user.InvitationCode = null;
 
             await _userService.UpdateAsync(user, context.CancellationToken);
-
-            _userService.InvalidateUserCacheAsync(user.Id);
         }
     }
 }

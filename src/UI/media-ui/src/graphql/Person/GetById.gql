@@ -1,0 +1,24 @@
+query getPersonById($id: Uuid!) {
+  person(id: $id) {
+    id
+    name
+    dateOfBirth
+    groups {
+      id
+      name
+    }
+    thumbnail {
+      dataUrl
+    }
+    summary {
+      computerCount
+      mediaCount
+      humanCount
+      validatedCount
+    }
+    user{
+      id
+      state
+    }
+  }
+}

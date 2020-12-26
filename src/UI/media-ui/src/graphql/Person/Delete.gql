@@ -1,0 +1,9 @@
+mutation deletePerson($id: Uuid!) {
+  Person_Delete(id: $id) {
+    id
+    errors {
+      code
+      message
+    }
+  }
+}

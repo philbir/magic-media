@@ -1,6 +1,6 @@
 <template>
   <FilterList
-    v-if="albums"
+    v-if="albums.length > 0"
     :multiple="false"
     :items="albums"
     title="Albums"

@@ -10,8 +10,3 @@ docker tag magic-media-host:dev skycontainers.azurecr.io/magic-media-host:latest
 docker push skycontainers.azurecr.io/magic-media-host:latest
 
 Remove-Item .\src\services\Api.Host\wwwroot\ -Recurse -Force
-
-#docker build -t magic-media-face:dev -f  .
-
-#docker tag magic-media-face:dev skycontainers.azurecr.io/magic-media-face:v1
-#docker push skycontainers.azurecr.io/magic-media-face:v1

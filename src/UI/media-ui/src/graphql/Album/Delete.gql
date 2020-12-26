@@ -1,0 +1,9 @@
+mutation deleteAlbum($id: Uuid!) {
+  Album_Delete(id: $id) {
+    id
+    errors {
+      code
+      message
+    }
+  }
+}

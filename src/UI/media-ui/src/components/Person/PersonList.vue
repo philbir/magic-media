@@ -44,7 +44,13 @@
             </v-card-text>
 
             <v-card-actions>
-              <v-btn outlined rounded icon @click="openTimeline(person)">
+              <v-btn
+                v-if="person.dateOfBirth"
+                outlined
+                rounded
+                icon
+                @click="openTimeline(person)"
+              >
                 <v-icon> mdi-timeline-clock-outline </v-icon>
               </v-btn>
               <v-spacer></v-spacer>

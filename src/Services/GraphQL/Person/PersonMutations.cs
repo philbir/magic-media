@@ -1,5 +1,7 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
+using HotChocolate;
 using HotChocolate.Types;
 using MagicMedia.Store;
 
@@ -33,6 +35,16 @@ namespace MagicMedia.GraphQL
             Group group = await _groupService.AddAsync(name, cancellationToken);
 
             return new CreateGroupPayload(group);
+        }
+
+        [GraphQLName("Person_Delete")]
+        public async Task<DeleteGroupPayload> DeleteAsync(
+            Guid id,
+            CancellationToken cancellationToken)
+        {
+            await _personService.DeleteAsync(id, cancellationToken);
+
+            return new DeleteGroupPayload(id);
         }
     }
 }

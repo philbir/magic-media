@@ -22,7 +22,11 @@ namespace MagicMedia.Store
             IEnumerable<Guid> mediaIds,
             CancellationToken cancellationToken);
 
-        Task<IEnumerable<MediaFace>> GetFacesByPersonAsync(Guid personId, CancellationToken cancellationToken);
+        Task<IEnumerable<MediaFace>> GetFacesByPersonAsync(
+            Guid personId,
+            IEnumerable<Guid>? faceIds,
+            CancellationToken cancellationToken);
+
         Task<IEnumerable<PersonEncodingData>> GetPersonEncodingsAsync(
             CancellationToken cancellationToken);
 

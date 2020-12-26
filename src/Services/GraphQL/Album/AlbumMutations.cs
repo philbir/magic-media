@@ -1,5 +1,7 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
+using HotChocolate;
 using HotChocolate.AspNetCore.Authorization;
 using HotChocolate.Types;
 using MagicMedia.Authorization;
@@ -40,6 +42,16 @@ namespace MagicMedia.GraphQL
         {
             Album album = await _albumService.UpdateAlbumAsync(input, cancellationToken);
             return new UpdateAlbumPayload(album);
+        }
+
+        [GraphQLName("Album_Delete")]
+        public async Task<DeleteAlbumPayload> DeleteAlbumAsync(
+            Guid id,
+            CancellationToken cancellationToken)
+        {
+            await _albumService.DeleteAsync(id, cancellationToken);
+
+            return new DeleteAlbumPayload(id);
         }
     }
 }

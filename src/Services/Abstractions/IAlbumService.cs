@@ -14,6 +14,7 @@ namespace MagicMedia
         Task<Album> AddItemsToAlbumAsync(
             AddItemToAlbumRequest request,
             CancellationToken cancellationToken);
+        Task DeleteAsync(Guid id, CancellationToken cancellationToken);
         Task<IEnumerable<Album>> GetAllAsync(CancellationToken cancellationToken);
         Task<Album> GetByIdAsync(Guid id, CancellationToken cancellationToken);
         Task<IEnumerable<Album>> GetSharedByUserIdAsync(Guid userId, CancellationToken cancellationToken);

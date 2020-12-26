@@ -29,7 +29,7 @@ namespace MagicMedia.Store
 
         public int VideoCount { get; set; }
 
-        public IEnumerable<Guid>? SharedWith { get; set; }
+        public IEnumerable<Guid>? SharedWith { get; set; } = new List<Guid>();
     }
 
     public class AlbumPerson

@@ -1,13 +1,13 @@
       <template>
   <FilterList
-    v-if="persons"
-    :items="persons"
+    v-if="groups"
+    :items="groups"
     :open="true"
-    title="Person"
-    max-height="400"
+    title="Group"
+    max-height="250"
     value-field="id"
     text-field="name"
-    v-model="selectedPersons"
+    v-model="selectedGroups"
   ></FilterList>
 </template>
 
@@ -18,19 +18,19 @@ import { mapActions } from "vuex";
 export default {
   components: { FilterList },
   computed: {
-    selectedPersons: {
+    selectedGroups: {
       set(value) {
         this.setFilter({
-          key: "persons",
+          key: "groups",
           value: value,
         });
       },
       get() {
-        return this.$store.state.media.filter.persons;
+        return this.$store.state.media.filter.groups;
       },
     },
-    persons: function () {
-      return this.$store.state.person.persons.map((p) => {
+    groups: function () {
+      return this.$store.state.person.groups.map((p) => {
         return {
           name: p.name,
           id: p.id,

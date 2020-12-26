@@ -239,16 +239,17 @@ namespace MagicMedia
             CancellationToken cancellationToken)
         {
             Log.Information("Analyse media {Id} using {Analyzer}", media.Id, analyser.Source);
-
-            MediaBlobData? request = _mediaService.GetBlobRequest(media, MediaFileType.Original);
-
-            using Stream imageStream = _mediaStore.Blob.GetStreamAsync(request);
-            using Stream stream = await RemoveExifDataAsync(imageStream, cancellationToken);
-
             MediaAI aiData = new();
 
             try
             {
+                MediaBlobData? request = _mediaService.GetBlobRequest(media, MediaFileType.Original);
+
+                using Stream imageStream = _mediaStore.Blob.GetStreamAsync(request);
+                using Stream stream = await RemoveExifDataAsync(imageStream, cancellationToken);
+
+
+
                 aiData = await analyser.AnalyseImageAsync(
                         stream,
                         cancellationToken);

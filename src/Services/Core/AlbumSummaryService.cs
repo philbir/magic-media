@@ -48,7 +48,16 @@ namespace MagicMedia
 
             foreach (Album? album in all)
             {
-                await UpdateAsync(album, cancellationToken);
+                try
+                {
+                    await UpdateAsync(album, cancellationToken);
+                }
+                catch ( Exception ex)
+                {
+                    Log.Error(
+                        ex,
+                        "Error updating album summary for: {Id}-{Name}", album.Id, album.Title);
+                }
             }
         }
 
@@ -73,7 +82,7 @@ namespace MagicMedia
             album.VideoCount = data.Medias.Count(x => x.MediaType == MediaType.Video);
             album.StartDate = data.Medias.Min(x => x.DateTaken);
             album.EndDate = data.Medias.Max(x => x.DateTaken);
-
+            ;
             if (album.CoverMediaId == null)
             {
                 album.CoverMediaId = mediaIds.ToArray()[mediaIds.Count() / 2];

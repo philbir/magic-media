@@ -23,5 +23,6 @@ namespace MagicMedia.Security
         Task<User> TryGetByPersonIdAsync(Guid personId, CancellationToken cancellationToken);
         Task<User> CreateInviteAsync(Guid userId, CancellationToken cancellationToken);
         void InvalidateUserCacheAsync(Guid id);
+        Task<User> GetByIdAsync(Guid id, bool bypassCache, CancellationToken cancellationToken);
     }
 }

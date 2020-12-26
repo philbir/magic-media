@@ -12,7 +12,7 @@
       max-height="250"
       value-field="id"
       text-field="name"
-      @change="onSelectPerson"
+      v-model="selectedPersons"
     ></FilterList>
   </div>
 </template>
@@ -28,7 +28,6 @@ export default {
   data() {
     return {
       searchText: "",
-      selectedPersons: [],
     };
   },
   watch: {
@@ -39,6 +38,14 @@ export default {
     }, 300),
   },
   computed: {
+    selectedPersons: {
+      set(value) {
+        this.filter({ persons: value });
+      },
+      get() {
+        return this.$store.state.album.filter.persons;
+      },
+    },
     persons: function () {
       return this.$store.state.person.persons.map((p) => {
         return {
@@ -50,11 +57,6 @@ export default {
   },
   methods: {
     ...mapActions("album", ["filter"]),
-
-    onSelectPerson: function (persons) {
-      const selected = persons.map((x) => x.id);
-      this.filter({ persons: selected });
-    },
   },
 };
 </script>

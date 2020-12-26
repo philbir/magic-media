@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Extensions;
+using MagicMedia.Security;
 using MagicMedia.Store;
 
 namespace MagicMedia
@@ -11,10 +12,12 @@ namespace MagicMedia
     public class PersonTimelineService : IPersonTimelineService
     {
         private readonly IMediaStore _store;
+        private readonly IUserContextFactory _userContextFactory;
 
-        public PersonTimelineService(IMediaStore store)
+        public PersonTimelineService(IMediaStore store, IUserContextFactory userContextFactory)
         {
             _store = store;
+            _userContextFactory = userContextFactory;
         }
 
         public async Task<PersonTimeline> BuildTimelineAsync(
@@ -26,8 +29,12 @@ namespace MagicMedia
 
             Person person = await _store.Persons.GetByIdAsync(personId, cancellationToken);
 
+            IUserContext userContext = await _userContextFactory.CreateAsync(cancellationToken);
+            IEnumerable<Guid>? faceIds = await userContext.GetAuthorizedFaceAsync(cancellationToken);
+
             IEnumerable<MediaFace> faces = await _store.Faces.GetFacesByPersonAsync(
                 personId,
+                faceIds,
                 cancellationToken);
 
             IEnumerable<IGrouping<int, MediaFace>>? byYear = faces

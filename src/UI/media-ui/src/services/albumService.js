@@ -2,6 +2,7 @@ import apollo from "../apollo";
 import MUTATION_ADD_TO_ALBUM from "../graphql/Album/AddItemsToAlbum.gql";
 import MUTATION_REMOVE_FOLDERS from "../graphql/Album/RemoveFoldersFromAlbum.gql";
 import MUTATION_UPDATE_ALBUM from "../graphql/Album/UpdateAlbum.gql";
+import MUTATION_DELETE from "../graphql/Album/Delete.gql";
 import QUERY_ALL_ALBUMS from "../graphql/Album/GetAll.gql";
 import QUERY_SEARCH from "../graphql/Album/Search.gql";
 import QUERY_GET_ALBUM_MEDIA from "../graphql/Album/GetAlbumMedia.gql";
@@ -33,6 +34,17 @@ export const updateAlbum = async input => {
     }
   });
 };
+
+
+export const deleteAlbum = async id => {
+  return await apollo.mutate({
+    mutation: MUTATION_DELETE,
+    variables: {
+      id
+    }
+  });
+};
+
 
 export const getAllAlbums = async () => {
   return await apollo.query({

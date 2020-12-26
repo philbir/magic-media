@@ -3,7 +3,7 @@
     <v-container>
       <v-row style="overflow-x: auto; width: 100%; height: 90vh">
         <v-col v-for="album in albums" :key="album.id" sm="3" lg="4">
-          <v-card width="400">
+          <v-card width="400" @click="viewAlbum(album.id)">
             <v-img height="150" :src="imageUrl(album)"></v-img>
 
             <v-card-title class="font-weight-bold">
@@ -80,6 +80,10 @@ export default {
     },
     flagUrl: function (country) {
       return getFlagUrl(country.code);
+    },
+    viewAlbum: function (id) {
+      this.$store.dispatch("media/viewAlbum", id);
+      this.$router.push({ name: "Home" });
     },
   },
 };

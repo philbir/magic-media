@@ -5,64 +5,59 @@
         <router-view name="root"></router-view>
       </v-app>
     </template>
-    <AppPreLoader>
-      <Upload :show="showUpload"></Upload>
-      <v-app>
-        <router-view name="appbar"></router-view>
-        <v-navigation-drawer clipped v-if="showSidebar" app v-model="nav">
-          <router-view name="left"></router-view>
-        </v-navigation-drawer>
+    <Upload :show="showUpload"></Upload>
+    <v-app>
+      <router-view name="appbar"></router-view>
+      <v-navigation-drawer clipped v-if="showSidebar" app v-model="nav">
+        <router-view name="left"></router-view>
+      </v-navigation-drawer>
 
-        <v-main :class="{ fullscreen: isFullscreen }">
-          <vue-page-transition>
-            <router-view />
-          </vue-page-transition>
-        </v-main>
+      <v-main :class="{ fullscreen: isFullscreen }">
+        <vue-page-transition>
+          <router-view />
+        </vue-page-transition>
+      </v-main>
 
-        <v-snackbar
-          v-for="(snack, i) in snacks"
-          :key="'snack' + i"
-          :value="snack.show"
-          rounded
-          app
-          bottom
-          :color="snack.color"
+      <v-snackbar
+        v-for="(snack, i) in snacks"
+        :key="'snack' + i"
+        :value="snack.show"
+        rounded
+        app
+        bottom
+        :color="snack.color"
+      >
+        <v-icon> {{ snack.icon }}</v-icon>
+        {{ snack.text }}
+
+        <template v-slot:action="">
+          <v-icon @click="snack.show = false" color="white"> mdi-close </v-icon>
+        </template>
+      </v-snackbar>
+      <v-snackbar
+        top
+        centered
+        :value="updateExists"
+        :timeout="-1"
+        color="primary"
+      >
+        <v-icon class="mr-4"> mdi-gift-outline</v-icon>
+        <span>An new version is availlable...</span>
+
+        <v-btn elevation="4" class="ml-4" outlined text @click="refreshApp">
+          Update now</v-btn
         >
-          <v-icon> {{ snack.icon }}</v-icon>
-          {{ snack.text }}
-
-          <template v-slot:action="">
-            <v-icon @click="snack.show = false" color="white">
-              mdi-close
-            </v-icon>
-          </template>
-        </v-snackbar>
-        <v-snackbar
-          top
-          centered
-          :value="updateExists"
-          :timeout="-1"
-          color="primary"
-        >
-          <v-icon class="mr-4"> mdi-gift-outline</v-icon>
-          <span>An new version is availlable...</span>
-
-          <v-btn elevation="4" class="ml-4" outlined text @click="refreshApp">
-            Update now</v-btn
-          >
-        </v-snackbar>
-        <signal-shell></signal-shell>
-      </v-app>
-      <v-dialog v-model="mediaViewerOpen" fullscreen>
-        <MediaViewer v-if="mediaViewerOpen"></MediaViewer>
-      </v-dialog>
-      <edit-face-dialog></edit-face-dialog>
-    </AppPreLoader>
+      </v-snackbar>
+      <signal-shell></signal-shell>
+    </v-app>
+    <v-dialog v-model="mediaViewerOpen" fullscreen>
+      <MediaViewer v-if="mediaViewerOpen"></MediaViewer>
+    </v-dialog>
+    <edit-face-dialog></edit-face-dialog>
   </me-loader>
 </template>
 
 <script>
-import AppPreLoader from "./components/AppPreLoader";
 import Upload from "./components/Media/Upload";
 import MediaViewer from "./components/Media/MediaViewer";
 import VuePageTransition from "vue-page-transition";
@@ -77,7 +72,6 @@ export default {
   name: "App",
   components: {
     MeLoader,
-    AppPreLoader,
     Upload,
     MediaViewer,
     EditFaceDialog,
