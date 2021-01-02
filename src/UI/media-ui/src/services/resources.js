@@ -32,6 +32,12 @@ export const resources = {
             auth: "USER_MANAGE"
         },
         {
+            text: "Audit log",
+            icon: "mdi-monitor-eye",
+            route: "AuditLog",
+            auth: "AUDITLOG_VIEW"
+        },
+        {
             text: "Settings",
             icon: "mdi-tune-variant",
             route: "Settings",

@@ -14,5 +14,6 @@ namespace MagicMedia.Store.MongoDb
         Task<User> TryGetByIdAsync(Guid id, CancellationToken cancellationToken);
         Task<User> TryGetByPersonIdAsync(Guid personId, CancellationToken cancellationToken);
         Task<SearchResult<User>> SearchAsync(SearchUserRequest request, CancellationToken cancellationToken);
+        Task<IEnumerable<User>> GetManyAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken);
     }
 }

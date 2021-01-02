@@ -1,0 +1,26 @@
+query searchAuditEvents($request: SearchAuditInput!) {
+  searchAuditEvents(request: $request) {
+    items {
+      id
+      timestamp
+      user{
+        id
+        name
+      }
+      action
+      client {
+        iPAdddress
+        request
+        userAgent
+      }
+      success
+
+      resource {
+        id
+        type
+      }
+      thumbnail
+    }
+    totalCount
+  }
+}

@@ -41,6 +41,11 @@ namespace MagicMedia.Security
             public static readonly string Manage = "USER_MANAGE";
         }
 
+        public static class AuditLog
+        {
+            public static readonly string View = "AUDITLOG_VIEW";
+        }
+
         public static readonly Dictionary<string, List<string>> RoleMap;
 
         static Permissions()
@@ -58,7 +63,8 @@ namespace MagicMedia.Security
                     Person.ViewAll,
                     Person.Edit,
                     General.Settings,
-                    User.Manage
+                    User.Manage,
+                    AuditLog.View
                 }
             };
         }

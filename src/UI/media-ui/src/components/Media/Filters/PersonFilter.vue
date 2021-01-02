@@ -1,4 +1,4 @@
-      <template>
+<template>
   <FilterList
     v-if="persons"
     :items="persons"

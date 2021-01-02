@@ -45,6 +45,15 @@ namespace MagicMedia.Store.MongoDb
                 .ToListAsync(cancellationToken);
         }
 
+        public async Task<IEnumerable<User>> GetManyAsync(
+            IEnumerable<Guid> ids,
+            CancellationToken cancellationToken)
+        {
+            return await _mediaStoreContext.Users.AsQueryable()
+                .Where(x => ids.Contains(x.Id))
+                .ToListAsync(cancellationToken);
+        }
+
         public async Task<User> AddAsync(User user, CancellationToken cancellationToken)
         {
             await _mediaStoreContext.Users.InsertOneAsync(
@@ -87,5 +96,7 @@ namespace MagicMedia.Store.MongoDb
 
             return new SearchResult<User>(users, (int)totalCount);
         }
+
+
     }
 }

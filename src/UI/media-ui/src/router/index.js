@@ -24,6 +24,8 @@ import MediaViewLaucher from "../components/Media/MediaViewLauncher"
 import LoggedOut from "../components/LoggedOut"
 import SessionExpired from "../components/SessionExpired"
 import ErrorPage from "../components/ErrorPage"
+import AuditLogList from "../components/Audit/AuditLogList";
+import AuditFilters from "../components/Audit/AuditFilters"
 
 Vue.use(VueRouter);
 
@@ -90,6 +92,15 @@ const routes = [
     components: {
       default: UserList,
       left: UserFilter,
+      appbar: DefaultAppBar
+    }
+  },
+  {
+    path: "/auditlog",
+    name: "AuditLog",
+    components: {
+      default: AuditLogList,
+      left: AuditFilters,
       appbar: DefaultAppBar
     }
   },

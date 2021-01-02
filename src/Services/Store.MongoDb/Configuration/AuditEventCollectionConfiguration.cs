@@ -1,4 +1,4 @@
-﻿using MongoDB.Driver;
+using MongoDB.Driver;
 using MongoDB.Extensions.Context;
 
 namespace MagicMedia.Store.MongoDb.Configuration
@@ -22,10 +22,18 @@ namespace MagicMedia.Store.MongoDb.Configuration
                 {
                     var userIdIndex = new CreateIndexModel<AuditEvent>(
                          Builders<AuditEvent>.IndexKeys
-                             .Descending(c => c.UserId),
+                             .Ascending(c => c.UserId)
+                             .Descending(c => c.Timestamp),
                          new CreateIndexOptions { Unique = false });
-
                     collection.Indexes.CreateOne(userIdIndex);
+
+
+                    var actionIndex = new CreateIndexModel<AuditEvent>(
+                         Builders<AuditEvent>.IndexKeys
+                             .Ascending(c => c.Action)
+                             .Descending(c => c.Timestamp),
+                         new CreateIndexOptions { Unique = false });
+                    collection.Indexes.CreateOne(actionIndex);
                 });
         }
     }

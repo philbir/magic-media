@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Extensions;
 using MagicMedia.Messaging;
+using MagicMedia.Search;
 using MagicMedia.Security;
 using MagicMedia.Store;
 using MassTransit;
@@ -12,11 +13,16 @@ namespace MagicMedia.Audit
 {
     public class AuditService : IAuditService
     {
+        private readonly IAuditEventStore _auditEventStore;
         private readonly IBus _bus;
         private readonly IUserContextFactory _userContextFactory;
 
-        public AuditService(IBus bus, IUserContextFactory userContextFactory)
+        public AuditService(
+            IAuditEventStore auditEventStore,
+            IBus bus,
+            IUserContextFactory userContextFactory)
         {
+            _auditEventStore = auditEventStore;
             _bus = bus;
             _userContextFactory = userContextFactory;
         }
@@ -61,6 +67,13 @@ namespace MagicMedia.Audit
         private async Task SendEventAsync(AuditEvent auditEvent, CancellationToken cancellationToken)
         {
             await _bus.Publish(new NewAuditEventMessage(auditEvent), cancellationToken);
+        }
+
+        public async Task<SearchResult<AuditEvent>> SearchAsync(
+            SearchAuditRequest request,
+            CancellationToken cancellationToken)
+        {
+            return await _auditEventStore.SearchAsync(request, cancellationToken);
         }
     }
 }

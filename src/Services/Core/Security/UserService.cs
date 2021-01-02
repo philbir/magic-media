@@ -86,6 +86,13 @@ namespace MagicMedia.Security
             return await _mediaStore.Users.GetAllAsync(cancellationToken);
         }
 
+        public async Task<IEnumerable<User>> GetManyAsync(
+            IEnumerable<Guid> ids,
+            CancellationToken cancellationToken)
+        {
+            return await _mediaStore.Users.GetManyAsync(ids, cancellationToken);
+        }
+
         public async Task<User> TryGetByPersonIdAsync(
             Guid personId,
             CancellationToken cancellationToken)

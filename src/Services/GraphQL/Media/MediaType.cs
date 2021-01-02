@@ -42,29 +42,7 @@ namespace MagicMedia.GraphQL
                 .Argument("minConfidence", a => a
                     .DefaultValue(0.0)
                     .Type(typeof(double)))
-                //.Argument("source", a => a
-                //    .DefaultValue(null)
-                //    .Type(typeof(AISource?)))
-                .ResolveWith<MediaResolvers>(x => x.GetAIDataAsync(default!, default!, default!));
-        }
-    }
-
-    public partial class VideoInfoType : ObjectType<VideoInfo>
-    {
-        protected override void Configure(IObjectTypeDescriptor<VideoInfo> descriptor)
-        {
-            descriptor
-                .Field("duration")
-                .Argument("format", a => a
-                    .DefaultValue(@"mm\:ss")
-                    .Type(typeof(string)))
-                .Type<StringType>()
-                .Resolve(c =>
-                {
-                    VideoInfo? info = c.Parent<VideoInfo>();
-
-                    return info?.Duration.ToString(c.Argument<string>("format"));
-                });
+               .ResolveWith<MediaResolvers>(x => x.GetAIDataAsync(default!, default!, default!));
         }
     }
 }
