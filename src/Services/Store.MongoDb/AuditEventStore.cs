@@ -7,6 +7,7 @@ using MongoDB.Driver;
 
 namespace MagicMedia.Store.MongoDb
 {
+
     public class AuditEventStore : IAuditEventStore
     {
         private readonly MediaStoreContext _mediaStoreContext;

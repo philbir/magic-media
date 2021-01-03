@@ -52,6 +52,7 @@ namespace MagicMedia
                 .AddType<ThumbnailType>()
                 .AddType<SearchFacetType>()
                 .AddType<AuditEventType>()
+                .AddType<UserAgentInfoType>()
                 .RenameRequestToInput<RemoveFoldersFromAlbumRequest>()
                 .RenameRequestToInput<CreateUserFromPersonRequest>()
                 .RenameRequestToInput<SearchUserRequest>()
@@ -62,6 +63,7 @@ namespace MagicMedia
                 .AddDataLoader<MediaByIdDataLoader>()
                 .AddDataLoader<ThumbnailDataDataLoader>()
                 .AddDataLoader<UserByIdDataLoader>()
+                .AddDataLoader<ClientThumbprintByIdDataLoader>()
                 .AddInMemorySubscriptions()
                 .AddAuthorization();
 

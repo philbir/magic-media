@@ -1,11 +1,19 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MagicMedia.Thumbprint;
 
 namespace MagicMedia.Store
 {
+    public class ClientThumbprint
+    {
+        public string Id { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+
+        public UserAgentInfo UserAgent { get; set; }
+
+        public GeoIpLocation IpInfo { get; set; }
+    }
+
     public class AuditEvent
     {
         public Guid Id { get; set; }
@@ -22,6 +30,8 @@ namespace MagicMedia.Store
         public bool Success { get; set; }
         public string? Action { get; set; }
         public string? GrantFrom { get; set; }
+
+        public string? ThumbprintId { get; set; }
     }
 
     public class AuditResource

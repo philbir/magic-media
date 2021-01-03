@@ -7,6 +7,7 @@
     :loading="loading"
     :height="$vuetify.breakpoint.height - 110"
     :footer-props="{ itemsPerPageOptions: [50, 100, 200] }"
+    fixed-header
     class="elevation-1"
   >
     <template v-slot:item.id="{ item }">
@@ -21,6 +22,16 @@
     <template v-slot:item.timestamp="{ item }">
       {{ item.timestamp | dateformat("DATETIME_SHORT") }}
     </template>
+    <template v-slot:item.ipInfo="{ item }">
+      <div v-if="item.thumbprint && item.thumbprint.ipInfo.city">
+        {{
+          `${item.thumbprint.ipInfo.city} (${item.thumbprint.ipInfo.ipAddress})`
+        }}
+      </div>
+      <span v-else-if="item.thumbprint">{{
+        item.thumbprint.ipInfo.ipAddress
+      }}</span>
+    </template>
   </v-data-table>
 </template>
 
@@ -31,13 +42,6 @@ export default {
     return {
       options: {},
       headers: [
-        {
-          text: "Media",
-          align: "start",
-          sortable: false,
-          value: "id",
-          width: 56,
-        },
         {
           text: "Success",
           align: "start",
@@ -50,15 +54,34 @@ export default {
           align: "start",
           sortable: false,
           value: "timestamp",
+          width: 180,
+        },
+        {
+          text: "Resource",
+          sortable: false,
+          value: "resource.type",
+          width: 80,
         },
         {
           text: "User",
           sortable: false,
           value: "user.name",
+          width: 180,
         },
-        { text: "Action", value: "action" },
-        { text: "IP", value: "client.iPAdddress" },
-        { text: "Agent", value: "client.userAgent", width: 500 },
+        { text: "Action", value: "action", width: 80, sortable: false },
+        { text: "IP", value: "ipInfo", sortable: false },
+        {
+          text: "Agent",
+          value: "thumbprint.userAgent.description",
+          sortable: false,
+        },
+        {
+          text: "Media",
+          align: "start",
+          value: "id",
+          width: 56,
+          sortable: false,
+        },
       ],
     };
   },

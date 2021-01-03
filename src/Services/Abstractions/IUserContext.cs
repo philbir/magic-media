@@ -30,10 +30,11 @@ namespace MagicMedia
 
     public class ClientInfo
     {
-        public string IPAdddress { get; set; }
+        public string? IPAdddress { get; set; }
 
-        public string UserAgent { get; set; }
-        public string Request { get; set; }
+        public string? UserAgent { get; set; }
+
+        public string? Request { get; set; }
     }
 
     public interface IUserClientInfoResolver

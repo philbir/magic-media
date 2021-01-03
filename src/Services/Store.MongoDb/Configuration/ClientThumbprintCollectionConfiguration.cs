@@ -1,17 +1,17 @@
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
 using MongoDB.Extensions.Context;
 
 namespace MagicMedia.Store.MongoDb.Configuration
 {
-    internal class UserCollectionConfiguration :
-        IMongoCollectionConfiguration<User>
+    internal class ClientThumbprintCollectionConfiguration :
+        IMongoCollectionConfiguration<ClientThumbprint>
     {
         public void OnConfiguring(
-            IMongoCollectionBuilder<User> builder)
+            IMongoCollectionBuilder<ClientThumbprint> builder)
         {
             builder
-                .WithCollectionName(CollectionNames.User)
-                .AddBsonClassMap<User> (cm =>
+                .WithCollectionName(CollectionNames.ClientThumbprint)
+                .AddBsonClassMap<ClientThumbprint>(cm =>
                 {
                     cm.AutoMap();
                     cm.MapIdMember(c => c.Id);
