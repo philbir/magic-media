@@ -58,6 +58,7 @@ namespace MagicMedia
                 .RenameRequestToInput<SearchUserRequest>()
                 .RenameRequestToInput<SaveUserSharedAlbumsRequest>()
                 .RenameRequestToInput<SearchAuditRequest>()
+                .RenameRequestToInput<SetAlbumCoverRequest>()
                 .AddDataLoader<CameraByIdDataLoader>()
                 .AddDataLoader<ThumbnailByMediaIdDataLoader>()
                 .AddDataLoader<MediaByIdDataLoader>()

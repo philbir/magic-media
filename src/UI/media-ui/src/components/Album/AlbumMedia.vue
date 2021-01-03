@@ -6,6 +6,7 @@
       :key="media.id"
       :src="media.thumbnail.dataUrl"
       :ref="'img' + media.id"
+      @click="mediaClick(media.id)"
     />
   </div>
   <v-progress-linear v-else indeterminate></v-progress-linear>
@@ -24,7 +25,11 @@ export default {
       return this.items;
     },
   },
-  methods: {},
+  methods: {
+    mediaClick: function (id) {
+      this.$emit("click", id);
+    },
+  },
 };
 </script>
 

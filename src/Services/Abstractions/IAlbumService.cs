@@ -28,7 +28,7 @@ namespace MagicMedia
         Task<SearchResult<Album>> SearchAsync(
             SearchAlbumRequest request,
             CancellationToken cancellationToken);
-
+        Task<Album> SetCoverAsync(SetAlbumCoverRequest request, CancellationToken cancellationToken);
         Task<Album> UpdateAlbumAsync(
             UpdateAlbumRequest request,
             CancellationToken cancellationToken);

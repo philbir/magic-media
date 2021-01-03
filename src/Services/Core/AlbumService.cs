@@ -237,6 +237,15 @@ namespace MagicMedia
             await _publisher.PublishAsync(new AlbumDeletedMessage(id), cancellationToken);
         }
 
+        public async Task<Album> SetCoverAsync(SetAlbumCoverRequest request, CancellationToken cancellationToken)
+        {
+            Album album = await GetByIdAsync(request.AlbumId, cancellationToken);
+            album.CoverMediaId = request.MediaId;
+            await _mediaStore.Albums.UpdateAsync(album, cancellationToken);
+
+            return album;
+        }
+
         public async Task<SearchResult<Album>> SearchAsync(
             SearchAlbumRequest request,
             CancellationToken cancellationToken)
@@ -336,4 +345,5 @@ namespace MagicMedia
         IEnumerable<Media> Medias,
         IEnumerable<Person> Persons,
         IEnumerable<MediaFace> Faces);
+
 }

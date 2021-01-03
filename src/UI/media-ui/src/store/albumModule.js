@@ -8,6 +8,7 @@ import {
   getAllAlbums,
   removeFolders,
   searchAlbums,
+  setCover,
   updateAlbum
 } from "../services/albumService";
 
@@ -35,6 +36,12 @@ const albumModule = {
       idx = state.albums.findIndex(x => x.id == album.id);
       if (idx > -1) {
         state.albums[idx].title = album.title;
+      }
+    },
+    COVER_SET(state, album) {
+      const idx = state.albums.findIndex(x => x.id == album.id);
+      if (idx > -1) {
+        state.albums[idx].thumbnail = album.thumbnail;
       }
     },
     ALBUM_DELETED(state, id) {
@@ -82,6 +89,15 @@ const albumModule = {
         commit("ALBUM_UPDATED", result.data.updateAlbum.album);
 
         addSnack(dispatch, `Album saved: ${result.data.updateAlbum.album.title}`);
+      }
+    },
+    async setCover({ commit, dispatch }, input) {
+      const result = await excuteGraphQL(() => setCover(input), dispatch);
+
+      if (result.success) {
+        commit("COVER_SET", result.data.Album_SetCover.album);
+
+        addSnack(dispatch, "Cover updated");
       }
     },
     async delete({ commit, dispatch }, id) {

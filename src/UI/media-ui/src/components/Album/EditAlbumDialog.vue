@@ -109,7 +109,7 @@
               </v-row>
 
               <v-row style="height: 60px">
-                <album-media :items="medias"></album-media
+                <album-media :items="medias" @click="mediaClicked"></album-media
               ></v-row>
             </v-container>
           </v-form>
@@ -291,6 +291,7 @@ export default {
       removeFolders: "removeFolders",
       saveAlbum: "update",
       deleteAlbum: "delete",
+      setCover: "setCover",
     }),
     async loadAlbum(id) {
       const res = await getAlbumById(id);
@@ -321,6 +322,12 @@ export default {
     onClickDelete: function () {
       this.deleteAlbum(this.album.id);
       this.close();
+    },
+    mediaClicked: function (id) {
+      this.setCover({
+        albumId: this.album.id,
+        mediaId: id,
+      });
     },
     removeFolder: function (folder) {
       const idx = this.album.folders.findIndex((x) => x === folder);

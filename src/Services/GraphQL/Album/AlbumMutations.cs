@@ -53,5 +53,15 @@ namespace MagicMedia.GraphQL
 
             return new DeleteAlbumPayload(id);
         }
+
+        [GraphQLName("Album_SetCover")]
+        public async Task<UpdateAlbumPayload> SetCoverAsync(
+            SetAlbumCoverRequest input,
+            CancellationToken cancellationToken)
+        {
+            Album album = await _albumService.SetCoverAsync(input, cancellationToken);
+
+            return new UpdateAlbumPayload(album);
+        }
     }
 }
