@@ -33,6 +33,7 @@ namespace MagicMedia
         public string IPAdddress { get; set; }
 
         public string UserAgent { get; set; }
+
         public string Request { get; set; }
     }
 

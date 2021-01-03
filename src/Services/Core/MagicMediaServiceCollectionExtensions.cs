@@ -1,3 +1,4 @@
+using System;
 using MagicMedia.Audit;
 using MagicMedia.Face;
 using MagicMedia.Messaging;
@@ -6,6 +7,7 @@ using MagicMedia.Operations;
 using MagicMedia.Processing;
 using MagicMedia.Security;
 using MagicMedia.Thumbnail;
+using MagicMedia.Thumbprint;
 using MagicMedia.Video;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
@@ -65,9 +67,28 @@ namespace MagicMedia
             services.AddSingleton<IAuditService, AuditService>();
             services.AddSingleton<IUserContextMessagePublisher, UserContextMessagePublisher>();
 
-
             return services;
         }
+
+        public static IMagicMediaServerBuilder AddIpGeoLocationServices(
+            this IMagicMediaServerBuilder builder)
+        {
+
+            IPGeolocationApiOptions options = builder.Configuration
+                .GetSection("MagicMedia:IPGeolocation")
+                .Get<IPGeolocationApiOptions>();
+
+            builder.Services.AddHttpClient("GeoIP", c =>
+            {
+                c.BaseAddress = new Uri(options.Url);
+            }).AddHttpMessageHandler(h => new IPGeolocationApiKeyHandler(options));
+
+
+            builder.Services.AddSingleton<IPGeoLocationService, IPGeolocationApiClient>();
+
+            return builder;
+        }
+
 
         private static IServiceCollection AddFFmpeg(
             this IServiceCollection services,

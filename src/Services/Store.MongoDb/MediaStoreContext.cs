@@ -34,6 +34,7 @@ namespace MagicMedia.Store.MongoDb
                 .ConfigureCollection(new MediaAICollectionConfiguration())
                 .ConfigureCollection(new AuditEventCollectionConfiguration())
                 .ConfigureCollection(new GeoAddressCacheCollectionConfiguration())
+                .ConfigureCollection(new ClientThumbprintCollectionConfiguration())
                 .ConfigureCollection(new MediaCollectionConfiguration());
         }
 
@@ -114,6 +115,14 @@ namespace MagicMedia.Store.MongoDb
             get
             {
                 return CreateCollection<AuditEvent>();
+            }
+        }
+
+        public IMongoCollection<ClientThumbprint> ClientThumbprints
+        {
+            get
+            {
+                return CreateCollection<ClientThumbprint>();
             }
         }
 
