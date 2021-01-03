@@ -24,7 +24,7 @@
 
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn outlined rounded text @click="editClick(album.id)">
+              <v-btn outlined rounded text @click.stop="editClick(album.id)">
                 Edit
               </v-btn>
             </v-card-actions>
