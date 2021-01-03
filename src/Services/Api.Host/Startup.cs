@@ -39,6 +39,7 @@ namespace MagicMedia.Api
                 .AddAzureAI()
                 .AddMongoDbStore()
                 .AddFileSystemStore()
+                .AddClientThumbprintServices()
                 .AddApiMessaging();
 
             services.AddMvc();

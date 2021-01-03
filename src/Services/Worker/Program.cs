@@ -64,6 +64,7 @@ namespace Worker
                         .AddFileSystemStore()
                         .AddFileSystemDiscovery()
                         .AddWorkerMessaging()
+                        .AddClientThumbprintServices()
                         .AddScheduler()
                         .AddJobs();
 

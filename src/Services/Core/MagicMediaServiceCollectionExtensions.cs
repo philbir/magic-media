@@ -70,7 +70,7 @@ namespace MagicMedia
             return services;
         }
 
-        public static IMagicMediaServerBuilder AddIpGeoLocationServices(
+        public static IMagicMediaServerBuilder AddClientThumbprintServices(
             this IMagicMediaServerBuilder builder)
         {
 
@@ -84,7 +84,9 @@ namespace MagicMedia
             }).AddHttpMessageHandler(h => new IPGeolocationApiKeyHandler(options));
 
 
-            builder.Services.AddSingleton<IPGeoLocationService, IPGeolocationApiClient>();
+            builder.Services.AddSingleton<IGeoIPLocationService, IPGeolocationApiClient>();
+            builder.Services.AddSingleton<IUserAgentInfoService, UserAgentInfoService>();
+            builder.Services.AddSingleton<IClientThumbprintService, ClientThumbprintService>();
 
             return builder;
         }

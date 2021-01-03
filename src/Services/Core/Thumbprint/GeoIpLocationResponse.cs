@@ -84,7 +84,7 @@ namespace MagicMedia.Thumbprint
         public int Offset { get; set; }
 
         [JsonPropertyName("current_time")]
-        public DateTime? CurrentTime { get; set; }
+        public string? CurrentTime { get; set; }
 
         [JsonPropertyName("current_time_unix")]
         public float CurrentTimeUnix { get; set; }

@@ -1,17 +1,27 @@
 query searchAuditEvents($request: SearchAuditInput!) {
   searchAuditEvents(request: $request) {
     items {
-      id
       timestamp
       user{
         id
         name
       }
       action
-      client {
-        iPAdddress
-        request
-        userAgent
+      media{
+        folder
+        dateTaken
+      }
+      thumbprint{
+        ipInfo
+        {
+          ipAddress
+          country,
+          countryCode
+          city
+        }
+        userAgent{
+          description
+        }
       }
       success
 

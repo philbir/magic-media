@@ -47,26 +47,6 @@ namespace MagicMedia.Thumbprint
             return ua;
         }
 
-        public UserAgentShortInfo GetShortInfo(UserAgentInfo agentInfo)
-        {
-            var ua = new UserAgentShortInfo();
-
-            try
-            {
-                var shortInfo = new UserAgentShortInfo();
-                shortInfo.Agent = agentInfo.Agent.ToShortDescription();
-                shortInfo.Device = agentInfo.Device.ToShortDescription();
-                shortInfo.OS = agentInfo.OS.ToShortDescription();
-                shortInfo.IsRobot = agentInfo.IsRobot;
-            }
-            catch
-            {
-                ua.ShortDescription = $"Error {agentInfo.UserAgentString}";
-            }
-
-            return ua;
-        }
-
         private DeviceInfo? GetDevice(UA.Device? device)
         {
             var info = new DeviceInfo();

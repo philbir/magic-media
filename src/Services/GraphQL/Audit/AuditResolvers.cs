@@ -21,7 +21,7 @@ namespace MagicMedia.GraphQL
             return null;
         }
 
-        public async Task<Media?> GetMediaAsyc(
+        public async Task<Media?> GetMediaAsync(
             AuditEvent auditEvent,
             MediaByIdDataLoader mediaByid,
             CancellationToken cancellationToken)
@@ -35,6 +35,19 @@ namespace MagicMedia.GraphQL
                 {
                     return await mediaByid.LoadAsync(mediaId, cancellationToken);
                 }
+            }
+
+            return null;
+        }
+
+        public async Task<ClientThumbprint?> GetThumbprintAsync(
+            AuditEvent auditEvent,
+            ClientThumbprintByIdDataLoader thumbprintById,
+            CancellationToken cancellationToken)
+        {
+            if ( auditEvent.ThumbprintId != null)
+            {
+                return await thumbprintById.LoadAsync(auditEvent.ThumbprintId, cancellationToken);
             }
 
             return null;

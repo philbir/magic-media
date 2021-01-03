@@ -45,6 +45,11 @@ namespace MagicMedia.Audit
                 GrantFrom = request.GrantBy
             };
 
+            if (auditEvent.Client.IPAdddress.IsInternalIP())
+            {
+                return Task.CompletedTask;
+            }
+
             try
             {
                 Task.Run(() => SendEventAsync(auditEvent, cancellationToken)).Forget();

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace MagicMedia.Thumbprint
 {
-    public interface IPGeoLocationService
+    public interface IGeoIPLocationService
     {
         Task<GeoIpLocation> LookupAsync(string ipAddress, CancellationToken cancellationToken);
     }

@@ -29,6 +29,7 @@ namespace Playground
             VideoConverter videoConverter = sp.GetService<VideoConverter>();
             FaceScanner faceScanner = sp.GetService<FaceScanner>();
             ImageHasher hasher = sp.GetService<ImageHasher>();
+            ClientThumbprintLoader thumbprintLoader = sp.GetService<ClientThumbprintLoader>();
 
             //await videoConverter.GenerateVideosAsync(default);
 
@@ -38,7 +39,9 @@ namespace Playground
 
             //await faceScanner.RunAsync(default);
 
-            await updater.ResetMediaAIErrorsAsync();
+            //await updater.ResetMediaAIErrorsAsync();
+
+            await thumbprintLoader.LoadAuditThumbprintsAsync();
           }
 
         private static IServiceProvider BuildServiceProvider()
@@ -58,6 +61,7 @@ namespace Playground
                 .AddMongoDbStore()
                 .AddFileSystemStore()
                 .AddFileSystemDiscovery()
+                .AddClientThumbprintServices()
                 .AddWorkerMessaging();
 
             services.AddSingleton<ImportSample>();
@@ -66,9 +70,10 @@ namespace Playground
             services.AddSingleton<VideoConverter>();
             services.AddSingleton<BulkMediaUpdater>();
             services.AddSingleton<ImageHasher>();
+            services.AddSingleton<ClientThumbprintLoader>();
 
             services.AddSingleton<IUserContextFactory, NoOpUserContextFactory>();
-
+            services.AddMemoryCache();
             return services.BuildServiceProvider();
         }
     }
