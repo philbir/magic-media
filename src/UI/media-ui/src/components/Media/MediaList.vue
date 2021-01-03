@@ -188,6 +188,15 @@ export default {
             idx: media.idx,
             multi: false,
           });
+        } else if (
+          e.ctrlKey &&
+          this.userActions.media.edit &&
+          this.$store.state.media.filter.albumId
+        ) {
+          this.$store.dispatch("album/setCover", {
+            albumId: this.$store.state.media.filter.albumId,
+            mediaId: media.id,
+          });
         } else {
           this.$store.dispatch("media/show", media.id);
         }

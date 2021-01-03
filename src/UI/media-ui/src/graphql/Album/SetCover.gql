@@ -1,0 +1,15 @@
+mutation setAlbumCover($input: SetAlbumCoverInput!) {
+  Album_SetCover(input: $input) {
+    album {
+      id
+      title
+      thumbnail {
+        dataUrl
+      }
+    }
+    errors {
+      code
+      message
+    }
+  }
+}

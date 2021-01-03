@@ -37,11 +37,11 @@ namespace Playground
 
             //await hasher.HashAsync();
 
-            //await faceScanner.RunAsync(default);
+            await faceScanner.RunAsync(default);
 
             //await updater.ResetMediaAIErrorsAsync();
 
-            await thumbprintLoader.LoadAuditThumbprintsAsync();
+            //await thumbprintLoader.LoadAuditThumbprintsAsync();
           }
 
         private static IServiceProvider BuildServiceProvider()
