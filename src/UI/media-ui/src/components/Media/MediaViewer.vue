@@ -83,112 +83,10 @@
               mdi-information-outline
             </v-icon>
 
-            <v-menu
-              :close-on-content-click="false"
-              open-on-hover
-              bottom
-              offset-y
-            >
-              <template v-slot:activator="{ on, attrs }">
-                <v-icon v-bind="attrs" v-on="on" class="mr-0" color="white">
-                  mdi-cog-outline
-                </v-icon>
-              </template>
-
-              <v-list>
-                <v-list-group
-                  v-if="userActions.media.edit"
-                  prepend-icon="mdi-face-recognition"
-                >
-                  <template v-slot:activator>
-                    <v-list-item>
-                      <v-list-item-content>
-                        <v-list-item-title>Faces</v-list-item-title>
-                      </v-list-item-content>
-                    </v-list-item>
-                  </template>
-
-                  <template v-for="item in settingsMenu.face.items">
-                    <v-list-item
-                      :key="item.title"
-                      @click="onClickFaceAction(item.value)"
-                    >
-                      <v-list-item-icon>
-                        <v-icon v-text="item.icon"></v-icon>
-                      </v-list-item-icon>
-                      <v-list-item-content>
-                        <v-list-item-title
-                          v-text="item.title"
-                        ></v-list-item-title>
-                      </v-list-item-content>
-                    </v-list-item>
-                  </template>
-                </v-list-group>
-                <v-list-group
-                  v-if="userActions.media.edit"
-                  prepend-icon="mdi-image-edit"
-                >
-                  <template v-slot:activator>
-                    <v-list-item>
-                      <v-list-item-content>
-                        <v-list-item-title>Actions</v-list-item-title>
-                      </v-list-item-content>
-                    </v-list-item>
-                  </template>
-
-                  <template v-for="item in settingsMenu.actions.items">
-                    <v-list-item
-                      :key="item.title"
-                      @change="onActionClick(item.action)"
-                    >
-                      <v-list-item-icon>
-                        <v-icon v-text="item.icon"></v-icon>
-                      </v-list-item-icon>
-                      <v-list-item-content>
-                        <v-list-item-title
-                          v-text="item.title"
-                        ></v-list-item-title>
-                      </v-list-item-content>
-                    </v-list-item>
-                  </template>
-                </v-list-group>
-
-                <v-list-group prepend-icon="mdi-eye-settings-outline">
-                  <template v-slot:activator>
-                    <v-list-item>
-                      <v-list-item-content>
-                        <v-list-item-title>View settings</v-list-item-title>
-                      </v-list-item-content>
-                    </v-list-item>
-                  </template>
-                  <v-list-item-group
-                    v-model="settingsMenu.viewer.selected"
-                    @change="onViewOptionsChange"
-                    multiple
-                  >
-                    <template v-for="item in settingsMenu.viewer.items">
-                      <v-list-item :key="item.title" :value="item.value">
-                        <template v-slot:default="{ active }">
-                          <v-list-item-content>
-                            <v-list-item-title
-                              v-text="item.title"
-                            ></v-list-item-title>
-                          </v-list-item-content>
-
-                          <v-list-item-action>
-                            <v-list-item-action-text
-                              v-text="item.action"
-                            ></v-list-item-action-text>
-
-                            <v-switch :input-value="active"></v-switch>
-                          </v-list-item-action>
-                        </template>
-                      </v-list-item>
-                    </template>
-                  </v-list-item-group>
-                </v-list-group>
-              </v-list>
-            </v-menu>
+            <viewer-menu
+              @faceAction="onFaceAction"
+              @mediaAction="onMediaAction"
+            ></viewer-menu>
           </v-col>
         </v-row>
       </div>
@@ -243,6 +141,7 @@ import GlobalEvents from "vue-global-events";
 import { DateTime } from "luxon";
 import { mapActions, mapGetters } from "vuex";
 import AIObjects from "./AIObjects";
+import ViewerMenu from "./ViewerMenu";
 
 export default {
   components: {
@@ -252,6 +151,7 @@ export default {
     MediaQuickInfo,
     MediaInfo,
     AIObjects,
+    ViewerMenu,
   },
   data() {
     return {
@@ -263,56 +163,6 @@ export default {
         offsetTop: 0,
       },
       showInfoPage: false,
-      settingsMenu: {
-        viewer: {
-          selected: ["SHOW_FACE_LIST"],
-          items: [
-            { title: "Face boxes", value: "SHOW_FACE_BOXES" },
-            { title: "Face list", value: "SHOW_FACE_LIST" },
-            { title: "Film stripe", value: "SHOW_FILM_STRIPE" },
-            { title: "Objects", value: "SHOW_OBJECTS" },
-          ],
-        },
-        face: {
-          selected: [],
-          items: [
-            {
-              title: "Approve all [a]",
-              icon: "mdi-check-all",
-              value: "APPROVE_ALL",
-            },
-            {
-              title: "Predict [p]",
-              icon: "mdi-auto-fix",
-              value: "PREDICT",
-            },
-            {
-              title: "Unassign predicted [u]",
-              icon: "mdi-close-outline",
-              value: "UNASIGN_PREDICTED",
-            },
-            {
-              title: "Remove unassigned  [r]",
-              icon: "mdi-trash-can-outline",
-              value: "DELETED_UNASSINGNED",
-            },
-          ],
-        },
-        actions: {
-          selected: [],
-          items: [
-            { title: "Move", icon: "mdi-file-move-outline", action: "MOVE" },
-            { title: "Edit", icon: "mdi-pencil", action: "EDIT" },
-            {
-              title: "Analyse CloudAI",
-              action: "AI",
-              icon: "mdi-cloud-check-outline",
-            },
-            { title: "Delete", icon: "mdi-recycle", action: "RECYCLE" },
-            { title: "Add to Album", icon: "mdi-plus", action: "ADD_TO_ALBUM" },
-          ],
-        },
-      },
       showStripe: false,
       mediaId: this.$route.params.id,
       windowWidth: window.innerWidth,
@@ -330,12 +180,6 @@ export default {
   created() {
     //this.onResize = debounce(this.onResize, 1000);
     //this.onMouseMove = debounce(this.onMouseMove, 500);
-    this.setViewOptionsSelected(this.viewerOptions);
-  },
-  watch: {
-    viewerOptions: function (newValue) {
-      this.setViewOptionsSelected(newValue);
-    },
   },
   computed: {
     ...mapGetters("user", ["userActions"]),
@@ -390,9 +234,6 @@ export default {
     },
     showQuickInfo: function () {
       return this.$store.state.media.viewer.showFaceList;
-    },
-    viewerOptions: function () {
-      return this.$store.state.media.viewer;
     },
     geoLocation: function () {
       if (this.media.geoLocation && this.media.geoLocation.address) {
@@ -559,40 +400,7 @@ export default {
     onResize() {
       this.setImage();
     },
-    setViewOptionsSelected: function (options) {
-      var selected = [];
-      if (options.showFaceBox) {
-        selected.push("SHOW_FACE_BOXES");
-      }
-      if (options.showFaceList) {
-        selected.push("SHOW_FACE_LIST");
-      }
-      if (options.showFilmStripe) {
-        selected.push("SHOW_FILM_STRIPE");
-      }
-      if (options.showObjects) {
-        selected.push("SHOW_OBJECTS");
-      }
-
-      this.settingsMenu.viewer.selected = selected;
-    },
-    onViewOptionsChange: function () {
-      var options = {
-        showFaceBox: this.settingsMenu.viewer.selected.includes(
-          "SHOW_FACE_BOXES"
-        ),
-        showFaceList: this.settingsMenu.viewer.selected.includes(
-          "SHOW_FACE_LIST"
-        ),
-        showFilmStripe: this.settingsMenu.viewer.selected.includes(
-          "SHOW_FILM_STRIPE"
-        ),
-        showObjects: this.settingsMenu.viewer.selected.includes("SHOW_OBJECTS"),
-      };
-
-      this.$store.dispatch("media/setViewerOptions", options);
-    },
-    onClickFaceAction: function (action) {
+    onFaceAction: function (action) {
       switch (action) {
         case "APPROVE_ALL":
           this.approveAll();
@@ -608,7 +416,7 @@ export default {
           break;
       }
     },
-    onActionClick: function (action) {
+    onMediaAction: function (action) {
       switch (action) {
         case "RECYCLE":
           this.recycle();

@@ -66,6 +66,7 @@ namespace MagicMedia
             services.AddSingleton<IUserAuthorizationService, UserAuthorizationService>();
             services.AddSingleton<IAuditService, AuditService>();
             services.AddSingleton<IUserContextMessagePublisher, UserContextMessagePublisher>();
+            services.AddSingleton<IMediaDownloadService, MediaDownloadService>();
 
             return services;
         }
