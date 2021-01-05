@@ -220,6 +220,7 @@ export default {
   },
   watch: {
     currentMediaId: function (newValue) {
+      console.log(newValue);
       this.mediaViewerOpen = newValue !== null;
     },
     navDrawerOpen: function (newValue) {
