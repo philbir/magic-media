@@ -2,6 +2,8 @@ using System;
 using MagicMedia.Identity.AuthProviders;
 using MagicMedia.Identity.Services;
 using MagicMedia.Identity.Stores;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,7 +13,8 @@ namespace MagicMedia.Identity
     {
         public static IIdentityServerBuilder AddIdentityServer(
             this IServiceCollection services,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IWebHostEnvironment hostEnvironment)
         {
             IIdentityServerBuilder builder = services.AddIdentityServer(options =>
            {
@@ -31,8 +34,11 @@ namespace MagicMedia.Identity
             .AddCorsPolicyCache<CorsPolicyService>()
             .AddClientStoreCache<ClientStore>();
 
-            services.AddAuthentication()
-                  .AddExternalProviders(configuration);
+            AuthenticationBuilder authBuilder = services.AddAuthentication();
+            if (!hostEnvironment.IsDemo())
+            {
+                authBuilder.AddExternalProviders(configuration);
+            }
 
             return builder;
         }
