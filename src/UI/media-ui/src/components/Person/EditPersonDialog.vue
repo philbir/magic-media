@@ -19,7 +19,7 @@
           <v-tab>
             <v-icon left> mdi-web </v-icon>
           </v-tab>
-          <v-tab>
+          <v-tab v-if="userActions.person.delete">
             <v-icon left> mdi-bomb</v-icon>
           </v-tab>
 
@@ -132,7 +132,7 @@
               </div>
             </v-card>
           </v-tab-item>
-          <v-tab-item>
+          <v-tab-item v-if="userActions.person.delete">
             <v-card :height="cardHeight" flat>
               <v-card-text>
                 Danger zone
@@ -146,7 +146,12 @@
         </v-tabs>
         <v-card-actions class="pa-1">
           <v-spacer></v-spacer>
-          <v-btn color="primary" v-if="tab == 0" text @click="save">
+          <v-btn
+            color="primary"
+            v-if="tab == 0 && userActions.person.edit"
+            text
+            @click="save"
+          >
             Save
           </v-btn>
           <v-btn
@@ -164,7 +169,7 @@
 </template>
 <script>
 import { DateTime } from "luxon";
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import { getPersonById } from "../../services/personService";
 
 export default {
@@ -207,6 +212,7 @@ export default {
     },
   },
   computed: {
+    ...mapGetters("user", ["userActions"]),
     isOpen: {
       get() {
         return this.show;

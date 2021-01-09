@@ -52,7 +52,7 @@
       </v-list-group>
 
       <v-list-group
-        v-if="userActions.media.edit"
+        v-if="userActions.media.download"
         prepend-icon="mdi-file-download"
       >
         <template v-slot:activator>

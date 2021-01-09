@@ -124,15 +124,22 @@ const userModule = {
                 media: {
                     edit: getters["hasPermission"]('MEDIA_EDIT'),
                     upload: getters["hasPermission"]('MEDIA_UPLOAD'),
+                    destroy: getters["hasPermission"]('MEDIA_DESTROY'),
+                    download: getters["hasPermission"]('MEDIA_DOWNLOAD'),
                 },
                 face: {
                     edit: getters["hasPermission"]('FACE_EDIT'),
                 },
                 person: {
                     edit: getters["hasPermission"]('PERSON_EDIT'),
+                    delete: getters["hasPermission"]('PERSON_DELETE'),
                 },
                 album: {
                     edit: getters["hasPermission"]('ALBUM_EDIT'),
+                    delete: getters["hasPermission"]('ALBUM_DELETE'),
+                },
+                user: {
+                    edit: getters["hasPermission"]('USER_EDIT'),
                 },
             }
         }

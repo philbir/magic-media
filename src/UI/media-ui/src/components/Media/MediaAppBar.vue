@@ -159,7 +159,8 @@ import AddToAlbumDialog from "../Album/AddToAlbumDialog";
 import EditMediaDialog from "./EditMediaDialog";
 import GlobalEvents from "vue-global-events";
 import MeMenu from "../MeMenu";
-import { mapGetters } from "vuex";
+import { mapGetters, mapState } from "vuex";
+import { getAuthorized, resources } from "../../services/resources";
 
 export default {
   name: "App",
@@ -194,14 +195,9 @@ export default {
   }),
   computed: {
     ...mapGetters("user", ["userActions"]),
+    ...mapState("user", ["me"]),
     mediaActions: function () {
-      return [
-        { text: "Add to album", action: "ADD_TO_ALBUM", icon: "mdi-plus" },
-        { text: "Move", action: "MOVE", icon: "mdi-file-move-outline" },
-        { text: "Edit", action: "EDIT", icon: "mdi-pencil" },
-        { text: "Recycle", action: "RECYCLE", icon: "mdi-recycle" },
-        { text: "Delete", action: "DELETE", icon: "mdi-delete" },
-      ];
+      return getAuthorized(resources.mediaActions, this.me.permissions);
     },
     albumActions: function () {
       var actions = [];
