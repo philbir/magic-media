@@ -16,9 +16,18 @@ RUN pip install --upgrade pip && \
   pip3 install keras==2.2.4 && \
   pip3 install https://github.com/OlafenwaMoses/ImageAI/releases/download/2.1.0/imageai-2.1.0-py3-none-any.whl
 
-EXPOSE 5001
-
 COPY . /app
+
+RUN rm -f /app/models/shape_predictor_5_face_landmarks.dat.bz
+RUN rm -f /app/models/shape_predictor_68_face_landmarks.dat.bz2
+
+ADD https://github.com/davisking/dlib-models/raw/master/shape_predictor_5_face_landmarks.dat.bz2 /app/models/
+ADD https://github.com/davisking/dlib-models/raw/master/shape_predictor_68_face_landmarks.dat.bz2 /app/models/
+
+RUN bzip2 -d /app/models/shape_predictor_5_face_landmarks.dat.bz2
+RUN bzip2 -d /app/models/shape_predictor_68_face_landmarks.dat.bz2
+
+EXPOSE 5001
 
 WORKDIR /app
 CMD ["python3", "/app/app.py"]

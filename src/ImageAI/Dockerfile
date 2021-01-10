@@ -17,6 +17,12 @@ RUN pip install requests
 
 COPY . /app
 
+RUN rm -f /app/models/resnet50_coco_best_v2.0.1.h5
+RUN rm -f /app/models/resnet50_weights_tf_dim_ordering_tf_kernels.h5
+
+ADD https://github.com/OlafenwaMoses/ImageAI/releases/download/1.0/resnet50_coco_best_v2.0.1.h5 /app/models/
+ADD https://github.com/OlafenwaMoses/ImageAI/releases/download/1.0/resnet50_weights_tf_dim_ordering_tf_kernels.h5 /app/models/
+
 WORKDIR /app
 CMD ["python3", "/app/image_ai_job.py"]
 
