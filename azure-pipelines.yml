@@ -10,6 +10,7 @@ resources:
 
 variables:
   tag: '$(Build.BuildId)'
+  DOCKER_BUILDKIT: 1
 
 stages:
 - stage: Release
@@ -36,3 +37,7 @@ stages:
       inputs:
         targetType: 'inline'
         script: 'Copy-Item ./src/UI/media-ui/dist/* ./src/services/Api.Host/wwwroot/ -Recurse -Force'
+    - task: PowerShell@2
+      inputs:
+        targetType: 'inline'
+        script: 'docker build -t magic-media:dev -f .\.docker\api.Dockerfile .'
