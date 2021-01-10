@@ -30,9 +30,18 @@ A demo of the running application can be found here:
 - [x] Albums
   - [x] Share with friends and family
   - [ ] Sync with Google Photos
+- [x] Duplicate detection
 - [x] Maps integration
 - [x] Person timeline
 - [x] PWA Support
+- Media discovery sources
+  - [x] Local File System
+  - [ ] Google Drive
+  - [ ] OneDrive
+  - [ ] Dropbox
+- Media Strores
+  - [x] Local File System
+  - [ ] Azure Storage
 - Identity providers
   - [x] Google
   - [x] GitHub
@@ -60,7 +69,7 @@ Then just open the `src/Face` directory in a remote container.
 
 ## Installation
 
-The application is composed of 5 microservices, the easyiest way is to using Docker to run the application.
+The application is composed of 5 microservices, the easiest way to install the application is Docker.
 
 - Host -> .NET Core container with GraphQL API und UI
 - Worker -> .NET Core container for background jobs
@@ -81,8 +90,8 @@ The application is composed of 5 microservices, the easyiest way is to using Doc
 
 ### Install using docker-compose
 
-- TODO: Provider docker-compose sample an manual
-- TODO: Install on a Raspberry py
+- TODO: Provide `docker-compose` sample an manual
+- TODO: Install on a Raspberry Pi
 - TODO: Install on a Synology NAS
 
 ## Open source
