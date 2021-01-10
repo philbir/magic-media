@@ -29,4 +29,3 @@ stages:
         Dockerfile: './.docker/identity.Dockerfile'
         tags:  |
           '$(Build.BuildId)'
-          latest
