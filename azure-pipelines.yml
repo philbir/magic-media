@@ -51,14 +51,6 @@ stages:
         addPipelineData: false
         tags:  |
           latest
-    - task: Docker@2
-      inputs:
-        containerRegistry: 'Docker Hub Magic Media'
-        repository: 'magicmedia/magic-media'
-        command: 'push'
-        tags: |
-          $(Build.BuildId)
-          latest
   - job: Build_Worker
     displayName: Build Worker
     steps:
@@ -104,7 +96,7 @@ stages:
     - task: Docker@2
       inputs:
         containerRegistry: 'Docker Hub Magic Media'
-        repository: 'magicmedia/magic-media-face'
+        repository: 'magicmedia/magic-media-imageai'
         command: 'buildAndPush'
         Dockerfile: './src/ImageAI/Dockerfile'
         buildContext: ./src/ImageAI/
