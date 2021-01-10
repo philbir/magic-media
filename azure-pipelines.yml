@@ -21,6 +21,10 @@ stages:
   - job: Build_Identity
     displayName: Build Identity
     steps:
+    - task: PowerShell@2
+      inputs:
+        targetType: 'inline'
+        script: 'Write-Host $env:Build_SourceBranch'
     - task: Docker@2
       inputs:
         containerRegistry: 'Docker Hub Magic Media'
