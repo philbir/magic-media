@@ -42,10 +42,10 @@ A demo of the running application can be found here:
 
 ### UI project
 
-The UI needs a running API running on http://localhost:5000, first startthe  `API.Host` project and then
+The UI needs a running API running on http://localhost:5000, first start the  `API.Host` project and then
 you can start the UI in `src/UI/media-ui` using `yarn serve`
 
-You can also use the preview api withhout having to run an API locally, just use:
+You can also use the preview api withhout having to run an API localy, just use:
 `yarn serve --mode preview`
 
 ### Face detection
@@ -60,7 +60,7 @@ Then just open the `src/Face` directory in a remote container.
 
 ## Installation
 
-The application is composed of 5 microservices, the easyiest way is to run the application is Docker.
+The application is composed of 5 microservices, the easyiest way is to using Docker to run the application.
 
 - Host -> .NET Core container with GraphQL API und UI
 - Worker -> .NET Core container for background jobs
@@ -82,8 +82,8 @@ The application is composed of 5 microservices, the easyiest way is to run the a
 ### Install using docker-compose
 
 - TODO: Provider docker-compose sample an manual
-- TODO: Install on a Paspberry py
-- TODO: Install on a Synolofy NAS
+- TODO: Install on a Raspberry py
+- TODO: Install on a Synology NAS
 
 ## Open source
 
