@@ -1,5 +1,5 @@
 <template>
-  <v-menu offset-y :v-show="true">
+  <v-menu offset-y class="d-sm-none-and-down">
     <template v-slot:activator="{ on, attrs }">
       <v-badge
         :value="activeNotifications.length > 0"

@@ -16,6 +16,8 @@ import {
 import MediaFilterManager from '../services/mediaFilterManager';
 import { excuteGraphQL } from "./graphqlClient"
 import { mediaOperationTypeMap } from "../services/mediaOperationService";
+import { shareManyMedia } from "../services/shareService"
+import { addSnack } from "./snackService"
 
 const getMediaIdsFromIndexes = state => {
   const ids = [];
@@ -24,6 +26,15 @@ const getMediaIdsFromIndexes = state => {
   }
   return ids;
 };
+
+const getSelectedMedias = state => {
+  const medias = [];
+  for (let i = 0; i < state.selectedIndexes.length; i++) {
+    medias.push(state.list[state.selectedIndexes[i]]);
+  }
+
+  return medias;
+}
 
 const fm = new MediaFilterManager();
 
@@ -348,6 +359,35 @@ const mediaModule = {
         ids: input.ids,
       }
       dispatch('startOperation', operation);
+    },
+    async share({ dispatch }, medias) {
+
+      if (!navigator.share) {
+        addSnack(dispatch, `Sharing is not possible on this device`, "ERROR");
+        return;
+      }
+
+      if (medias.length > 10) {
+        addSnack(dispatch, `You can not share more then 10 items at the same time`, "WARN");
+        return;
+      }
+
+      addSnack(dispatch, `Prepare ${medias.length} images for sharing.`, "INFO");
+      try {
+        await shareManyMedia(medias);
+        addSnack(dispatch, `Sharing completed.`);
+
+      }
+      catch {
+        addSnack(dispatch, `Error while sharing`, "ERROR");
+      }
+    },
+
+    async shareSelected({ state, dispatch }) {
+
+      const medias = getSelectedMedias(state);
+      await dispatch('share', medias);
+
     },
     close({ commit }) {
       commit("MEDIA_CLOSED");

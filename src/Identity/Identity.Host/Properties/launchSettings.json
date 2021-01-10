@@ -7,6 +7,14 @@
       },
       "dotnetRunMessages": "true",
       "applicationUrl": "http://localhost:5500"
+    },
+    "Identity.Host.Demo": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Demo"
+      },
+      "dotnetRunMessages": "true",
+      "applicationUrl": "http://localhost:5500"
     }
   }
 }

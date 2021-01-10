@@ -9,6 +9,7 @@ using MagicMedia.Store;
 using MagicMedia.Store.MongoDb;
 using MassTransit;
 using Microsoft.Extensions.Caching.Memory;
+using Serilog;
 
 namespace MagicMedia.Security
 {
@@ -52,6 +53,8 @@ namespace MagicMedia.Security
 
         public async Task<User> GetByIdAsync(Guid id, bool bypassCache, CancellationToken cancellationToken)
         {
+            Log.Information("GetUserById: {Id}", id);
+
             if (bypassCache)
             {
                 return await _mediaStore.Users.TryGetByIdAsync(id, cancellationToken);

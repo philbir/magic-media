@@ -40,7 +40,13 @@
             <v-card-actions>
               <v-spacer></v-spacer>
 
-              <v-btn outlined rounded text @click="editClick(user.id)">
+              <v-btn
+                outlined
+                rounded
+                text
+                @click="editClick(user.id)"
+                v-if="userActions.user.edit"
+              >
                 Edit
               </v-btn>
             </v-card-actions>
@@ -57,7 +63,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapGetters, mapState } from "vuex";
 import EditUserDialog from "./EditUserDialog.vue";
 export default {
   components: { EditUserDialog },
@@ -71,6 +77,7 @@ export default {
   },
   computed: {
     ...mapState("user", { users: "list" }),
+    ...mapGetters("user", ["userActions"]),
   },
   methods: {
     thumbnail: function (user) {

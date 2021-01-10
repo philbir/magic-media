@@ -10,6 +10,7 @@
     <div
       v-else
       class="media-wrapper"
+      v-longpress="onLongpress"
       v-touch="{
         left: () => swipe('left'),
         right: () => swipe('right'),
@@ -291,6 +292,9 @@ export default {
           loaded: true,
         };
       }
+    },
+    async onLongpress() {
+      this.$store.dispatch("media/share", [this.media]);
     },
     swipe: function (direction) {
       switch (direction) {

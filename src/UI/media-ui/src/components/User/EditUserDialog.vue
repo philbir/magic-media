@@ -219,7 +219,7 @@ export default {
       },
     },
     roles: function () {
-      return ["Admin"];
+      return ["Admin", "Demo"];
     },
     allAlbums: function () {
       return this.$store.state.album.allAlbums

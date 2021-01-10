@@ -10,5 +10,6 @@ namespace MagicMedia
             Guid id,
             DownloadMediaOptions options,
             CancellationToken cancellationToken);
+        Task<MediaDownload> CreateDownloadAsync(Guid id, string profile, CancellationToken cancellationToken);
     }
 }

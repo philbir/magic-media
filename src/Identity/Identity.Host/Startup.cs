@@ -3,7 +3,7 @@ using MagicMedia.AspNetCore;
 using MagicMedia.Identity.Data.Mongo;
 using MagicMedia.Identity.Data.Mongo.Seeding;
 using MagicMedia.Identity.Messaging;
-using MagicMedia.Identity.SignUp;
+using MagicMedia.Identity.Services;
 using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -16,24 +16,28 @@ namespace MagicMedia.Identity
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(
+            IConfiguration configuration,
+            IWebHostEnvironment hostEnvironment)
         {
             Configuration = configuration;
+            HostEnvironment = hostEnvironment;
         }
 
         public IConfiguration Configuration { get; }
+
+        public IWebHostEnvironment HostEnvironment { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
-            IIdentityServerBuilder builder = services.AddIdentityServer(Configuration);
+            IIdentityServerBuilder builder = services.AddIdentityServer(Configuration, HostEnvironment);
 
             builder.AddDeveloperSigningCredential();
 
             services.AddDataAccess(Configuration);
             services.AddIdentityCore(Configuration);
-            services.AddSingleton<SignUpService>();
 
             services.ConfigureSameSiteCookies();
 
@@ -42,6 +46,10 @@ namespace MagicMedia.Identity
 
             services.AddMessaging(Configuration);
             services.AddMassTransitHostedService();
+
+            services.AddSingleton<IDemoUserService>(s => new DemoUserService(
+                HostEnvironment.IsDemo(),
+                Configuration));
         }
 
         public void Configure(
@@ -51,12 +59,16 @@ namespace MagicMedia.Identity
         {
             if (env.IsDevelopment())
             {
-                dataSeeder.SeedIntialDataAsync(default).GetAwaiter().GetResult();
                 app.UseDeveloperExceptionPage();
             }
             else
             {
                 app.UseExceptionHandler("/Home/Error");
+            }
+
+            if (env.IsDevelopment() || env.IsDemo())
+            {
+                dataSeeder.SeedIntialDataAsync(default).GetAwaiter().GetResult();
             }
 
             app.UseSerilogRequestLogging();

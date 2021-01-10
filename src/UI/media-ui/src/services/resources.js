@@ -29,7 +29,7 @@ export const resources = {
             text: "Users",
             icon: "mdi-account",
             route: "Users",
-            auth: "USER_MANAGE"
+            auth: "USER_VIEW"
         },
         {
             text: "Audit log",
@@ -43,13 +43,29 @@ export const resources = {
             route: "Settings",
             auth: "GENERAL_SETTINGS"
         },
-    ]
+    ],
+    mediaActions: [
+        { text: "Add to album", action: "ADD_TO_ALBUM", icon: "mdi-plus" },
+        { text: "Move", action: "MOVE", icon: "mdi-file-move-outline" },
+        { text: "Edit", action: "EDIT", icon: "mdi-pencil" },
+        { text: "Recycle", action: "RECYCLE", icon: "mdi-recycle" },
+        {
+            text: "Delete",
+            action: "DELETE",
+            icon: "mdi-delete",
+            auth: "MEDIA_DESTROY",
+        },
+        {
+            text: "Share",
+            action: "SHARE",
+            icon: "mdi-share-variant-outline",
+        },
+    ],
 }
 
 export const getAuthorized = (list, permissions) => {
     return list.filter(x => {
         if (x.auth) {
-
             return permissions.includes(x.auth);
         }
         return true;

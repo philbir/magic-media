@@ -1,18 +1,42 @@
 # Magic Media
 
 Magic media is a photo library to mange all your family photos and videos in a central place.
-It uses features like face detection/recognition, object detection, geo encoding and metadata extraction to make your media accessible.
+It uses features like face detection/recognition, object detection, geo encoding and metadata extraction to make your media accessible and share it with your friends and family.
 
 It is build with privacy in mind, you can enjoy features you know from tools like Google Photos but without giving all you precious data away.
 
-> Project state: is work in process
+> Project state: alpha
 
 ## Demo
-A preview of the running application can be found here:
-[https://magic-media-preview.birbaum.me](https://magic-media-preview.birbaum.me)
+A demo of the running application can be found here:
+[https://demo.magic-media.io](https://demo.magic-media.io)
 
 ## Overview
 ![Magic Media](https://github.com/philbir/magic-media/blob/main/images/ui_screenshot.jpg?raw=true)
+
+## Features
+
+- [x] Rich Filtering (Persons, Geo, Date, Objects, Tags)
+- [x] Local face detection / prediction
+- [x] Manually manage persons and faces
+- [ ] Face clustering
+- Object detection / photo tagging
+    - [x] Using local ImageAI
+    - [x] Using Azure Computer vision
+    - [ ] Using Google Vision AI
+- Geo Decoding
+    - [x] Using Bing maps api
+    - [ ] Using Google maps api
+- [x] Albums
+  - [x] Share with friends and family
+  - [ ] Sync with Google Photos
+- [x] Maps integration
+- [x] Person timeline
+- [x] PWA Support
+- Identity providers
+  - [x] Google
+  - [x] GitHub
+  - [x] Microsoft Account
 
 ## Starting the the projects
 
@@ -34,6 +58,32 @@ Then just open the `src/Face` directory in a remote container.
 
 ![Magic Media](https://github.com/philbir/magic-media/blob/main/images/architecture.jpg?raw=true)
 
+## Installation
+
+The application is composed of 5 microservices, the easyiest way is to run the application is Docker.
+
+- Host -> .NET Core container with GraphQL API und UI
+- Worker -> .NET Core container for background jobs
+- Identity -> .NET Core with Duende IdentityServer
+- Face -> Python container for face recognizion (Optional)
+- ImageAI -> Python container for object detection and tagging (Optional)
+
+> Docker containers will be availlable very soon on Docker Hub.
+
+### Prerequisite
+
+- MongoDB
+- RabbitMQ
+- Google Maps Key
+- OAuth client registration(s)
+- Bing Maps API Key (Optional)
+- Azure Computer Vision API Key (Optional)
+
+### Install using docker-compose
+
+- TODO: Provider docker-compose sample an manual
+- TODO: Install on a Paspberry py
+- TODO: Install on a Synolofy NAS
 
 ## Open source
 

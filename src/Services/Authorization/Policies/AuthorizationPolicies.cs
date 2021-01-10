@@ -11,15 +11,21 @@ namespace MagicMedia.Authorization
 
             public const string MediaView = nameof(MediaViewPolicy);
             public const string MediaEdit = nameof(MediaEditPolicy);
+            public const string MediaDestroy = nameof(MediaDestroyPolicy);
+            public const string MediaDownload = nameof(MediaDownloadPolicy);
 
             public const string FaceView = nameof(FaceViewPolicy);
             public const string FaceEdit = nameof(FaceEditPolicy);
 
-
             public const string AlbumView = nameof(AlbumViewPolicy);
             public const string AlbumEdit = nameof(AlbumEditPolicy);
+            public const string AlbumDelete = nameof(AlbumDeletePolicy);
 
-            public const string ManageUsers = nameof(ManageUsersPolicy);
+            public const string PersonEdit = nameof(PersonEditPolicy);
+            public const string PersonDelete = nameof(PersonDeletePolicy);
+
+            public const string UserView = nameof(UserViewPolicy);
+            public const string UserEdit = nameof(UserEditPolicy);
 
             public const string ImageAI = nameof(ImageAIPolicy);
         }
@@ -44,6 +50,26 @@ namespace MagicMedia.Authorization
             }
         }
 
+        public static AuthorizationPolicy MediaDestroyPolicy
+        {
+            get
+            {
+                return new AuthorizationPolicyBuilder()
+                    .RequirePermission(Permissions.Media.Destroy)
+                    .Build();
+            }
+        }
+
+        public static AuthorizationPolicy MediaDownloadPolicy
+        {
+            get
+            {
+                return new AuthorizationPolicyBuilder()
+                    .RequirePermission(Permissions.Media.Download)
+                    .Build();
+            }
+        }
+
         public static AuthorizationPolicy AlbumViewPolicy
         {
             get
@@ -64,6 +90,35 @@ namespace MagicMedia.Authorization
             }
         }
 
+        public static AuthorizationPolicy AlbumDeletePolicy
+        {
+            get
+            {
+                return new AuthorizationPolicyBuilder()
+                    .RequirePermission(Permissions.Album.Delete)
+                    .Build();
+            }
+        }
+
+        public static AuthorizationPolicy PersonDeletePolicy
+        {
+            get
+            {
+                return new AuthorizationPolicyBuilder()
+                    .RequirePermission(Permissions.Person.Delete)
+                    .Build();
+            }
+        }
+
+        public static AuthorizationPolicy PersonEditPolicy
+        {
+            get
+            {
+                return new AuthorizationPolicyBuilder()
+                    .RequirePermission(Permissions.Person.Edit)
+                    .Build();
+            }
+        }
 
         public static AuthorizationPolicy FaceViewPolicy
         {
@@ -85,12 +140,22 @@ namespace MagicMedia.Authorization
             }
         }
 
-        public static AuthorizationPolicy ManageUsersPolicy
+        public static AuthorizationPolicy UserViewPolicy
         {
             get
             {
                 return new AuthorizationPolicyBuilder()
-                    .RequirePermission(Permissions.User.Manage)
+                    .RequirePermission(Permissions.User.View)
+                    .Build();
+            }
+        }
+
+        public static AuthorizationPolicy UserEditPolicy
+        {
+            get
+            {
+                return new AuthorizationPolicyBuilder()
+                    .RequirePermission(Permissions.User.Edit)
                     .Build();
             }
         }

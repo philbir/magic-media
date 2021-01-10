@@ -9,116 +9,147 @@
       min-height="560"
       class="d-flex flex-column"
       v-if="album"
+      :loading="album.id == undefined"
     >
-      <v-progress-linear
-        v-if="album.id == undefined"
-        indeterminate
-      ></v-progress-linear>
-      <v-card-title>
-        {{ album.title }}
-        <div class="country-flag-container">
-          <img
-            v-for="(country, i) in album.countries"
-            :key="i"
-            :src="flagUrl(country)"
-          />
-        </div>
-      </v-card-title>
-      <v-card-text>
-        <div v-show="view === 'details'">
-          <v-form v-model="valid">
-            <v-container v-if="album.id">
-              <v-row>
-                <v-col cols="12" md="6">
-                  <v-text-field
-                    v-if="userActions.album.edit"
-                    v-model="album.title"
-                    label="Title"
-                    required
-                  ></v-text-field>
+      <v-toolbar flat color="blue darken-4" dark>
+        <v-toolbar-title>
+          <div class="country-flag-container">
+            <img
+              v-for="(country, i) in album.countries"
+              :key="i"
+              :src="flagUrl(country)"
+            />
+          </div>
+          {{ album.title }}</v-toolbar-title
+        >
+        <v-spacer></v-spacer>
+        <v-btn icon>
+          <v-icon color="white" @click="cancel">mdi-arrow-left-circle </v-icon>
+        </v-btn>
+      </v-toolbar>
 
-                  <v-row v-for="(item, i) in dataItems" :key="i">
-                    <v-col cols="12" sm="4">{{ item.label }}</v-col>
-                    <v-col cols="12" sm="4" class="font-weight-bold">{{
-                      item.value
-                    }}</v-col>
+      <v-tabs vertical v-model="tab">
+        <v-tab>
+          <v-icon left> mdi-image-edit-outline </v-icon>
+        </v-tab>
+        <v-tab>
+          <v-icon left> mdi-file-image </v-icon>
+        </v-tab>
+        <v-tab>
+          <v-icon left> mdi-cog-outline </v-icon>
+        </v-tab>
+        <v-tab>
+          <v-icon left> mdi-share-variant-outline </v-icon>
+        </v-tab>
+        <v-tab v-if="userActions.album.delete">
+          <v-icon left> mdi-bomb</v-icon>
+        </v-tab>
+
+        <v-tab-item>
+          <v-card :height="cardHeight" flat>
+            <v-card-text>
+              <v-form v-model="valid">
+                <v-container v-if="album.id">
+                  <v-row>
+                    <v-col cols="12" md="6">
+                      <v-text-field
+                        v-if="userActions.album.edit"
+                        v-model="album.title"
+                        label="Title"
+                        required
+                      ></v-text-field>
+
+                      <v-row v-for="(item, i) in dataItems" :key="i">
+                        <v-col cols="12" sm="4">{{ item.label }}</v-col>
+                        <v-col cols="12" sm="4" class="font-weight-bold">{{
+                          item.value
+                        }}</v-col>
+                      </v-row>
+                    </v-col>
+
+                    <v-col cols="12" md="6">
+                      <v-expansion-panels accordion :value="0">
+                        <v-expansion-panel v-if="album && album.persons.length">
+                          <v-expansion-panel-header>
+                            Persons
+                          </v-expansion-panel-header>
+                          <v-expansion-panel-content>
+                            <v-list height="200" style="overflow: auto">
+                              <v-list-item
+                                v-for="person in album.persons"
+                                :key="person.personId"
+                              >
+                                <v-list-item-avatar size="32">
+                                  <img
+                                    :alt="person.name"
+                                    :src="`/api/face/${person.faceId}/thumbnail`"
+                                  />
+                                </v-list-item-avatar>
+                                <v-list-item-content>
+                                  <v-list-item-title>
+                                    <strong> {{ person.name }}</strong> ({{
+                                      person.count
+                                    }})</v-list-item-title
+                                  >
+                                </v-list-item-content>
+                              </v-list-item>
+                            </v-list>
+                          </v-expansion-panel-content>
+                        </v-expansion-panel>
+                        <v-expansion-panel
+                          v-if="album && album.countries.length"
+                        >
+                          <v-expansion-panel-header>
+                            Countries
+                          </v-expansion-panel-header>
+                          <v-expansion-panel-content>
+                            <v-list height="200" style="overflow: auto">
+                              <v-list-item
+                                v-for="country in album.countries"
+                                :key="country.code"
+                              >
+                                <v-list-item-avatar size="32">
+                                  <img
+                                    :alt="country.name"
+                                    :src="flagUrl(country)"
+                                  />
+                                </v-list-item-avatar>
+                                <v-list-item-content>
+                                  <v-list-item-title
+                                    :title="cityString(country)"
+                                  >
+                                    <strong> {{ country.name }}</strong> ({{
+                                      country.count
+                                    }})</v-list-item-title
+                                  >
+                                  <v-list-item-subtitle>
+                                    <span>{{ cityString(country) }}</span>
+                                  </v-list-item-subtitle>
+                                </v-list-item-content>
+                              </v-list-item>
+                            </v-list>
+                          </v-expansion-panel-content>
+                        </v-expansion-panel>
+                      </v-expansion-panels>
+                    </v-col>
                   </v-row>
-                </v-col>
+                </v-container>
+              </v-form>
+            </v-card-text>
+          </v-card>
+        </v-tab-item>
+        <v-tab-item>
+          <v-card :height="cardHeight" flat>
+            <v-card-text> </v-card-text>
+          </v-card>
+        </v-tab-item>
+        <v-tab-item>
+          <v-card :height="cardHeight" flat>
+            <v-card-text>
+              <h4>Includes</h4>
 
-                <v-col cols="12" md="6">
-                  <v-expansion-panels accordion :value="0">
-                    <v-expansion-panel v-if="album && album.persons.length">
-                      <v-expansion-panel-header>
-                        Persons
-                      </v-expansion-panel-header>
-                      <v-expansion-panel-content>
-                        <v-list height="200" style="overflow: auto">
-                          <v-list-item
-                            v-for="person in album.persons"
-                            :key="person.personId"
-                          >
-                            <v-list-item-avatar size="32">
-                              <img
-                                :alt="person.name"
-                                :src="`/api/face/${person.faceId}/thumbnail`"
-                              />
-                            </v-list-item-avatar>
-                            <v-list-item-content>
-                              <v-list-item-title>
-                                <strong> {{ person.name }}</strong> ({{
-                                  person.count
-                                }})</v-list-item-title
-                              >
-                            </v-list-item-content>
-                          </v-list-item>
-                        </v-list>
-                      </v-expansion-panel-content>
-                    </v-expansion-panel>
-                    <v-expansion-panel v-if="album && album.countries.length">
-                      <v-expansion-panel-header>
-                        Countries
-                      </v-expansion-panel-header>
-                      <v-expansion-panel-content>
-                        <v-list height="200" style="overflow: auto">
-                          <v-list-item
-                            v-for="country in album.countries"
-                            :key="country.code"
-                          >
-                            <v-list-item-avatar size="32">
-                              <img
-                                :alt="country.name"
-                                :src="flagUrl(country)"
-                              />
-                            </v-list-item-avatar>
-                            <v-list-item-content>
-                              <v-list-item-title :title="cityString(country)">
-                                <strong> {{ country.name }}</strong> ({{
-                                  country.count
-                                }})</v-list-item-title
-                              >
-                              <v-list-item-subtitle>
-                                <span>{{ cityString(country) }}</span>
-                              </v-list-item-subtitle>
-                            </v-list-item-content>
-                          </v-list-item>
-                        </v-list>
-                      </v-expansion-panel-content>
-                    </v-expansion-panel>
-                  </v-expansion-panels>
-                </v-col>
-              </v-row>
-
-              <v-row style="height: 60px">
-                <album-media :items="medias" @click="mediaClicked"></album-media
-              ></v-row>
-            </v-container>
-          </v-form>
-        </div>
-        <div v-show="view === 'settings'">
-          <v-row>
-            <v-col sm="6">
               <div v-if="album.folders">
-                <h4>Folders</h4>
+                <h5>Folders</h5>
                 <v-chip
                   v-for="(folder, i) in album.folders"
                   :key="i"
@@ -132,7 +163,7 @@
                 </v-chip>
               </div>
               <div v-if="album.filters">
-                <h4>Filters</h4>
+                <h5>Filters</h5>
                 <v-chip
                   v-for="filter in album.filters"
                   :key="filter.key"
@@ -145,8 +176,12 @@
                   {{ filter.name }} : {{ filter.description }}
                 </v-chip>
               </div>
-            </v-col>
-            <v-col sm="6">
+            </v-card-text>
+          </v-card>
+        </v-tab-item>
+        <v-tab-item>
+          <v-card :height="cardHeight" flat>
+            <v-card-text>
               <h4>Shared with</h4>
 
               <v-autocomplete
@@ -172,35 +207,32 @@
                   </v-chip>
                 </template>
               </v-autocomplete>
-            </v-col>
-          </v-row>
-        </div>
+            </v-card-text>
+          </v-card>
+        </v-tab-item>
+
+        <v-tab-item v-if="userActions.album.delete">
+          <v-card :height="cardHeight" flat>
+            <v-card-text>
+              Danger zone
+              <br />
+              <v-btn class="mt-4" color="error" @click="onClickDelete">
+                <v-icon left> mdi-delete-outline </v-icon>Delete album</v-btn
+              >
+            </v-card-text>
+          </v-card>
+        </v-tab-item>
+      </v-tabs>
+
+      <v-card-text>
+        <v-row style="height: 60px">
+          <album-media :items="medias" @click="mediaClicked"></album-media
+        ></v-row>
       </v-card-text>
       <v-spacer></v-spacer>
-
       <v-divider></v-divider>
-
       <v-card-actions class="pa-1">
-        <v-btn
-          v-if="userActions.album.edit"
-          color="blue darken-1"
-          text
-          @click="toggleView"
-        >
-          {{ view === "settings" ? "Details" : "Settings" }}
-        </v-btn>
-
         <v-spacer></v-spacer>
-
-        <v-btn color="blue darken-1" text @click="cancel"> Close </v-btn>
-        <v-btn
-          v-if="userActions.album.edit"
-          color="red darken-1"
-          text
-          @click="onClickDelete"
-        >
-          Delete
-        </v-btn>
         <v-btn
           v-if="userActions.album.edit"
           color="primary"
@@ -232,11 +264,12 @@ export default {
   data() {
     return {
       menu: false,
+      tab: 0,
       album: {},
       medias: [],
       valid: true,
       originalTitle: null,
-      view: "details",
+      cardHeight: 500,
       sharedWithUsers: [],
     };
   },
@@ -364,7 +397,7 @@ export default {
 <style lang="scss" scoped>
 .country-flag-container {
   position: absolute;
-  right: 20px;
+  right: 60px;
   img {
     width: 28px;
     height: 28px;

@@ -52,7 +52,7 @@
       </v-list-group>
 
       <v-list-group
-        v-if="userActions.media.edit"
+        v-if="userActions.media.download"
         prepend-icon="mdi-file-download"
       >
         <template v-slot:activator>
@@ -198,14 +198,14 @@ export default {
 
         if (this.media.mediaType === "IMAGE") {
           items.push({
-            title: "Medium",
-            action: "MEDIUM",
-            icon,
+            title: "Social Media",
+            action: "SOCIAL_MEDIA",
+            icon: "mdi-instagram",
           });
 
           items.push({
             title: "Small",
-            action: "SMALL",
+            action: "IMAGE_SMALL",
             icon,
           });
 
@@ -219,6 +219,14 @@ export default {
             title: "720P",
             action: "720P",
             icon,
+          });
+        }
+
+        if (navigator.share) {
+          items.push({
+            title: "Share",
+            action: "SHARE",
+            icon: "mdi-share-variant-outline",
           });
         }
       }
@@ -236,9 +244,12 @@ export default {
     onActionClick: function (action) {
       this.$emit("mediaAction", action);
     },
-    onDownloadClick: function (action) {
-      console.log(action);
-      location.href = `/api/download/${this.media.id}`;
+    async onDownloadClick(profile) {
+      if (profile === "SHARE") {
+        this.$store.dispatch("media/share", [this.media]);
+      } else {
+        location.href = `/api/download/${this.media.id}/${profile}`;
+      }
     },
     setViewOptionsSelected: function (options) {
       var selected = [];

@@ -7,6 +7,9 @@ namespace MagicMedia.Identity.Data.Mongo.Seeding
 {
     public class InitialData
     {
+        private static readonly ICollection<Secret> DefaultSecrets = new List<Secret>
+                        { new Secret("geCDNACu94a5DfZQ2Sm46DBjkSErAnNA".ToSha256()) };
+
         public static IEnumerable<MagicIdentityResource> IdentityResources =>
             new List<MagicIdentityResource>
             {
@@ -31,7 +34,12 @@ namespace MagicMedia.Identity.Data.Mongo.Seeding
                 {
                     Name = "api.magic",
                     DisplayName = "Media Magic API",
-                    Scopes = new List<string>{"api.magic.read", "api.magic.write"}
+                    Scopes = new List<string>
+                    {
+                        "api.magic.read",
+                        "api.magic.write",
+                        "api.magic.imageai"
+                    }
                 }
             };
 
@@ -48,8 +56,12 @@ namespace MagicMedia.Identity.Data.Mongo.Seeding
                     Name = "api.magic.write",
                     DisplayName = "Write media API",
                 },
+                new MagicApiScope
+                {
+                    Name = "api.magic.imageai",
+                    DisplayName = "Read an write ImageAI controller",
+                },
             };
-
 
         public static IEnumerable<MagicClient> Clients =>
             new List<MagicClient>
@@ -60,8 +72,7 @@ namespace MagicMedia.Identity.Data.Mongo.Seeding
                     ClientId = "Media.UI",
                     RequirePkce = true,
                     RequireClientSecret = true,
-                    ClientSecrets = new List<Secret>
-                        { new Secret("geCDNACu94a5DfZQ2Sm46DBjkSErAnNA".ToSha256()) },
+                    ClientSecrets = DefaultSecrets,
                     AllowedGrantTypes = GrantTypes.Code,
                     RedirectUris = {
                         "http://localhost:5000/signin-oidc"
@@ -82,14 +93,27 @@ namespace MagicMedia.Identity.Data.Mongo.Seeding
                     ClientId = "Media.Test",
                     RequirePkce = true,
                     RequireClientSecret = true,
-                    ClientSecrets = new List<Secret>
-                        { new Secret("geCDNACu94a5DfZQ2Sm46DBjkSErAnNA".ToSha256()) },
+                    ClientSecrets = DefaultSecrets,
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
                     AlwaysIncludeUserClaimsInIdToken = true,
                     AllowedScopes = new List<string>
                     {
                         "api.magic.read",
                         "api.magic.write",
+                    },
+                },
+                new MagicClient
+                {
+                    ClientName = "ImageAI Job",
+                    ClientId = "ImageAI.Job",
+                    RequirePkce = true,
+                    RequireClientSecret = true,
+                    ClientSecrets = DefaultSecrets,
+                    AllowedGrantTypes = GrantTypes.ClientCredentials,
+                    AlwaysIncludeUserClaimsInIdToken = true,
+                    AllowedScopes = new List<string>
+                    {
+                        "api.magic.imageai",
                     },
                 }
             };
