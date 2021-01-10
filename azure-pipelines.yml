@@ -12,7 +12,7 @@ variables:
   tag: '$(Build.BuildId)'
 
 stages:
-- stage: Build Face Container
+- stage: Build_Face
   displayName: Build Face Image
   jobs:  
   - job: Build
@@ -27,7 +27,7 @@ stages:
         dockerfile: '$(Build.SourcesDirectory)/src/Face/Dockerfile'
         tags: |
           $(tag)
-- stage: Build Host Container
+- stage: Build_Host
   displayName: Build Host Image
   jobs:  
   - job: Build
