@@ -27,6 +27,7 @@ stages:
         repository: 'magicmedia/magic-media-identity'
         command: 'buildAndPush'
         Dockerfile: './.docker/identity.Dockerfile'
+        buildContext: .
         addPipelineData: false
         tags:  |
           $(Build.BuildId)
