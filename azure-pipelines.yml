@@ -50,6 +50,7 @@ stages:
         buildContext: .
         addPipelineData: false
         tags:  |
+          $(Build.SourceBranchName)
           latest
   - job: Build_Worker
     displayName: Build Worker
@@ -63,6 +64,7 @@ stages:
         buildContext: .
         addPipelineData: false
         tags:  |
+          $(Build.SourceBranchName)
           latest
   - job: Build_Identity
     displayName: Build Identity
@@ -76,6 +78,7 @@ stages:
         buildContext: .
         addPipelineData: false
         tags:  |
+          $(Build.SourceBranchName)
           latest
   - job: Build_Face
     displayName: Build Face
@@ -89,6 +92,7 @@ stages:
         buildContext: ./src/Face/
         addPipelineData: false
         tags:  |
+          $(Build.SourceBranchName)
           latest
   - job: Build_Image_AI
     displayName: Build Image AI
@@ -102,4 +106,5 @@ stages:
         buildContext: ./src/ImageAI/
         addPipelineData: false
         tags:  |
+          $(Build.SourceBranchName)
           latest
