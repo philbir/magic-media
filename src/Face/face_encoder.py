@@ -6,14 +6,12 @@ from PIL import Image, ImageDraw
 import cv2
 import dlib
 import pickle
-import gridfs
 from io import StringIO
 import io
 from sklearn import neighbors
 import math
 import base64
 from imutils.face_utils import FaceAligner
-
 
 class FaceEncoder:
 
