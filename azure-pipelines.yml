@@ -36,7 +36,7 @@ stages:
     - task: PowerShell@2
       inputs:
         targetType: 'inline'
-        script: 'Copy-Item ./src/UI/media-ui/dist/* ./src/services/Api.Host/wwwroot/ -Recurse -Force'
+        script: 'Copy-Item ./src/UI/media-ui/dist/* ./src/Services/Api.Host/wwwroot/ -Recurse -Force'
     - task: PowerShell@2
       inputs:
         targetType: 'inline'
