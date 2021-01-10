@@ -12,7 +12,7 @@ variables:
   tag: '$(Build.BuildId)'
 
 stages:
-- stage: Build
+- stage: Build Face Container
   displayName: Build Face Image
   jobs:  
   - job: Build
@@ -27,3 +27,15 @@ stages:
         dockerfile: '$(Build.SourcesDirectory)/src/Face/Dockerfile'
         tags: |
           $(tag)
+- stage: Build Host Container
+  displayName: Build Host Image
+  jobs:  
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: PowerShell@2
+      inputs:
+        targetType: 'inline'
+        script: 'yarn --cwd .\src\UI\media-ui'
