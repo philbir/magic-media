@@ -55,6 +55,11 @@ export const resources = {
             icon: "mdi-delete",
             auth: "MEDIA_DESTROY",
         },
+        {
+            text: "Share",
+            action: "SHARE",
+            icon: "mdi-share-variant-outline",
+        },
     ],
 }
 

@@ -11,53 +11,17 @@ using SixLabors.ImageSharp.Processing;
 
 namespace MagicMedia
 {
-    internal class DownloadMediaProfile
-    {
-        public static DownloadMediaOptions CreateOptions(string? name)
-        {
-            switch (name)
-            {
-                case "SOCIAL_MEDIA":
-                    return new DownloadMediaOptions
-                    {
-                        ImageSize = ImageDownloadSize.Medium,
-                        JpegCompression = 80,
-                        RemoveMetadata = true
-                    };
-                default:
-                    return new DownloadMediaOptions
-                    {
-                        ImageSize = ImageDownloadSize.Original,
-                        VideoSize = VideoDownloadSize.Original,
-                        RemoveMetadata = false
-                    };
-            }
-        }
-    }
-
-    public static class DownloadImageSizeMapExtensions
-    {
-        public static int GetMaxValue(this ImageDownloadSize size)
-        {
-            switch (size)
-            {
-                case ImageDownloadSize.Medium:
-                    return 1280;
-                case ImageDownloadSize.Small:
-                    return 800;
-                default:
-                    return int.MaxValue;
-            }
-        }
-    }
-
     public class MediaDownloadService : IMediaDownloadService
     {
         private readonly IMediaService _mediaService;
+        private readonly IMediaStore _mediaStore;
 
-        public MediaDownloadService(IMediaService mediaService)
+        public MediaDownloadService(
+            IMediaService mediaService,
+            IMediaStore mediaStore)
         {
             _mediaService = mediaService;
+            _mediaStore = mediaStore;
         }
 
         public async Task<MediaDownload> CreateDownloadAsync(
@@ -77,28 +41,44 @@ namespace MagicMedia
         {
             Media media = await _mediaService.GetByIdAsync(id, cancellationToken);
 
-            Stream stream = _mediaService.GetMediaStream(media);
+            Stream? resultStream;
 
-            if (HasModifiers(options))
-            {
-                stream = await ProcessMediaAsync(stream, media, options, cancellationToken);
-            }
-
-            return new MediaDownload(stream, CreateFilename(media));
-        }
-
-        private async Task<Stream> ProcessMediaAsync(
-            Stream stream,
-            Media media,
-            DownloadMediaOptions options,
-            CancellationToken cancellationToken)
-        {
             if (media.MediaType == MediaType.Image)
             {
-                return await ProcessImageAsync(stream, media, options, cancellationToken);
+                Stream mediaStream = _mediaService.GetMediaStream(media);
+
+                if (HasModifiers(options))
+                {
+                    resultStream = await ProcessImageAsync(
+                        mediaStream,
+                        media,
+                        options,
+                        cancellationToken);
+
+                    mediaStream.Close();
+                }
+                else
+                {
+                    resultStream = mediaStream;
+                }
+            }
+            else
+            {
+                if (options.VideoSize == VideoDownloadSize.Video720)
+                {
+                    MediaBlobData request = _mediaService.GetBlobRequest(
+                        media,
+                        MediaFileType.Video720);
+
+                    resultStream = _mediaStore.Blob.GetStreamAsync(request);
+                }
+                else
+                {
+                    resultStream = _mediaService.GetMediaStream(media);
+                }
             }
 
-            throw new NotImplementedException();
+            return new MediaDownload(resultStream, CreateFilename(media));
         }
 
         private async Task<Stream> ProcessImageAsync(
@@ -122,11 +102,21 @@ namespace MagicMedia
                     {
                         newSize = new Size(
                             maxWidth,
-                            currentSize.Width / maxWidth * currentSize.Height);
+                            (int)(maxWidth / (double)currentSize.Width * currentSize.Height));
+                    }
+                }
+                else
+                {
+                    var maxHeight = options.ImageSize.GetMaxValue();
+                    if (currentSize.Height > maxHeight)
+                    {
+                        newSize = new Size(
+                            (int)(maxHeight / (double)currentSize.Height * currentSize.Width),
+                            maxHeight);
                     }
                 }
 
-                if ( newSize != null)
+                if (newSize != null)
                 {
                     image.Mutate(x => x.Resize(newSize.Value));
                 }
@@ -150,6 +140,7 @@ namespace MagicMedia
             {
                 await image.SaveAsJpegAsync(ms, cancellationToken);
             }
+            ms.Position = 0;
 
             return ms;
         }

@@ -205,7 +205,7 @@ export default {
 
           items.push({
             title: "Small",
-            action: "SMALL",
+            action: "IMAGE_SMALL",
             icon,
           });
 
@@ -219,6 +219,14 @@ export default {
             title: "720P",
             action: "720P",
             icon,
+          });
+        }
+
+        if (navigator.share) {
+          items.push({
+            title: "Share",
+            action: "SHARE",
+            icon: "mdi-share-variant-outline",
           });
         }
       }
@@ -236,8 +244,12 @@ export default {
     onActionClick: function (action) {
       this.$emit("mediaAction", action);
     },
-    onDownloadClick: function (profile) {
-      location.href = `/api/download/${this.media.id}/${profile}`;
+    async onDownloadClick(profile) {
+      if (profile === "SHARE") {
+        this.$store.dispatch("media/share", [this.media]);
+      } else {
+        location.href = `/api/download/${this.media.id}/${profile}`;
+      }
     },
     setViewOptionsSelected: function (options) {
       var selected = [];

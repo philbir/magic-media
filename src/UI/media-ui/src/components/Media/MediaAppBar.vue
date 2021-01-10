@@ -32,7 +32,7 @@
           v-on="on"
           color="white"
           icon
-          class="mr-4 d-none d-md-block"
+          class="mr-1 d-none d-md-block"
         >
           <v-icon>mdi-image-album</v-icon>
         </v-btn>
@@ -52,26 +52,16 @@
       </v-list>
     </v-menu>
 
-    <v-switch
+    <v-btn
       v-if="userActions.media.edit"
-      dense
-      @change="toggleEditMode"
-      color="info"
-      value="edit"
-      class="mt-4 d-none d-md-block"
+      @click="toggleEditMode"
+      color="white"
+      icon
+      class="mr-0 ml-0"
     >
-      <template v-slot:label>
-        <span class="white--text">{{ editModeText }}</span>
-      </template>
-    </v-switch>
-
-    <v-menu
-      left
-      offset-y
-      class="d-sm-none-and-down"
-      bottom
-      v-if="editModeText == 'Edit'"
-    >
+      <v-icon>mdi-check-box-multiple-outline</v-icon>
+    </v-btn>
+    <v-menu left offset-y bottom v-if="isEditMode">
       <template v-slot:activator="{ on, attrs }">
         <a v-bind="attrs" v-on="on">
           <h4 class="white--text ml-4">{{ selectedCount }} selected</h4></a
@@ -109,7 +99,8 @@
       class="mr-4 ml-1"
       v-show="loading"
     ></v-progress-circular>
-    <h4 class="white--text mr-4" v-if="totalLoaded > 0">
+
+    <h4 class="white--text mr-4" v-if="totalLoaded > 0 && !isEditMode">
       {{ totalLoaded }}
     </h4>
 
@@ -121,6 +112,7 @@
     >
       mdi-cloud-upload-outline
     </v-icon>
+
     <NotificationMenu></NotificationMenu>
 
     <me-menu></me-menu>
@@ -218,8 +210,8 @@ export default {
 
       return actions;
     },
-    editModeText: function () {
-      return this.$store.state.media.isEditMode ? "Edit" : "View";
+    isEditMode: function () {
+      return this.$store.state.media.isEditMode;
     },
     totalLoaded: function () {
       return this.$store.state.media.totalLoaded;
@@ -241,8 +233,8 @@ export default {
     openUpload: function () {
       this.$store.dispatch("media/toggleUploadDialog", true);
     },
-    toggleEditMode: function (value) {
-      this.$store.dispatch("media/toggleEditMode", value === "edit");
+    toggleEditMode: function () {
+      this.$store.dispatch("media/toggleEditMode");
     },
     selectAll: function () {
       this.$store.dispatch("media/selectAll");
@@ -267,6 +259,9 @@ export default {
           break;
         case "DELETE":
           this.$store.dispatch("media/delete");
+          break;
+        case "SHARE":
+          this.$store.dispatch("media/shareSelected");
           break;
       }
     },
