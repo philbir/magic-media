@@ -2,11 +2,14 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using HotChocolate;
+using HotChocolate.AspNetCore.Authorization;
 using HotChocolate.Types;
+using MagicMedia.Authorization;
 using MagicMedia.Store;
 
 namespace MagicMedia.GraphQL
 {
+    [Authorize(Apply = ApplyPolicy.BeforeResolver, Policy = AuthorizationPolicies.Names.PersonEdit)]
     [ExtendObjectType(Name = "Mutation")]
     public partial class PersonMutations
     {
@@ -37,6 +40,7 @@ namespace MagicMedia.GraphQL
             return new CreateGroupPayload(group);
         }
 
+        [Authorize(Apply = ApplyPolicy.BeforeResolver, Policy = AuthorizationPolicies.Names.PersonDelete)]
         [GraphQLName("Person_Delete")]
         public async Task<DeleteGroupPayload> DeleteAsync(
             Guid id,

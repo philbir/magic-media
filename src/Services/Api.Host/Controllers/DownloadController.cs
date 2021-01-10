@@ -22,6 +22,7 @@ namespace MagicMedia.Api.Controllers
 
 
         [Authorize(AuthorizationPolicies.Names.MediaView)]
+        [Authorize(AuthorizationPolicies.Names.MediaDownload)]
         [HttpGet]
         [Route("{id}/{profile?}")]
         public async Task<IActionResult> DownloadAsync(

@@ -20,7 +20,9 @@ namespace MagicMedia.GraphQL
             _albumService = albumService;
         }
 
-        public async Task<AddItemToAlbumPayload> AddItemsToAlbumAsync(AddItemToAlbumRequest input, CancellationToken cancellationToken)
+        public async Task<AddItemToAlbumPayload> AddItemsToAlbumAsync(
+            AddItemToAlbumRequest input,
+            CancellationToken cancellationToken)
         {
             Album album = await _albumService.AddItemsToAlbumAsync(input, cancellationToken);
 
@@ -44,6 +46,7 @@ namespace MagicMedia.GraphQL
             return new UpdateAlbumPayload(album);
         }
 
+        [Authorize(Apply = ApplyPolicy.BeforeResolver, Policy = AuthorizationPolicies.Names.AlbumDelete)]
         [GraphQLName("Album_Delete")]
         public async Task<DeleteAlbumPayload> DeleteAlbumAsync(
             Guid id,
