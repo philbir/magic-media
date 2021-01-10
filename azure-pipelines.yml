@@ -18,48 +18,15 @@ stages:
   pool:
     vmImage: 'ubuntu-latest'
   jobs:  
-  - job: Build_Host
-    displayName: Build Host
-    steps:
-    - task: PowerShell@2
-      inputs:
-        targetType: 'inline'
-        script: 'yarn --cwd ./src/UI/media-ui'
-    - task: PowerShell@2
-      inputs:
-        targetType: 'inline'
-        script: 'yarn --cwd ./src/UI/media-ui build'
-    - task: PowerShell@2
-      inputs:
-        targetType: 'inline'
-        script: 'New-Item -ItemType "directory" -Path ./src/services/Api.Host/wwwroot/'
-    - task: PowerShell@2
-      inputs:
-        targetType: 'inline'
-        script: 'Copy-Item ./src/UI/media-ui/dist/* ./src/services/Api.Host/wwwroot/ -Recurse -Force'
-    - task: PowerShell@2
-      inputs:
-        targetType: 'inline'
-        script: 'docker build -t magic-media:dev -f ./.docker/api.Dockerfile .'
-    - task: Docker@2
-      inputs:
-        containerRegistry: 'Docker Hub Magic Media'
-        repository: 'magicmedia/magic-media'
-        command: 'push'
-        tags: |
-          $(Build.BuildId)
-          latest
-  - job: Build_Worker
-    displayName: Build Worker
-    steps:
-    - task: PowerShell@2
-      inputs:
-        targetType: 'inline'
-        script: 'docker build -t magic-media-worker:dev -f ./.docker/worker.Dockerfile .'
   - job: Build_Identity
     displayName: Build Identity
     steps:
-    - task: PowerShell@2
+    - task: Docker@2
       inputs:
-        targetType: 'inline'
-        script: 'docker build -t magic-media-identity:dev -f ./.docker/identity.Dockerfile .'
+        containerRegistry: 'Docker Hub Magic Media'
+        repository: 'magicmedia/magic-media-identity'
+        command: 'buildAndPush'
+        Dockerfile: './.docker/identity.Dockerfile'
+        tags:  |
+          '$(Build.BuildId)'
+          latest
