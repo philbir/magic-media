@@ -23,13 +23,15 @@ namespace MagicMedia.Api.Controllers
 
         [Authorize(AuthorizationPolicies.Names.MediaView)]
         [HttpGet]
-        [Route("{id}")]
+        [Route("{id}/{profile?}")]
         public async Task<IActionResult> DownloadAsync(
             Guid id,
+            string profile,
             CancellationToken cancellationToken)
         {
             MediaDownload downloadResult = await _mediaDownloadService.CreateDownloadAsync(
-                id, new DownloadMediaOptions(),
+                id,
+                profile,
                 cancellationToken);
 
             return new FileStreamResult(downloadResult.Stream, "application/octet-stream")

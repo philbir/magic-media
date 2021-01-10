@@ -248,8 +248,6 @@ namespace MagicMedia
                 using Stream imageStream = _mediaStore.Blob.GetStreamAsync(request);
                 using Stream stream = await RemoveExifDataAsync(imageStream, cancellationToken);
 
-
-
                 aiData = await analyser.AnalyseImageAsync(
                         stream,
                         cancellationToken);

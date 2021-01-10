@@ -198,9 +198,9 @@ export default {
 
         if (this.media.mediaType === "IMAGE") {
           items.push({
-            title: "Medium",
-            action: "MEDIUM",
-            icon,
+            title: "Social Media",
+            action: "SOCIAL_MEDIA",
+            icon: "mdi-instagram",
           });
 
           items.push({
@@ -236,9 +236,8 @@ export default {
     onActionClick: function (action) {
       this.$emit("mediaAction", action);
     },
-    onDownloadClick: function (action) {
-      console.log(action);
-      location.href = `/api/download/${this.media.id}`;
+    onDownloadClick: function (profile) {
+      location.href = `/api/download/${this.media.id}/${profile}`;
     },
     setViewOptionsSelected: function (options) {
       var selected = [];
