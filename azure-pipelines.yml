@@ -1,7 +1,3 @@
-# Docker
-# Build a Docker image 
-# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
-
 trigger:
 - main
 
@@ -89,4 +85,29 @@ stages:
         addPipelineData: false
         tags:  |
           latest
-    
+  - job: Build_Face
+    displayName: Build Face
+    steps:
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'Docker Hub Magic Media'
+        repository: 'magicmedia/magic-media-face'
+        command: 'buildAndPush'
+        Dockerfile: './src/Face/Dockerfile'
+        buildContext: ./src/Face/
+        addPipelineData: false
+        tags:  |
+          latest
+  - job: Build_Image_AI
+    displayName: Build Image AI
+    steps:
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'Docker Hub Magic Media'
+        repository: 'magicmedia/magic-media-face'
+        command: 'buildAndPush'
+        Dockerfile: './src/ImageAI/Dockerfile'
+        buildContext: ./src/ImageAI/
+        addPipelineData: false
+        tags:  |
+          latest
