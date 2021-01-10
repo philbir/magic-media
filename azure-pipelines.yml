@@ -31,3 +31,4 @@ stages:
         addPipelineData: false
         tags:  |
           $(Build.BuildId)
+          latest
