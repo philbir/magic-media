@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using HotChocolate;
+using HotChocolate.AspNetCore.Authorization;
 using HotChocolate.Types;
+using MagicMedia.Authorization;
 using MagicMedia.Security;
 using MagicMedia.Store;
 
 namespace MagicMedia.GraphQL
 {
     [ExtendObjectType(Name = "Mutation")]
+    [Authorize(Apply = ApplyPolicy.BeforeResolver, Policy = AuthorizationPolicies.Names.UserEdit)]
     public class UserMutations
     {
         private readonly IUserService _userService;

@@ -24,6 +24,14 @@ namespace MagicMedia
                     AuthorizationPolicies.MediaEditPolicy);
 
                 o.AddPolicy(
+                    AuthorizationPolicies.Names.MediaDestroy,
+                    AuthorizationPolicies.MediaDestroyPolicy);
+
+                o.AddPolicy(
+                    AuthorizationPolicies.Names.MediaDownload,
+                    AuthorizationPolicies.MediaDownloadPolicy);
+
+                o.AddPolicy(
                     AuthorizationPolicies.Names.FaceView,
                     AuthorizationPolicies.FaceViewPolicy);
 
@@ -40,8 +48,24 @@ namespace MagicMedia
                     AuthorizationPolicies.AlbumEditPolicy);
 
                 o.AddPolicy(
-                    AuthorizationPolicies.Names.ManageUsers,
-                    AuthorizationPolicies.ManageUsersPolicy);
+                    AuthorizationPolicies.Names.AlbumDelete,
+                    AuthorizationPolicies.AlbumDeletePolicy);
+
+                o.AddPolicy(
+                    AuthorizationPolicies.Names.PersonEdit,
+                    AuthorizationPolicies.PersonEditPolicy);
+
+                o.AddPolicy(
+                    AuthorizationPolicies.Names.PersonDelete,
+                    AuthorizationPolicies.PersonDeletePolicy);
+
+                o.AddPolicy(
+                    AuthorizationPolicies.Names.UserView,
+                    AuthorizationPolicies.UserViewPolicy);
+
+                o.AddPolicy(
+                    AuthorizationPolicies.Names.UserEdit,
+                    AuthorizationPolicies.UserEditPolicy);
 
                 o.AddPolicy(
                     AuthorizationPolicies.Names.ImageAI,

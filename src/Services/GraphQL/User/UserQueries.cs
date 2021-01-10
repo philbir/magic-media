@@ -40,7 +40,7 @@ namespace MagicMedia.GraphQL
         {
             IUserContext context = await _userContextFactory.CreateAsync(cancellationToken);
 
-            if (context.HasPermission(Permissions.User.Manage))
+            if (context.HasPermission(Permissions.User.View))
             {
                 return await _userService.GetAllAsync(cancellationToken);
             }
@@ -50,7 +50,7 @@ namespace MagicMedia.GraphQL
             }
         }
 
-        [Authorize(Apply = ApplyPolicy.BeforeResolver, Policy = AuthorizationPolicies.Names.ManageUsers)]
+        [Authorize(Apply = ApplyPolicy.BeforeResolver, Policy = AuthorizationPolicies.Names.UserView)]
         public async Task<User> GetUserAsync(Guid id, CancellationToken cancellationToken)
         {
             return await _userService.GetByIdAsync(
@@ -59,7 +59,7 @@ namespace MagicMedia.GraphQL
                 cancellationToken);
         }
 
-        [Authorize(Apply = ApplyPolicy.BeforeResolver, Policy = AuthorizationPolicies.Names.ManageUsers)]
+        [Authorize(Apply = ApplyPolicy.BeforeResolver, Policy = AuthorizationPolicies.Names.UserView)]
         public async Task<SearchResult<User>> SearchUsersAsync(
             SearchUserRequest input,
             CancellationToken cancellationToken)
