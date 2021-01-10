@@ -41,6 +41,14 @@ stages:
       inputs:
         targetType: 'inline'
         script: 'docker build -t magic-media:dev -f ./.docker/api.Dockerfile .'
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'Docker Hub Magic Media'
+        repository: 'magicmedia/magic-media'
+        command: 'push'
+        tags: |
+          $(Build.BuildId)
+          latest
   - job: Build_Worker
     displayName: Build Worker
     steps:
