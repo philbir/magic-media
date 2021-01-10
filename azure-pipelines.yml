@@ -1,0 +1,105 @@
+trigger:
+- main
+
+resources:
+- repo: self
+
+variables:
+  tag: '$(Build.BuildId)'
+  DOCKER_BUILDKIT: 1
+
+stages:
+- stage: Release
+  displayName: Release
+  pool:
+    vmImage: 'ubuntu-latest'
+  jobs:
+  - job: Build_Host
+    displayName: Build Host
+    steps:
+    - task: Bash@3
+      inputs:
+        targetType: 'inline'
+        script: 'env | sort'
+    - task: PowerShell@2
+      inputs:
+        targetType: 'inline'
+        script: 'yarn --cwd ./src/UI/media-ui'
+    - task: PowerShell@2
+      inputs:
+        targetType: 'inline'
+        script: 'yarn --cwd ./src/UI/media-ui build'
+    - task: PowerShell@2
+      inputs:
+        targetType: 'inline'
+        script: 'New-Item -ItemType "directory" -Path ./src/Services/Api.Host/wwwroot/'
+    - task: PowerShell@2
+      inputs:
+        targetType: 'inline'
+        script: 'Copy-Item ./src/UI/media-ui/dist/* ./src/services/Api.Host/wwwroot/ -Recurse -Force'
+    - task: PowerShell@2
+      inputs:
+        targetType: 'inline'
+        script: 'ls ./src/Services/Api.Host/'
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'Docker Hub Magic Media'
+        repository: 'magicmedia/magic-media'
+        command: 'buildAndPush'
+        Dockerfile: './.docker/api.Dockerfile'
+        buildContext: .
+        addPipelineData: false
+        tags:  |
+          latest
+  - job: Build_Worker
+    displayName: Build Worker
+    steps:
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'Docker Hub Magic Media'
+        repository: 'magicmedia/magic-media-worker'
+        command: 'buildAndPush'
+        Dockerfile: './.docker/worker.Dockerfile'
+        buildContext: .
+        addPipelineData: false
+        tags:  |
+          latest
+  - job: Build_Identity
+    displayName: Build Identity
+    steps:
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'Docker Hub Magic Media'
+        repository: 'magicmedia/magic-media-identity'
+        command: 'buildAndPush'
+        Dockerfile: './.docker/identity.Dockerfile'
+        buildContext: .
+        addPipelineData: false
+        tags:  |
+          latest
+  - job: Build_Face
+    displayName: Build Face
+    steps:
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'Docker Hub Magic Media'
+        repository: 'magicmedia/magic-media-face'
+        command: 'buildAndPush'
+        Dockerfile: './src/Face/Dockerfile'
+        buildContext: ./src/Face/
+        addPipelineData: false
+        tags:  |
+          latest
+  - job: Build_Image_AI
+    displayName: Build Image AI
+    steps:
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'Docker Hub Magic Media'
+        repository: 'magicmedia/magic-media-imageai'
+        command: 'buildAndPush'
+        Dockerfile: './src/ImageAI/Dockerfile'
+        buildContext: ./src/ImageAI/
+        addPipelineData: false
+        tags:  |
+          latest
