@@ -23,4 +23,12 @@ stages:
     - task: PowerShell@2
       inputs:
         targetType: 'inline'
-        script: 'yarn --cwd ./src/UI/media-ui'
+        script: 'yarn --cwd .\src\UI\media-ui'
+    - task: PowerShell@2
+      inputs:
+        targetType: 'inline'
+        script: 'New-Item -ItemType "directory" -Path ./src/services/Api.Host/wwwroot/'
+    - task: PowerShell@2
+      inputs:
+        targetType: 'inline'
+        script: 'Copy-Item ./src/UI/media-ui/dist/* ./src/services/Api.Host/wwwroot/ -Recurse -Force'
