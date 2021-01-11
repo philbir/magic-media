@@ -24,6 +24,7 @@ namespace MagicMedia.Processing
                         MediaProcessorTaskNames.BuildFaceData,
                         MediaProcessorTaskNames.PredictPersons,
                         MediaProcessorTaskNames.GenerateWebImage,
+                        MediaProcessorTaskNames.CreateHashes,
                         MediaProcessorTaskNames.SaveMedia,
                     });
                 case "ImportImage":
@@ -33,6 +34,7 @@ namespace MagicMedia.Processing
                         MediaProcessorTaskNames.ExtractMetadata,
                         MediaProcessorTaskNames.GenerateThumbnails,
                         MediaProcessorTaskNames.GenerateWebImage,
+                        MediaProcessorTaskNames.CreateHashes,
                         MediaProcessorTaskNames.SaveMedia,
                         MediaProcessorTaskNames.CleanUpSource
                     });
@@ -49,6 +51,7 @@ namespace MagicMedia.Processing
                         MediaProcessorTaskNames.ExtractVideoData,
                         MediaProcessorTaskNames.GenerateThumbnails,
                         MediaProcessorTaskNames.GenerateWebImage,
+                        MediaProcessorTaskNames.CreateHashes,
                         MediaProcessorTaskNames.SaveMedia,
                         MediaProcessorTaskNames.CleanUpSource
                     });

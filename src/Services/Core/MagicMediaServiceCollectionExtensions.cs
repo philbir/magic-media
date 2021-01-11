@@ -122,6 +122,7 @@ namespace MagicMedia
             builder.Services.AddSingleton<IMediaProcessorTask, CleanUpSourceTask>();
             builder.Services.AddSingleton<IMediaProcessorTask, BuildVideoPreviewTask>();
             builder.Services.AddSingleton<IMediaProcessorTask, BuildGifVideoPreviewTask>();
+            builder.Services.AddSingleton<IMediaProcessorTask, CreateMediaHashesTask>();
             builder.Services.AddSingleton<IMediaProcesserTaskFactory, MediaProcesserTaskFactory>();
             builder.Services.AddSingleton<IMediaProcessorFlowFactory, MediaProcessorFlowFactory>();
             builder.Services.AddSingleton<IMediaProcessorFlowFactory, MediaProcessorFlowFactory>();

@@ -35,9 +35,9 @@ namespace Playground
 
             //await updater.UpdateMediaAISummaryAsync(default);
 
-            //await hasher.HashAsync();
+            await hasher.HashAsync();
 
-            await faceScanner.RunAsync(default);
+            //await faceScanner.RunAsync(default);
 
             //await updater.ResetMediaAIErrorsAsync();
 

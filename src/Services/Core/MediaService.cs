@@ -187,6 +187,7 @@ namespace MagicMedia
             Media media = await _mediaStore.GetByIdAsync(id, cancellationToken);
             bool hasChanged = media.DateTaken != dateTaken;
             media.DateTaken = dateTaken;
+            media.DateTakenSearch = DateSearch.Create(dateTaken);
 
             await _mediaStore.UpdateAsync(media, cancellationToken);
 

@@ -19,6 +19,7 @@ namespace MagicMedia.Processing
         public VideoInfo VideoInfo { get; set; }
         public MediaType MediaType { get; set; }
         public long Size { get; set; }
+        public List<MediaHash> Hashes { get; set; }
     }
 
     public class MediaProcessingOptions

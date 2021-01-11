@@ -16,6 +16,7 @@ namespace MagicMedia.Store.MongoDb.Configuration
                 {
                     cm.AutoMap();
                     cm.MapIdMember(c => c.Id);
+                    cm.SetIgnoreExtraElements(true);
                 })
                 .AddBsonClassMap<MediaThumbnail>(cm =>
                 {

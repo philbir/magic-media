@@ -17,15 +17,11 @@ namespace MagicMedia.Store
 
         public MediaSource Source { get; set; }
 
-        public string OriginalHash { get; set; }
-
-        public string? ImageHash { get; set; }
-
-        public string? UniqueIdentifier { get; set; }
-
         public string? ImageUniqueId { get; set; }
 
         public DateTimeOffset? DateTaken { get; set; }
+
+        public DateSearch? DateTakenSearch { get; set; }
 
         public GeoLocation? GeoLocation { get; set; }
 
@@ -34,6 +30,8 @@ namespace MagicMedia.Store
         public int FaceCount { get; set; }
 
         public IEnumerable<MediaThumbnail> Thumbnails { get; set; }
+
+        public IEnumerable<MediaHash> Hashes { get; set; }
 
         public string? Folder { get; set; }
 
@@ -48,8 +46,6 @@ namespace MagicMedia.Store
         public MediaAISummary AISummary { get; set; }
 
     }
-
-    public record MediaHeaderData(Guid Id, string Filename, DateTimeOffset? DateTaken);
 
     public enum FaceRecognitionType
     {
