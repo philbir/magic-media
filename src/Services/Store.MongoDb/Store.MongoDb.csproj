@@ -14,6 +14,7 @@
     <None Remove="Aggregations\Media_GroupByCamera.json" />
     <None Remove="Aggregations\Media_GroupByCity.json" />
     <None Remove="Aggregations\Media_GroupByCountry.json" />
+    <None Remove="Aggregations\SimilarMedia.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,6 +23,7 @@
     <EmbeddedResource Include="Aggregations\Media_GroupByCamera.json" />
     <EmbeddedResource Include="Aggregations\Media_GroupByCity.json" />
     <EmbeddedResource Include="Aggregations\Media_GroupByCountry.json" />
+    <EmbeddedResource Include="Aggregations\SimilarMedia.json" />
   </ItemGroup>
 
   <ItemGroup>

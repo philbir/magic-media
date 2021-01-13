@@ -164,6 +164,21 @@ namespace MagicMedia.Store.MongoDb
             return medias;
         }
 
+        public async Task<Dictionary<Guid, IEnumerable<MediaHash>>> GetAllHashesAsync(
+            CancellationToken cancellationToken)
+        {
+            List<Media> medias = await _mediaStoreContext.Medias.AsQueryable()
+                .Where( x => x.State == MediaState.Active && x.MediaType == MediaType.Image && x.Hashes != null)
+                .Select(x => new Media
+                {
+                    Id = x.Id,
+                    Hashes = x.Hashes
+                })
+                .ToListAsync(cancellationToken);
+
+            return medias.ToDictionary(x => x.Id, y => y.Hashes);
+        }
+
         public async Task<IReadOnlyDictionary<Guid, MediaThumbnail>> GetThumbnailsByMediaIdsAsync(
             IEnumerable<Guid> mediaIds,
             ThumbnailSizeName size,

@@ -1,0 +1,24 @@
+[
+  {
+    "$match": {
+      "Hashes": { "$elemMatch": { "Type": { "$lt": 2 } } }
+    }
+  },
+  {
+    "$unwind": {
+      "path": "$Hashes"
+    }
+  },
+  {
+    "$project": {
+
+      "Type": "$Hashes.Type",
+      "Value": "$Hashes.Value"
+    }
+  },
+  {
+    "$match": {
+      "Type": { "$gt": 2 }
+    }
+  }
+]

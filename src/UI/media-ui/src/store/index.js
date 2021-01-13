@@ -10,6 +10,7 @@ import personModule from "./personModule";
 import snackbarModule from "./snackbarModule";
 import userModule from "./userModule";
 import auditModule from "./auditModule";
+import similarMediaModule from "./similarMediaModule";
 
 Vue.use(Vuex);
 
@@ -47,6 +48,7 @@ export default new Vuex.Store({
     album: albumModule,
     map: mapModule,
     user: userModule,
-    audit: auditModule
+    audit: auditModule,
+    similar: similarMediaModule
   }
 });

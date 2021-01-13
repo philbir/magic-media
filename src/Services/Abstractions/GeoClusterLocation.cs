@@ -2,6 +2,7 @@ using System;
 
 namespace MagicMedia
 {
+
     public class GeoClusterLocation
     {
         public string Hash { get; set; }

@@ -12,7 +12,23 @@ namespace MagicMedia.Store.MongoDb
     {
         public static PipelineDefinition<BsonDocument, BsonDocument> Create(string name)
         {
+            return Create(name, null);
+        }
+
+        public static PipelineDefinition<BsonDocument, BsonDocument> Create(
+            string name,
+            IEnumerable<AggregationParameter>? parameters)
+        {
             var json = GetResource(name);
+
+            if (parameters != null)
+            {
+                foreach (AggregationParameter? param in parameters)
+                {
+                    json = json.Replace($"@@{param.Name}", param.Value.ToString());
+                }
+            }
+
             var stages = JArray.Parse(json);
 
             var pipeline = PipelineDefinition<BsonDocument, BsonDocument>
@@ -65,4 +81,6 @@ namespace MagicMedia.Store.MongoDb
                 return reader.ReadToEnd();
         }
     }
+
+    public record AggregationParameter(string Name, object Value);
 }

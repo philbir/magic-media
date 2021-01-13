@@ -15,6 +15,7 @@ namespace MagicMedia
         MediaBlobData GetBlobRequest(Media media, MediaFileType type);
         Task<Media> GetByIdAsync(Guid id, CancellationToken cancellationToken);
         string GetFilename(Media media, MediaFileType mediaFileType);
+        Task<IEnumerable<Media>> GetManyAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken);
         Task<MediaBlobData> GetMediaData(Media media, CancellationToken cancellationToken);
         IEnumerable<MediaFileInfo> GetMediaFiles(Media media);
         Stream GetMediaStream(Media media);

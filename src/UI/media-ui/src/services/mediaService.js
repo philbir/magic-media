@@ -11,7 +11,9 @@ import MUTATION_TOGGLE_FAVORITE from "../graphql/Media/ToggleFavorite.gql";
 import MUTATION_UPDATE_METADATA from "../graphql/Media/UpdateMediaMetadata.gql";
 import MUTATION_ANALYSE_MEDIA from "../graphql/Media/AnalyseMedia.gql";
 import QUERY_GEO_LOCATION_CLUSTERS from "../graphql/Media/geoLocationClusters.gql";
+import QUERY_SIMILAR_GROUPS from "../graphql/Media/GetSimilarGroups.gql"
 import QUERY_SEARCH_FACETS from "../graphql/SearchFacets.gql";
+
 
 export const searchMedia = async (request, size, loadThumbnailData) => {
   return await apollo.query({
@@ -130,6 +132,15 @@ export const analyseMedia = async (id) => {
       input: {
         id: id,
       }
+    }
+  });
+};
+
+export const getSimilarGroups = async (request) => {
+  return await apollo.query({
+    query: QUERY_SIMILAR_GROUPS,
+    variables: {
+      request: request,
     }
   });
 };

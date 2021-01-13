@@ -1,0 +1,15 @@
+[
+  { "$match": { "CompareType": { "$eq": @@HashType } } },
+  { "$match": { "Similarity": { "$gt": @@Similarity } } },
+  {
+    "$group": {
+      "_id": "$SourceMediaId",
+      "Count": { "$sum": 1 },
+      "MediaIds": { "$addToSet": "$TargetMediaId" }
+    }
+  },
+  { "$match": { "Count": { "$gt": 1 } } },
+  { "$sort": { "Count": 1 } },
+  { "$skip": @@Skip },
+  { "$limit": @@Limit }
+]

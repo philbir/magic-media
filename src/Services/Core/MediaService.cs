@@ -40,6 +40,13 @@ namespace MagicMedia
             return await _mediaStore.GetByIdAsync(id, cancellationToken);
         }
 
+        public async Task<IEnumerable<Media>> GetManyAsync(
+            IEnumerable<Guid> ids,
+            CancellationToken cancellationToken)
+        {
+            return await _mediaStore.GetManyAsync(ids, cancellationToken);
+        }
+
         public async Task<MediaBlobData> GetMediaData(Media media, CancellationToken cancellationToken)
         {
             MediaBlobData blob = await _mediaBlobStore.GetAsync(

@@ -17,13 +17,20 @@ namespace MagicMedia.Playground
     {
         private readonly MediaStoreContext _dbContext;
         private readonly IMediaService _mediaService;
+        private readonly ISimilarMediaService _duplicateMediaService;
 
-        public ImageHasher(MediaStoreContext dbContext, IMediaService mediaService)
+        public ImageHasher(MediaStoreContext dbContext, IMediaService mediaService, ISimilarMediaService duplicateMediaService)
         {
             _dbContext = dbContext;
             _mediaService = mediaService;
+            _duplicateMediaService = duplicateMediaService;
         }
 
+        public async Task GetDuplicatesAsync()
+        {
+            await _duplicateMediaService.GetDuplicatesAsync(default);
+
+        }
         public async Task HashAsync()
         {
             List<Media> medias = await _dbContext.Medias.AsQueryable()

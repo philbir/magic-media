@@ -3,7 +3,6 @@ using MongoDB.Extensions.Context;
 
 namespace MagicMedia.Store.MongoDb.Configuration
 {
-
     internal class MediaCollectionConfiguration :
         IMongoCollectionConfiguration<Media>
     {
