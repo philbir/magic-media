@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -35,6 +36,7 @@ namespace MagicMedia.Store.MongoDb
                 .ConfigureCollection(new AuditEventCollectionConfiguration())
                 .ConfigureCollection(new GeoAddressCacheCollectionConfiguration())
                 .ConfigureCollection(new ClientThumbprintCollectionConfiguration())
+                .ConfigureCollection(new SimilarMediaInfoCollectionConfiguration())
                 .ConfigureCollection(new MediaCollectionConfiguration());
         }
 
@@ -126,6 +128,14 @@ namespace MagicMedia.Store.MongoDb
             }
         }
 
+        public IMongoCollection<SimilarMediaInfo> SimilarInfo
+        {
+            get
+            {
+                return CreateCollection<SimilarMediaInfo>();
+            }
+        }
+
         public IGridFSBucket CreateGridFsBucket()
         {
             return new GridFSBucket(Database, new GridFSBucketOptions());
@@ -136,9 +146,21 @@ namespace MagicMedia.Store.MongoDb
             string name,
             CancellationToken cancellationToken)
         {
-            PipelineDefinition<BsonDocument, BsonDocument> pipeline =
-                AggregationPipelineFactory.Create(name);
+            return await ExecuteAggregation(
+                collectionName,
+                name,
+                Array.Empty<AggregationParameter>(),
+                cancellationToken);
+        }
 
+        internal async Task<IEnumerable<BsonDocument>> ExecuteAggregation(
+            string collectionName,
+            string name,
+            IEnumerable<AggregationParameter>? parameters,
+            CancellationToken cancellationToken)
+        {
+            PipelineDefinition<BsonDocument, BsonDocument> pipeline =
+                AggregationPipelineFactory.Create(name, parameters);
 
             IMongoCollection<BsonDocument> collection = Database
                 .GetCollection<BsonDocument>(collectionName);
@@ -156,8 +178,8 @@ namespace MagicMedia.Store.MongoDb
         internal async Task<IEnumerable<BsonDocument>> ExecuteAggregation(
             string collectionName,
             string name,
-            BsonDocument? prependStage=null,
-            CancellationToken cancellationToken=default)
+            BsonDocument? prependStage = null,
+            CancellationToken cancellationToken = default)
         {
             List<BsonDocument> stages = AggregationPipelineFactory.CreateStages(name).ToList();
 
@@ -169,7 +191,7 @@ namespace MagicMedia.Store.MongoDb
             PipelineDefinition<BsonDocument, BsonDocument> pipeline = PipelineDefinition<BsonDocument, BsonDocument>
                 .Create(stages);
 
-            IMongoCollection <BsonDocument> collection = Database
+            IMongoCollection<BsonDocument> collection = Database
                 .GetCollection<BsonDocument>(collectionName);
 
             IAsyncCursor<BsonDocument> cursor = await collection.AggregateAsync(

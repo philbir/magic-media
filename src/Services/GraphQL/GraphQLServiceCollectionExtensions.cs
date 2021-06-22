@@ -47,6 +47,7 @@ namespace MagicMedia
                 .AddType<VideoInfoType>()
                 .AddType<FaceType>()
                 .AddType<PersonType>()
+                .AddType<SimilarMediaGroupType>()
                 .AddType<UserType>()
                 .AddType<AlbumType>()
                 .AddType<ThumbnailType>()

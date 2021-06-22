@@ -1,0 +1,30 @@
+[
+  { "$match": { "State": { "$eq": 0 } } },
+  {
+    "$unwind": {
+      "path": "$Hashes"
+    }
+  },
+  {
+    "$project": {
+      "Type": "$Hashes.Type",
+      "Value": "$Hashes.Value"
+    }
+  },
+  {
+    "$match": {
+      "Type": { "$eq": @@HashType }
+    }
+  },
+  {
+    "$group": {
+      "_id": "$Value",
+      "Count": { "$sum": 1 },
+      "MediaIds": { "$addToSet": "$_id" }
+    }
+  },
+  { "$match": { "Count": { "$gt": 1 } } },
+  { "$sort": { "Count": -1 } },
+  { "$skip": @@Skip },
+  { "$limit": @@Limit }
+]

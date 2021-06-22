@@ -38,6 +38,13 @@ export const resources = {
             auth: "AUDITLOG_VIEW"
         },
         {
+            text: "Similar",
+            icon: "mdi-compare",
+            route: "Similar",
+            auth: "USER_VIEW"
+        },
+
+        {
             text: "Settings",
             icon: "mdi-tune-variant",
             route: "Settings",

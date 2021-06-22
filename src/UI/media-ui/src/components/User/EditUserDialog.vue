@@ -110,9 +110,9 @@
 
                   <br />
                   <a
-                    :href="`https://id.birbaum.me/invite/${user.invitationCode}`"
+                    :href="`https://id.magic-media.io/invite/${user.invitationCode}`"
                     v-text="
-                      `https://id.birbaum.me/invite/${user.invitationCode}`
+                      `https://id.magic-media.io/invite/${user.invitationCode}`
                     "
                   ></a>
                 </div>

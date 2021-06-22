@@ -18,17 +18,20 @@ namespace MagicMedia.GraphQL
         private readonly IFolderTreeService _folderTreeService;
         private readonly IMediaSearchService _mediaSearchService;
         private readonly IAuditService _auditService;
+        private readonly ISimilarMediaService _similarMediaService;
 
         public MediaQueries(
             IMediaStore mediaStore,
             IFolderTreeService folderTreeService,
             IMediaSearchService mediaSearchService,
-            IAuditService auditService)
+            IAuditService auditService,
+            ISimilarMediaService similarMediaService)
         {
             _mediaStore = mediaStore;
             _folderTreeService = folderTreeService;
             _mediaSearchService = mediaSearchService;
             _auditService = auditService;
+            _similarMediaService = similarMediaService;
         }
 
         public async Task<SearchResult<Media>> SearchMediaAsync(
@@ -58,6 +61,13 @@ namespace MagicMedia.GraphQL
         public async Task<FolderItem> GetFolderTreeAsync(CancellationToken cancellationToken)
         {
             return await _folderTreeService.GetTreeAsync(cancellationToken);
+        }
+
+        public async Task<IEnumerable<SimilarMediaGroup>> GetSimilarMediaGroupsAsync(
+            SearchSimilarMediaRequest request,  
+            CancellationToken cancellationToken)
+        {
+            return await _similarMediaService.GetSimilarMediaGroupsAsync(request, cancellationToken);
         }
 
         private async Task AuditSearch(SearchMediaRequest request, CancellationToken cancellationToken)

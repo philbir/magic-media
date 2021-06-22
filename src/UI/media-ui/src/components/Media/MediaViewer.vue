@@ -10,7 +10,7 @@
     <div
       v-else
       class="media-wrapper"
-      v-longpress="onLongpress"
+      @dblclick="onLongpress"
       v-touch="{
         left: () => swipe('left'),
         right: () => swipe('right'),

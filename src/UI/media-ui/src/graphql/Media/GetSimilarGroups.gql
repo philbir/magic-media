@@ -1,0 +1,15 @@
+query getSimilarGroups($request: SearchSimilarMediaRequestInput!) {
+  similarMediaGroups(request: $request) {
+    id
+    count
+    hashType
+    identifier
+    medias{
+      id
+      filename
+      folder,
+      dateTaken
+      size
+    }
+  }
+}

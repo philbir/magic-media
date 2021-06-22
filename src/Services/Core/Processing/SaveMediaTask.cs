@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Store;
@@ -12,8 +11,6 @@ namespace MagicMedia.Processing
 {
     public class SaveMediaTask : IMediaProcessorTask
     {
-        private readonly IMediaStore _mediaStore;
-        private readonly IMediaBlobStore _blobStore;
         private readonly ICameraService _cameraService;
         private readonly IMediaService _mediaService;
 
@@ -23,8 +20,6 @@ namespace MagicMedia.Processing
             ICameraService cameraService,
             IMediaService mediaService)
         {
-            _mediaStore = mediaStore;
-            _blobStore = blobStore;
             _cameraService = cameraService;
             _mediaService = mediaService;
         }
@@ -70,7 +65,8 @@ namespace MagicMedia.Processing
             {
                 Id = Guid.NewGuid(),
                 MediaType = context.MediaType,
-                DateTaken = context.Metadata.DateTaken,
+                DateTaken = context.Metadata!.DateTaken,
+                DateTakenSearch = DateSearch.Create(context.Metadata.DateTaken),
                 ImageUniqueId = context.Metadata.ImageId,
                 GeoLocation = context.Metadata.GeoLocation,
                 Size = GetSize(context),
@@ -78,14 +74,14 @@ namespace MagicMedia.Processing
                 Filename = Path.GetFileName(context.File.Id),
                 Dimension = context.Metadata.Dimension,
                 VideoInfo = context.VideoInfo,
-                OriginalHash = ComputeHash(context),
                 CameraId = await GetCameraIdAsync(context, cancellationToken),
                 Source = new MediaSource
                 {
                     Identifier = context.File.Id,
                     Type = context.File.Source.ToString(),
                     ImportedAt = DateTime.UtcNow
-                }
+                },
+                Hashes = context.Hashes
             };
 
             if (context.Thumbnails is { })
@@ -157,30 +153,6 @@ namespace MagicMedia.Processing
             return null;
         }
 
-        private string ComputeHash(MediaProcessorContext context)
-        {
-            if (context.OriginalData != null)
-            {
-                return ComputeHash(context.OriginalData);
-            }
 
-            return ComputeHash(context.File.Id);
-        }
-
-        public string ComputeHash(byte[] data)
-        {
-            var sha = new SHA256Managed();
-            byte[] checksum = sha.ComputeHash(data);
-            return BitConverter.ToString(checksum).Replace("-", string.Empty);
-        }
-
-        public string ComputeHash(string filename)
-        {
-            var sha = new SHA256Managed();
-            using var stream = new FileStream(filename, FileMode.Open);
-
-            byte[] checksum = sha.ComputeHash(stream);
-            return BitConverter.ToString(checksum).Replace("-", string.Empty);
-        }
     }
 }

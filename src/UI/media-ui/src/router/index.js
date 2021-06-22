@@ -26,6 +26,8 @@ import SessionExpired from "../components/SessionExpired"
 import ErrorPage from "../components/ErrorPage"
 import AuditLogList from "../components/Audit/AuditLogList";
 import AuditFilters from "../components/Audit/AuditFilters"
+import SimilarMediaList from "../components/Similar/SimilarMediaList"
+import SimilarMediaFilter from "../components/Similar/SimilarMediaFilter"
 
 Vue.use(VueRouter);
 
@@ -111,6 +113,15 @@ const routes = [
       default: MapView,
       left: MapFilter,
       appbar: MapAppBar
+    }
+  },
+  {
+    path: "/similar",
+    name: "Similar",
+    components: {
+      default: SimilarMediaList,
+      left: SimilarMediaFilter,
+      appbar: DefaultAppBar
     }
   },
   {

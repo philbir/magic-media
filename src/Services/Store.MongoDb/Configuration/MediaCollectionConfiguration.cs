@@ -3,7 +3,6 @@ using MongoDB.Extensions.Context;
 
 namespace MagicMedia.Store.MongoDb.Configuration
 {
-
     internal class MediaCollectionConfiguration :
         IMongoCollectionConfiguration<Media>
     {
@@ -16,6 +15,7 @@ namespace MagicMedia.Store.MongoDb.Configuration
                 {
                     cm.AutoMap();
                     cm.MapIdMember(c => c.Id);
+                    cm.SetIgnoreExtraElements(true);
                 })
                 .AddBsonClassMap<MediaThumbnail>(cm =>
                 {

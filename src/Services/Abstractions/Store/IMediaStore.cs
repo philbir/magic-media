@@ -28,7 +28,7 @@ namespace MagicMedia.Store
         Task<IEnumerable<string>> GetAllFoldersAsync(
             IEnumerable<Guid>? ids,
             CancellationToken cancellationToken);
-
+        Task<Dictionary<Guid, IEnumerable<MediaHash>>> GetAllHashesAsync(CancellationToken cancellationToken);
         Task<Media> GetByIdAsync(
             Guid id,
             CancellationToken cancellationToken);
