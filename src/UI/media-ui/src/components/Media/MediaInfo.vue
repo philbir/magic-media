@@ -268,9 +268,7 @@
                 rounded="lg"
                 class="ma-2 pa-4 card-details-content"
               >
-                <div class="json-wrapper">
-                  <vue-json-pretty :data="media"> </vue-json-pretty>
-                </div>
+                <div class="json-wrapper"></div>
               </v-sheet>
             </v-tab-item>
           </v-tabs-items>
