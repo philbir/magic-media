@@ -44,7 +44,14 @@
         <v-icon class="mr-4"> mdi-gift-outline</v-icon>
         <span>An new version is availlable...</span>
 
-        <v-btn elevation="4" class="ml-4" outlined text @click="refreshApp">
+        <v-btn
+          elevation="4"
+          color="white"
+          class="ml-4"
+          outlined
+          text
+          @click="refreshApp"
+        >
           Update now</v-btn
         >
       </v-snackbar>
