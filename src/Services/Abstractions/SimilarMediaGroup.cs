@@ -8,6 +8,8 @@ namespace MagicMedia
     {
         public Guid Id { get; set; }
 
+        public string? Identifier { get; set; }
+
         public MediaHashType HashType { get; set; }
 
         public int Count { get; set; }

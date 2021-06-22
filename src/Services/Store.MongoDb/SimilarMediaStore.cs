@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -36,6 +37,48 @@ namespace MagicMedia.Store.MongoDb
         public async Task<IEnumerable<SimilarMediaGroup>> GetSimilarGroupsAsync(
             SearchSimilarMediaRequest request,
             CancellationToken cancellationToken)
+        {
+            if (request.HashType < MediaHashType.ImageAverageHash)
+            {
+                return await GetSimilarGroupsFromMediaHashedAsync(request, cancellationToken);
+            }
+            else
+            {
+                return await GetSimilarGroupsFromSimilarMediaAsync(request, cancellationToken);
+            }
+        }
+
+        private async Task<IEnumerable<SimilarMediaGroup>> GetSimilarGroupsFromMediaHashedAsync(SearchSimilarMediaRequest request, CancellationToken cancellationToken)
+        {
+            var parameters = new List<AggregationParameter>()
+            {
+                new AggregationParameter("HashType", (int) request.HashType),
+                new AggregationParameter("Skip",request.PageNr * request.PageSize),
+                new AggregationParameter("Limit",request.PageSize),
+            };
+
+            IEnumerable<BsonDocument> docs = await _mediaStoreContext.ExecuteAggregation(
+                CollectionNames.Media,
+                "Duplicate_ByHashes",
+                parameters,
+                cancellationToken);
+
+            IEnumerable<SimilarMediaGroup> groups = docs.Select(x => new SimilarMediaGroup
+            {
+                Identifier = x["_id"] != BsonNull.Value ? x["_id"].AsString : null,
+                Count = x["Count"].AsInt32,
+                MediaIds = x["MediaIds"].AsBsonArray.Select(i => i.AsGuid)
+            }).ToList();
+
+            foreach (SimilarMediaGroup group in groups)
+            {
+                group.Id = group.MediaIds.First();
+            }
+
+            return groups;
+        }
+
+        private async Task<IEnumerable<SimilarMediaGroup>> GetSimilarGroupsFromSimilarMediaAsync(SearchSimilarMediaRequest request, CancellationToken cancellationToken)
         {
             var parameters = new List<AggregationParameter>()
             {

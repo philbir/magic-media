@@ -3,11 +3,13 @@ query getSimilarGroups($request: SearchSimilarMediaRequestInput!) {
     id
     count
     hashType
+    identifier
     medias{
       id
       filename
       folder,
       dateTaken
+      size
     }
   }
 }

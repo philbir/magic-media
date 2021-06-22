@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Aggregations\Duplicate_ByHashes.json" />
     <None Remove="Aggregations\MediaAI_GroupByObject.json" />
     <None Remove="Aggregations\MediaAI_GroupByTag.json" />
     <None Remove="Aggregations\Media_GroupByCamera.json" />
@@ -18,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Aggregations\Duplicate_ByHashes.json" />
     <EmbeddedResource Include="Aggregations\MediaAI_GroupByTag.json" />
     <EmbeddedResource Include="Aggregations\MediaAI_GroupByObject.json" />
     <EmbeddedResource Include="Aggregations\Media_GroupByCamera.json" />

@@ -2,6 +2,9 @@
   <div>
     <v-progress-linear v-if="loading" indeterminate color="blue" top />
     <v-container style="height: 90vh; overflow-y: auto" v-if="selectedGroup">
+      <v-sheet class="ma-2" v-if="selectedGroup.identifier">
+        <h2>{{ selectedGroup.identifier }}</h2>
+      </v-sheet>
       <v-sheet
         rounded="lg"
         elevation="2"
@@ -32,9 +35,15 @@
                 </v-col>
               </v-row>
               <v-row class="ma-0 pa-0">
-                <v-col sm="2">Filename</v-col>
+                <v-col sm="2">File</v-col>
                 <v-col sm="10" class="font-weight-bold">
-                  {{ media.filename }}
+                  {{ media.filename }} ({{ formatSize(media.size) }})
+                </v-col>
+              </v-row>
+              <v-row class="ma-0 pa-0">
+                <v-col sm="2">Id</v-col>
+                <v-col sm="10" class="font-weight-bold">
+                  {{ media.id }}
                 </v-col>
               </v-row>
             </div>
@@ -65,6 +74,9 @@ export default {
     ...mapActions("similar", ["getGroups"]),
     onClickMedia: function (id) {
       this.$store.dispatch("media/show", id);
+    },
+    formatSize: function (size) {
+      return (size / 1024.0 / 1024.0).toPrecision(2) + " MB";
     },
   },
 };
