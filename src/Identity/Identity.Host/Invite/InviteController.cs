@@ -7,8 +7,8 @@ using MagicMedia.Identity.Services;
 using Microsoft.AspNetCore.Mvc;
 using MagicMedia.Identity.Data;
 using Microsoft.AspNetCore.Authentication;
-using IdentityServer4;
-using IdentityServer4.Extensions;
+using Duende.IdentityServer;
+using Duende.IdentityServer.Extensions;
 using System.Security.Claims;
 using IdentityModel;
 

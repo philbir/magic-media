@@ -2,9 +2,7 @@ using System;
 using MagicMedia.Messaging.Consumers;
 using MassTransit;
 using MassTransit.ExtensionsDependencyInjectionIntegration;
-using MassTransit.RabbitMqTransport;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace MagicMedia.Messaging
 {

@@ -1,14 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using HotChocolate.Types;
 using MagicMedia.Search;
 using MagicMedia.Store;
 
 namespace MagicMedia.GraphQL
 {
-    [ExtendObjectType(Name = "Query")]
+    [ExtendObjectType(RootTypes.Query)]
     public class PersonQueries
     {
         private readonly IPersonService _personService;

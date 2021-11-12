@@ -50,12 +50,9 @@ namespace MagicMedia.Playground
                 }
 
                 await _dbContext.Medias.BulkWriteAsync(bulkUpdates, null, cancellationToken);
-                Console.WriteLine("Chunk updated...");
+                Console.WriteLine("Chunks updated...");
             }
         }
-
-
-
 
         private MediaAISummary BuildSummary(MediaAI mediaAI)
         {

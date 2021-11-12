@@ -1,4 +1,3 @@
-using System.Linq;
 using System.Net;
 using HotChocolate.AspNetCore.Serialization;
 using HotChocolate.Execution;

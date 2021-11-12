@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using IdentityModel;
-using IdentityServer4;
-using IdentityServer4.Models;
+using Duende.IdentityServer;
+using Duende.IdentityServer.Models;
 
 namespace MagicMedia.Identity.Data.Mongo.Seeding
 {

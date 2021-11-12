@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace MagicMedia.GraphQL.Face
+﻿namespace MagicMedia.GraphQL.Face
 {
     public partial class FaceMutations
     {

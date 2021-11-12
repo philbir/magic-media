@@ -1,4 +1,4 @@
-using IdentityServer4.Models;
+using Duende.IdentityServer.Models;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using IdentityModel;
-using IdentityServer4.Models;
+using Duende.IdentityServer.Models;
 using MagicMedia.Identity.Data;
 
 namespace MagicMedia.Identity.Host.Tests.Infrastructure

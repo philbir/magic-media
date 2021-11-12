@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Authorization;
@@ -19,7 +17,6 @@ namespace MagicMedia.Api.Controllers
         {
             _mediaDownloadService = mediaDownloadService;
         }
-
 
         [Authorize(AuthorizationPolicies.Names.MediaView)]
         [Authorize(AuthorizationPolicies.Names.MediaDownload)]

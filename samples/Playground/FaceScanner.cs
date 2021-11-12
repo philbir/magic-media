@@ -39,7 +39,7 @@ namespace MagicMedia.Playground
                     x.State == MediaState.Active)
 
                 .OrderByDescending(x => x.DateTaken)
-                .Take(500)
+                .Take(2000)
                 .ToListAsync(cancellationToken);
 
             foreach (Media media in medias)

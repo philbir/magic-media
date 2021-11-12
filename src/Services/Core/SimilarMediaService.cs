@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using CoenM.ImageHash;
 using MagicMedia.Store;
-using MagicMedia.Store.MongoDb;
 using Serilog;
 
 namespace MagicMedia

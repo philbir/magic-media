@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using IdentityServer4.Services;
+using Duende.IdentityServer.Services;
 using MagicMedia.Identity.Data;
 
 namespace MagicMedia.Identity.Services

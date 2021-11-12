@@ -1,5 +1,3 @@
-using Elastic.Apm.AspNetCore;
-using Elastic.Apm.DiagnosticSource;
 using MagicMedia.Api.Security;
 using MagicMedia.AspNetCore;
 using MagicMedia.BingMaps;

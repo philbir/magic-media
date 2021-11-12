@@ -3,7 +3,7 @@ using MongoDB.Driver.Linq;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using IdentityServer4.Models;
+using Duende.IdentityServer.Models;
 using MongoDB.Driver;
 
 namespace MagicMedia.Identity.Data.Mongo

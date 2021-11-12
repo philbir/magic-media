@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Discovery;
 using MagicMedia.Store;
+using Serilog;
 
 namespace MagicMedia.Processing
 {
@@ -17,6 +19,7 @@ namespace MagicMedia.Processing
         static Dictionary<string, MediaType> _fileTypeMap = new()
         {
             [".jpg"] = MediaType.Image,
+            [".jpeg"] = MediaType.Image,
             [".png"] = MediaType.Image,
             [".mp4"] = MediaType.Video,
             [".mov"] = MediaType.Video,
@@ -86,17 +89,24 @@ namespace MagicMedia.Processing
                     MediaType = mediaType
                 };
 
-                switch (mediaType)
+                try
                 {
-                    case MediaType.Image:
-                        context.OriginalData = await src.GetMediaDataAsync(
-                            file.Id,
-                            cancellationToken);
-                        await _imageFlow.ExecuteAsync(context, cancellationToken);
-                        break;
-                    case MediaType.Video:
-                        await _videoFlow.ExecuteAsync(context, cancellationToken);
-                        break;
+                    switch (mediaType)
+                    {
+                        case MediaType.Image:
+                            context.OriginalData = await src.GetMediaDataAsync(
+                                file.Id,
+                                cancellationToken);
+                            await _imageFlow.ExecuteAsync(context, cancellationToken);
+                            break;
+                        case MediaType.Video:
+                            await _videoFlow.ExecuteAsync(context, cancellationToken);
+                            break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "Error processing file {file}", file.Id);
                 }
             }
         }

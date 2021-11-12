@@ -1,4 +1,4 @@
-query personTimeline($id: Uuid!) {
+query personTimeline($id: UUID!) {
   person(id: $id) {
     name
     timeline(itemsPerYear: 9) {

@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using IdentityServer4.Models;
+using Duende.IdentityServer.Models;
 
 namespace MagicMedia.Identity.Data
 {

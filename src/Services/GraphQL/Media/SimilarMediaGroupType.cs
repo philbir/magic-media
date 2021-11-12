@@ -1,6 +1,4 @@
-﻿using HotChocolate.Types;
-
-namespace MagicMedia.GraphQL
+﻿namespace MagicMedia.GraphQL
 {
     public class SimilarMediaGroupType : ObjectType<SimilarMediaGroup>
     {

@@ -1,4 +1,4 @@
-query getPersonById($id: Uuid!) {
+query getPersonById($id: UUID!) {
   person(id: $id) {
     id
     name

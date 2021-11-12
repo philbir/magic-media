@@ -1,4 +1,4 @@
-query getUserById($id: Uuid!) {
+query getUserById($id: UUID!) {
   user(id: $id) {
     id
     email

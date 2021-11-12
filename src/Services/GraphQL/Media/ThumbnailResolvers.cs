@@ -1,7 +1,3 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using HotChocolate;
 using MagicMedia.Extensions;
 using MagicMedia.GraphQL.DataLoaders;
 using MagicMedia.Store;
@@ -10,16 +6,8 @@ namespace MagicMedia.GraphQL
 {
     internal class ThumbnailResolvers
     {
-        private readonly IMediaService _mediaService;
-
-        public ThumbnailResolvers(
-            IMediaService mediaService)
-        {
-            _mediaService = mediaService;
-        }
-
         public string GetDataUrl(
-            MediaThumbnail thumbnail)
+            [Parent] MediaThumbnail thumbnail)
         {
             if (thumbnail.Data != null)
             {
@@ -44,13 +32,14 @@ namespace MagicMedia.GraphQL
         }
 
         public async Task<MediaThumbnail?> GetThumbnailAsync(
-            Media media,
-            ThumbnailDataDataLoader thumbnailLoader,
+            [Service] IMediaService mediaService,
+            [Parent] Media media,
+            [DataLoader] ThumbnailDataDataLoader thumbnailLoader,
             ThumbnailSizeName size,
             bool loadData,
             CancellationToken cancellationToken)
         {
-            MediaThumbnail? thumb = _mediaService.GetThumbnail(media, size);
+            MediaThumbnail? thumb = mediaService.GetThumbnail(media, size);
 
             if (thumb != null)
             {

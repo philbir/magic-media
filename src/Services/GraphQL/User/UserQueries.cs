@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using HotChocolate.AspNetCore.Authorization;
-using HotChocolate.Types;
 using MagicMedia.Authorization;
 using MagicMedia.Search;
 using MagicMedia.Security;
@@ -11,7 +6,7 @@ using MagicMedia.Store;
 
 namespace MagicMedia.GraphQL
 {
-    [ExtendObjectType(Name = "Query")]
+    [ExtendObjectType(RootTypes.Query)]
     public class UserQueries
     {
         private readonly IUserService _userService;

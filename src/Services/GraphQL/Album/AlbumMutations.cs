@@ -1,16 +1,11 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using HotChocolate;
 using HotChocolate.AspNetCore.Authorization;
-using HotChocolate.Types;
 using MagicMedia.Authorization;
 using MagicMedia.Store;
 
 namespace MagicMedia.GraphQL
 {
     [Authorize(Apply = ApplyPolicy.BeforeResolver, Policy = AuthorizationPolicies.Names.AlbumEdit)]
-    [ExtendObjectType(Name = "Mutation")]
+    [ExtendObjectType(RootTypes.Mutation)]
     public class AlbumMutations
     {
         private readonly IAlbumService _albumService;

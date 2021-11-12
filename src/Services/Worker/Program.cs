@@ -8,7 +8,6 @@ using MagicMedia.Scheduling;
 using MagicMedia.Security;
 using MagicMedia.Store.MongoDb;
 using MagicMedia.Stores;
-using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -49,6 +48,11 @@ namespace Worker
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
+                    services.Configure<HostOptions>(hostOptions =>
+                    {
+                        hostOptions.BackgroundServiceExceptionBehavior = BackgroundServiceExceptionBehavior.Ignore;
+                    });
+
                     FileSystemDiscoveryOptions discoveryOptions = hostContext.Configuration
                         .GetSection("MagicMedia:Discovery")
                         .Get<FileSystemDiscoveryOptions>();
@@ -71,7 +75,7 @@ namespace Worker
                     services.AddSingleton<IUserContextFactory, WorkerUserContextFactory>();
                     services.AddMemoryCache();
 
-                    services.AddMassTransitHostedService();
+                    //services.AddMassTransitHostedService();
                     services.AddHostedService<JobWorker>();
                 });
     }

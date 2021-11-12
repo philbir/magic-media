@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace MagicMedia.GraphQL
+﻿namespace MagicMedia.GraphQL
 {
     public class ToggleMediaFavoritePayload : Payload
     {

@@ -1,10 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using GreenDonut;
-using HotChocolate.DataLoader;
 using MagicMedia.Store;
 using MagicMedia.Thumbprint;
 
@@ -33,7 +27,6 @@ namespace MagicMedia.GraphQL.DataLoaders
             return thumbs.ToDictionary(x => x.Id);
         }
     }
-
 
     public class MediaByIdDataLoader : BatchDataLoader<Guid, Media>
     {

@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace MagicMedia.GraphQL
 {
     public class MediaOperationPayload : Payload

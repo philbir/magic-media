@@ -8,7 +8,7 @@ namespace MagicMedia
         public GeoLocation? GeoLocation { get; set; }
         public string Orientation { get; set; }
         public CameraData Camera { get; set; }
-        public string ImageId { get; set; }
+        public string? ImageId { get; set; }
         public DateTime? DateTaken { get; set; }
     }
 

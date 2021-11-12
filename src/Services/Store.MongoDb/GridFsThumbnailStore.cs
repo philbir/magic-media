@@ -45,7 +45,7 @@ namespace MagicMedia.Store.MongoDb
             if (file != null)
             {
                 await _gridFSBucket.DeleteAsync(file.Id, cancellationToken);
-                Log.Information("Thmbnail {Filename} deleted.", id);
+                Log.Information("Thumbnail {Filename} deleted.", id);
                 return true;
             }
 

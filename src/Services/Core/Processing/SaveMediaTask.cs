@@ -84,6 +84,7 @@ namespace MagicMedia.Processing
                 Hashes = context.Hashes
             };
 
+
             if (context.Thumbnails is { })
             {
                 media.Thumbnails = context.Thumbnails.Select(x => new MediaThumbnail
@@ -116,6 +117,7 @@ namespace MagicMedia.Processing
                 media.FaceCount = faces.Count();
             }
 
+            context.Media = media;
             await _mediaService.AddNewMediaAsync(new AddNewMediaRequest(media)
             {
                 Faces = faces.ToList(),
@@ -152,7 +154,5 @@ namespace MagicMedia.Processing
 
             return null;
         }
-
-
     }
 }

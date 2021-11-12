@@ -47,7 +47,7 @@ namespace MagicMedia
                 metadata.Camera = GetCameraData(exifProfile);
                 metadata.DateTaken = GetDateTaken(exifProfile);
                 metadata.Orientation = exifProfile.GetValue(ExifTag.Orientation)?.ToString();
-                metadata.ImageId = exifProfile.GetValue(ExifTag.ImageID)?.ToString();
+                metadata.ImageId = exifProfile.GetValue(ExifTag.ImageUniqueID)?.ToString();
             }
 
             return metadata;

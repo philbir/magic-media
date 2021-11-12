@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using MagicMedia.Store;
 
 namespace MagicMedia.GraphQL

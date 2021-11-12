@@ -1,5 +1,4 @@
-﻿using HotChocolate.Types;
-using MagicMedia.Store;
+﻿using MagicMedia.Store;
 
 namespace MagicMedia.GraphQL
 {

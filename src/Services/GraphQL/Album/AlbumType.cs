@@ -1,4 +1,3 @@
-using HotChocolate.Types;
 using MagicMedia.Store;
 
 namespace MagicMedia.GraphQL
@@ -12,19 +11,51 @@ namespace MagicMedia.GraphQL
                 .Argument("size", a => a
                     .DefaultValue(ThumbnailSizeName.M)
                     .Type(typeof(ThumbnailSizeName)))
-                .ResolveWith<AlbumResolvers>(_ => _.GetThumbnailAsync(default!, default!, default!));
+                .ResolveWith<Resolvers>(_ => _.GetThumbnailAsync(default!, default!, default!, default!));
 
             descriptor
                 .Field("folders")
-                .ResolveWith<AlbumResolvers>(_ => _.GetFolders(default!));
+                .ResolveWith<Resolvers>(_ => _.GetFolders(default!));
 
             descriptor
                 .Field("filters")
-                .ResolveWith<AlbumResolvers>(_ => _.GetFilters(default!));
+                .ResolveWith<Resolvers>(_ => _.GetFilters(default!));
 
             descriptor
                 .Field("allMediaIds")
-                .ResolveWith<AlbumResolvers>(_ => _.GetAllMediaIdsAsync(default!, default!));
+                .ResolveWith<Resolvers>(_ => _.GetAllMediaIdsAsync(default!, default!, default!));
+        }
+
+        class Resolvers
+        {
+            public Task<MediaThumbnail?> GetThumbnailAsync(
+                [Parent] Album album,
+                [Service] IAlbumService albumService,
+                ThumbnailSizeName size,
+                CancellationToken cancellationToken)
+                    => albumService.GetThumbnailAsync(album, size, cancellationToken);
+
+
+            public IEnumerable<string>? GetFolders(
+                [Parent] Album album)
+            {
+                return album.Includes?
+                    .FirstOrDefault(x => x.Type == AlbumIncludeType.Folder)?
+                    .Folders;
+            }
+
+            public IEnumerable<FilterDescription>? GetFilters(Album album)
+            {
+                return album.Includes?
+                    .FirstOrDefault(x => x.Type == AlbumIncludeType.Query)?
+                    .Filters;
+            }
+
+            public Task<IEnumerable<Guid>?> GetAllMediaIdsAsync(
+                Album album,
+                [Service] IAlbumMediaIdResolver albumMediaIdResolver,
+                CancellationToken cancellationToken)
+                    =>  albumMediaIdResolver.GetMediaIdsAsync(album, cancellationToken);
         }
     }
 }

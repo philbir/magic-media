@@ -1,9 +1,7 @@
-using System;
 using System.Threading.Tasks;
 using MagicMedia.Audit;
 using MagicMedia.Security;
 using Microsoft.AspNetCore.Authorization;
-using Serilog;
 
 namespace MagicMedia.Authorization
 {

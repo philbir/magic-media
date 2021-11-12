@@ -279,15 +279,12 @@
 </template>
 
 <script>
-import VueJsonPretty from "vue-json-pretty";
 import "vue-json-pretty/lib/styles.css";
 import { getFaceColor } from "../../services/faceColor";
 import { getInfo } from "../../services/mediaService";
 
 export default {
-  components: {
-    VueJsonPretty,
-  },
+  components: {},
   props: {
     mediaId: String,
   },

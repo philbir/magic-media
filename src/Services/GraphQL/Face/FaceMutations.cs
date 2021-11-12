@@ -1,10 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using HotChocolate.AspNetCore.Authorization;
-using HotChocolate.Types;
 using MagicMedia.Authorization;
 using MagicMedia.Face;
 using MagicMedia.Store;
@@ -12,7 +6,7 @@ using MagicMedia.Store;
 namespace MagicMedia.GraphQL.Face
 {
     [Authorize(Apply = ApplyPolicy.BeforeResolver, Policy = AuthorizationPolicies.Names.FaceEdit)]
-    [ExtendObjectType(Name = "Mutation")]
+    [ExtendObjectType(RootTypes.Mutation)]
     public partial class FaceMutations
     {
         private readonly IFaceService _faceService;

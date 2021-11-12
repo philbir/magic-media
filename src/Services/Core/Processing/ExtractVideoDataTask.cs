@@ -22,6 +22,8 @@ namespace MagicMedia.Processing
                 context.File.Id,
                 cancellationToken);
 
+            //File.WriteAllBytes(@"c:\temp\vidimg.png", videoData.ImageData);
+
             context.Image = Image.Load(videoData.ImageData);
             context.Metadata = videoData.Meta;
             context.VideoInfo = videoData.Info;

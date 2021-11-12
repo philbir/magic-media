@@ -1,6 +1,6 @@
 #import "../ImageBoxFragment.gql"
 
-query mediaInfo($id: Uuid!) {
+query mediaInfo($id: UUID!) {
   mediaById(id: $id) {
     id
     filename

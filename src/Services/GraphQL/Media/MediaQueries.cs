@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using HotChocolate.AspNetCore.Authorization;
-using HotChocolate.Types;
 using MagicMedia.Audit;
 using MagicMedia.Authorization;
 using MagicMedia.Search;
@@ -11,7 +6,7 @@ using MagicMedia.Store;
 
 namespace MagicMedia.GraphQL
 {
-    [ExtendObjectType(Name = "Query")]
+    [ExtendObjectType(RootTypes.Query)]
     public class MediaQueries
     {
         private readonly IMediaStore _mediaStore;

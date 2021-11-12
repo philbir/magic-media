@@ -2,15 +2,15 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
-using IdentityServer4.Services;
-using IdentityServer4.Stores;
+using Duende.IdentityServer.Services;
+using Duende.IdentityServer.Stores;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using IdentityServer4.Events;
-using IdentityServer4.Extensions;
+using Duende.IdentityServer.Events;
+using Duende.IdentityServer.Extensions;
 
 namespace MagicMedia.Identity
 {
@@ -61,15 +61,15 @@ namespace MagicMedia.Identity
 
         private async Task<GrantsViewModel> BuildViewModelAsync()
         {
-            IEnumerable<IdentityServer4.Models.Grant> grants = await _interaction.GetAllUserGrantsAsync();
+            IEnumerable<Duende.IdentityServer.Models.Grant> grants = await _interaction.GetAllUserGrantsAsync();
 
             var list = new List<GrantViewModel>();
-            foreach(IdentityServer4.Models.Grant grant in grants)
+            foreach(Duende.IdentityServer.Models.Grant grant in grants)
             {
-                IdentityServer4.Models.Client client = await _clients.FindClientByIdAsync(grant.ClientId);
+                Duende.IdentityServer.Models.Client client = await _clients.FindClientByIdAsync(grant.ClientId);
                 if (client != null)
                 {
-                    IdentityServer4.Models.Resources resources = await _resources.FindResourcesByScopeAsync(grant.Scopes);
+                    Duende.IdentityServer.Models.Resources resources = await _resources.FindResourcesByScopeAsync(grant.Scopes);
 
                     var item = new GrantViewModel()
                     {

@@ -3,7 +3,7 @@
 
 
 using System.Threading.Tasks;
-using IdentityServer4.Services;
+using Duende.IdentityServer.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -36,7 +36,7 @@ namespace MagicMedia.Identity
             var vm = new ErrorViewModel();
 
             // retrieve error details from identityserver
-            IdentityServer4.Models.ErrorMessage message = await _interaction.GetErrorContextAsync(errorId);
+            Duende.IdentityServer.Models.ErrorMessage message = await _interaction.GetErrorContextAsync(errorId);
             if (message != null)
             {
                 vm.Error = message;

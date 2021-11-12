@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace MagicMedia.GraphQL
 {
     public class DeleteGroupPayload : Payload

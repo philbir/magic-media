@@ -1,6 +1,6 @@
 #import "../UserErrorFragment.gql"
 
-mutation deleteFace($id: Uuid!) {
+mutation deleteFace($id: UUID!) {
   deleteFace(id: $id) {
     id
     errors {

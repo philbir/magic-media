@@ -1,4 +1,4 @@
-query mediaMetadata($id: Uuid!) {
+query mediaMetadata($id: UUID!) {
   mediaById(id: $id) {
     id
     filename

@@ -1,15 +1,11 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using HotChocolate.AspNetCore.Authorization;
-using HotChocolate.Types;
 using MagicMedia.Authorization;
 using MagicMedia.Operations;
 using MagicMedia.Store;
 
 namespace MagicMedia.GraphQL
 {
-    [ExtendObjectType(Name = "Mutation")]
+    [ExtendObjectType(RootTypes.Mutation)]
     [Authorize(Apply = ApplyPolicy.BeforeResolver, Policy = AuthorizationPolicies.Names.MediaEdit)]
     public class MediaMutations
     {
