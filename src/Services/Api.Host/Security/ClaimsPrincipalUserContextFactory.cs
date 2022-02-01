@@ -1,62 +1,56 @@
-using System;
-using System.Linq;
 using System.Security.Claims;
-using System.Threading;
-using System.Threading.Tasks;
 using MagicMedia.Security;
 using MagicMedia.Store;
-using Microsoft.AspNetCore.Http;
 
-namespace MagicMedia.Api.Security
+namespace MagicMedia.Api.Security;
+
+public class ClaimsPrincipalUserContextFactory
+    : IUserContextFactory
 {
-    public class ClaimsPrincipalUserContextFactory
-        : IUserContextFactory
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IUserService _userService;
+
+    public ClaimsPrincipalUserContextFactory(
+        IHttpContextAccessor httpContextAccessor,
+        IUserService userService)
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IUserService _userService;
+        _httpContextAccessor = httpContextAccessor;
+        _userService = userService;
+    }
 
-        public ClaimsPrincipalUserContextFactory(
-            IHttpContextAccessor httpContextAccessor,
-            IUserService userService)
+    public async Task<IUserContext> CreateAsync(CancellationToken cancellationToken)
+    {
+        ClaimsPrincipal? principal = _httpContextAccessor.HttpContext?.User;
+
+        return await CreateAsync(principal, cancellationToken);
+    }
+
+    public async Task<IUserContext> CreateAsync(
+        ClaimsPrincipal? principal,
+        CancellationToken cancellationToken)
+    {
+        if (principal != null && principal.Identity != null && principal.Identity.IsAuthenticated)
         {
-            _httpContextAccessor = httpContextAccessor;
-            _userService = userService;
-        }
+            var subject = principal.Claims.FirstOrDefault(x => x.Type == "sub")?.Value;
 
-        public async Task<IUserContext> CreateAsync(CancellationToken cancellationToken)
-        {
-            ClaimsPrincipal? principal = _httpContextAccessor.HttpContext?.User;
-
-            return await CreateAsync(principal, cancellationToken);
-        }
-
-        public async Task<IUserContext> CreateAsync(
-            ClaimsPrincipal? principal,
-            CancellationToken cancellationToken)
-        {
-            if (principal != null && principal.Identity != null && principal.Identity.IsAuthenticated)
+            if (subject == null)
             {
-                var subject = principal.Claims.FirstOrDefault(x => x.Type == "sub")?.Value;
-
-                if (subject == null)
-                {
-                    throw new ApplicationException("No sub claim found");
-                }
-
-                User? user = await _userService.GetByIdAsync(
-                    Guid.Parse(subject),
-                    cancellationToken);
-
-                if (user != null)
-                {
-                    return new DefaultUserContext(
-                        user,
-                        _userService,
-                        new HttpContextClientInfoResolver(_httpContextAccessor.HttpContext!));
-                }
+                throw new ApplicationException("No sub claim found");
             }
 
-            return new NotAuthenticatedUserContext();
+            User? user = await _userService.GetByIdAsync(
+                Guid.Parse(subject),
+                cancellationToken);
+
+            if (user != null)
+            {
+                return new DefaultUserContext(
+                    user,
+                    _userService,
+                    new HttpContextClientInfoResolver(_httpContextAccessor.HttpContext!));
+            }
         }
+
+        return new NotAuthenticatedUserContext();
     }
 }

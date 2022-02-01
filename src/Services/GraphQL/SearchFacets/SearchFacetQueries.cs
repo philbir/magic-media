@@ -1,14 +1,13 @@
-namespace MagicMedia.GraphQL.SearchFacets
-{
-    [ExtendObjectType(RootTypes.Query)]
-    public class SearchFacetQueries
-    {
-        static readonly object NoOp = new object();
+namespace MagicMedia.GraphQL.SearchFacets;
 
-        [GraphQLType(typeof(SearchFacetType))]
-        public object GetFacets(CancellationToken cancellationToken)
-        {
-            return NoOp;
-        }
+[ExtendObjectType(RootTypes.Query)]
+public class SearchFacetQueries
+{
+    static readonly object NoOp = new object();
+
+    [GraphQLType(typeof(SearchFacetType))]
+    public object GetFacets(CancellationToken cancellationToken)
+    {
+        return NoOp;
     }
 }

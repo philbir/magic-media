@@ -1,11 +1,10 @@
-﻿using MagicMedia.Identity.Data;
+using MagicMedia.Identity.Data;
 
-namespace MagicMedia.Identity.Services
+namespace MagicMedia.Identity.Services;
+
+public interface IDemoUserService
 {
-    public interface IDemoUserService
-    {
-        bool IsDemoMode { get; }
+    bool IsDemoMode { get; }
 
-        User? GetDemoUser();
-    }
+    User? GetDemoUser();
 }

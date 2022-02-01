@@ -1,4 +1,1 @@
-namespace MagicMedia.GraphQL
-{
-
-}
+namespace MagicMedia.GraphQL;

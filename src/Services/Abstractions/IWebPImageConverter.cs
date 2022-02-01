@@ -1,9 +1,8 @@
-﻿using System.IO;
+using System.IO;
 
-namespace MagicMedia
+namespace MagicMedia;
+
+public interface IWebPImageConverter
 {
-    public interface IWebPImageConverter
-    {
-        Stream ConvertToWebP(Stream stream, int quality = 50);
-    }
+    Stream ConvertToWebP(Stream stream, int quality = 50);
 }

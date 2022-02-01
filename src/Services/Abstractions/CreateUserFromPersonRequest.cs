@@ -1,6 +1,5 @@
 using System;
 
-namespace MagicMedia
-{
-    public record CreateUserFromPersonRequest(Guid PersonId, string Email);
-}
+namespace MagicMedia;
+
+public record CreateUserFromPersonRequest(Guid PersonId, string Email);

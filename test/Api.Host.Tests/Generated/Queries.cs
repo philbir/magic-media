@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using StrawberryShake;
 
 namespace MagicMedia.Api.Host.Tests
@@ -458,7 +458,7 @@ namespace MagicMedia.Api.Host.Tests
 
         public static Queries Default { get; } = new Queries();
 
-        public override string ToString() => 
+        public override string ToString() =>
             @"query mediaDetails($id: Uuid!) {
               mediaById(id: $id) {
                 id

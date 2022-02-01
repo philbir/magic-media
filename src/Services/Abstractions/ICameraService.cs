@@ -1,13 +1,12 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Store;
 
-namespace MagicMedia
+namespace MagicMedia;
+
+public interface ICameraService
 {
-    public interface ICameraService
-    {
-        Task<Camera> GetByIdAsync(Guid id, CancellationToken cancellationToken);
-        Task<Camera> GetOrCreateAsync(string make, string model, CancellationToken cancellationToken);
-    }
+    Task<Camera> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+    Task<Camera> GetOrCreateAsync(string make, string model, CancellationToken cancellationToken);
 }

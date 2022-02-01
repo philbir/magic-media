@@ -2,16 +2,15 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MagicMedia.Identity.Data
+namespace MagicMedia.Identity.Data;
+
+public interface IClientRepository
 {
-    public interface IClientRepository
-    {
-        Task<MagicClient> GetAsync(
-            string id,
-            CancellationToken cancellationToken);
+    Task<MagicClient> GetAsync(
+        string id,
+        CancellationToken cancellationToken);
 
-        Task<HashSet<string>> GetAllClientOrigins();
+    Task<HashSet<string>> GetAllClientOrigins();
 
-        Task<HashSet<string>> GetAllClientRedirectUriAsync();
-    }
+    Task<HashSet<string>> GetAllClientRedirectUriAsync();
 }

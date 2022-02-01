@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
+using IdentityModel.Client;
 using MagicMedia.Api.Host.Tests.Containers;
 using MagicMedia.Store.MongoDb;
 using Microsoft.AspNetCore.Hosting;
@@ -17,7 +18,6 @@ using StrawberryShake;
 using StrawberryShake.Http;
 using StrawberryShake.Http.Pipelines;
 using Xunit;
-using IdentityModel.Client;
 
 namespace MagicMedia.Api.Host.Tests.Infrastructure
 {
@@ -79,8 +79,8 @@ namespace MagicMedia.Api.Host.Tests.Infrastructure
                             sp.GetRequiredService<InMemoryHttpClientFactory>().CreateClient,
                             PipelineFactory(sp),
                             sp));
-                })
-               .UseStartup<Startup>();
+                });
+               //.UseStartup<Startup>();
 
             var server = new TestServer(hostBuilder);
             Services = server.Services;

@@ -1,13 +1,12 @@
-﻿using System;
+using System;
 
-namespace MagicMedia.Store
+namespace MagicMedia.Store;
+
+public class MediaSource
 {
-    public class MediaSource
-    {
-        public string Type { get; set; }
+    public string? Type { get; set; }
 
-        public string Identifier { get; set; }
+    public string? Identifier { get; set; }
 
-        public DateTime ImportedAt { get; set; }
-    }
+    public DateTime ImportedAt { get; set; }
 }

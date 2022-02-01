@@ -3,27 +3,26 @@ using System.Threading;
 using System.Threading.Tasks;
 using SixLabors.ImageSharp;
 
-namespace MagicMedia.Processing
+namespace MagicMedia.Processing;
+
+public class AutoOrientTask : IMediaProcessorTask
 {
-    public class AutoOrientTask : IMediaProcessorTask
+    private readonly IImageTransformService _imageTransformService;
+
+    public AutoOrientTask(IImageTransformService imageTransformService)
     {
-        private readonly IImageTransformService _imageTransformService;
+        _imageTransformService = imageTransformService;
+    }
 
-        public AutoOrientTask(IImageTransformService imageTransformService)
-        {
-            _imageTransformService = imageTransformService;
-        }
+    public string Name => MediaProcessorTaskNames.AutoOrient;
 
-        public string Name => MediaProcessorTaskNames.AutoOrient;
+    public async Task ExecuteAsync(
+        MediaProcessorContext context,
+        CancellationToken cancellationToken)
+    {
+        var stream = new MemoryStream(context.OriginalData!);
+        Image image = await Image.LoadAsync(stream);
 
-        public async Task ExecuteAsync(
-            MediaProcessorContext context,
-            CancellationToken cancellationToken)
-        {
-            var stream = new MemoryStream(context.OriginalData!);
-            Image image = await Image.LoadAsync(stream);
-
-            context.Image = _imageTransformService.AutoOrient(image);
-        }
+        context.Image = _imageTransformService.AutoOrient(image);
     }
 }

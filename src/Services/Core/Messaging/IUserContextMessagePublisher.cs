@@ -1,11 +1,10 @@
-﻿using System.Threading;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace MagicMedia.Messaging
+namespace MagicMedia.Messaging;
+
+public interface IUserContextMessagePublisher
 {
-    public interface IUserContextMessagePublisher
-    {
-        Task PublishAsync(IUserContextMessage message, CancellationToken cancellationToken);
-        Task PublishAsync(IUserContextMessage message, IUserContext userContext, CancellationToken cancellationToken);
-    }
+    Task PublishAsync(IUserContextMessage message, CancellationToken cancellationToken);
+    Task PublishAsync(IUserContextMessage message, IUserContext userContext, CancellationToken cancellationToken);
 }

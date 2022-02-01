@@ -2,41 +2,40 @@ using System;
 using MagicMedia.Identity.Data;
 using Microsoft.Extensions.Configuration;
 
-namespace MagicMedia.Identity.Services
+namespace MagicMedia.Identity.Services;
+
+public class DemoUserService : IDemoUserService
 {
-    public class DemoUserService : IDemoUserService
+    public DemoUserService(bool isDemoMode, IConfiguration configuration)
     {
-        public DemoUserService(bool isDemoMode, IConfiguration configuration)
-        {
-            DemoUserOptions? options = configuration
-                .GetSection("Identity:DemoUser")
-                .Get<DemoUserOptions>();
+        DemoUserOptions? options = configuration
+            .GetSection("Identity:DemoUser")
+            .Get<DemoUserOptions>();
 
-            if (isDemoMode && options != null)
+        if (isDemoMode && options != null)
+        {
+            IsDemoMode = isDemoMode;
+            _demoUser = new User
             {
-                IsDemoMode = isDemoMode;
-                _demoUser = new User
-                {
-                    Id = options.Id,
-                    Name = options.Name
-                };
-            }
-        }
-
-        public bool IsDemoMode { get; }
-
-        private User? _demoUser;
-
-        public User? GetDemoUser()
-        {
-            return _demoUser;
+                Id = options.Id,
+                Name = options.Name
+            };
         }
     }
 
-    public class DemoUserOptions
+    public bool IsDemoMode { get; }
+
+    private User? _demoUser;
+
+    public User? GetDemoUser()
     {
-        public Guid Id { get; set; }
-
-        public string? Name { get; set; }
+        return _demoUser;
     }
+}
+
+public class DemoUserOptions
+{
+    public Guid Id { get; set; }
+
+    public string? Name { get; set; }
 }

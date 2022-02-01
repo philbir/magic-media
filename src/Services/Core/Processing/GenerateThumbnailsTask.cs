@@ -2,26 +2,25 @@ using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Thumbnail;
 
-namespace MagicMedia.Processing
+namespace MagicMedia.Processing;
+
+public class GenerateThumbnailsTask : IMediaProcessorTask
 {
-    public class GenerateThumbnailsTask : IMediaProcessorTask
+    private readonly IThumbnailService _thumbnailService;
+
+    public string Name => MediaProcessorTaskNames.GenerateThumbnails;
+
+    public GenerateThumbnailsTask(IThumbnailService thumbnailService)
     {
-        private readonly IThumbnailService _thumbnailService;
+        _thumbnailService = thumbnailService;
+    }
 
-        public string Name => MediaProcessorTaskNames.GenerateThumbnails;
-
-        public GenerateThumbnailsTask(IThumbnailService thumbnailService)
-        {
-            _thumbnailService = thumbnailService;
-        }
-
-        public async Task ExecuteAsync(
-            MediaProcessorContext context,
-            CancellationToken cancellationToken)
-        {
-            context.Thumbnails = await _thumbnailService.GenerateAllThumbnailAsync(
-                context.Image,
-                cancellationToken);
-        }
+    public async Task ExecuteAsync(
+        MediaProcessorContext context,
+        CancellationToken cancellationToken)
+    {
+        context.Thumbnails = await _thumbnailService.GenerateAllThumbnailAsync(
+            context.Image,
+            cancellationToken);
     }
 }

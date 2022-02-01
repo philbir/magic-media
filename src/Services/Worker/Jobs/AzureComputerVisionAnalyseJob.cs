@@ -3,25 +3,24 @@ using MagicMedia.Store;
 using Quartz;
 using Serilog;
 
-namespace MagicMedia.Jobs
+namespace MagicMedia.Jobs;
+
+public class AzureComputerVisionAnalyseJob : IJob
 {
-    public class AzureComputerVisionAnalyseJob : IJob
+    private readonly IMediaAIService _cloudAIMediaProcessing;
+
+    public AzureComputerVisionAnalyseJob(
+        IMediaAIService cloudAIMediaProcessing)
     {
-        private readonly IMediaAIService _cloudAIMediaProcessing;
+        _cloudAIMediaProcessing = cloudAIMediaProcessing;
+    }
 
-        public AzureComputerVisionAnalyseJob(
-            IMediaAIService cloudAIMediaProcessing)
-        {
-            _cloudAIMediaProcessing = cloudAIMediaProcessing;
-        }
+    public async Task Execute(IJobExecutionContext context)
+    {
+        //Log.Information("Executing AzureComputerVisionAnalyse job");
 
-        public async Task Execute(IJobExecutionContext context)
-        {
-            Log.Information("Executing AzureComputerVisionAnalyse job");
-
-            await _cloudAIMediaProcessing.ProcessNewBySourceAsync(
-                AISource.AzureCV,
-                context.CancellationToken);
-        }
+        await _cloudAIMediaProcessing.ProcessNewBySourceAsync(
+            AISource.AzureCV,
+            context.CancellationToken);
     }
 }

@@ -6,52 +6,52 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using Newtonsoft.Json.Linq;
 
-namespace MagicMedia.Store.MongoDb
+namespace MagicMedia.Store.MongoDb;
+
+public static class AggregationPipelineFactory
 {
-    public static class AggregationPipelineFactory
+    public static PipelineDefinition<BsonDocument, BsonDocument> Create(string name)
     {
-        public static PipelineDefinition<BsonDocument, BsonDocument> Create(string name)
-        {
-            return Create(name, null);
-        }
+        return Create(name, null);
+    }
 
-        public static PipelineDefinition<BsonDocument, BsonDocument> Create(
-            string name,
-            IEnumerable<AggregationParameter>? parameters)
-        {
-            var json = GetResource(name);
+    public static PipelineDefinition<BsonDocument, BsonDocument> Create(
+        string name,
+        IEnumerable<AggregationParameter>? parameters)
+    {
+        var json = GetResource(name);
 
-            if (parameters != null)
+        if (parameters != null)
+        {
+            foreach (AggregationParameter? param in parameters)
             {
-                foreach (AggregationParameter? param in parameters)
-                {
-                    json = json.Replace($"@@{param.Name}", param.Value.ToString());
-                }
+                json = json.Replace($"@@{param.Name}", param.Value.ToString());
             }
-
-            var stages = JArray.Parse(json);
-
-            var pipeline = PipelineDefinition<BsonDocument, BsonDocument>
-                .Create(stages.Select(x => BsonDocument.Parse(x.ToString())));
-
-            return pipeline;
         }
 
-        public static IEnumerable<BsonDocument> CreateStages(string name)
-        {
-            var json = GetResource(name);
-            var stages = JArray.Parse(json);
+        var stages = JArray.Parse(json);
 
-            return stages.Select(x => BsonDocument.Parse(x.ToString()));
-        }
+        var pipeline = PipelineDefinition<BsonDocument, BsonDocument>
+            .Create(stages.Select(x => BsonDocument.Parse(x.ToString())));
 
-        public static BsonDocument? CreateMatchInStage(
-            IEnumerable<Guid>? ids,
-            string fieldName = "_id")
+        return pipeline;
+    }
+
+    public static IEnumerable<BsonDocument> CreateStages(string name)
+    {
+        var json = GetResource(name);
+        var stages = JArray.Parse(json);
+
+        return stages.Select(x => BsonDocument.Parse(x.ToString()));
+    }
+
+    public static BsonDocument? CreateMatchInStage(
+        IEnumerable<Guid>? ids,
+        string fieldName = "_id")
+    {
+        if (ids != null)
         {
-            if (ids != null)
-            {
-                return new BsonDocument
+            return new BsonDocument
                 {
                     {
                         "$match",
@@ -66,21 +66,20 @@ namespace MagicMedia.Store.MongoDb
                             }
                     }
                 };
-            }
-
-            return null;
         }
 
-        private static string GetResource(string name)
-        {
-            using Stream stream = typeof(AggregationPipelineFactory).Assembly
-                .GetManifestResourceStream(
-                 $"MagicMedia.Store.MongoDb.Aggregations.{name}.json");
-
-            using (var reader = new StreamReader(stream))
-                return reader.ReadToEnd();
-        }
+        return null;
     }
 
-    public record AggregationParameter(string Name, object Value);
+    private static string GetResource(string name)
+    {
+        using Stream stream = typeof(AggregationPipelineFactory).Assembly
+            .GetManifestResourceStream(
+             $"MagicMedia.Store.MongoDb.Aggregations.{name}.json");
+
+        using (var reader = new StreamReader(stream))
+            return reader.ReadToEnd();
+    }
 }
+
+public record AggregationParameter(string Name, object Value);

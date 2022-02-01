@@ -1,13 +1,13 @@
-﻿namespace MagicMedia.Api.Host.Tests
+namespace MagicMedia.Api.Host.Tests
 {
     public class MediaFace
         : IMediaFace
     {
         public MediaFace(
-            System.Guid id, 
-            IImageBox box, 
-            IMediaThumbnail1 thumbnail, 
-            IPerson person, 
+            System.Guid id,
+            IImageBox box,
+            IMediaThumbnail1 thumbnail,
+            IPerson person,
             System.Guid? personId)
         {
             Id = id;

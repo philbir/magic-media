@@ -4,19 +4,30 @@
     <AssemblyName>MagicMedia.Api.Host</AssemblyName>
     <RootNamespace>MagicMedia.Api</RootNamespace>
     <UserSecretsId>75433c12-81ac-4dee-88de-ab9f3fbcbc40</UserSecretsId>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="IdentityModel" Version="5.0.0-preview.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="$(AspNetCoreVersion)" />
+    <PackageReference Include="IdentityModel" Version="6.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="$(AspNetCoreVersion)" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="$(AspNetCoreVersion)" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.1" />
     <PackageReference Include="MassTransit.AspNetCore" Version="$(MassTransitVersion)" />
+  </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.2.0-rc1" />
+    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol.Logs" Version="1.0.0-rc8" />
+    <PackageReference Include="OpenTelemetry.Exporter.Console" Version="1.2.0-rc1" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.0.0-rc8" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.0.0-rc8" />
+    <PackageReference Include="OpenTelemetry.Contrib.Preview" Version="1.0.0-beta2" />
+    <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.0.0-rc8" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\AspNetCore\Shared.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\Telemetry\Telemetry.csproj" />
     <ProjectReference Include="..\Authorization\Authorization.csproj" />
     <ProjectReference Include="..\AzureAI\AzureAI.csproj" />
     <ProjectReference Include="..\BingMaps\BingMaps.csproj" />
@@ -24,7 +35,6 @@
     <ProjectReference Include="..\GraphQL\GraphQL.csproj" />
     <ProjectReference Include="..\Store.MongoDb\Store.MongoDb.csproj" />
   </ItemGroup>
-
 
   <ItemGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <Compile Remove="AuthenticationExtensions.Dev.cs" />

@@ -1,4 +1,4 @@
-﻿namespace MagicMedia.Api.Host.Tests
+namespace MagicMedia.Api.Host.Tests
 {
     public interface IMediaDimension1
     {

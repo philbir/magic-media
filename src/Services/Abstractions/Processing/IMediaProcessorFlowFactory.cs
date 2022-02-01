@@ -1,7 +1,6 @@
-namespace MagicMedia.Processing
+namespace MagicMedia.Processing;
+
+public interface IMediaProcessorFlowFactory
 {
-    public interface IMediaProcessorFlowFactory
-    {
-        IMediaProcessorFlow CreateFlow(string name);
-    }
+    IMediaProcessorFlow CreateFlow(string name);
 }

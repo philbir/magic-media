@@ -1,6 +1,5 @@
 using System;
 
-namespace MagicMedia.Messaging
-{
-    public record NewMediaAddedMessage(Guid Id);
-}
+namespace MagicMedia.Messaging;
+
+public record NewMediaAddedMessage(Guid Id);

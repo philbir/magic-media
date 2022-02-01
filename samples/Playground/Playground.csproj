@@ -34,7 +34,6 @@
     <PackageReference Include="Scrutor" Version="3.3.0" />
     <PackageReference Include="Serilog" Version="2.10.1-dev-01256" />
     <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
-    <PackageReference Include="Xabe.FFmpeg.Downloader" Version="5.0.2" />
   </ItemGroup>
 
   <ItemGroup>
@@ -42,6 +41,7 @@
     <ProjectReference Include="..\..\src\Services\BingMaps\BingMaps.csproj" />
     <ProjectReference Include="..\..\src\Services\Core\Core.csproj" />
     <ProjectReference Include="..\..\src\Services\Store.MongoDb\Store.MongoDb.csproj" />
+    <ProjectReference Include="..\..\src\Telemetry\Telemetry.csproj" />
     <ProjectReference Include="..\..\test_media\TestMediaLibrary\TestMediaLibrary.csproj" />
   </ItemGroup>
 

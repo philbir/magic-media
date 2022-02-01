@@ -1,8 +1,7 @@
-namespace MagicMedia.Identity.Services
+namespace MagicMedia.Identity.Services;
+
+public interface ITotpCodeService
 {
-    public interface ITotpCodeService
-    {
-        string Generate(string secret);
-        bool Validate(string code, string secret);
-    }
+    string Generate(string secret);
+    bool Validate(string code, string secret);
 }

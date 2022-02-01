@@ -1,13 +1,12 @@
 using MagicMedia.Api.DevTokenAuthentication;
 using Microsoft.AspNetCore.Authentication;
 
-namespace MagicMedia
+namespace MagicMedia;
+
+public static partial class AuthenticationExtensions
 {
-    public static partial class AuthenticationExtensions
+    static partial void SetupDevelopmentAuthentication(AuthenticationBuilder builder)
     {
-        static partial void SetupDevelopmentAuthentication(AuthenticationBuilder builder)
-        {
-            builder.AddDevToken();
-        }
+        builder.AddDevToken();
     }
 }

@@ -1,8 +1,7 @@
-﻿namespace MagicMedia.Store
+namespace MagicMedia.Store;
+
+public enum MediaType
 {
-    public enum MediaType
-    {
-        Image = 1,
-        Video = 2
-    }
+    Image = 1,
+    Video = 2
 }

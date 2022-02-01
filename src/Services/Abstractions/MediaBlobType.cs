@@ -1,13 +1,12 @@
-namespace MagicMedia
+namespace MagicMedia;
+
+public enum MediaBlobType
 {
-    public enum MediaBlobType
-    {
-        Media,
-        VideoPreview,
-        Web,
-        Recycled,
-        Duplicate,
-        Imported,
-        Inbox
-    }
+    Media,
+    VideoPreview,
+    Web,
+    Recycled,
+    Duplicate,
+    Imported,
+    Inbox
 }

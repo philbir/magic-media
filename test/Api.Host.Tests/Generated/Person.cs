@@ -1,12 +1,12 @@
-﻿namespace MagicMedia.Api.Host.Tests
+namespace MagicMedia.Api.Host.Tests
 {
     public class Person
         : IPerson
     {
         public Person(
-            System.Guid id, 
-            string name, 
-            System.DateTimeOffset? dateOfBirth, 
+            System.Guid id,
+            string name,
+            System.DateTimeOffset? dateOfBirth,
             string group)
         {
             Id = id;

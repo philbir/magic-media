@@ -1,10 +1,9 @@
-﻿using System.Threading;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace MagicMedia.Face
+namespace MagicMedia.Face;
+
+public interface IFaceModelBuilderService
 {
-    public interface IFaceModelBuilderService
-    {
-        Task<BuildFaceModelResult> BuildModelAsyc(CancellationToken cancellationToken);
-    }
+    Task<BuildFaceModelResult> BuildModelAsyc(CancellationToken cancellationToken);
 }

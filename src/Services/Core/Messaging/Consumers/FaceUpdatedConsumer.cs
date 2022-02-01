@@ -1,13 +1,12 @@
 using System.Threading.Tasks;
 using MassTransit;
 
-namespace MagicMedia.Messaging.Consumers
+namespace MagicMedia.Messaging.Consumers;
+
+public class FaceUpdatedConsumer : IConsumer<FaceUpdatedMessage>
 {
-    public class FaceUpdatedConsumer : IConsumer<FaceUpdatedMessage>
+    public Task Consume(ConsumeContext<FaceUpdatedMessage> context)
     {
-        public Task Consume(ConsumeContext<FaceUpdatedMessage> context)
-        {
-            return Task.CompletedTask;
-        }
+        return Task.CompletedTask;
     }
 }

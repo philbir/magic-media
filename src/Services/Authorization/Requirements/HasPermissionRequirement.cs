@@ -1,14 +1,13 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 
-namespace MagicMedia.Authorization
+namespace MagicMedia.Authorization;
+
+public class HasPermissionRequirement : IAuthorizationRequirement
 {
-    public class HasPermissionRequirement : IAuthorizationRequirement
+    public HasPermissionRequirement(string permission)
     {
-        public HasPermissionRequirement(string permission)
-        {
-            Permission = permission;
-        }
-
-        public string Permission { get; }
+        Permission = permission;
     }
+
+    public string Permission { get; }
 }

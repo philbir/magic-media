@@ -1,20 +1,19 @@
 using System.Threading.Tasks;
 using Quartz;
 
-namespace MagicMedia.Jobs
+namespace MagicMedia.Jobs;
+
+public class UpdateAllAlbumSummaryJob : IJob
 {
-    public class UpdateAllAlbumSummaryJob : IJob
+    private readonly IAlbumSummaryService _albumSummaryService;
+
+    public UpdateAllAlbumSummaryJob(IAlbumSummaryService albumSummaryService)
     {
-        private readonly IAlbumSummaryService _albumSummaryService;
+        _albumSummaryService = albumSummaryService;
+    }
 
-        public UpdateAllAlbumSummaryJob(IAlbumSummaryService albumSummaryService)
-        {
-            _albumSummaryService = albumSummaryService;
-        }
-
-        public async Task Execute(IJobExecutionContext context)
-        {
-            await _albumSummaryService.UpdateAllAsync(context.CancellationToken);
-        }
+    public async Task Execute(IJobExecutionContext context)
+    {
+        await _albumSummaryService.UpdateAllAsync(context.CancellationToken);
     }
 }

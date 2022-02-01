@@ -9,46 +9,45 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 
-namespace MagicMedia.Identity
+namespace MagicMedia.Identity;
+
+[SecurityHeaders]
+[AllowAnonymous]
+public class HomeController : Controller
 {
-    [SecurityHeaders]
-    [AllowAnonymous]
-    public class HomeController : Controller
+    private readonly IIdentityServerInteractionService _interaction;
+    private readonly IWebHostEnvironment _environment;
+
+    public HomeController(
+        IIdentityServerInteractionService interaction,
+        IWebHostEnvironment environment)
     {
-        private readonly IIdentityServerInteractionService _interaction;
-        private readonly IWebHostEnvironment _environment;
+        _interaction = interaction;
+        _environment = environment;
+    }
 
-        public HomeController(
-            IIdentityServerInteractionService interaction,
-            IWebHostEnvironment environment)
+    public IActionResult Index()
+    {
+        return RedirectToAction("Index", "Diagnostics");
+    }
+
+    public async Task<IActionResult> Error(string errorId)
+    {
+        var vm = new ErrorViewModel();
+
+        // retrieve error details from identityserver
+        Duende.IdentityServer.Models.ErrorMessage message = await _interaction.GetErrorContextAsync(errorId);
+        if (message != null)
         {
-            _interaction = interaction;
-            _environment = environment;
-        }
+            vm.Error = message;
 
-        public IActionResult Index()
-        {
-            return RedirectToAction("Index", "Diagnostics");
-        }
-
-        public async Task<IActionResult> Error(string errorId)
-        {
-            var vm = new ErrorViewModel();
-
-            // retrieve error details from identityserver
-            Duende.IdentityServer.Models.ErrorMessage message = await _interaction.GetErrorContextAsync(errorId);
-            if (message != null)
+            if (!_environment.IsDevelopment())
             {
-                vm.Error = message;
-
-                if (!_environment.IsDevelopment())
-                {
-                    // only show in development
-                    message.ErrorDescription = null;
-                }
+                // only show in development
+                message.ErrorDescription = null;
             }
-
-            return View("Error", vm);
         }
+
+        return View("Error", vm);
     }
 }

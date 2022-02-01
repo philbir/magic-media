@@ -1,9 +1,8 @@
-namespace MagicMedia.AzureAI
-{
-    public class AzureAIOptions
-    {
-        public string Endpoint { get; set; }
+namespace MagicMedia.AzureAI;
 
-        public string SubscriptionKey { get; set; }
-    }
+public class AzureAIOptions
+{
+    public string? Endpoint { get; set; }
+
+    public string? SubscriptionKey { get; set; }
 }

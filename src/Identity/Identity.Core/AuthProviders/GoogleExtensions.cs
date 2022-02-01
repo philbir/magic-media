@@ -3,36 +3,35 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace MagicMedia.Identity.AuthProviders
+namespace MagicMedia.Identity.AuthProviders;
+
+public static class GoogleExtensions
 {
-    public static class GoogleExtensions
+    internal static AuthenticationBuilder AddGoogle(
+        this AuthenticationBuilder authBuilder,
+        AuthProviderOptions options)
     {
-        internal static AuthenticationBuilder AddGoogle(
-            this AuthenticationBuilder authBuilder,
-            AuthProviderOptions options)
+        authBuilder.AddGoogle(options.Name, googleOptions =>
         {
-            authBuilder.AddGoogle(options.Name, googleOptions =>
+            googleOptions.SignInScheme = IdentityServerConstants
+                .ExternalCookieAuthenticationScheme;
+
+            googleOptions.ClientId = options.ClientId;
+            googleOptions.ClientSecret = options.Secret;
+
+            googleOptions.Events = new OAuthEvents
             {
-                googleOptions.SignInScheme = IdentityServerConstants
-                    .ExternalCookieAuthenticationScheme;
-
-                googleOptions.ClientId = options.ClientId;
-                googleOptions.ClientSecret = options.Secret;
-
-                googleOptions.Events = new OAuthEvents
+                OnRemoteFailure = (ctx) =>
                 {
-                    OnRemoteFailure = (ctx) =>
-                    {
-                        return ctx.HandleRemoteFailure();
-                    },
-                    OnAccessDenied = (ctx) =>
-                    {
-                        return ctx.HandleAccessDenied();
-                    }
-                };
-            });
+                    return ctx.HandleRemoteFailure();
+                },
+                OnAccessDenied = (ctx) =>
+                {
+                    return ctx.HandleAccessDenied();
+                }
+            };
+        });
 
-            return authBuilder;
-        }
+        return authBuilder;
     }
 }

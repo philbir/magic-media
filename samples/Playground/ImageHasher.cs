@@ -35,8 +35,8 @@ namespace MagicMedia.Playground
         {
             List<Media> medias = await _dbContext.Medias.AsQueryable()
                 .Where(x =>
-                    x.State == MediaState.Active &&
-                    x.MediaType == MediaType.Video &&
+                    //x.State == MediaState.Active &&
+                    x.MediaType == MediaType.Image &&
                     x.Hashes == null)
                 .ToListAsync();
 
@@ -45,6 +45,8 @@ namespace MagicMedia.Playground
             var avgHasher = new AverageHash();
             var percHasher = new PerceptualHash();
             var diffHasher = new DifferenceHash();
+
+            IEnumerable<MediaFileEntry> fsDump = FileSystemSnapshotBuilder.Load();
 
             foreach (Media media in medias)
             {
@@ -68,7 +70,7 @@ namespace MagicMedia.Playground
                     //    });
                     //}
 
-                    if ( media.MediaType == MediaType.Image)
+                    if (media.MediaType == MediaType.Image)
                     {
                         var fileName = _mediaService.GetFilename(media, MediaFileType.Original);
 
@@ -103,10 +105,11 @@ namespace MagicMedia.Playground
 
                     UpdateDefinition<Media> update = Builders<Media>.Update.Set(x => x.Hashes, hashes);
                     await _dbContext.Medias.UpdateOneAsync(x => x.Id == media.Id, update);
-
                 }
                 catch (Exception ex)
                 {
+                    MediaFileEntry existing = fsDump.FirstOrDefault(x => x.Filename == media.Filename);
+
                     File.WriteAllText($@"C:\MagicMedia\Broken\{media.Id}.txt", $"ERROR:{ex.Message}");
                 }
 

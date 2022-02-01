@@ -1,11 +1,10 @@
 using System;
 
-namespace MagicMedia.Identity.Exceptions
+namespace MagicMedia.Identity.Exceptions;
+
+public class IdentityConfigurationException : Exception
 {
-    public class IdentityConfigurationException : Exception
+    public IdentityConfigurationException(string? message) : base(message)
     {
-        public IdentityConfigurationException(string? message) : base(message)
-        {
-        }
     }
 }

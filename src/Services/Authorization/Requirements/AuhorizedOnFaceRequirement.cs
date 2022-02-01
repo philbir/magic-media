@@ -1,6 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 
-namespace MagicMedia.Authorization
-{
-    public class AuhorizedOnFaceRequirement : IAuthorizationRequirement { }
-}
+namespace MagicMedia.Authorization;
+
+public class AuhorizedOnFaceRequirement : IAuthorizationRequirement { }

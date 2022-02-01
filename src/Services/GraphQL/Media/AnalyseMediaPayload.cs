@@ -1,19 +1,18 @@
-﻿using MagicMedia.Store;
+using MagicMedia.Store;
 
-namespace MagicMedia.GraphQL
+namespace MagicMedia.GraphQL;
+
+public class AnalyseMediaPayload : Payload
 {
-    public class AnalyseMediaPayload : Payload
+    public MediaAI? MediaAI { get; }
+
+    public AnalyseMediaPayload(MediaAI? mediaAI)
     {
-        public MediaAI? MediaAI { get; }
+        MediaAI = mediaAI;
+    }
 
-        public AnalyseMediaPayload(MediaAI? mediaAI)
-        {
-            MediaAI = mediaAI;
-        }
-
-        public AnalyseMediaPayload(IReadOnlyList<UserError>? errors = null)
-            : base(errors)
-        {
-        }
+    public AnalyseMediaPayload(IReadOnlyList<UserError>? errors = null)
+        : base(errors)
+    {
     }
 }

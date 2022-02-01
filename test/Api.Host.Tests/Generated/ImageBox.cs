@@ -1,12 +1,12 @@
-﻿namespace MagicMedia.Api.Host.Tests
+namespace MagicMedia.Api.Host.Tests
 {
     public class ImageBox
         : IImageBox
     {
         public ImageBox(
-            int left, 
-            int top, 
-            int right, 
+            int left,
+            int top,
+            int right,
             int bottom)
         {
             Left = left;

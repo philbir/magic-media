@@ -8,129 +8,128 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 
-namespace MagicMedia.Store.MongoDb
+namespace MagicMedia.Store.MongoDb;
+
+public class MediaAIStore : IMediaAIStore
 {
-    public class MediaAIStore : IMediaAIStore
+    private readonly MediaStoreContext _mediaStoreContext;
+
+    public MediaAIStore(MediaStoreContext mediaStoreContext)
     {
-        private readonly MediaStoreContext _mediaStoreContext;
+        _mediaStoreContext = mediaStoreContext;
+    }
 
-        public MediaAIStore(MediaStoreContext mediaStoreContext)
+    public async Task<MediaAI> GetByMediaIdAsync(
+        Guid mediaId,
+        CancellationToken cancellationToken)
+    {
+        return await _mediaStoreContext.MediaAI.AsQueryable()
+            .Where(x => x.MediaId == mediaId)
+            .SingleOrDefaultAsync(cancellationToken);
+    }
+
+    public async Task<MediaAI> SaveAsync(
+        MediaAI mediaAI,
+        CancellationToken cancellationToken)
+    {
+        await _mediaStoreContext.MediaAI.ReplaceOneAsync(
+            x => x.MediaId == mediaAI.MediaId,
+            mediaAI,
+            new ReplaceOptions { IsUpsert = true },
+            cancellationToken);
+
+        return mediaAI;
+    }
+
+    public async Task<IEnumerable<MediaAI>> GetWithoutSourceInfoAsync(
+        AISource source,
+        int limit,
+        bool excludePersons,
+        CancellationToken cancellationToken)
+    {
+        FilterDefinition<MediaAISourceInfo> elmFilter = Builders<MediaAISourceInfo>
+            .Filter.Eq(x => x.Source, source);
+
+        FilterDefinition<MediaAI>? filter = Builders<MediaAI>.Filter.Not(
+            Builders<MediaAI>.Filter.ElemMatch(x => x.SourceInfo, elmFilter));
+
+        if (excludePersons)
         {
-            _mediaStoreContext = mediaStoreContext;
+            filter &= Builders<MediaAI>.Filter.Eq(x => x.PersonCount, 0);
         }
 
-        public async Task<MediaAI> GetByMediaIdAsync(
-            Guid mediaId,
-            CancellationToken cancellationToken)
+        IFindFluent<MediaAI, MediaAI> cursor = _mediaStoreContext.MediaAI.Find(filter);
+
+        return await cursor.Limit(limit).ToListAsync(cancellationToken);
+    }
+
+
+    public async Task<IEnumerable<SearchFacetItem>> GetGroupedAITagsAsync(
+        IEnumerable<Guid>? mediaIds,
+        CancellationToken cancellationToken)
+    {
+        BsonDocument? idMatch = AggregationPipelineFactory.CreateMatchInStage(
+            mediaIds,
+            "MediaId");
+
+        IEnumerable<BsonDocument> docs = await _mediaStoreContext.ExecuteAggregation(
+            CollectionNames.MediaAI,
+            "MediaAI_GroupByTag",
+            idMatch,
+            cancellationToken);
+
+        var result = new List<SearchFacetItem>();
+
+        foreach (BsonDocument doc in docs)
         {
-            return await _mediaStoreContext.MediaAI.AsQueryable()
-                .Where(x => x.MediaId == mediaId)
-                .SingleOrDefaultAsync(cancellationToken);
-        }
+            var item = new SearchFacetItem();
+            item.Count = doc["count"].AsInt32;
 
-        public async Task<MediaAI> SaveAsync(
-            MediaAI mediaAI,
-            CancellationToken cancellationToken)
-        {
-            await _mediaStoreContext.MediaAI.ReplaceOneAsync(
-                x => x.MediaId == mediaAI.MediaId,
-                mediaAI,
-                new ReplaceOptions { IsUpsert = true },
-                cancellationToken);
-
-            return mediaAI;
-        }
-
-        public async Task<IEnumerable<MediaAI>> GetWithoutSourceInfoAsync(
-            AISource source,
-            int limit,
-            bool excludePersons,
-            CancellationToken cancellationToken)
-        {
-            FilterDefinition<MediaAISourceInfo> elmFilter = Builders<MediaAISourceInfo>
-                .Filter.Eq(x => x.Source, source);
-
-            FilterDefinition<MediaAI>? filter = Builders<MediaAI>.Filter.Not(
-                Builders<MediaAI>.Filter.ElemMatch(x => x.SourceInfo, elmFilter));
-
-            if ( excludePersons)
+            if (doc["_id"].IsString)
             {
-                filter &= Builders<MediaAI>.Filter.Eq(x => x.PersonCount, 0);
+                item.Value = doc["_id"].AsString;
+                item.Text = TitleCase(item.Value.Replace("_", " "));
+                result.Add(item);
             }
-
-            IFindFluent<MediaAI, MediaAI> cursor =  _mediaStoreContext.MediaAI.Find(filter);
-
-            return await cursor.Limit(limit).ToListAsync(cancellationToken);
         }
 
+        return result;
+    }
 
-        public async Task<IEnumerable<SearchFacetItem>> GetGroupedAITagsAsync(
-            IEnumerable<Guid>? mediaIds,
-            CancellationToken cancellationToken)
+    public async Task<IEnumerable<SearchFacetItem>> GetGroupedAIObjectsAsync(
+        IEnumerable<Guid>? mediaIds,
+        CancellationToken cancellationToken)
+    {
+        BsonDocument? idMatch = AggregationPipelineFactory.CreateMatchInStage(
+            mediaIds,
+            "MediaId");
+
+        IEnumerable<BsonDocument> docs = await _mediaStoreContext.ExecuteAggregation(
+            CollectionNames.MediaAI,
+            "MediaAI_GroupByObject",
+            idMatch,
+            cancellationToken);
+
+        var result = new List<SearchFacetItem>();
+
+        foreach (BsonDocument doc in docs)
         {
-            BsonDocument? idMatch = AggregationPipelineFactory.CreateMatchInStage(
-                mediaIds,
-                "MediaId");
+            var item = new SearchFacetItem();
+            item.Count = doc["count"].AsInt32;
 
-            IEnumerable<BsonDocument> docs = await _mediaStoreContext.ExecuteAggregation(
-                CollectionNames.MediaAI,
-                "MediaAI_GroupByTag",
-                idMatch,
-                cancellationToken);
-
-            var result = new List<SearchFacetItem>();
-
-            foreach (BsonDocument doc in docs)
+            if (doc["_id"].IsString)
             {
-                var item = new SearchFacetItem();
-                item.Count = doc["count"].AsInt32;
-
-                if (doc["_id"].IsString)
-                {
-                    item.Value = doc["_id"].AsString;
-                    item.Text = TitleCase(item.Value.Replace("_", " "));
-                    result.Add(item);
-                }
+                item.Value = doc["_id"].AsString;
+                item.Text = TitleCase(item.Value.Replace("_", " "));
+                result.Add(item);
             }
-
-            return result;
         }
 
-        public async Task<IEnumerable<SearchFacetItem>> GetGroupedAIObjectsAsync(
-            IEnumerable<Guid>? mediaIds,
-            CancellationToken cancellationToken)
-        {
-            BsonDocument? idMatch = AggregationPipelineFactory.CreateMatchInStage(
-                mediaIds,
-                "MediaId");
+        return result;
+    }
 
-            IEnumerable<BsonDocument> docs = await _mediaStoreContext.ExecuteAggregation(
-                CollectionNames.MediaAI,
-                "MediaAI_GroupByObject",
-                idMatch,
-                cancellationToken);
-
-            var result = new List<SearchFacetItem>();
-
-            foreach (BsonDocument doc in docs)
-            {
-                var item = new SearchFacetItem();
-                item.Count = doc["count"].AsInt32;
-
-                if (doc["_id"].IsString)
-                {
-                    item.Value = doc["_id"].AsString;
-                    item.Text = TitleCase(item.Value.Replace("_", " "));
-                    result.Add(item);
-                }
-            }
-
-            return result;
-        }
-
-        private string TitleCase(string input)
-        {
-            return input[0].ToString().ToUpper() + input[1..];
-        }
+    private string TitleCase(string input)
+    {
+        return input[0].ToString().ToUpper() + input[1..];
     }
 }

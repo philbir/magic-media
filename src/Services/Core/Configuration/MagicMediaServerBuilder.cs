@@ -1,30 +1,29 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace MagicMedia
-{
-    public class MagicMediaServerBuilder : IMagicMediaServerBuilder
-    {
-        public MagicMediaServerBuilder(IConfiguration configuration, IServiceCollection services)
-        {
-            Configuration = configuration;
-            Services = services;
-        }
+namespace MagicMedia;
 
-        public IConfiguration Configuration { get; }
-        public IServiceCollection Services { get; }
+public class MagicMediaServerBuilder : IMagicMediaServerBuilder
+{
+    public MagicMediaServerBuilder(IConfiguration configuration, IServiceCollection services)
+    {
+        Configuration = configuration;
+        Services = services;
     }
 
-    public static class MagicMediaServerBuilderExtensions
-    {
-        public static IMagicMediaServerBuilder AddMagicMediaServer(
-            this IServiceCollection services,
-            IConfiguration configuration)
-        {
-            var builder = new MagicMediaServerBuilder(configuration, services);
-            builder.AddCoreMediaServices();
+    public IConfiguration Configuration { get; }
+    public IServiceCollection Services { get; }
+}
 
-            return builder;
-        }
+public static class MagicMediaServerBuilderExtensions
+{
+    public static IMagicMediaServerBuilder AddMagicMediaServer(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        var builder = new MagicMediaServerBuilder(configuration, services);
+        builder.AddCoreMediaServices();
+
+        return builder;
     }
 }

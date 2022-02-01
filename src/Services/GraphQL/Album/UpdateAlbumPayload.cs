@@ -1,19 +1,18 @@
 using MagicMedia.Store;
 
-namespace MagicMedia.GraphQL
+namespace MagicMedia.GraphQL;
+
+public class UpdateAlbumPayload : Payload
 {
-    public class UpdateAlbumPayload : Payload
+    public Album? Album { get; }
+
+    public UpdateAlbumPayload(Album album)
     {
-        public Album? Album { get; }
+        Album = album;
+    }
 
-        public UpdateAlbumPayload(Album album)
-        {
-            Album = album;
-        }
-
-        public UpdateAlbumPayload(IReadOnlyList<UserError>? errors)
-            : base(errors)
-        {
-        }
+    public UpdateAlbumPayload(IReadOnlyList<UserError>? errors)
+        : base(errors)
+    {
     }
 }

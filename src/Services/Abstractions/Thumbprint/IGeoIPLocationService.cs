@@ -1,10 +1,9 @@
-﻿using System.Threading;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace MagicMedia.Thumbprint
+namespace MagicMedia.Thumbprint;
+
+public interface IGeoIPLocationService
 {
-    public interface IGeoIPLocationService
-    {
-        Task<GeoIpLocation> LookupAsync(string ipAddress, CancellationToken cancellationToken);
-    }
+    Task<GeoIpLocation> LookupAsync(string ipAddress, CancellationToken cancellationToken);
 }

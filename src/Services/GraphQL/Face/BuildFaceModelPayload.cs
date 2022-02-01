@@ -1,20 +1,19 @@
-﻿namespace MagicMedia.GraphQL.Face
+namespace MagicMedia.GraphQL.Face;
+
+public partial class FaceMutations
 {
-    public partial class FaceMutations
+    public class BuildFaceModelPayload : Payload
     {
-        public class BuildFaceModelPayload : Payload
+        public BuildFaceModelPayload(int faceCount)
         {
-            public BuildFaceModelPayload(int faceCount)
-            {
-                FaceCount = faceCount;
-            }
-
-            public BuildFaceModelPayload(IReadOnlyList<UserError>? errors = null)
-                : base(errors)
-            {
-            }
-
-            public int FaceCount { get; }
+            FaceCount = faceCount;
         }
+
+        public BuildFaceModelPayload(IReadOnlyList<UserError>? errors = null)
+            : base(errors)
+        {
+        }
+
+        public int FaceCount { get; }
     }
 }

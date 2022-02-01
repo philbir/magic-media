@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using StrawberryShake;
 
 namespace MagicMedia.Api.Host.Tests
@@ -23,7 +23,7 @@ namespace MagicMedia.Api.Host.Tests
 
             var enumValue = (ThumbnailSizeName)value;
 
-            switch(enumValue)
+            switch (enumValue)
             {
                 case ThumbnailSizeName.Xs:
                     return "XS";
@@ -51,7 +51,7 @@ namespace MagicMedia.Api.Host.Tests
 
             var stringValue = (string)serialized;
 
-            switch(stringValue)
+            switch (stringValue)
             {
                 case "XS":
                     return ThumbnailSizeName.Xs;

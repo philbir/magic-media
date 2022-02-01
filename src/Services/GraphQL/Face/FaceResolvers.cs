@@ -1,4 +1,1 @@
-namespace MagicMedia.GraphQL.Face
-{
-
-}
+namespace MagicMedia.GraphQL.Face;

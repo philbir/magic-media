@@ -1,4 +1,4 @@
-﻿using MagicMedia.Identity.UI.Tests;
+using MagicMedia.Identity.UI.Tests;
 using MagicMedia.Identity.UI.Tests.Components;
 using OpenQA.Selenium;
 

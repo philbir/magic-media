@@ -68,8 +68,8 @@ namespace MagicMedia.Api.Host.Tests.Infrastructure
                             sp.GetRequiredService<InMemoryHttpClientFactory>().CreateClient,
                             PipelineFactory(sp),
                             sp));
-                })
-               .UseStartup<Startup>();
+                });
+               //.UseStartup<Startup>();
 
             var server = new TestServer(hostBuilder);
             Services = server.Services;

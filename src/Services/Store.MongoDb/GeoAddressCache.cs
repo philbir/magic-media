@@ -1,7 +1,6 @@
-namespace MagicMedia.Store.MongoDb
+namespace MagicMedia.Store.MongoDb;
+
+public class GeoAddressCache : GeoAddress
 {
-    public class GeoAddressCache : GeoAddress
-    {
-        public string Id { get; set; }
-    }
+    public string? Id { get; set; }
 }

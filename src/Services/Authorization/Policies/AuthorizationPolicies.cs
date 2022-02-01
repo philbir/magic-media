@@ -1,184 +1,183 @@
 using MagicMedia.Security;
 using Microsoft.AspNetCore.Authorization;
 
-namespace MagicMedia.Authorization
+namespace MagicMedia.Authorization;
+
+public static class AuthorizationPolicies
 {
-    public static class AuthorizationPolicies
+    public static class Names
     {
-        public static class Names
+        public const string ApiAccess = nameof(ApiAccessPolicy);
+
+        public const string MediaView = nameof(MediaViewPolicy);
+        public const string MediaEdit = nameof(MediaEditPolicy);
+        public const string MediaDestroy = nameof(MediaDestroyPolicy);
+        public const string MediaDownload = nameof(MediaDownloadPolicy);
+
+        public const string FaceView = nameof(FaceViewPolicy);
+        public const string FaceEdit = nameof(FaceEditPolicy);
+
+        public const string AlbumView = nameof(AlbumViewPolicy);
+        public const string AlbumEdit = nameof(AlbumEditPolicy);
+        public const string AlbumDelete = nameof(AlbumDeletePolicy);
+
+        public const string PersonEdit = nameof(PersonEditPolicy);
+        public const string PersonDelete = nameof(PersonDeletePolicy);
+
+        public const string UserView = nameof(UserViewPolicy);
+        public const string UserEdit = nameof(UserEditPolicy);
+
+        public const string ImageAI = nameof(ImageAIPolicy);
+    }
+
+    public static AuthorizationPolicy MediaViewPolicy
+    {
+        get
         {
-            public const string ApiAccess = nameof(ApiAccessPolicy);
-
-            public const string MediaView = nameof(MediaViewPolicy);
-            public const string MediaEdit = nameof(MediaEditPolicy);
-            public const string MediaDestroy = nameof(MediaDestroyPolicy);
-            public const string MediaDownload = nameof(MediaDownloadPolicy);
-
-            public const string FaceView = nameof(FaceViewPolicy);
-            public const string FaceEdit = nameof(FaceEditPolicy);
-
-            public const string AlbumView = nameof(AlbumViewPolicy);
-            public const string AlbumEdit = nameof(AlbumEditPolicy);
-            public const string AlbumDelete = nameof(AlbumDeletePolicy);
-
-            public const string PersonEdit = nameof(PersonEditPolicy);
-            public const string PersonDelete = nameof(PersonDeletePolicy);
-
-            public const string UserView = nameof(UserViewPolicy);
-            public const string UserEdit = nameof(UserEditPolicy);
-
-            public const string ImageAI = nameof(ImageAIPolicy);
+            return new AuthorizationPolicyBuilder()
+                .AddRequirements(new AuhorizedOnMediaRequirement())
+                .Build();
         }
+    }
 
-        public static AuthorizationPolicy MediaViewPolicy
+    public static AuthorizationPolicy MediaEditPolicy
+    {
+        get
         {
-            get
-            {
-                return new AuthorizationPolicyBuilder()
-                    .AddRequirements(new AuhorizedOnMediaRequirement())
-                    .Build();
-            }
+            return new AuthorizationPolicyBuilder()
+                .RequirePermission(Permissions.Media.Edit)
+                .Build();
         }
+    }
 
-        public static AuthorizationPolicy MediaEditPolicy
+    public static AuthorizationPolicy MediaDestroyPolicy
+    {
+        get
         {
-            get
-            {
-                return new AuthorizationPolicyBuilder()
-                    .RequirePermission(Permissions.Media.Edit)
-                    .Build();
-            }
+            return new AuthorizationPolicyBuilder()
+                .RequirePermission(Permissions.Media.Destroy)
+                .Build();
         }
+    }
 
-        public static AuthorizationPolicy MediaDestroyPolicy
+    public static AuthorizationPolicy MediaDownloadPolicy
+    {
+        get
         {
-            get
-            {
-                return new AuthorizationPolicyBuilder()
-                    .RequirePermission(Permissions.Media.Destroy)
-                    .Build();
-            }
+            return new AuthorizationPolicyBuilder()
+                .RequirePermission(Permissions.Media.Download)
+                .Build();
         }
+    }
 
-        public static AuthorizationPolicy MediaDownloadPolicy
+    public static AuthorizationPolicy AlbumViewPolicy
+    {
+        get
         {
-            get
-            {
-                return new AuthorizationPolicyBuilder()
-                    .RequirePermission(Permissions.Media.Download)
-                    .Build();
-            }
+            return new AuthorizationPolicyBuilder()
+                .AddRequirements(new AuhorizedOnAlbumRequirement())
+                .Build();
         }
+    }
 
-        public static AuthorizationPolicy AlbumViewPolicy
+    public static AuthorizationPolicy AlbumEditPolicy
+    {
+        get
         {
-            get
-            {
-                return new AuthorizationPolicyBuilder()
-                    .AddRequirements(new AuhorizedOnAlbumRequirement())
-                    .Build();
-            }
+            return new AuthorizationPolicyBuilder()
+                .RequirePermission(Permissions.Album.Edit)
+                .Build();
         }
+    }
 
-        public static AuthorizationPolicy AlbumEditPolicy
+    public static AuthorizationPolicy AlbumDeletePolicy
+    {
+        get
         {
-            get
-            {
-                return new AuthorizationPolicyBuilder()
-                    .RequirePermission(Permissions.Album.Edit)
-                    .Build();
-            }
+            return new AuthorizationPolicyBuilder()
+                .RequirePermission(Permissions.Album.Delete)
+                .Build();
         }
+    }
 
-        public static AuthorizationPolicy AlbumDeletePolicy
+    public static AuthorizationPolicy PersonDeletePolicy
+    {
+        get
         {
-            get
-            {
-                return new AuthorizationPolicyBuilder()
-                    .RequirePermission(Permissions.Album.Delete)
-                    .Build();
-            }
+            return new AuthorizationPolicyBuilder()
+                .RequirePermission(Permissions.Person.Delete)
+                .Build();
         }
+    }
 
-        public static AuthorizationPolicy PersonDeletePolicy
+    public static AuthorizationPolicy PersonEditPolicy
+    {
+        get
         {
-            get
-            {
-                return new AuthorizationPolicyBuilder()
-                    .RequirePermission(Permissions.Person.Delete)
-                    .Build();
-            }
+            return new AuthorizationPolicyBuilder()
+                .RequirePermission(Permissions.Person.Edit)
+                .Build();
         }
+    }
 
-        public static AuthorizationPolicy PersonEditPolicy
+    public static AuthorizationPolicy FaceViewPolicy
+    {
+        get
         {
-            get
-            {
-                return new AuthorizationPolicyBuilder()
-                    .RequirePermission(Permissions.Person.Edit)
-                    .Build();
-            }
+            return new AuthorizationPolicyBuilder()
+                .AddRequirements(new AuhorizedOnFaceRequirement())
+                .Build();
         }
+    }
 
-        public static AuthorizationPolicy FaceViewPolicy
+    public static AuthorizationPolicy FaceEditPolicy
+    {
+        get
         {
-            get
-            {
-                return new AuthorizationPolicyBuilder()
-                    .AddRequirements(new AuhorizedOnFaceRequirement())
-                    .Build();
-            }
+            return new AuthorizationPolicyBuilder()
+                .RequirePermission(Permissions.Face.Edit)
+                .Build();
         }
+    }
 
-        public static AuthorizationPolicy FaceEditPolicy
+    public static AuthorizationPolicy UserViewPolicy
+    {
+        get
         {
-            get
-            {
-                return new AuthorizationPolicyBuilder()
-                    .RequirePermission(Permissions.Face.Edit)
-                    .Build();
-            }
+            return new AuthorizationPolicyBuilder()
+                .RequirePermission(Permissions.User.View)
+                .Build();
         }
+    }
 
-        public static AuthorizationPolicy UserViewPolicy
+    public static AuthorizationPolicy UserEditPolicy
+    {
+        get
         {
-            get
-            {
-                return new AuthorizationPolicyBuilder()
-                    .RequirePermission(Permissions.User.View)
-                    .Build();
-            }
+            return new AuthorizationPolicyBuilder()
+                .RequirePermission(Permissions.User.Edit)
+                .Build();
         }
+    }
 
-        public static AuthorizationPolicy UserEditPolicy
+    public static AuthorizationPolicy ImageAIPolicy
+    {
+        get
         {
-            get
-            {
-                return new AuthorizationPolicyBuilder()
-                    .RequirePermission(Permissions.User.Edit)
-                    .Build();
-            }
+            return new AuthorizationPolicyBuilder()
+                .RequireClaim("scope", "api.magic.imageai")
+                .AddAuthenticationSchemes("jwt")
+                .Build();
         }
+    }
 
-        public static AuthorizationPolicy ImageAIPolicy
+    public static AuthorizationPolicy ApiAccessPolicy
+    {
+        get
         {
-            get
-            {
-                return new AuthorizationPolicyBuilder()
-                    .RequireClaim("scope", "api.magic.imageai")
-                    .AddAuthenticationSchemes("jwt")
-                    .Build();
-            }
-        }
-
-        public static AuthorizationPolicy ApiAccessPolicy
-        {
-            get
-            {
-                return new AuthorizationPolicyBuilder()
-                    .RequireAuthenticatedUser()
-                    .Build();
-            }
+            return new AuthorizationPolicyBuilder()
+                .RequireAuthenticatedUser()
+                .Build();
         }
     }
 }

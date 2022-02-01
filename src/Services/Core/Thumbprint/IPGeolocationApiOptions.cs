@@ -1,9 +1,8 @@
-﻿namespace MagicMedia.Thumbprint
-{
-    public class IPGeolocationApiOptions
-    {
-        public string Url { get; set; }
+namespace MagicMedia.Thumbprint;
 
-        public string ApiKey { get; set; }
-    }
+public class IPGeolocationApiOptions
+{
+    public string? Url { get; set; }
+
+    public string? ApiKey { get; set; }
 }

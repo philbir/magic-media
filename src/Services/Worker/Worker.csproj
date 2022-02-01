@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <UserSecretsId>75433c12-81ac-4dee-88de-ab9f3fbcbc40</UserSecretsId>
-    <DockerfileContext>..\..</DockerfileContext>
     <AssemblyName>MagicMedia.Worker</AssemblyName>
   </PropertyGroup>
 
@@ -16,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\AspNetCore\Shared.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\Telemetry\Telemetry.csproj" />
     <ProjectReference Include="..\Abstractions\Abstractions.csproj" />
     <ProjectReference Include="..\AzureAI\AzureAI.csproj" />
     <ProjectReference Include="..\BingMaps\BingMaps.csproj" />

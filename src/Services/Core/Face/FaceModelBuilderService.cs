@@ -3,31 +3,30 @@ using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Store;
 
-namespace MagicMedia.Face
+namespace MagicMedia.Face;
+
+public class FaceModelBuilderService : IFaceModelBuilderService
 {
-    public class FaceModelBuilderService : IFaceModelBuilderService
+    private readonly IFaceStore _faceStore;
+    private readonly IFaceDetectionService _faceDetectionService;
+
+    public FaceModelBuilderService(
+        IFaceStore faceStore,
+        IFaceDetectionService faceDetectionService)
     {
-        private readonly IFaceStore _faceStore;
-        private readonly IFaceDetectionService _faceDetectionService;
+        _faceStore = faceStore;
+        _faceDetectionService = faceDetectionService;
+    }
 
-        public FaceModelBuilderService(
-            IFaceStore faceStore,
-            IFaceDetectionService faceDetectionService)
-        {
-            _faceStore = faceStore;
-            _faceDetectionService = faceDetectionService;
-        }
+    public async Task<BuildFaceModelResult> BuildModelAsyc(CancellationToken cancellationToken)
+    {
+        IEnumerable<PersonEncodingData>? encodings = await _faceStore
+            .GetPersonEncodingsAsync(cancellationToken);
 
-        public async Task<BuildFaceModelResult> BuildModelAsyc(CancellationToken cancellationToken)
-        {
-            IEnumerable<PersonEncodingData>? encodings = await _faceStore
-                .GetPersonEncodingsAsync(cancellationToken);
+        BuildFaceModelResult result = await _faceDetectionService.BuildModelAsync(
+            encodings,
+            cancellationToken);
 
-            BuildFaceModelResult result = await _faceDetectionService.BuildModelAsync(
-                encodings,
-                cancellationToken);
-
-            return result;
-        }
+        return result;
     }
 }

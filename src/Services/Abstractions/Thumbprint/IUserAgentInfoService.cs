@@ -1,7 +1,6 @@
-namespace MagicMedia.Thumbprint
+namespace MagicMedia.Thumbprint;
+
+public interface IUserAgentInfoService
 {
-    public interface IUserAgentInfoService
-    {
-        UserAgentInfo Parse(string userAgentString);
-    }
+    UserAgentInfo Parse(string userAgentString);
 }

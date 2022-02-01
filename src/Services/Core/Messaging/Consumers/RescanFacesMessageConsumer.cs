@@ -2,20 +2,19 @@ using System.Threading.Tasks;
 using MagicMedia.Operations;
 using MassTransit;
 
-namespace MagicMedia.Messaging.Consumers
+namespace MagicMedia.Messaging.Consumers;
+
+public class RescanFacesMessageConsumer : IConsumer<RescanFacesMessage>
 {
-    public class RescanFacesMessageConsumer : IConsumer<RescanFacesMessage>
+    private readonly IRescanFacesHandler _rescanFacesHandler;
+
+    public RescanFacesMessageConsumer(IRescanFacesHandler rescanFacesHandler)
     {
-        private readonly IRescanFacesHandler _rescanFacesHandler;
+        _rescanFacesHandler = rescanFacesHandler;
+    }
 
-        public RescanFacesMessageConsumer(IRescanFacesHandler rescanFacesHandler)
-        {
-            _rescanFacesHandler = rescanFacesHandler;
-        }
-
-        public async Task Consume(ConsumeContext<RescanFacesMessage> context)
-        {
-            await _rescanFacesHandler.ExecuteAsync(context.Message, context.CancellationToken);
-        }
+    public async Task Consume(ConsumeContext<RescanFacesMessage> context)
+    {
+        await _rescanFacesHandler.ExecuteAsync(context.Message, context.CancellationToken);
     }
 }

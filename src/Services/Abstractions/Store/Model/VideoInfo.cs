@@ -1,12 +1,11 @@
 using System;
 
-namespace MagicMedia.Store
+namespace MagicMedia.Store;
+
+public class VideoInfo
 {
-    public class VideoInfo
-    {
-        public string Format { get; set; }
-        public double FrameRate { get; set; }
-        public double Bitrate { get; set; }
-        public TimeSpan Duration { get; set; }
-    }
+    public string? Format { get; set; }
+    public double FrameRate { get; set; }
+    public double Bitrate { get; set; }
+    public TimeSpan Duration { get; set; }
 }

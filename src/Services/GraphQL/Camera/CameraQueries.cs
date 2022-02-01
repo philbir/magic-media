@@ -1,20 +1,19 @@
 using MagicMedia.Store;
 
-namespace MagicMedia.GraphQL
+namespace MagicMedia.GraphQL;
+
+[ExtendObjectType(RootTypes.Query)]
+public class CameraQueries
 {
-    [ExtendObjectType(RootTypes.Query)]
-    public class CameraQueries
+    private readonly ICameraService _cameraService;
+
+    public CameraQueries(ICameraService cameraService)
     {
-        private readonly ICameraService _cameraService;
+        _cameraService = cameraService;
+    }
 
-        public CameraQueries(ICameraService cameraService)
-        {
-            _cameraService = cameraService;
-        }
-
-        public async Task<IEnumerable<Camera>> GetCamerasAsync(CancellationToken cancellationToken)
-        {
-            return null;
-        }
+    public Task<IEnumerable<Camera>> GetCamerasAsync(CancellationToken cancellationToken)
+    {
+        return Task.FromResult((IEnumerable<Camera>)Array.Empty<Camera>());
     }
 }

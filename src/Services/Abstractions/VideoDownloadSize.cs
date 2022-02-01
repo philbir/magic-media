@@ -1,8 +1,7 @@
-﻿namespace MagicMedia
+namespace MagicMedia;
+
+public enum VideoDownloadSize
 {
-    public enum VideoDownloadSize
-    {
-        Original,
-        Video720
-    }
+    Original,
+    Video720
 }

@@ -1,28 +1,28 @@
+using System.Collections.Generic;
 using Duende.IdentityServer;
 using Duende.IdentityServer.Models;
-using System.Collections.Generic;
 
-namespace MagicMedia.Identity
+namespace MagicMedia.Identity;
+
+public static class Config
 {
-    public static class Config
-    {
-        public static IEnumerable<IdentityResource> IdentityResources =>
-            new List<IdentityResource>
-            {
+    public static IEnumerable<IdentityResource> IdentityResources =>
+        new List<IdentityResource>
+        {
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
-            };
+        };
 
 
-        public static IEnumerable<ApiScope> ApiScopes =>
-            new List<ApiScope>
-            {
+    public static IEnumerable<ApiScope> ApiScopes =>
+        new List<ApiScope>
+        {
                 new ApiScope("api1", "My API")
-            };
+        };
 
-        public static IEnumerable<Client> Clients =>
-            new List<Client>
-            {
+    public static IEnumerable<Client> Clients =>
+        new List<Client>
+        {
                 // machine to machine client
                 new Client
                 {
@@ -54,6 +54,5 @@ namespace MagicMedia.Identity
                         IdentityServerConstants.StandardScopes.Profile
                     }
                 }
-            };
-    }
+        };
 }

@@ -1,9 +1,8 @@
-﻿using System;
+using System;
 
-namespace MagicMedia.Metadata
+namespace MagicMedia.Metadata;
+
+public interface IDateTakenParser
 {
-    public interface IDateTakenParser
-    {
-        DateTime? Parse(string value);
-    }
+    DateTime? Parse(string value);
 }

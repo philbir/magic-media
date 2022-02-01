@@ -1,11 +1,10 @@
-﻿using System.Threading;
+using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Messaging;
 
-namespace MagicMedia.Operations
+namespace MagicMedia.Operations;
+
+public interface IRescanFacesHandler
 {
-    public interface IRescanFacesHandler
-    {
-        Task ExecuteAsync(RescanFacesMessage message, CancellationToken cancellationToken);
-    }
+    Task ExecuteAsync(RescanFacesMessage message, CancellationToken cancellationToken);
 }

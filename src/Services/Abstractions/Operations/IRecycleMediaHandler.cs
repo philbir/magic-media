@@ -2,10 +2,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Messaging;
 
-namespace MagicMedia.Operations
+namespace MagicMedia.Operations;
+
+public interface IRecycleMediaHandler
 {
-    public interface IRecycleMediaHandler
-    {
-        Task ExecuteAsync(RecycleMediaMessage message, CancellationToken cancellationToken);
-    }
+    Task ExecuteAsync(RecycleMediaMessage message, CancellationToken cancellationToken);
 }

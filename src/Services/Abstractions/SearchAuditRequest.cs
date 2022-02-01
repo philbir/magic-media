@@ -1,18 +1,17 @@
 using System;
 using System.Collections.Generic;
 
-namespace MagicMedia
+namespace MagicMedia;
+
+public class SearchAuditRequest
 {
-    public class SearchAuditRequest
-    {
-        public int PageNr { get; set; }
+    public int PageNr { get; set; }
 
-        public int PageSize { get; set; }
+    public int PageSize { get; set; }
 
-        public Guid? UserId { get; set; }
+    public Guid? UserId { get; set; }
 
-        public IEnumerable<string>? Actions { get; set; }
+    public IEnumerable<string>? Actions { get; set; }
 
-        public bool? Success { get; set; }
-    }
+    public bool? Success { get; set; }
 }

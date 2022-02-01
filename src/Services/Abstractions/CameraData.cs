@@ -1,9 +1,8 @@
-namespace MagicMedia
-{
-    public class CameraData
-    {
-        public string Model { get; set; }
+namespace MagicMedia;
 
-        public string Make { get; set; }
-    }
+public class CameraData
+{
+    public string? Model { get; set; }
+
+    public string? Make { get; set; }
 }

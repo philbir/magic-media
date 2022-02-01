@@ -7,51 +7,50 @@ using MagicMedia.Store;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MagicMedia.Api.Controllers
+namespace MagicMedia.Api.Controllers;
+
+[Authorize(AuthorizationPolicies.Names.ApiAccess)]
+[Route("api/face")]
+public class FaceController : Controller
 {
-    [Authorize(AuthorizationPolicies.Names.ApiAccess)]
-    [Route("api/face")]
-    public class FaceController : Controller
+    private readonly IThumbnailBlobStore _thumbnailBlobStore;
+    private readonly IFaceService _faceService;
+
+    public FaceController(
+        IThumbnailBlobStore thumbnailBlobStore,
+        IFaceService faceService)
     {
-        private readonly IThumbnailBlobStore _thumbnailBlobStore;
-        private readonly IFaceService _faceService;
-
-        public FaceController(
-            IThumbnailBlobStore thumbnailBlobStore,
-            IFaceService faceService)
-        {
-            _thumbnailBlobStore = thumbnailBlobStore;
-            _faceService = faceService;
-        }
+        _thumbnailBlobStore = thumbnailBlobStore;
+        _faceService = faceService;
+    }
 
 
-        [Authorize(AuthorizationPolicies.Names.FaceView)]
-        [HttpGet]
-        [Route("{id}/thumbnail/{thumbnailId}")]
-        [ResponseCache(Duration = OutputCacheOptions.Duration, Location = ResponseCacheLocation.Client, NoStore = false)]
-        public async Task<IActionResult> GetThumbnailAsync(
-            Guid id, //Needed for authorization
-            Guid thumbnailId,
-            CancellationToken cancellationToken)
-        {
-            byte[] data = await _thumbnailBlobStore.GetAsync(thumbnailId, cancellationToken);
+    [Authorize(AuthorizationPolicies.Names.FaceView)]
+    [HttpGet]
+    [Route("{id}/thumbnail/{thumbnailId}")]
+    [ResponseCache(Duration = OutputCacheOptions.Duration, Location = ResponseCacheLocation.Client, NoStore = false)]
+    public async Task<IActionResult> GetThumbnailAsync(
+        Guid id, //Needed for authorization
+        Guid thumbnailId,
+        CancellationToken cancellationToken)
+    {
+        byte[] data = await _thumbnailBlobStore.GetAsync(thumbnailId, cancellationToken);
 
-            Response.Headers["X-Sw-Cache-Thumbnail"] = "true";
-            return new FileContentResult(data, "image/jpg");
-        }
+        Response.Headers["X-Sw-Cache-Thumbnail"] = "true";
+        return new FileContentResult(data, "image/jpg");
+    }
 
-        [Authorize(AuthorizationPolicies.Names.FaceView)]
-        [HttpGet]
-        [Route("{id}/thumbnail")]
-        [ResponseCache(Duration = OutputCacheOptions.Duration, Location = ResponseCacheLocation.Client, NoStore = false)]
-        public async Task<IActionResult> GetThumbnailAsync(
-            Guid id,
-            CancellationToken cancellationToken)
-        {
-            MediaThumbnail thumb = await _faceService.GetThumbnailAsync(id, cancellationToken);
+    [Authorize(AuthorizationPolicies.Names.FaceView)]
+    [HttpGet]
+    [Route("{id}/thumbnail")]
+    [ResponseCache(Duration = OutputCacheOptions.Duration, Location = ResponseCacheLocation.Client, NoStore = false)]
+    public async Task<IActionResult> GetThumbnailAsync(
+        Guid id,
+        CancellationToken cancellationToken)
+    {
+        MediaThumbnail thumb = await _faceService.GetThumbnailAsync(id, cancellationToken);
 
-            Response.Headers["X-Sw-Cache-Thumbnail"] = "true";
-            return new FileContentResult(thumb.Data, $"image/{thumb.Format}".ToLower());
-        }
+        Response.Headers["X-Sw-Cache-Thumbnail"] = "true";
+        return new FileContentResult(thumb.Data, $"image/{thumb.Format}".ToLower());
     }
 }

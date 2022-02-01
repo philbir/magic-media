@@ -3,36 +3,35 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace MagicMedia.Identity.AuthProviders
+namespace MagicMedia.Identity.AuthProviders;
+
+public static class GitHubExtensions
 {
-    public static class GitHubExtensions
+    internal static AuthenticationBuilder AddGitHub(
+        this AuthenticationBuilder authBuilder,
+        AuthProviderOptions options)
     {
-        internal static AuthenticationBuilder AddGitHub(
-            this AuthenticationBuilder authBuilder,
-            AuthProviderOptions options)
+        authBuilder.AddGitHub(options.Name, gitOptions =>
         {
-            authBuilder.AddGitHub(options.Name, gitOptions =>
+            gitOptions.SignInScheme = IdentityServerConstants
+                .ExternalCookieAuthenticationScheme;
+
+            gitOptions.ClientId = options.ClientId;
+            gitOptions.ClientSecret = options.Secret;
+
+            gitOptions.Events = new OAuthEvents
             {
-                gitOptions.SignInScheme = IdentityServerConstants
-                    .ExternalCookieAuthenticationScheme;
-
-                gitOptions.ClientId = options.ClientId;
-                gitOptions.ClientSecret = options.Secret;
-
-                gitOptions.Events = new OAuthEvents
+                OnRemoteFailure = (ctx) =>
                 {
-                    OnRemoteFailure = (ctx) =>
-                    {
-                        return ctx.HandleRemoteFailure();
-                    },
-                    OnAccessDenied = (ctx) =>
-                    {
-                        return ctx.HandleAccessDenied();
-                    }
-                };
-            });
+                    return ctx.HandleRemoteFailure();
+                },
+                OnAccessDenied = (ctx) =>
+                {
+                    return ctx.HandleAccessDenied();
+                }
+            };
+        });
 
-            return authBuilder;
-        }
+        return authBuilder;
     }
 }

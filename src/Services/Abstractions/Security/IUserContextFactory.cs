@@ -2,11 +2,10 @@ using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MagicMedia.Security
+namespace MagicMedia.Security;
+
+public interface IUserContextFactory
 {
-    public interface IUserContextFactory
-    {
-        Task<IUserContext> CreateAsync(CancellationToken cancellationToken);
-        Task<IUserContext> CreateAsync(ClaimsPrincipal? principal, CancellationToken cancellationToken);
-    }
+    Task<IUserContext> CreateAsync(CancellationToken cancellationToken);
+    Task<IUserContext> CreateAsync(ClaimsPrincipal? principal, CancellationToken cancellationToken);
 }

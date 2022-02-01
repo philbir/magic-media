@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using IdentityModel;
 using IdentityModel.Client;
+using MagicMedia.Identity.UI.Tests.Extensions;
 using Newtonsoft.Json;
 using OpenQA.Selenium;
-using MagicMedia.Identity.UI.Tests.Extensions;
 
 namespace MagicMedia.Identity.UI.Tests.Components
 {

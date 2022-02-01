@@ -10,95 +10,95 @@ using MagicMedia.Store;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
-namespace MagicMedia.Processing
+namespace MagicMedia.Processing;
+
+
+public class CreateMediaHashesTask : IMediaProcessorTask
 {
-    public class CreateMediaHashesTask : IMediaProcessorTask
+    public string Name => MediaProcessorTaskNames.CreateHashes;
+
+    public Task ExecuteAsync(MediaProcessorContext context, CancellationToken cancellationToken)
     {
-        public string Name => MediaProcessorTaskNames.CreateHashes;
+        var hashes = new List<MediaHash>();
 
-        public Task ExecuteAsync(MediaProcessorContext context, CancellationToken cancellationToken)
+        hashes.Add(new MediaHash
         {
-            var hashes = new List<MediaHash>();
+            Type = MediaHashType.FileHashSha256,
+            Value = ComputeFileHash(context)
+        });
+
+        hashes.Add(new MediaHash
+        {
+            Type = MediaHashType.Identifiers,
+            Value = BuildUniqueIdentifier(context)
+        });
+
+        if (context.MediaType == MediaType.Image)
+        {
+            var avgHasher = new AverageHash();
+            var percHasher = new PerceptualHash();
+            var diffHasher = new DifferenceHash();
+
+            Image<Rgba32> image = context.Image!.CloneAs<Rgba32>();
 
             hashes.Add(new MediaHash
             {
-                Type = MediaHashType.FileHashSha256,
-                Value = ComputeFileHash(context)
+                Type = MediaHashType.ImageAverageHash,
+                Value = avgHasher.Hash(image).ToString()
             });
 
             hashes.Add(new MediaHash
             {
-                Type = MediaHashType.Identifiers,
-                Value = BuildUniqueIdentifier(context)
+                Type = MediaHashType.ImagePerceptualHash,
+                Value = percHasher.Hash(image).ToString()
             });
 
-            if (context.MediaType == MediaType.Image)
+            hashes.Add(new MediaHash
             {
-                var avgHasher = new AverageHash();
-                var percHasher = new PerceptualHash();
-                var diffHasher = new DifferenceHash();
-
-                Image<Rgba32> image = context.Image!.CloneAs<Rgba32>();
-
-                hashes.Add(new MediaHash
-                {
-                    Type = MediaHashType.ImageAverageHash,
-                    Value = avgHasher.Hash(image).ToString()
-                });
-
-                hashes.Add(new MediaHash
-                {
-                    Type = MediaHashType.ImagePerceptualHash,
-                    Value = percHasher.Hash(image).ToString()
-                });
-
-                hashes.Add(new MediaHash
-                {
-                    Type = MediaHashType.ImageDifferenceHash,
-                    Value = diffHasher.Hash(image).ToString()
-                });
-            }
-
-            context.Hashes = hashes;
-
-            return Task.CompletedTask;
+                Type = MediaHashType.ImageDifferenceHash,
+                Value = diffHasher.Hash(image).ToString()
+            });
         }
 
-        private string ComputeFileHash(MediaProcessorContext context)
+        context.Hashes = hashes;
+
+        return Task.CompletedTask;
+    }
+
+    private string ComputeFileHash(MediaProcessorContext context)
+    {
+        if (context.OriginalData != null)
         {
-            if (context.OriginalData != null)
-            {
-                return ComputeFileHash(context.OriginalData);
-            }
-
-            return ComputeFileHash(context.File.Id);
+            return ComputeFileHash(context.OriginalData);
         }
 
-        public string ComputeFileHash(byte[] data)
-        {
-            var sha = new SHA256Managed();
-            byte[] checksum = sha.ComputeHash(data);
-            return BitConverter.ToString(checksum).Replace("-", string.Empty);
-        }
+        return ComputeFileHash(context.File.Id);
+    }
 
-        public string ComputeFileHash(string filename)
-        {
-            var sha = new SHA256Managed();
-            using var stream = new FileStream(filename, FileMode.Open);
+    public string ComputeFileHash(byte[] data)
+    {
+        var sha = new SHA256Managed();
+        byte[] checksum = sha.ComputeHash(data);
+        return BitConverter.ToString(checksum).Replace("-", string.Empty);
+    }
 
-            byte[] checksum = sha.ComputeHash(stream);
-            return BitConverter.ToString(checksum).Replace("-", string.Empty);
-        }
+    public string ComputeFileHash(string filename)
+    {
+        var sha = new SHA256Managed();
+        using var stream = new FileStream(filename, FileMode.Open);
 
-        public string BuildUniqueIdentifier(MediaProcessorContext context)
-        {
-            var frags = new List<string>();
-            frags.Add(context.Metadata!.Camera?.Make ?? "NA");
-            frags.Add(context.Metadata.Camera?.Model ?? "NA");
-            frags.Add(Path.GetFileName(context.File.Id));
-            frags.Add(context.Metadata.DateTaken.HasValue ? context.Metadata.DateTaken.Value.Ticks.ToString() : "NA");
+        byte[] checksum = sha.ComputeHash(stream);
+        return BitConverter.ToString(checksum).Replace("-", string.Empty);
+    }
 
-            return string.Join("|", frags.Select(x => x.Trim()));
-        }
+    public string BuildUniqueIdentifier(MediaProcessorContext context)
+    {
+        var frags = new List<string>();
+        frags.Add(context.Metadata!.Camera?.Make ?? "NA");
+        frags.Add(context.Metadata.Camera?.Model ?? "NA");
+        frags.Add(Path.GetFileName(context.File.Id));
+        frags.Add(context.Metadata.DateTaken.HasValue ? context.Metadata.DateTaken.Value.Ticks.ToString() : "NA");
+
+        return string.Join("|", frags.Select(x => x.Trim()));
     }
 }

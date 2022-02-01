@@ -1,6 +1,6 @@
 using System;
-using OpenQA.Selenium;
 using MagicMedia.Identity.UI.Tests.Components;
+using OpenQA.Selenium;
 
 namespace MagicMedia.Identity.UI.Tests
 {

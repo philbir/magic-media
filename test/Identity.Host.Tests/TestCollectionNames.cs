@@ -1,4 +1,4 @@
-﻿namespace MagicMedia.Identity.Host.Tests
+namespace MagicMedia.Identity.Host.Tests
 {
     public static class TestCollectionNames
     {

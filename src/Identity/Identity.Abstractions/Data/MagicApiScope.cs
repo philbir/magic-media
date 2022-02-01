@@ -1,9 +1,8 @@
 using Duende.IdentityServer.Models;
 
-namespace MagicMedia.Identity.Data
+namespace MagicMedia.Identity.Data;
+
+public class MagicApiScope : ApiScope
 {
-    public class MagicApiScope : ApiScope
-    {
-        public string Id => Name;
-    }
+    public string Id => Name;
 }

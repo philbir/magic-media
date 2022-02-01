@@ -1,8 +1,7 @@
-namespace MagicMedia
+namespace MagicMedia;
+
+public enum MediaOrientation
 {
-    public enum MediaOrientation
-    {
-        Landscape,
-        Portrait
-    }
+    Landscape,
+    Portrait
 }

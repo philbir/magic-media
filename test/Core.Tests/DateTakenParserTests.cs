@@ -10,7 +10,7 @@ namespace MagicMedia.Tests.Core
     {
         [Theory]
         [InlineData("19760402_123015")]
-        public async Task Parse_Match(string dateString)
+        public Task Parse_Match(string dateString)
         {
             // Arrange
             var parser = new DateTakenParser();
@@ -20,6 +20,7 @@ namespace MagicMedia.Tests.Core
 
             // Assert
             date.Should().Be(new DateTime(1976, 4, 2, 12, 30, 15));
+            return Task.CompletedTask;
         }
     }
 }

@@ -1,22 +1,21 @@
 using MagicMedia.Store;
 
-namespace MagicMedia.GraphQL.Face
+namespace MagicMedia.GraphQL.Face;
+
+public class PredictPersonsByMediaPayload : Payload
 {
-    public class PredictPersonsByMediaPayload : Payload
+    public int MatchCount { get; }
+
+    public Media? Media { get; }
+
+    public PredictPersonsByMediaPayload(int matchCount, Media media)
     {
-        public int MatchCount { get; }
+        MatchCount = matchCount;
+        Media = media;
+    }
 
-        public Media? Media { get; }
-
-        public PredictPersonsByMediaPayload(int matchCount, Media media)
-        {
-            MatchCount = matchCount;
-            Media = media;
-        }
-
-        public PredictPersonsByMediaPayload(IReadOnlyList<UserError>? errors = null)
-            : base(errors)
-        {
-        }
+    public PredictPersonsByMediaPayload(IReadOnlyList<UserError>? errors = null)
+        : base(errors)
+    {
     }
 }

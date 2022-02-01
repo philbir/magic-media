@@ -2,27 +2,26 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MagicMedia.Processing
+namespace MagicMedia.Processing;
+
+public class MediaProcesserTaskFactory : IMediaProcesserTaskFactory
 {
-    public class MediaProcesserTaskFactory : IMediaProcesserTaskFactory
+    private readonly IEnumerable<IMediaProcessorTask> _tasks;
+
+    public MediaProcesserTaskFactory(IEnumerable<IMediaProcessorTask> tasks)
     {
-        private readonly IEnumerable<IMediaProcessorTask> _tasks;
+        _tasks = tasks;
+    }
 
-        public MediaProcesserTaskFactory(IEnumerable<IMediaProcessorTask> tasks)
+    public IMediaProcessorTask GetTask(string name)
+    {
+        IMediaProcessorTask? task = _tasks.FirstOrDefault(x => x.Name == name);
+
+        if (task is null)
         {
-            _tasks = tasks;
+            throw new InvalidOperationException($"No Task with name '{name}' registred");
         }
 
-        public IMediaProcessorTask GetTask(string name)
-        {
-            IMediaProcessorTask? task = _tasks.FirstOrDefault(x => x.Name == name);
-
-            if ( task is null)
-            {
-                throw new InvalidOperationException($"No Task with name '{name}' registred");
-            }
-
-            return task;
-        }
+        return task;
     }
 }

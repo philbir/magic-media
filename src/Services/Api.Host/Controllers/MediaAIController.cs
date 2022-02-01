@@ -9,53 +9,52 @@ using MagicMedia.Store;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MagicMedia.Api.Controllers
+namespace MagicMedia.Api.Controllers;
+
+[Route("api/ai")]
+[Authorize(AuthorizationPolicies.Names.ImageAI)]
+public class MediaAIController : Controller
 {
-    [Route("api/ai")]
-    [Authorize(AuthorizationPolicies.Names.ImageAI)]
-    public class MediaAIController : Controller
+    private readonly IMediaAIService _mediaAIService;
+    private readonly IMediaService _mediaService;
+
+    public MediaAIController(IMediaAIService mediaAIService, IMediaService mediaService)
     {
-        private readonly IMediaAIService _mediaAIService;
-        private readonly IMediaService _mediaService;
+        _mediaAIService = mediaAIService;
+        _mediaService = mediaService;
+    }
 
-        public MediaAIController(IMediaAIService mediaAIService, IMediaService mediaService)
+    [HttpGet]
+    [Route("MediaWithoutImageAISource")]
+    public async Task<IActionResult> GetMediaWithoutImageAISourceAsync(CancellationToken cancellationToken)
+    {
+        IEnumerable<Media> medias = await _mediaAIService.GetMediaIdsForImageAIJobAsync(10, cancellationToken);
+
+        return Ok(medias.Select(x => new
         {
-            _mediaAIService = mediaAIService;
-            _mediaService = mediaService;
-        }
+            Id = x.Id,
+            Dimension = x.Dimension
+        }));
+    }
 
-        [HttpGet]
-        [Route("MediaWithoutImageAISource")]
-        public async Task<IActionResult> GetMediaWithoutImageAISourceAsync(CancellationToken cancellationToken)
-        {
-            IEnumerable<Media> medias = await _mediaAIService.GetMediaIdsForImageAIJobAsync(10, cancellationToken);
+    [HttpGet]
+    [Route("image/{id}")]
+    public async Task<IActionResult> GetImageAsync(Guid id, CancellationToken cancellationToken)
+    {
+        Media media = await _mediaService.GetByIdAsync(id, cancellationToken);
 
-            return Ok(medias.Select(x => new
-            {
-                Id = x.Id,
-                Dimension = x.Dimension
-            }));
-        }
+        MediaBlobData data = await _mediaService.GetMediaData(media, cancellationToken);
 
-        [HttpGet]
-        [Route("image/{id}")]
-        public async Task<IActionResult> GetImageAsync(Guid id, CancellationToken cancellationToken)
-        {
-            Media media = await _mediaService.GetByIdAsync(id, cancellationToken);
-
-            MediaBlobData data = await _mediaService.GetMediaData(media, cancellationToken);
-
-            return new FileContentResult(data.Data, "image/jpg");
-        }
+        return new FileContentResult(data.Data, "image/jpg");
+    }
 
 
-        [HttpPost]
-        [Route("save")]
-        public async Task<IActionResult> AddImageAIData([FromBody] ImageAIDetectionResult imageAIResult, CancellationToken cancellationToken)
-        {
-            await _mediaAIService.SaveImageAIDetectionAsync(imageAIResult, cancellationToken);
+    [HttpPost]
+    [Route("save")]
+    public async Task<IActionResult> AddImageAIData([FromBody] ImageAIDetectionResult imageAIResult, CancellationToken cancellationToken)
+    {
+        await _mediaAIService.SaveImageAIDetectionAsync(imageAIResult, cancellationToken);
 
-            return Ok(true);
-        }
+        return Ok(true);
     }
 }

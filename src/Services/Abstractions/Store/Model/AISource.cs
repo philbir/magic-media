@@ -1,8 +1,7 @@
-﻿namespace MagicMedia.Store
+namespace MagicMedia.Store;
+
+public enum AISource
 {
-    public enum AISource
-    {
-        ImageAI,
-        AzureCV
-    }
+    ImageAI,
+    AzureCV
 }

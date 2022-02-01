@@ -1,18 +1,17 @@
 using System;
 using System.Collections.Generic;
 
-namespace MagicMedia
+namespace MagicMedia;
+
+public class SearchAlbumRequest
 {
-    public class SearchAlbumRequest
-    {
-        public int PageNr  { get; set; }
+    public int PageNr { get; set; }
 
-        public int PageSize { get; set; }
+    public int PageSize { get; set; }
 
-        public IEnumerable<Guid>? Persons { get; set; }
+    public IEnumerable<Guid>? Persons { get; set; }
 
-        public string? SearchText { get; set; }
+    public string? SearchText { get; set; }
 
-        public Guid? SharedWithUserId { get; set; }
-    }
+    public Guid? SharedWithUserId { get; set; }
 }

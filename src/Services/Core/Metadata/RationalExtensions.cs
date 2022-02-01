@@ -1,12 +1,11 @@
-﻿using SixLabors.ImageSharp;
+using SixLabors.ImageSharp;
 
-namespace MagicMedia
+namespace MagicMedia;
+
+public static class RationalExtensions
 {
-    public static class RationalExtensions
+    public static double GetValue(this Rational rational)
     {
-        public static double GetValue(this Rational rational)
-        {
-            return rational.Numerator / rational.Denominator;
-        }
+        return rational.Numerator / rational.Denominator;
     }
 }

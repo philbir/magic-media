@@ -7,30 +7,29 @@ using Polly;
 using Polly.Extensions.Http;
 using Polly.Retry;
 
-namespace MagicMedia.Face
+namespace MagicMedia.Face;
+
+public static class FaceDetectionServiceCollectionExtensions
 {
-    public static class FaceDetectionServiceCollectionExtensions
+    public static IServiceCollection AddFaceDetection(
+        this IServiceCollection services,
+        IConfiguration configuration)
     {
-        public static IServiceCollection AddFaceDetection(
-            this IServiceCollection services,
-            IConfiguration configuration)
+        FaceOptions? faceOptions = configuration.GetSection("MagicMedia:Face")
+            .Get<FaceOptions>();
+
+        AsyncRetryPolicy<HttpResponseMessage>? retryPolicy = HttpPolicyExtensions
+            .HandleTransientHttpError()
+            .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(retryAttempt));
+
+        services.AddHttpClient("Face", c =>
         {
-            FaceOptions? faceOptions = configuration.GetSection("MagicMedia:Face")
-                .Get<FaceOptions>();
+            c.BaseAddress = faceOptions.Url;
+        }).AddPolicyHandler(retryPolicy);
 
-            AsyncRetryPolicy<HttpResponseMessage>? retryPolicy = HttpPolicyExtensions
-                .HandleTransientHttpError()
-                .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(retryAttempt));
+        services.AddSingleton<IFaceDetectionService, FaceDetectionService>();
+        services.AddSingleton<IFaceModelBuilderService, FaceModelBuilderService>();
 
-            services.AddHttpClient("Face", c =>
-            {
-                c.BaseAddress = faceOptions.Url;
-            }).AddPolicyHandler(retryPolicy);
-
-            services.AddSingleton<IFaceDetectionService, FaceDetectionService>();
-            services.AddSingleton<IFaceModelBuilderService, FaceModelBuilderService>();
-
-            return services;
-        }
+        return services;
     }
 }

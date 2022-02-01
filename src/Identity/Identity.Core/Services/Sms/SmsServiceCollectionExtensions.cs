@@ -4,25 +4,24 @@ using MagicMedia.Identity.Core.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace MagicMedia.Identity.Services.Sms
+namespace MagicMedia.Identity.Services.Sms;
+
+public static class SmsServiceCollectionExtensions
 {
-    public static class SmsServiceCollectionExtensions
+    public static IServiceCollection AddECallSms(
+        this IServiceCollection services,
+        IConfiguration configuration)
     {
-        public static IServiceCollection AddECallSms(
-            this IServiceCollection services,
-            IConfiguration configuration)
+        ECallOptions options = configuration.GetSection("ECall").Get<ECallOptions>();
+
+        services.AddHttpClient("ECall", c =>
         {
-            ECallOptions options = configuration.GetSection("ECall").Get<ECallOptions>();
+            c.BaseAddress = new Uri(options.Url);
+        });
 
-            services.AddHttpClient("ECall", c =>
-            {
-               c.BaseAddress = new Uri(options.Url);
-            });
+        services.AddSingleton<ISmsService>(c =>
+            new ECallSmsService(c.GetService<IHttpClientFactory>(), options));
 
-            services.AddSingleton<ISmsService>(c =>
-                new ECallSmsService(c.GetService<IHttpClientFactory>(), options));
-
-            return services;
-        }
+        return services;
     }
 }

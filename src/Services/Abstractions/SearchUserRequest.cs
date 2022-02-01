@@ -1,11 +1,10 @@
-﻿namespace MagicMedia
+namespace MagicMedia;
+
+public class SearchUserRequest
 {
-    public class SearchUserRequest
-    {
-        public int PageNr { get; set; }
+    public int PageNr { get; set; }
 
-        public int PageSize { get; set; }
+    public int PageSize { get; set; }
 
-        public string? SearchText { get; set; }
-    }
+    public string? SearchText { get; set; }
 }

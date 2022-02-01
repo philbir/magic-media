@@ -1,10 +1,10 @@
-﻿namespace MagicMedia.Api.Host.Tests
+namespace MagicMedia.Api.Host.Tests
 {
     public class MediaDimension1
         : IMediaDimension1
     {
         public MediaDimension1(
-            int height, 
+            int height,
             int width)
         {
             Height = height;

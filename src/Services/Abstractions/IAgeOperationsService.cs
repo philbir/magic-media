@@ -3,13 +3,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Store;
 
-namespace MagicMedia
+namespace MagicMedia;
+
+public interface IAgeOperationsService
 {
-    public interface IAgeOperationsService
-    {
-        int? CalculateAge(DateTimeOffset? dateTaken, DateTime dateOfBirth);
-        Task UpdateAgesByMediaAsync(Media media, CancellationToken cancellationToken);
-        Task UpdateAgesByPersonAsync(Person person, CancellationToken cancellationToken);
-        Task UpdateAgesByPersonAsync(Guid personId, CancellationToken cancellationToken);
-    }
+    int? CalculateAge(DateTimeOffset? dateTaken, DateTime dateOfBirth);
+    Task UpdateAgesByMediaAsync(Media media, CancellationToken cancellationToken);
+    Task UpdateAgesByPersonAsync(Person person, CancellationToken cancellationToken);
+    Task UpdateAgesByPersonAsync(Guid personId, CancellationToken cancellationToken);
 }

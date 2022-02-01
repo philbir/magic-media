@@ -85,8 +85,8 @@ namespace MagicMedia.Playground
             {
                 Console.WriteLine($"{todo} - {mediaAI.MediaId}");
 
-                if ( mediaAI.SourceInfo.Count() == 1)
-                {   
+                if (mediaAI.SourceInfo.Count() == 1)
+                {
                     await _dbContext.MediaAI.DeleteOneAsync(x => x.Id == mediaAI.Id);
                 }
                 else
@@ -120,14 +120,14 @@ namespace MagicMedia.Playground
             int completedCount = 0;
             int errorCount = 0;
 
-            Log.Information("{Count} items found", totalCount);
+            //Log.Information("{Count} items found", totalCount);
 
 
             foreach (Media media in items)
             {
                 try
                 {
-                    Log.Information("{Completed} of {Count} - {Id}", completedCount, totalCount, media.Id);
+                    //Log.Information("{Completed} of {Count} - {Id}", completedCount, totalCount, media.Id);
 
                     IEnumerable<MediaFileInfo> files = _mediaService.GetMediaFiles(media);
 
@@ -145,7 +145,7 @@ namespace MagicMedia.Playground
                 catch (Exception ex)
                 {
                     errorCount++;
-                    Log.Error(ex, "Error with {Id}", media.Id);
+                    //Log.Error(ex, "Error with {Id}", media.Id);
                 }
                 finally
                 {

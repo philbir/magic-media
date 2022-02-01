@@ -6,34 +6,33 @@ using Quartz;
 using Quartz.Impl;
 using Quartz.Spi;
 
-namespace MagicMedia.Scheduling
+namespace MagicMedia.Scheduling;
+
+public static class SchedulerServiceCollectionExtensions
 {
-    public static class SchedulerServiceCollectionExtensions
+    public static IMagicMediaServerBuilder AddScheduler(
+        this IMagicMediaServerBuilder builder)
     {
-        public static IMagicMediaServerBuilder AddScheduler(
-            this IMagicMediaServerBuilder builder)
-        {
-            builder.Services.AddScheduler(builder.Configuration);
+        builder.Services.AddScheduler(builder.Configuration);
 
-            return builder;
-        }
+        return builder;
+    }
 
-        private static IServiceCollection AddScheduler(
-            this IServiceCollection services,
-            IConfiguration configuration)
-        {
-            services.AddSingleton<StdSchedulerFactory>();
-            services.AddSingleton<SchedulerAccessor>();
-            services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();
-            services.AddSingleton<IJobFactory, SingletonJobFactory>();
+    private static IServiceCollection AddScheduler(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        services.AddSingleton<StdSchedulerFactory>();
+        services.AddSingleton<SchedulerAccessor>();
+        services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();
+        services.AddSingleton<IJobFactory, SingletonJobFactory>();
 
-            IEnumerable<JobScheduleOptions> schedules = configuration
-                .GetSection("MagicMedia:JobSchedules")
-                .Get<IEnumerable<JobScheduleOptions>>();
+        IEnumerable<JobScheduleOptions> schedules = configuration
+            .GetSection("MagicMedia:JobSchedules")
+            .Get<IEnumerable<JobScheduleOptions>>();
 
-            services.AddSingleton(schedules);
+        services.AddSingleton(schedules);
 
-            return services;
-        }
+        return services;
     }
 }

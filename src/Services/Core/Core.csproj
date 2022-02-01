@@ -5,8 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CoenM.ImageSharp.ImageHash" Version="1.0.0" />
-    <PackageReference Include="Magick.NET-Q8-x64" Version="7.22.1" />
+    <PackageReference Include="CoenM.ImageSharp.ImageHash" Version="1.1.5" />
+    <PackageReference Include="Magick.NET-Q8-x64" Version="9.0.0" />
     <PackageReference Include="MassTransit.Extensions.DependencyInjection" Version="$(MassTransitVersion)" />
     <PackageReference Include="MassTransit.RabbitMQ" Version="$(MassTransitVersion)" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Core" Version="1.1.0" />
@@ -16,13 +16,13 @@
     <PackageReference Include="Serilog" Version="$(SerilogVersion)" />
     <PackageReference Include="SixLabors.ImageSharp" Version="$(SixLaborsImageSharpVersion)" />
     <PackageReference Include="NGeoHash" Version="1.2.0" />
-    <PackageReference Include="NodaTime" Version="3.0.3" />
+    <PackageReference Include="NodaTime" Version="3.0.9" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="$(AspNetCoreVersion)" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="$(AspNetCoreVersion)" />
-    <PackageReference Include="UAParser" Version="3.1.44" />
-    <PackageReference Include="Xabe.FFmpeg" Version="5.0.2" />
-    <PackageReference Include="Xabe.FFmpeg.Downloader" Version="5.0.2" />
-    <PackageReference Include="MetadataExtractor" Version="2.4.3" />
+    <PackageReference Include="UAParser" Version="3.1.47" />
+    <PackageReference Include="Xabe.FFmpeg" Version="5.1.0" />
+    <PackageReference Include="Xabe.FFmpeg.Downloader" Version="5.1.0" />
+    <PackageReference Include="MetadataExtractor" Version="2.7.1" />
   </ItemGroup>
 
   <ItemGroup>

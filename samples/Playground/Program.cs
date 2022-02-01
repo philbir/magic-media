@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using MagicMedia;
@@ -9,20 +10,33 @@ using MagicMedia.Playground;
 using MagicMedia.Security;
 using MagicMedia.Store.MongoDb;
 using MagicMedia.Stores;
+using MagicMedia.Telemetry;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using OpenTelemetry;
+using OpenTelemetry.Trace;
 using Serilog;
 
 namespace Playground
 {
     class Program
     {
+        private static readonly ActivitySource PlaygroundActivitySource = new ActivitySource("MagicMedia.Playground");
+
         static async Task Main(string[] args)
         {
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .WriteTo.Console()
                 .CreateLogger();
+
+            using TracerProvider _ = Sdk.CreateTracerProviderBuilder()
+              .SetResourceBuilder(OpenTelemetryExtensions.CreateResourceBuilder("MagicMedia-Playground"))
+              .SetSampler(new AlwaysOnSampler())
+              .AddSource("MagicMedia.Playground")
+              .AddHttpClientInstrumentation()
+              .AddSources()
+              .Build();
 
             IServiceProvider sp = BuildServiceProvider();
             BulkMediaUpdater updater = sp.GetService<BulkMediaUpdater>();
@@ -31,6 +45,7 @@ namespace Playground
             ImageHasher hasher = sp.GetService<ImageHasher>();
             ClientThumbprintLoader thumbprintLoader = sp.GetService<ClientThumbprintLoader>();
 
+            //FileSystemSnapshotBuilder.BuildSnapshot();
             //await videoConverter.GenerateVideosAsync(default);
 
             //await updater.UpdateMediaAISummaryAsync(default);
@@ -43,7 +58,7 @@ namespace Playground
             //await updater.ResetMediaAIErrorsAsync();
 
             //await thumbprintLoader.LoadAuditThumbprintsAsync();
-          }
+        }
 
         private static IServiceProvider BuildServiceProvider()
         {
@@ -64,6 +79,9 @@ namespace Playground
                 .AddFileSystemDiscovery()
                 .AddClientThumbprintServices()
                 .AddWorkerMessaging();
+
+            services.AddOpenTelemetry("MagicMedia-Playground");
+
 
             services.AddSingleton<ImportSample>();
             services.AddSingleton<DiscoverySample>();

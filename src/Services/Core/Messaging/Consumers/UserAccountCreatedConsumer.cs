@@ -3,27 +3,26 @@ using MagicMedia.Security;
 using MagicMedia.Store;
 using MassTransit;
 
-namespace MagicMedia.Messaging.Consumers
+namespace MagicMedia.Messaging.Consumers;
+
+public class UserAccountCreatedConsumer : IConsumer<UserAccountCreatedMessage>
 {
-    public class UserAccountCreatedConsumer : IConsumer<UserAccountCreatedMessage>
+    private readonly IUserService _userService;
+
+    public UserAccountCreatedConsumer(IUserService userService)
     {
-        private readonly IUserService _userService;
+        _userService = userService;
+    }
 
-        public UserAccountCreatedConsumer(IUserService userService)
-        {
-            _userService = userService;
-        }
+    public async Task Consume(ConsumeContext<UserAccountCreatedMessage> context)
+    {
+        User user = await _userService.GetByIdAsync(
+            context.Message.UserId,
+            context.CancellationToken);
 
-        public async Task Consume(ConsumeContext<UserAccountCreatedMessage> context)
-        {
-            User user = await _userService.GetByIdAsync(
-                context.Message.UserId,
-                context.CancellationToken);
+        user.State = UserState.Active;
+        user.InvitationCode = null;
 
-            user.State = UserState.Active;
-            user.InvitationCode = null;
-
-            await _userService.UpdateAsync(user, context.CancellationToken);
-        }
+        await _userService.UpdateAsync(user, context.CancellationToken);
     }
 }

@@ -1,14 +1,13 @@
-namespace MagicMedia.GraphQL
-{
-    public abstract class Payload
-    {
-        protected Payload(IReadOnlyList<UserError>? errors = null)
-        {
-            Errors = errors;
-        }
+namespace MagicMedia.GraphQL;
 
-        public IReadOnlyList<UserError>? Errors { get; }
+public abstract class Payload
+{
+    protected Payload(IReadOnlyList<UserError>? errors = null)
+    {
+        Errors = errors;
     }
 
-    public record UserError(string Message, string Code);
+    public IReadOnlyList<UserError>? Errors { get; }
 }
+
+public record UserError(string Message, string Code);

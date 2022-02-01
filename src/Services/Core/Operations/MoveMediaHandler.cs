@@ -7,93 +7,92 @@ using MagicMedia.Messaging;
 using MagicMedia.Store;
 using MassTransit;
 
-namespace MagicMedia.Operations
+namespace MagicMedia.Operations;
+
+public class MoveMediaHandler : IMoveMediaHandler
 {
-    public class MoveMediaHandler : IMoveMediaHandler
+    private readonly IMediaStore _mediaStore;
+    private readonly IMediaBlobStore _mediaBlobStore;
+    private readonly IBus _bus;
+
+    public MoveMediaHandler(
+        IMediaStore _mediaStore,
+        IMediaBlobStore mediaBlobStore,
+        IBus bus)
     {
-        private readonly IMediaStore _mediaStore;
-        private readonly IMediaBlobStore _mediaBlobStore;
-        private readonly IBus _bus;
+        this._mediaStore = _mediaStore;
+        _mediaBlobStore = mediaBlobStore;
+        _bus = bus;
+    }
 
-        public MoveMediaHandler(
-            IMediaStore _mediaStore,
-            IMediaBlobStore mediaBlobStore,
-            IBus bus)
+    public Guid MediaId { get; private set; }
+
+    public async Task ExecuteAsync(
+        MoveMediaMessage message,
+        CancellationToken cancellationToken)
+    {
+        var messages = new List<MediaOperationCompletedMessage>();
+
+        foreach (Guid mediaId in message.Ids)
         {
-            this._mediaStore = _mediaStore;
-            _mediaBlobStore = mediaBlobStore;
-            _bus = bus;
+            MediaOperationCompletedMessage msg = await MoveMediaAsync(
+                mediaId,
+                message.NewLocation,
+                cancellationToken);
+
+            msg.OperationId = message.OperationId;
+            messages.Add(msg);
+
+            await _bus.Publish(msg, cancellationToken);
         }
 
-        public Guid MediaId { get; private set; }
-
-        public async Task ExecuteAsync(
-            MoveMediaMessage message,
-            CancellationToken cancellationToken)
+        var completedmsg = new MediaOperationRequestCompletedMessage
         {
-            var messages = new List<MediaOperationCompletedMessage>();
+            OperationId = message.OperationId,
+            SuccessCount = messages.Where(x => x.IsSuccess).Count(),
+            ErrorCount = messages.Where(x => !x.IsSuccess).Count(),
+        };
 
-            foreach (Guid mediaId in message.Ids)
-            {
-                MediaOperationCompletedMessage msg = await MoveMediaAsync(
-                    mediaId,
-                    message.NewLocation,
-                    cancellationToken);
+        await _bus.Publish(completedmsg, cancellationToken);
+    }
 
-                msg.OperationId = message.OperationId;
-                messages.Add(msg);
+    private async Task<MediaOperationCompletedMessage> MoveMediaAsync(
+        Guid id,
+        string newLocation,
+        CancellationToken cancellationToken)
+    {
+        Media media = await _mediaStore.GetByIdAsync(id, cancellationToken);
 
-                await _bus.Publish(msg, cancellationToken);
-            }
+        MediaOperationCompletedMessage msg = new MediaOperationCompletedMessage
+        {
+            MediaId = id,
+            Data = new() { ["OldFolder"] = media.Folder, ["NewFolder"] = newLocation },
+        };
+        try
+        {
+            await _mediaBlobStore.MoveAsync(
+                new MediaBlobData
+                {
+                    Directory = media.Folder,
+                    Filename = media.Filename
+                },
+                newLocation,
+                cancellationToken);
 
-            var completedmsg = new MediaOperationRequestCompletedMessage
-            {
-                OperationId = message.OperationId,
-                SuccessCount = messages.Where(x => x.IsSuccess).Count(),
-                ErrorCount = messages.Where(x => !x.IsSuccess).Count(),
-            };
+            media.Folder = newLocation;
 
-            await _bus.Publish(completedmsg, cancellationToken);
+            await _mediaStore.UpdateAsync(media, cancellationToken);
+            msg.Message = $"{media.Filename} moved from " +
+                $"{msg.Data["OldFolder"]} to {media.Folder}";
+
+            msg.IsSuccess = true;
+        }
+        catch (Exception ex)
+        {
+            msg.IsSuccess = false;
+            msg.Message = ex.Message;
         }
 
-        private async Task<MediaOperationCompletedMessage> MoveMediaAsync(
-            Guid id,
-            string newLocation,
-            CancellationToken cancellationToken)
-        {
-            Media media = await _mediaStore.GetByIdAsync(id, cancellationToken);
-
-            MediaOperationCompletedMessage msg = new MediaOperationCompletedMessage
-            {
-                MediaId = id,
-                Data = new() { ["OldFolder"] = media.Folder, ["NewFolder"] = newLocation },
-            };
-            try
-            {
-                await _mediaBlobStore.MoveAsync(
-                    new MediaBlobData
-                    {
-                        Directory = media.Folder,
-                        Filename = media.Filename
-                    },
-                    newLocation,
-                    cancellationToken);
-
-                media.Folder = newLocation;
-
-                await _mediaStore.UpdateAsync(media, cancellationToken);
-                msg.Message = $"{media.Filename} moved from " +
-                    $"{msg.Data["OldFolder"]} to {media.Folder}";
-
-                msg.IsSuccess = true;
-            }
-            catch (Exception ex)
-            {
-                msg.IsSuccess = false;
-                msg.Message = ex.Message;
-            }
-
-            return msg;
-        }
+        return msg;
     }
 }

@@ -1,14 +1,13 @@
-﻿using MagicMedia.Store;
+using MagicMedia.Store;
 
-namespace MagicMedia.GraphQL
+namespace MagicMedia.GraphQL;
+
+public class AddItemToAlbumPayload : Payload
 {
-    public class AddItemToAlbumPayload : Payload
+    public AddItemToAlbumPayload(Album album)
     {
-        public AddItemToAlbumPayload(Album album)
-        {
-            Album = album;
-        }
-
-        public Album Album { get; }
+        Album = album;
     }
+
+    public Album Album { get; }
 }

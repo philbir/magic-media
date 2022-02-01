@@ -3,44 +3,43 @@ using MagicMedia.Processing;
 using MagicMedia.Store;
 using MassTransit;
 
-namespace MagicMedia.Messaging.Consumers
+namespace MagicMedia.Messaging.Consumers;
+
+public class NewMediaAddedConsumer : IConsumer<NewMediaAddedMessage>
 {
-    public class NewMediaAddedConsumer : IConsumer<NewMediaAddedMessage>
+    private readonly IMediaFaceScanner _mediaFaceScanner;
+    private readonly IMediaService _mediaService;
+    private readonly IMediaProcessorFlow _videoFlow;
+
+    public NewMediaAddedConsumer(
+        IMediaFaceScanner mediaFaceScanner,
+        IMediaService mediaService,
+        IMediaProcessorFlowFactory flowFactory)
     {
-        private readonly IMediaFaceScanner _mediaFaceScanner;
-        private readonly IMediaService _mediaService;
-        private readonly IMediaProcessorFlow _videoFlow;
+        _mediaFaceScanner = mediaFaceScanner;
+        _mediaService = mediaService;
+        _videoFlow = flowFactory.CreateFlow("BuildPreviewVideos");
+    }
 
-        public NewMediaAddedConsumer(
-            IMediaFaceScanner mediaFaceScanner,
-            IMediaService mediaService,
-            IMediaProcessorFlowFactory flowFactory)
-        {
-            _mediaFaceScanner = mediaFaceScanner;
-            _mediaService = mediaService;
-            _videoFlow = flowFactory.CreateFlow("BuildPreviewVideos");
-        }
+    public async Task Consume(ConsumeContext<NewMediaAddedMessage> context)
+    {
+        Media media = await _mediaService.GetByIdAsync(
+            context.Message.Id,
+            context.CancellationToken);
 
-        public async Task Consume(ConsumeContext<NewMediaAddedMessage> context)
+        if (media.MediaType == MediaType.Image)
         {
-            Media media = await _mediaService.GetByIdAsync(
+            await _mediaFaceScanner.ScanByMediaIdAsync(
                 context.Message.Id,
                 context.CancellationToken);
+        }
 
-            if (media.MediaType == MediaType.Image)
+        if (media.MediaType == MediaType.Video)
+        {
+            await _videoFlow.ExecuteAsync(new MediaProcessorContext
             {
-                await _mediaFaceScanner.ScanByMediaIdAsync(
-                    context.Message.Id,
-                    context.CancellationToken);
-            }
-
-            if (media.MediaType == MediaType.Video)
-            {
-                await _videoFlow.ExecuteAsync(new MediaProcessorContext
-                {
-                    Media = media
-                }, context.CancellationToken);
-            }
+                Media = media
+            }, context.CancellationToken);
         }
     }
 }

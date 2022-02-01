@@ -1,4 +1,3 @@
-namespace MagicMedia.GraphQL
-{
-    public record ToggleMediaFavoriteInput(Guid Id, bool IsFavorite);
-}
+namespace MagicMedia.GraphQL;
+
+public record ToggleMediaFavoriteInput(Guid Id, bool IsFavorite);

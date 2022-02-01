@@ -1,22 +1,21 @@
 using System.Threading.Tasks;
 using MassTransit;
 
-namespace MagicMedia.Messaging.Consumers
+namespace MagicMedia.Messaging.Consumers;
+
+public class PersonUpdatedConsumer : IConsumer<PersonUpdatedMessage>
 {
-    public class PersonUpdatedConsumer : IConsumer<PersonUpdatedMessage>
+    private readonly IAgeOperationsService _ageOperationsService;
+
+    public PersonUpdatedConsumer(IAgeOperationsService ageOperationsService)
     {
-        private readonly IAgeOperationsService _ageOperationsService;
+        _ageOperationsService = ageOperationsService;
+    }
 
-        public PersonUpdatedConsumer(IAgeOperationsService ageOperationsService)
-        {
-            _ageOperationsService = ageOperationsService;
-        }
-
-        public async Task Consume(ConsumeContext<PersonUpdatedMessage> context)
-        {
-            await _ageOperationsService.UpdateAgesByPersonAsync(
-                context.Message.Id,
-                context.CancellationToken);
-        }
+    public async Task Consume(ConsumeContext<PersonUpdatedMessage> context)
+    {
+        await _ageOperationsService.UpdateAgesByPersonAsync(
+            context.Message.Id,
+            context.CancellationToken);
     }
 }

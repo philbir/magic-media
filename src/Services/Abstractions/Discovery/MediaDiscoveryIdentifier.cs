@@ -1,11 +1,10 @@
-namespace MagicMedia.Discovery
+namespace MagicMedia.Discovery;
+
+public class MediaDiscoveryIdentifier
 {
-    public class MediaDiscoveryIdentifier
-    {
-        public MediaDiscoverySource Source { get; set; }
+    public MediaDiscoverySource Source { get; set; }
 
-        public string Id { get; set; }
+    public string? Id { get; set; }
 
-        public string BasePath { get; set; }
-    }
+    public string? BasePath { get; set; }
 }
