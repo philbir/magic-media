@@ -5,7 +5,8 @@
       "launchBrowser": false,
       "launchUrl": "graphql",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "OTEL_EXPORTER_OTLP_ENDPOINT": "http://localhost:55680"
       },
       "dotnetRunMessages": "true",
       "applicationUrl": "http://localhost:5000/"

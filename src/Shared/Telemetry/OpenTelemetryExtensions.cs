@@ -28,8 +28,12 @@ public static class OpenTelemetryExtensions
         return resourceBuilder;
     }
 
-    public static IServiceCollection AddOpenTelemetry(this IServiceCollection services, string serviceName)
+    public static IServiceCollection AddOpenTelemetry(
+        this IServiceCollection services,
+        string serviceName)
     {
+
+
         //services.AddSingleton<ActivityEnricher, CustomActivityEnricher>();
         ResourceBuilder resourceBuilder = CreateResourceBuilder(serviceName);
 
@@ -66,9 +70,6 @@ public static class OpenTelemetryExtensions
         {
             ExportIntervalMilliseconds = 30000
         };
-
-        o.Endpoint = ExporterEndpoint;
-        //o.Headers = $"Authorization=Bearer {options.SecretToken}";
         o.Protocol = OtlpExportProtocol.Grpc;
     }
 
