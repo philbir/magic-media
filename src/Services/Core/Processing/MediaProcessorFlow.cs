@@ -41,7 +41,6 @@ public class MediaProcessorFlow : IMediaProcessorFlow
         foreach (string taskName in Tasks)
         {
             IMediaProcessorTask instance = _taskFactory.GetTask(taskName);
-
             using Activity? taskActivity = Tracing.Core.StartActivity($"Execute task {taskName}");
 
             try

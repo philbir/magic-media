@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\AspNetCore\Shared.AspNetCore.csproj" />
-    <ProjectReference Include="..\..\Telemetry\Telemetry.csproj" />
+    <ProjectReference Include="..\..\Shared\Telemetry\Telemetry.csproj" />
     <ProjectReference Include="..\Abstractions\Abstractions.csproj" />
     <ProjectReference Include="..\AzureAI\AzureAI.csproj" />
     <ProjectReference Include="..\BingMaps\BingMaps.csproj" />

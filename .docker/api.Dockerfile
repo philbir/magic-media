@@ -12,6 +12,7 @@ COPY ["Directory.Build.props", "/"]
 COPY ["src/Directory.Build.props", "/src"]
 COPY ["src/Versions.props", "/src"]
 COPY ["src/Shared/AspNetCore/Shared.AspNetCore.csproj", "src/Shared/AspNetCore/"]
+COPY ["src/Shared/Telemetry/Telemetry.csproj", "src/Shared/Telemetry/"]
 COPY ["src/Services/Api.Host/Api.Host.csproj", "src/Services/Api.Host/"]
 COPY ["src/Services/Authorization/Authorization.csproj", "src/Services/Authorization/"]
 COPY ["src/Services/AzureAI/AzureAI.csproj", "src/Services/AzureAI/"]
@@ -19,6 +20,7 @@ COPY ["src/Services/BingMaps/BingMaps.csproj", "src/Services/BingMaps/"]
 COPY ["src/Services/Core/Core.csproj", "Csrc/Services//"]
 COPY ["src/Services/GraphQL/GraphQL.csproj", "src/Services/GraphQL/"]
 COPY ["src/Services/Store.MongoDb/Store.MongoDb.csproj", "src/Services/Store.MongoDb/"]
+
 
 RUN dotnet restore "src/Services/Api.Host/Api.Host.csproj"
 
