@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using OpenTelemetry.Trace;
 using Serilog;
 
 namespace MagicMedia.Processing;
@@ -25,7 +26,7 @@ public class MediaProcessorFlow : IMediaProcessorFlow
         MediaProcessorContext context,
         CancellationToken cancellationToken)
     {
-        using Activity? mainActivity = Tracing.Core.StartActivity($"Execute Flow");
+        using Activity? mainActivity = Tracing.Core.StartActivity($"Execute media processor flow");
 
         if (context.File is { })
         {
@@ -40,9 +41,8 @@ public class MediaProcessorFlow : IMediaProcessorFlow
         foreach (string taskName in Tasks)
         {
             IMediaProcessorTask instance = _taskFactory.GetTask(taskName);
-            //Log.Information("Execute Task {Name}", taskName);
 
-            using Activity? taskActivity = Tracing.Core.StartActivity($"Execute Task {taskName}");
+            using Activity? taskActivity = Tracing.Core.StartActivity($"Execute task {taskName}");
 
             try
             {
@@ -55,7 +55,7 @@ public class MediaProcessorFlow : IMediaProcessorFlow
             }
             catch (Exception ex)
             {
-                //Log.Error(ex, "Error executing Task {Name}", taskName);
+                taskActivity.RecordException(ex);
                 throw;
             }
         }

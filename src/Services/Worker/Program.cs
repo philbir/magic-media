@@ -1,4 +1,5 @@
-using System;
+
+
 using MagicMedia;
 using MagicMedia.BingMaps;
 using MagicMedia.Discovery;
@@ -9,75 +10,53 @@ using MagicMedia.Security;
 using MagicMedia.Store.MongoDb;
 using MagicMedia.Stores;
 using MagicMedia.Telemetry;
+using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Serilog;
+using Worker;
 
-namespace Worker;
-public class Program
-{
-    public static void Main(string[] args)
+var host = Host.CreateDefaultBuilder(args)
+    .ConfigureAppConfiguration(builder =>
     {
-        //LoggingConfig.Configure("Worker");
-
-        try
+        builder.AddJsonFile("appsettings.json");
+        builder.AddUserSecrets<Program>(optional: true);
+        builder.AddJsonFile("appsettings.local.json", optional: true);
+        builder.AddEnvironmentVariables();
+    })
+    .ConfigureServices((hostContext, services) =>
+    {
+        services.Configure<HostOptions>(hostOptions =>
         {
-            //Log.Information("Starting Worker");
-            CreateHostBuilder(args).Build().Run();
-        }
-        catch (Exception ex)
-        {
-            //Log.Fatal(ex, "Worker terminated unexpectedly");
-        }
-        finally
-        {
-            //Log.CloseAndFlush();
-        }
-    }
+            hostOptions.BackgroundServiceExceptionBehavior = BackgroundServiceExceptionBehavior.Ignore;
+        });
 
-    public static IHostBuilder CreateHostBuilder(string[] args) =>
-        Host.CreateDefaultBuilder(args)
-            .UseSerilog()
-            .ConfigureAppConfiguration(builder =>
-            {
-                builder.AddJsonFile("appsettings.json");
-                builder.AddUserSecrets<Program>(optional: true);
-                builder.AddJsonFile("appsettings.local.json", optional: true);
-                builder.AddEnvironmentVariables();
-            })
-            .ConfigureServices((hostContext, services) =>
-            {
-                services.Configure<HostOptions>(hostOptions =>
-                {
-                    hostOptions.BackgroundServiceExceptionBehavior = BackgroundServiceExceptionBehavior.Ignore;
-                });
+        FileSystemDiscoveryOptions discoveryOptions = hostContext.Configuration
+            .GetSection("MagicMedia:Discovery")
+            .Get<FileSystemDiscoveryOptions>();
 
-                FileSystemDiscoveryOptions discoveryOptions = hostContext.Configuration
-                    .GetSection("MagicMedia:Discovery")
-                    .Get<FileSystemDiscoveryOptions>();
+        services.AddSingleton(discoveryOptions);
+        services
+            .AddMagicMediaServer(hostContext.Configuration)
+            .AddProcessingMediaServices()
+            .AddBingMaps()
+            .AddAzureAI()
+            .AddMongoDbStore()
+            .AddFileSystemStore()
+            .AddFileSystemDiscovery()
+            .AddWorkerMessaging()
+            .AddClientThumbprintServices()
+            .AddScheduler()
+            .AddJobs();
 
-                services.AddSingleton(discoveryOptions);
+        services.AddOpenTelemetry("MagicMedia-Worker");
 
-                services
-                    .AddMagicMediaServer(hostContext.Configuration)
-                    .AddProcessingMediaServices()
-                    .AddBingMaps()
-                    .AddAzureAI()
-                    .AddMongoDbStore()
-                    .AddFileSystemStore()
-                    .AddFileSystemDiscovery()
-                    .AddWorkerMessaging()
-                    .AddClientThumbprintServices()
-                    .AddScheduler()
-                    .AddJobs();
+        services.AddSingleton<IUserContextFactory, WorkerUserContextFactory>();
+        services.AddMemoryCache();
 
-                services.AddOpenTelemetry("MagicMedia-Worker");
+        //services.AddMassTransitHostedService();
+        services.AddHostedService<JobWorker>();
+    })
+    .Build();
 
-                services.AddSingleton<IUserContextFactory, WorkerUserContextFactory>();
-                services.AddMemoryCache();
-
-                    //services.AddMassTransitHostedService();
-                    services.AddHostedService<JobWorker>();
-            });
-}
+await host.RunAsync();

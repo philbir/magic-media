@@ -30,7 +30,7 @@ public static class OpenTelemetryExtensions
 
     public static IServiceCollection AddOpenTelemetry(this IServiceCollection services, string serviceName)
     {
-        services.AddSingleton<ActivityEnricher, CustomActivityEnricher>();
+        //services.AddSingleton<ActivityEnricher, CustomActivityEnricher>();
         ResourceBuilder resourceBuilder = CreateResourceBuilder(serviceName);
 
         services.AddOpenTelemetryTracing(tracing =>

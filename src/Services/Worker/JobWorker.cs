@@ -56,7 +56,7 @@ public class JobWorker : BackgroundService
         foreach (IJob job in _jobs)
         {
             Type jobType = job.GetType();
-            //Log.Information("Scheduling job {Name}", jobType.Name);
+            Log.Information("Scheduling job {Name}", jobType.Name);
 
             JobScheduleOptions? options = _scheduleOptions
                 .FirstOrDefault(x => x.Name == jobType.Name);
@@ -83,16 +83,16 @@ public class JobWorker : BackgroundService
                 else
                 {
                     triggerBuilder.WithCronSchedule(options.Cron!);
-                    /*Log.Information("Schedule job {Name} with cron expression: {Cron}",
+                    Log.Information("Schedule job {Name} with cron expression: {Cron}",
                         jobType.Name,
-                        options.Cron);*/
+                        options.Cron);
                 }
 
                 await scheduler.ScheduleJob(jobDetail, triggerBuilder.Build(), cancellationToken);
             }
             else
             {
-                //Log.Information("Job {Name} is not enabled", jobType.Name);
+                Log.Information("Job {Name} is not enabled", jobType.Name);
             }
         }
 

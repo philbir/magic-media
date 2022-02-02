@@ -23,6 +23,7 @@
     <PackageReference Include="Xabe.FFmpeg" Version="5.1.0" />
     <PackageReference Include="Xabe.FFmpeg.Downloader" Version="5.1.0" />
     <PackageReference Include="MetadataExtractor" Version="2.7.1" />
+    <PackageReference Include="OpenTelemetry.Api" Version="1.2.0-rc1" />
   </ItemGroup>
 
   <ItemGroup>
