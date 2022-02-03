@@ -1,11 +1,7 @@
-using System;
 using MagicMedia.Identity.AuthProviders;
 using MagicMedia.Identity.Services;
 using MagicMedia.Identity.Stores;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace MagicMedia.Identity;
 
