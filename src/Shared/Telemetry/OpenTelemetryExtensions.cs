@@ -49,6 +49,11 @@ public static class OpenTelemetryExtensions
                 .SetResourceBuilder(resourceBuilder)
                     .SetErrorStatusOnException();
 
+            if ( Debugger.IsAttached)
+            {
+                tracing.AddConsoleExporter();
+            }
+
             builder?.Invoke(tracing);
         });
 
@@ -58,6 +63,11 @@ public static class OpenTelemetryExtensions
             metrics.AddHttpClientInstrumentation();
             metrics.AddAspNetCoreInstrumentation();
             metrics.AddOtlpExporter(ConfigureOtlp);
+
+            if (Debugger.IsAttached)
+            {
+                metrics.AddConsoleExporter();
+            }
         });
 
         return services;

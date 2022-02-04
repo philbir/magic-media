@@ -16,7 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Worker;
 
-var host = Host.CreateDefaultBuilder(args)
+Microsoft.Extensions.Hosting.IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureAppConfiguration(builder =>
     {
         builder.AddJsonFile("appsettings.json");
@@ -57,7 +57,7 @@ var host = Host.CreateDefaultBuilder(args)
         services.AddSingleton<IUserContextFactory, WorkerUserContextFactory>();
         services.AddMemoryCache();
 
-        //services.AddMassTransitHostedService();
+        services.AddMassTransitHostedService();
         services.AddHostedService<JobWorker>();
     })
     .Build();

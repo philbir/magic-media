@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MagicMedia;
 using MagicMedia.Jobs;
 using MagicMedia.Video;
 using Microsoft.Extensions.Hosting;
@@ -44,7 +46,7 @@ public class JobWorker : BackgroundService
 
     public async override Task StartAsync(CancellationToken cancellationToken)
     {
-        //Log.Information("Starting JobWorker...");
+        using Activity? activity = Tracing.Source.StartActivity("Start JobWorker");
 
         await _fFmpegInitializer.Intitialize();
 
@@ -56,7 +58,7 @@ public class JobWorker : BackgroundService
         foreach (IJob job in _jobs)
         {
             Type jobType = job.GetType();
-            Log.Information("Scheduling job {Name}", jobType.Name);
+            activity?.AddEvent(new ActivityEvent($"Scheduling job {jobType.Name}"));
 
             JobScheduleOptions? options = _scheduleOptions
                 .FirstOrDefault(x => x.Name == jobType.Name);
@@ -78,21 +80,23 @@ public class JobWorker : BackgroundService
                         .WithInterval(options.Interval.Value)
                         .RepeatForever());
 
-                    Log.Information("Schedule job {Name} with intervall: {Interval}",jobType.Name,options.Interval);
+                    activity?.AddEvent(new ActivityEvent(
+                        $"Schedule job {jobType.Name} with intervall: {options.Interval}"));
                 }
                 else
                 {
                     triggerBuilder.WithCronSchedule(options.Cron!);
-                    Log.Information("Schedule job {Name} with cron expression: {Cron}",
-                        jobType.Name,
-                        options.Cron);
+
+                    activity?.AddEvent(new ActivityEvent(
+                        $"Schedule job {jobType.Name} with cron expression: {options.Cron}"));
                 }
 
                 await scheduler.ScheduleJob(jobDetail, triggerBuilder.Build(), cancellationToken);
             }
             else
             {
-                Log.Information("Job {Name} is not enabled", jobType.Name);
+                activity?.AddEvent(new ActivityEvent(
+                    $"Job {jobType.Name} is not enabled"));
             }
         }
 
