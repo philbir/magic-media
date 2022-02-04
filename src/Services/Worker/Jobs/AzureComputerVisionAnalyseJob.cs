@@ -17,7 +17,7 @@ public class AzureComputerVisionAnalyseJob : IJob
 
     public async Task Execute(IJobExecutionContext context)
     {
-        //Log.Information("Executing AzureComputerVisionAnalyse job");
+        Tracing.Source.StartActivity("Execute AzureComputerVisionAnalyse job");
 
         await _cloudAIMediaProcessing.ProcessNewBySourceAsync(
             AISource.AzureCV,

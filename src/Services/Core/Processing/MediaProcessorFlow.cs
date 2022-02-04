@@ -26,7 +26,7 @@ public class MediaProcessorFlow : IMediaProcessorFlow
         MediaProcessorContext context,
         CancellationToken cancellationToken)
     {
-        using Activity? mainActivity = Tracing.Core.StartActivity($"Execute media processor flow");
+        using Activity? mainActivity = Tracing.Source.StartActivity($"Execute media processor flow");
 
         if (context.File is { })
         {
@@ -41,7 +41,7 @@ public class MediaProcessorFlow : IMediaProcessorFlow
         foreach (string taskName in Tasks)
         {
             IMediaProcessorTask instance = _taskFactory.GetTask(taskName);
-            using Activity? taskActivity = Tracing.Core.StartActivity($"Execute task {taskName}");
+            using Activity? taskActivity = Tracing.Source.StartActivity($"Execute task {taskName}");
 
             try
             {

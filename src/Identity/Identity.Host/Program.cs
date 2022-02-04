@@ -6,6 +6,7 @@ using MagicMedia.Identity.Data.Mongo;
 using MagicMedia.Identity.Data.Mongo.Seeding;
 using MagicMedia.Identity.Messaging;
 using MagicMedia.Identity.Services;
+using MagicMedia.Telemetry;
 using MassTransit;
 
 WebApplicationBuilder? builder = WebApplication.CreateBuilder(args);
@@ -33,6 +34,7 @@ builder.Services.AddControllersWithViews()
 
 builder.Services.AddMessaging(builder.Configuration);
 builder.Services.AddMassTransitHostedService();
+builder.Services.AddOpenTelemetry("Magic-Identity");
 
 builder.Services.AddSingleton<IDemoUserService>(s => new DemoUserService(
     builder.Environment.IsDemo(),

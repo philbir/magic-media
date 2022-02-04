@@ -14,6 +14,8 @@ public class UpdateAllPersonSummaryJob : IJob
 
     public async Task Execute(IJobExecutionContext context)
     {
+        Tracing.Source.StartActivity("Execute UpdateAllPersonSummary job");
+
         await _personService.UpdateAllSummaryAsync(context.CancellationToken);
     }
 }

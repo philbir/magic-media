@@ -49,7 +49,10 @@ var host = Host.CreateDefaultBuilder(args)
             .AddScheduler()
             .AddJobs();
 
-        services.AddOpenTelemetry("MagicMedia-Worker");
+        services.AddOpenTelemetry("MagicMedia-Worker", (tracing) =>
+        {
+            //tracing.AddQuartzInstrumentation()
+        });
 
         services.AddSingleton<IUserContextFactory, WorkerUserContextFactory>();
         services.AddMemoryCache();

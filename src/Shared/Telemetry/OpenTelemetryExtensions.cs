@@ -30,10 +30,9 @@ public static class OpenTelemetryExtensions
 
     public static IServiceCollection AddOpenTelemetry(
         this IServiceCollection services,
-        string serviceName)
+        string serviceName,
+        Action<TracerProviderBuilder>? builder=null)
     {
-
-
         //services.AddSingleton<ActivityEnricher, CustomActivityEnricher>();
         ResourceBuilder resourceBuilder = CreateResourceBuilder(serviceName);
 
@@ -49,6 +48,8 @@ public static class OpenTelemetryExtensions
                 .AddOtlpExporter(ConfigureOtlp)
                 .SetResourceBuilder(resourceBuilder)
                     .SetErrorStatusOnException();
+
+            builder?.Invoke(tracing);
         });
 
         services.AddOpenTelemetryMetrics(metrics =>

@@ -10,8 +10,6 @@ public class ImportNewMediaJob : IJob
 {
     private readonly IMediaSourceScanner _sourceScanner;
 
-    private static ActivitySource Activity = new ActivitySource("ImportNewMediaJob");
-
     public ImportNewMediaJob(IMediaSourceScanner sourceScanner)
     {
         _sourceScanner = sourceScanner;
@@ -19,7 +17,7 @@ public class ImportNewMediaJob : IJob
 
     public async Task Execute(IJobExecutionContext context)
     {
-        Activity.StartActivity("Execute");
+        Tracing.Source.StartActivity("Execute ImportNewMedia job");
 
         await _sourceScanner.ScanAsync(context.CancellationToken);
     }
