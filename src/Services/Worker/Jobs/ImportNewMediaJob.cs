@@ -1,6 +1,8 @@
+using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using MagicMedia.Processing;
+using OpenTelemetry.Trace;
 using Quartz;
 using Serilog;
 
@@ -17,9 +19,17 @@ public class ImportNewMediaJob : IJob
 
     public async Task Execute(IJobExecutionContext context)
     {
-        using (Tracing.Source.StartActivity("Execute ImportNewMedia job"))
+        using Activity? activity = Tracing.Source.CreateActivity(
+            "Execute ImportNewMedia job",
+            ActivityKind.Internal);
+
+        try
         {
             await _sourceScanner.ScanAsync(context.CancellationToken);
+        }
+        catch (Exception ex)
+        {
+            activity.RecordException(ex);
         }
     }
 }

@@ -1,6 +1,8 @@
+using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using MagicMedia.Store;
+using OpenTelemetry.Trace;
 using Quartz;
 using Serilog;
 
@@ -18,10 +20,21 @@ public class AzureComputerVisionAnalyseJob : IJob
 
     public async Task Execute(IJobExecutionContext context)
     {
-        using Activity? _ = Tracing.Source.StartActivity("Execute AzureComputerVisionAnalyse job");
+        using Activity? activity = Tracing.Source.CreateActivity(
+            "Execute AzureComputerVisionAnalyse job",
+            ActivityKind.Internal);
 
-        await _cloudAIMediaProcessing.ProcessNewBySourceAsync(
-            AISource.AzureCV,
-            context.CancellationToken);
+        try
+        {
+
+            await _cloudAIMediaProcessing.ProcessNewBySourceAsync(
+                AISource.AzureCV,
+                context.CancellationToken);
+        }
+        catch (Exception ex)
+        {
+            activity.RecordException(ex);
+        }
+
     }
 }
