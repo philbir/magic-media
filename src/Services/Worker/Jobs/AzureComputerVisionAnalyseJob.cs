@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Threading.Tasks;
 using MagicMedia.Store;
 using Quartz;
@@ -17,7 +18,7 @@ public class AzureComputerVisionAnalyseJob : IJob
 
     public async Task Execute(IJobExecutionContext context)
     {
-        Tracing.Source.StartActivity("Execute AzureComputerVisionAnalyse job");
+        using Activity? _ = Tracing.Source.StartActivity("Execute AzureComputerVisionAnalyse job");
 
         await _cloudAIMediaProcessing.ProcessNewBySourceAsync(
             AISource.AzureCV,

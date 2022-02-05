@@ -17,8 +17,9 @@ public class ImportNewMediaJob : IJob
 
     public async Task Execute(IJobExecutionContext context)
     {
-        Tracing.Source.StartActivity("Execute ImportNewMedia job");
-
-        await _sourceScanner.ScanAsync(context.CancellationToken);
+        using (Tracing.Source.StartActivity("Execute ImportNewMedia job"))
+        {
+            await _sourceScanner.ScanAsync(context.CancellationToken);
+        }
     }
 }
