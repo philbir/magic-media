@@ -53,8 +53,7 @@ namespace MagicMedia.Identity.Host.Tests
                 .ConfigureTestServices(services =>
                 {
 
-                })
-               .UseStartup<Startup>();
+                });
 
             var server = new TestServer(hostBuilder);
 

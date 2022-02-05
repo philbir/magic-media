@@ -26,7 +26,6 @@ public class AzureComputerVisionAnalyseJob : IJob
 
         try
         {
-
             await _cloudAIMediaProcessing.ProcessNewBySourceAsync(
                 AISource.AzureCV,
                 context.CancellationToken);
@@ -35,6 +34,5 @@ public class AzureComputerVisionAnalyseJob : IJob
         {
             activity.RecordException(ex);
         }
-
     }
 }

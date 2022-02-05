@@ -35,7 +35,7 @@ public class EnsureAuthenticatedMiddleware
         }
         else
         {
-            Activity.Current?.SetTag("user.name", context.User.Identity.Name);
+            Activity.Current?.AddTag("user.name", context.User.Identity.Name);
 
             await _next(context);
         }

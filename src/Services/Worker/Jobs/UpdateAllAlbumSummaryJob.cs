@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Quartz;
 
@@ -14,7 +15,7 @@ public class UpdateAllAlbumSummaryJob : IJob
 
     public async Task Execute(IJobExecutionContext context)
     {
-        Tracing.Source.StartActivity("Execut UpdateAllAlbumSummary job");
+        using Activity? _ = Tracing.Source.StartActivity("Execut UpdateAllAlbumSummary job");
 
         await _albumSummaryService.UpdateAllAsync(context.CancellationToken);
     }
