@@ -46,7 +46,8 @@ public class JobWorker : BackgroundService
 
     public async override Task StartAsync(CancellationToken cancellationToken)
     {
-        using Activity? activity = Tracing.Source.StartActivity("Start JobWorker");
+        //using Activity? activity = Tracing.Source.StartActivity("Start JobWorker");
+        Activity? activity = null;
 
         await _fFmpegInitializer.Intitialize();
 
