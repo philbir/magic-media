@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
@@ -34,6 +35,8 @@ public class EnsureAuthenticatedMiddleware
         }
         else
         {
+            Activity.Current?.SetTag("user.name", context.User.Identity.Name);
+
             await _next(context);
         }
     }
