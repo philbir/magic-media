@@ -20,7 +20,7 @@ public class AzureComputerVisionAnalyseJob : IJob
 
     public async Task Execute(IJobExecutionContext context)
     {
-        using Activity? activity = Tracing.Source.CreateActivity(
+        using Activity? activity = Tracing.Source.StartActivity(
             "Execute AzureComputerVisionAnalyse job",
             ActivityKind.Internal);
 

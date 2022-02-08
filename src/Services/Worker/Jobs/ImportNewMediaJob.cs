@@ -19,7 +19,7 @@ public class ImportNewMediaJob : IJob
 
     public async Task Execute(IJobExecutionContext context)
     {
-        using Activity? activity = Tracing.Source.CreateActivity(
+        using Activity? activity = Tracing.Source.StartActivity(
             "Execute ImportNewMedia job",
             ActivityKind.Internal);
 
