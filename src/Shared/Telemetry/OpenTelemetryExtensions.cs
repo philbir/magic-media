@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Text;
 using HotChocolate.Diagnostics;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.ObjectPool;
 using OpenTelemetry;
@@ -13,8 +14,6 @@ namespace MagicMedia.Telemetry;
 
 public static class OpenTelemetryExtensions
 {
-    private static Uri ExporterEndpoint = new Uri("http://localhost:55680");
-
     public static ResourceBuilder CreateResourceBuilder(string name)
     {
         ResourceBuilder resourceBuilder = ResourceBuilder.CreateEmpty()
@@ -28,13 +27,24 @@ public static class OpenTelemetryExtensions
         return resourceBuilder;
     }
 
+    public static TelemetryOptions GetTelemetryOptions(this IConfiguration configuration)
+    {
+        return configuration
+           .GetSection("Telemetry")
+           .Get<TelemetryOptions>();
+    }
+
     public static IServiceCollection AddOpenTelemetry(
         this IServiceCollection services,
-        string serviceName,
-        Action<TracerProviderBuilder>? builder=null)
+        IConfiguration configuration,
+        Action<TracerProviderBuilder>? builder = null)
     {
+        TelemetryOptions telOptions = configuration.GetTelemetryOptions();
+
         //services.AddSingleton<ActivityEnricher, CustomActivityEnricher>();
-        ResourceBuilder resourceBuilder = CreateResourceBuilder(serviceName);
+        ResourceBuilder resourceBuilder = CreateResourceBuilder(telOptions.ServiceName);
+
+        services.ConfigureLogging();
 
         services.AddOpenTelemetryTracing(tracing =>
         {
@@ -49,7 +59,7 @@ public static class OpenTelemetryExtensions
                 .SetResourceBuilder(resourceBuilder)
                     .SetErrorStatusOnException();
 
-            if ( Debugger.IsAttached)
+            if (Debugger.IsAttached)
             {
                 tracing.AddConsoleExporter();
             }

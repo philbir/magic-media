@@ -19,10 +19,10 @@ public class FFmpegInitializer : IFFmpegInitializer
     {
         var location = GetDirectory();
 
-        //Log.Information("Initialize FFmpeg with location: {Location}", location);
+        Log.Information("Initialize FFmpeg with location: {Location}", location);
         if (_options.AutoDownload)
         {
-            //Log.Information("FFmpeg GetLatestVersion");
+            Log.Information("FFmpeg GetLatestVersion");
             await FFmpegDownloader.GetLatestVersion(
                 FFmpegVersion.Official,
                 location);

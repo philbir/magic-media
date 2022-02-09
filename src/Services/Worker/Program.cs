@@ -14,6 +14,7 @@ using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Serilog;
 using Worker;
 
 Microsoft.Extensions.Hosting.IHost host = Host.CreateDefaultBuilder(args)
@@ -24,8 +25,17 @@ Microsoft.Extensions.Hosting.IHost host = Host.CreateDefaultBuilder(args)
         builder.AddJsonFile("appsettings.local.json", optional: true);
         builder.AddEnvironmentVariables();
     })
+    .UseSerilog((context, provider, loggerConfiguration) =>
+    {
+        loggerConfiguration.ConfigureElastic(context.Configuration, provider);
+    })
     .ConfigureServices((hostContext, services) =>
     {
+        services.AddOpenTelemetry(hostContext.Configuration, tracing =>
+        {
+            //tracing.AddQuartzInstrumentation()
+        });
+
         services.Configure<HostOptions>(hostOptions =>
         {
             hostOptions.BackgroundServiceExceptionBehavior = BackgroundServiceExceptionBehavior.Ignore;
@@ -48,11 +58,6 @@ Microsoft.Extensions.Hosting.IHost host = Host.CreateDefaultBuilder(args)
             .AddClientThumbprintServices()
             .AddScheduler()
             .AddJobs();
-
-        services.AddOpenTelemetry("MagicMedia-Worker", (tracing) =>
-        {
-            //tracing.AddQuartzInstrumentation()
-        });
 
         services.AddSingleton<IUserContextFactory, WorkerUserContextFactory>();
         services.AddMemoryCache();

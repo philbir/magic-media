@@ -61,6 +61,8 @@ public class JobWorker : BackgroundService
             Type jobType = job.GetType();
             activity?.AddEvent(new ActivityEvent($"Scheduling job {jobType.Name}"));
 
+            Log.Information("Scheduling job {Job}", jobType.Name);
+
             JobScheduleOptions? options = _scheduleOptions
                 .FirstOrDefault(x => x.Name == jobType.Name);
 

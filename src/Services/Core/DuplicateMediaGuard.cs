@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,6 +21,8 @@ public class DuplicateMediaGuard : IDuplicateMediaGuard
 
     public async Task InitializeAsync(CancellationToken cancellationToken)
     {
+        using Activity? activity = Tracing.Source.StartActivity("Initialize duplicate guard");
+
         Dictionary<Guid, IEnumerable<MediaHash>>? medias = await _mediaStore.GetAllHashesAsync(cancellationToken);
 
         _hashes = medias.SelectMany(x => x.Value)
@@ -27,6 +30,8 @@ public class DuplicateMediaGuard : IDuplicateMediaGuard
                 x.Type == MediaHashType.FileHashSha256 ||
                 x.Type == MediaHashType.Identifiers)
             .ToHashSet();
+
+        activity?.AddTag("hashes.count", _hashes.Count);
     }
 
     public void AddMedia(IEnumerable<MediaHash> hashes)
@@ -49,7 +54,7 @@ public class DuplicateMediaGuard : IDuplicateMediaGuard
 
         if (identifierHash is { } && _hashes.Contains(identifierHash, new MediaHashComparer()))
         {
-            //Log.Information("Identifier also exists: {Identifier}", identifierHash.Value);
+            Log.Information("Identifier allready exists: {Identifier}", identifierHash.Value);
 
             return true;
         }

@@ -80,8 +80,7 @@ namespace Playground
                 .AddClientThumbprintServices()
                 .AddWorkerMessaging();
 
-            services.AddOpenTelemetry("MagicMedia-Playground");
-
+            services.AddOpenTelemetry(config);
 
             services.AddSingleton<ImportSample>();
             services.AddSingleton<DiscoverySample>();

@@ -34,7 +34,7 @@ builder.Services.AddControllersWithViews()
 
 builder.Services.AddMessaging(builder.Configuration);
 builder.Services.AddMassTransitHostedService();
-builder.Services.AddOpenTelemetry("Magic-Identity");
+builder.Services.AddOpenTelemetry(builder.Configuration);
 
 builder.Services.AddSingleton<IDemoUserService>(s => new DemoUserService(
     builder.Environment.IsDemo(),
