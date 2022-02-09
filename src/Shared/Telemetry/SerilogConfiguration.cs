@@ -26,11 +26,21 @@ public static class SerilogConfiguration
         return services;
     }
 
+    public static ILoggingBuilder ConfigureSerilog(this ILoggingBuilder builder, IConfiguration configuration)
+    {
+        Serilog.Core.Logger? logger = new LoggerConfiguration()
+            .ConfigureElastic(configuration)
+            .CreateLogger();
+
+        builder.AddSerilog(logger);
+
+        return builder;
+    }
 
     public static LoggerConfiguration ConfigureElastic(
         this LoggerConfiguration loggerConfiguration,
         IConfiguration configuration,
-        IServiceProvider serviceProvider)
+        IServiceProvider? serviceProvider = null)
     {
         TelemetryOptions otelOptions = configuration.GetTelemetryOptions();
 
@@ -42,7 +52,7 @@ public static class SerilogConfiguration
             loggerConfiguration.WriteToElasticsearch(otelOptions, formatter);
         }
 
-        if (Debugger.IsAttached)
+        if (true)
         {
             loggerConfiguration.WriteTo.Console();
         }
@@ -87,16 +97,19 @@ public static class SerilogConfiguration
 
     private static EcsTextFormatter CreateFormatter(
         TelemetryOptions telemetryOptions,
-        IServiceProvider serviceProvider)
+        IServiceProvider? serviceProvider=null)
     {
         var formatterConfiguration = new EcsTextFormatterConfiguration();
 
-        IHttpContextAccessor? httpContextAccessor = serviceProvider
-            .GetService<IHttpContextAccessor>();
-
-        if (httpContextAccessor != null)
+        if ( serviceProvider is { })
         {
-            formatterConfiguration.MapHttpContext(httpContextAccessor);
+            IHttpContextAccessor? httpContextAccessor = serviceProvider
+                .GetService<IHttpContextAccessor>();
+
+            if (httpContextAccessor != null)
+            {
+                formatterConfiguration.MapHttpContext(httpContextAccessor);
+            }
         }
 
         formatterConfiguration.MapCurrentThread(true);

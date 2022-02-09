@@ -10,6 +10,7 @@ using MagicMedia.Telemetry;
 using MassTransit;
 
 WebApplicationBuilder? builder = WebApplication.CreateBuilder(args);
+builder.Logging.ConfigureSerilog(builder.Configuration);
 
 builder.Configuration
     .AddJsonFile("appsettings.json")
