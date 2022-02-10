@@ -24,14 +24,14 @@ public class FileSystemSourceDiscovery : IMediaSourceDiscovery
                 location.Path;
 
             string pattern = location.Filter ?? "*.*";
-            //Log.Information("Discover media in {Path} with pattern: {Pattern}", filePath, pattern);
+            Log.Information("Discover media in {Path} with pattern: {Pattern}", filePath, pattern);
 
             string[] files = Directory.GetFiles(
                 filePath,
                 pattern,
                 SearchOption.AllDirectories);
 
-            //Log.Information("{Count} media found in {Path}", files.Length, filePath);
+            Log.Information("{Count} media found in {Path}", files.Length, filePath);
 
             result.AddRange(files.Select(x =>
                 new MediaDiscoveryIdentifier

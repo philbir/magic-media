@@ -1,4 +1,5 @@
 import Vue from "vue";
+import { v4 as uuidv4 } from 'uuid';
 
 import {
   analyseMedia,
@@ -305,7 +306,8 @@ const mediaModule = {
         type: 0,
         api: moveMedia({
           ids,
-          newLocation
+          newLocation,
+          operationId: uuidv4()
         }),
         dataField: "moveMedia",
         ids: ids,
@@ -322,7 +324,8 @@ const mediaModule = {
       const operation = {
         type: 1,
         api: recycleMedia({
-          ids
+          ids,
+          operationId: uuidv4()
         }),
         dataField: "recycleMedia",
         ids: ids,
@@ -339,7 +342,8 @@ const mediaModule = {
       const operation = {
         type: 4,
         api: deleteMedia({
-          ids
+          ids,
+          operationId: uuidv4()
         }),
         dataField: "deleteMedia",
         ids: ids,

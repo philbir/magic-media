@@ -18,7 +18,7 @@ public static class AuthProviderExtensions
 
         foreach (AuthProviderOptions? option in options)
         {
-            //Log.Information("Add {Name} auth with clientId: {ClientId}",option.Name,option.ClientId);
+            Log.Information("Add {Name} auth with clientId: {ClientId}",option.Name,option.ClientId);
 
             authBuilder.Services.AddSingleton(option);
 
