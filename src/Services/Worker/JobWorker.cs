@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia;
 using MagicMedia.Jobs;
+using MagicMedia.Telemetry;
 using MagicMedia.Video;
 using Microsoft.Extensions.Hosting;
 using Quartz;
@@ -46,8 +47,7 @@ public class JobWorker : BackgroundService
 
     public async override Task StartAsync(CancellationToken cancellationToken)
     {
-        //using Activity? activity = Tracing.Source.StartActivity("Start JobWorker");
-        Activity? activity = null;
+        using Activity? activity = Tracing.Source.StartRootActivity("Start JobWorker");
 
         await _fFmpegInitializer.Intitialize();
 

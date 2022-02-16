@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using MagicMedia.Store;
+using MagicMedia.Telemetry;
 using OpenTelemetry.Trace;
 using Quartz;
 using Serilog;
@@ -20,9 +21,8 @@ public class AzureComputerVisionAnalyseJob : IJob
 
     public async Task Execute(IJobExecutionContext context)
     {
-        using Activity? activity = Tracing.Source.StartActivity(
-            "Execute AzureComputerVisionAnalyse job",
-            ActivityKind.Internal);
+        using Activity? activity = Tracing.Source.StartRootActivity(
+            "Execute AzureComputerVisionAnalyse job");
 
         try
         {

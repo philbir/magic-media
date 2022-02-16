@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
+using MagicMedia.Telemetry;
 using Quartz;
 
 namespace MagicMedia.Jobs;
@@ -15,7 +16,7 @@ public class UpdateAllAlbumSummaryJob : IJob
 
     public async Task Execute(IJobExecutionContext context)
     {
-        using Activity? _ = Tracing.Source.StartActivity("Execut UpdateAllAlbumSummary job");
+        using Activity? _ = Tracing.Source.StartRootActivity("Execut UpdateAllAlbumSummary job");
 
         await _albumSummaryService.UpdateAllAsync(context.CancellationToken);
     }
