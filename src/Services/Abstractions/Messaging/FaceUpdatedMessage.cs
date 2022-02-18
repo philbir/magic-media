@@ -11,6 +11,10 @@ public class FaceUpdatedMessage
 
     public Guid? PersonId { get; set; }
 
+    public FaceUpdatedMessage()
+    {
+    }
+
     public FaceUpdatedMessage(Guid id, string action)
     {
         Id = id;
