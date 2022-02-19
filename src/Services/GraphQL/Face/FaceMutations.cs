@@ -57,7 +57,6 @@ public partial class FaceMutations
         return new UpdateFacesPayload(faces);
     }
 
-
     public async Task<UpdateFacePayload> UnAssignPersonFromFaceAsync(
         Guid id,
         CancellationToken cancellationToken)

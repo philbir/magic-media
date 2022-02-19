@@ -54,7 +54,7 @@ public class AlbumSummaryService : IAlbumSummaryService
             }
             catch (Exception ex)
             {
-                //Log.Error(ex,"Error updating album summary for: {Id}-{Name}", album.Id, album.Title);
+                Log.Error(ex,"Error updating album summary for: {Id}-{Name}", album.Id, album.Title);
             }
         }
     }

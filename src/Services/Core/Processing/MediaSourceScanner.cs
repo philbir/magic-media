@@ -112,7 +112,7 @@ public class MediaSourceScanner : IMediaSourceScanner
             }
             catch (Exception ex)
             {
-                //Log.Error(ex, "Error processing file {file}", file.Id);
+                Log.Error(ex, "Error processing file {file}", file.Id);
             }
         }
     }

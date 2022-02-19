@@ -79,7 +79,7 @@ public class AuditedAuhorizationHandler<TRequirement>
             }
             catch (Exception ex)
             {
-                //Log.Error(ex, "Error in HandleRequirementAsync for Media");
+                Log.Error(ex, "Error in HandleRequirementAsync for Media");
                 context.Fail();
             }
         }

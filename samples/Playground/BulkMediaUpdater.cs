@@ -28,7 +28,6 @@ namespace MagicMedia.Playground
             _dbContext = dbContext;
         }
 
-
         public async Task UpdateMediaAISummaryAsync(CancellationToken cancellationToken)
         {
             List<MediaAI> allAI = await _dbContext.MediaAI.AsQueryable().ToListAsync(cancellationToken);
@@ -64,6 +63,26 @@ namespace MagicMedia.Playground
                 TagCount = mediaAI.Tags.Count()
             };
         }
+
+        public async Task DeleteMediaAIOrphansAsync()
+        {
+            List<Guid> allIds = _dbContext.Medias.AsQueryable()
+                            .Where(x => x.State == MediaState.Active)
+                            .Select(x => x.Id)
+                            .ToList();
+
+            FilterDefinition<MediaAI> filter = Builders<MediaAI>.Filter.Not(
+                Builders<MediaAI>.Filter.In(x => x.MediaId, allIds));
+
+            IFindFluent<MediaAI, MediaAI> cursor = _dbContext.MediaAI.Find(filter);
+
+            Guid[] mediaAIds = (await cursor.ToListAsync()).Select(x =>x.Id).ToArray();
+
+            _dbContext.MediaAI.DeleteMany(f =>
+                mediaAIds.Contains(f.Id));
+
+        }
+
 
         public async Task ResetMediaAIErrorsAsync()
         {
@@ -104,7 +123,6 @@ namespace MagicMedia.Playground
             }
         }
 
-
         public async Task CleanUpDeletedAsync(CancellationToken cancellationToken)
         {
             FilterDefinition<Media> filter = Builders<Media>.Filter.Regex(
@@ -120,14 +138,14 @@ namespace MagicMedia.Playground
             int completedCount = 0;
             int errorCount = 0;
 
-            //Log.Information("{Count} items found", totalCount);
+            Log.Information("{Count} items found", totalCount);
 
 
             foreach (Media media in items)
             {
                 try
                 {
-                    //Log.Information("{Completed} of {Count} - {Id}", completedCount, totalCount, media.Id);
+                    Log.Information("{Completed} of {Count} - {Id}", completedCount, totalCount, media.Id);
 
                     IEnumerable<MediaFileInfo> files = _mediaService.GetMediaFiles(media);
 
@@ -145,7 +163,7 @@ namespace MagicMedia.Playground
                 catch (Exception ex)
                 {
                     errorCount++;
-                    //Log.Error(ex, "Error with {Id}", media.Id);
+                    Log.Error(ex, "Error with {Id}", media.Id);
                 }
                 finally
                 {

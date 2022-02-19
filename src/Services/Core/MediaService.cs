@@ -8,7 +8,6 @@ using MagicMedia.Messaging;
 using MagicMedia.Processing;
 using MagicMedia.Store;
 using MassTransit;
-using Serilog;
 using SixLabors.ImageSharp;
 
 namespace MagicMedia;

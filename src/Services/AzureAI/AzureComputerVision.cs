@@ -47,12 +47,12 @@ public class AzureComputerVision : ICloudAIMediaAnalyser
         }
         catch (ComputerVisionErrorException ex)
         {
-            //Log.Error(ex, "Error in analyse image. Message: {Message}", ex.Response.Content);
+            Log.Error(ex, "Error in analyse image. Message: {Message}", ex.Response.Content);
             throw;
         }
         catch (Exception ex)
         {
-            //Log.Error(ex, "Error in analyse image");
+            Log.Error(ex, "Error in analyse image");
             throw;
         }
     }

@@ -1,7 +1,3 @@
-using System;
-using System.Linq;
-using Microsoft.AspNetCore.Http;
-
 namespace MagicMedia.Api;
 
 public static class HttpContextExtensions

@@ -1,6 +1,3 @@
-using System;
-using Microsoft.AspNetCore.Http;
-
 namespace MagicMedia.Identity;
 
 public static class PreferedIdpCookieExtensions

@@ -1,11 +1,6 @@
-using System;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 using MagicMedia.Authorization;
 using MagicMedia.Store;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MagicMedia.Api.Controllers;

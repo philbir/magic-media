@@ -3,7 +3,6 @@ using MagicMedia.Identity.Exceptions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Extensions.Context;
-using Serilog;
 
 namespace MagicMedia.Identity.Data.Mongo;
 

@@ -11,6 +11,7 @@ public static class JobsServiceCollectionExtensions
         builder.Services.AddSingleton<IJob, UpdateAllAlbumSummaryJob>();
         builder.Services.AddSingleton<IJob, UpdateAllPersonSummaryJob>();
         builder.Services.AddSingleton<IJob, AzureComputerVisionAnalyseJob>();
+        builder.Services.AddSingleton<IJob, BuildFaceModelJob>();
 
         return builder;
     }

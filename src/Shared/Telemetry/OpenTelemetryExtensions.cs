@@ -39,46 +39,7 @@ public static class OpenTelemetryExtensions
         IConfiguration configuration,
         Action<TracerProviderBuilder>? builder = null)
     {
-        TelemetryOptions telOptions = configuration.GetTelemetryOptions();
-
-        //services.AddSingleton<ActivityEnricher, CustomActivityEnricher>();
-        ResourceBuilder resourceBuilder = CreateResourceBuilder(telOptions.ServiceName);
-
         services.ConfigureLogging();
-
-        services.AddOpenTelemetryTracing(tracing =>
-        {
-            tracing
-                .AddAspNetCoreInstrumentation()
-                .AddHotChocolateInstrumentation()
-                .AddHttpClientInstrumentation()
-                .AddMongoDBInstrumentation()
-                .AddMassTransitInstrumentation()
-                .AddSources()
-                .AddOtlpExporter(ConfigureOtlp)
-                .SetResourceBuilder(resourceBuilder)
-                    .SetErrorStatusOnException();
-
-            if (Debugger.IsAttached)
-            {
-                tracing.AddConsoleExporter();
-            }
-
-            builder?.Invoke(tracing);
-        });
-
-        services.AddOpenTelemetryMetrics(metrics =>
-        {
-            metrics.SetResourceBuilder(resourceBuilder);
-            metrics.AddHttpClientInstrumentation();
-            metrics.AddAspNetCoreInstrumentation();
-            metrics.AddOtlpExporter(ConfigureOtlp);
-
-            if (Debugger.IsAttached)
-            {
-                metrics.AddConsoleExporter();
-            }
-        });
 
         return services;
     }

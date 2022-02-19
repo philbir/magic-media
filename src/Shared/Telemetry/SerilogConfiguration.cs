@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Elastic.CommonSchema;
 using Elastic.CommonSchema.Serilog;
 using Microsoft.AspNetCore.Http;

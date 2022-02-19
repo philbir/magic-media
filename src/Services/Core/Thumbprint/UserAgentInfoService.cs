@@ -24,7 +24,7 @@ public class UserAgentInfoService : IUserAgentInfoService
         }
         catch (Exception ex)
         {
-            //Log.Error(ex, "Error parsing userAgentString: {UserAgent}", userAgentString);
+            Log.Error(ex, "Error parsing userAgentString: {UserAgent}", userAgentString);
         }
 
         try
@@ -41,7 +41,7 @@ public class UserAgentInfoService : IUserAgentInfoService
         }
         catch (Exception ex)
         {
-            //Log.Error(ex, "Error parsing userAgentString: {UserAgent}", userAgentString);
+            Log.Error(ex, "Error parsing userAgentString: {UserAgent}", userAgentString);
         }
 
         return ua;

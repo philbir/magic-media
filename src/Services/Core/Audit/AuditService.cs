@@ -56,7 +56,7 @@ public class AuditService : IAuditService
         }
         catch (Exception ex)
         {
-            //Log.Error(ex, "Could not send audit event");
+            Log.Error(ex, "Could not send audit event");
         }
 
         return Task.CompletedTask;

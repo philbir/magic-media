@@ -5,7 +5,6 @@ using MagicMedia.Processing;
 using MagicMedia.Telemetry;
 using OpenTelemetry.Trace;
 using Quartz;
-using Serilog;
 
 namespace MagicMedia.Jobs;
 

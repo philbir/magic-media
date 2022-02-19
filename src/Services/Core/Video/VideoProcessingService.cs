@@ -8,7 +8,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Store;
 using NGeoHash;
-using Serilog;
 using Xabe.FFmpeg;
 using MetadataEx = MetadataExtractor;
 

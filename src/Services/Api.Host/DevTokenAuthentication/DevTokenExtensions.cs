@@ -1,4 +1,3 @@
-using System;
 using Microsoft.AspNetCore.Authentication;
 
 namespace MagicMedia.Api.DevTokenAuthentication;

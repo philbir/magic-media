@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Duende.IdentityServer;
 using Duende.IdentityServer.Models;
 

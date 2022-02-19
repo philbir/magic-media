@@ -1,6 +1,3 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using MagicMedia.Authorization;
 using MagicMedia.Face;
 using MagicMedia.Store;

@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using MongoDB.Driver;
 using MongoDB.Driver.GridFS;
-using Serilog;
 
 namespace MagicMedia.Store.MongoDb;
 

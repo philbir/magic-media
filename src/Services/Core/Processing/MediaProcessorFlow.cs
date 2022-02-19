@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using OpenTelemetry.Trace;
-using Serilog;
 
 namespace MagicMedia.Processing;
 

@@ -8,7 +8,6 @@ using MagicMedia.Search;
 using MagicMedia.Security;
 using MagicMedia.Store;
 using MassTransit;
-using Serilog;
 
 namespace MagicMedia;
 

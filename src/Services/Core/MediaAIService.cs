@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using MagicMedia.Extensions;
 using MagicMedia.ImageAI;
 using MagicMedia.Store;
-using Serilog;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Jpeg;
 

@@ -1,4 +1,3 @@
-using System;
 using Duende.IdentityServer.Models;
 using Microsoft.AspNetCore.Mvc;
 

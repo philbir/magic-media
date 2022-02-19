@@ -61,7 +61,7 @@ public class SimilarMediaService : ISimilarMediaService
                         }
                         catch (Exception ex)
                         {
-                            //Log.Error(ex, "Error GetSimilarity");
+                            Log.Error(ex, "Error GetSimilarity");
                         }
                     }
                 }
