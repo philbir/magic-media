@@ -53,9 +53,9 @@ namespace Playground
             //await hasher.GetDuplicatesAsync();
             //await hasher.HashAsync();
 
-            //await faceScanner.RunAsync(default);
+            await faceScanner.RunAsync(default);
 
-            await updater.DeleteMediaAIOrphansAsync();
+            //await updater.DeleteMediaAIOrphansAsync();
 
             //await thumbprintLoader.LoadAuditThumbprintsAsync();
         }
