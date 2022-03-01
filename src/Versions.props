@@ -3,7 +3,7 @@
     <MassTransitVersion>7.3.1</MassTransitVersion>
     <SixLaborsImageSharpVersion>1.0.4</SixLaborsImageSharpVersion>
     <AspNetCoreVersion>6.0.0</AspNetCoreVersion>
-    <HotChocolateVersion>12.7.0-preview.40</HotChocolateVersion>
+    <HotChocolateVersion>13.0.0-preview.8</HotChocolateVersion>
     <IdentityServerVersion>6.0.4</IdentityServerVersion>
     <SerilogVersion>2.10.0</SerilogVersion>
   </PropertyGroup>
