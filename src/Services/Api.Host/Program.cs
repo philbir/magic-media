@@ -44,9 +44,6 @@ builder.Services.AddOpenTelemetry(builder.Configuration);
 
 WebApplication app = builder.Build();
 
-
-
-
 app.UseDefaultForwardedHeaders();
 app.UseCookiePolicy();
 

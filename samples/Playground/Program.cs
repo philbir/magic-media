@@ -30,13 +30,13 @@ namespace Playground
                 .WriteTo.Console()
                 .CreateLogger();
 
-            using TracerProvider _ = Sdk.CreateTracerProviderBuilder()
-              .SetResourceBuilder(OpenTelemetryExtensions.CreateResourceBuilder("MagicMedia-Playground"))
-              .SetSampler(new AlwaysOnSampler())
-              .AddSource("MagicMedia.Playground")
-              .AddHttpClientInstrumentation()
-              .AddSources()
-              .Build();
+            //using TracerProvider _ = Sdk.CreateTracerProviderBuilder()
+            //  .SetResourceBuilder(OpenTelemetryExtensions.CreateResourceBuilder("MagicMedia-Playground"))
+            //  .SetSampler(new AlwaysOnSampler())
+            //  .AddSource("MagicMedia.Playground")
+            //  .AddHttpClientInstrumentation()
+            //  .AddSources()
+            //  .Build();
 
             IServiceProvider sp = BuildServiceProvider();
             BulkMediaUpdater updater = sp.GetService<BulkMediaUpdater>();

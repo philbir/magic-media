@@ -41,6 +41,43 @@ public static class OpenTelemetryExtensions
     {
         services.ConfigureLogging();
 
+        TelemetryOptions otelOptions = configuration.GetTelemetryOptions();
+        ResourceBuilder resourceBuilder = CreateResourceBuilder(otelOptions.ServiceName);
+
+        services.AddOpenTelemetryTracing(tracing =>
+        {
+            tracing
+                .AddAspNetCoreInstrumentation()
+                .AddHotChocolateInstrumentation()
+                .AddHttpClientInstrumentation()
+                .AddMongoDBInstrumentation()
+                .AddMassTransitInstrumentation()
+                .AddSources()
+                .AddOtlpExporter(ConfigureOtlp)
+                .SetResourceBuilder(resourceBuilder)
+                    .SetErrorStatusOnException();
+
+            if (Debugger.IsAttached)
+            {
+                tracing.AddConsoleExporter();
+            }
+
+            builder?.Invoke(tracing);
+        });
+
+        services.AddOpenTelemetryMetrics(metrics =>
+        {
+            metrics.SetResourceBuilder(resourceBuilder);
+            metrics.AddHttpClientInstrumentation();
+            metrics.AddAspNetCoreInstrumentation();
+            metrics.AddOtlpExporter(ConfigureOtlp);
+
+            if (Debugger.IsAttached)
+            {
+                metrics.AddConsoleExporter();
+            }
+        });
+
         return services;
     }
 
