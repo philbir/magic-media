@@ -1,5 +1,6 @@
 
 using System.IdentityModel.Tokens.Jwt;
+using Duende.IdentityServer;
 using MagicMedia.AspNetCore;
 using MagicMedia.Identity;
 using MagicMedia.Identity.Data.Mongo;
@@ -35,7 +36,10 @@ builder.Services.AddControllersWithViews()
 
 builder.Services.AddMessaging(builder.Configuration);
 builder.Services.AddMassTransitHostedService();
-builder.Services.AddOpenTelemetry(builder.Configuration);
+builder.Services.AddOpenTelemetry(builder.Configuration, b =>
+{
+    b.AddSource(IdentityServerConstants.Tracing.ServiceName);
+});
 
 builder.Services.AddSingleton<IDemoUserService>(s => new DemoUserService(
     builder.Environment.IsDemo(),
