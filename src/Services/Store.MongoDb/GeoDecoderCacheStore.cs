@@ -11,13 +11,13 @@ public class GeoDecoderCacheStore : IGeoDecoderService
     private readonly MediaStoreContext _mediaStoreContext;
     private readonly IGeoDecoderService _geoDecoderService;
 
-    public GeoDecoderCacheStore(MediaStoreContext mediaStoreContext, IGeoDecoderService geoDecoderService)
+    public GeoDecoderCacheStore(
+        MediaStoreContext mediaStoreContext,
+        IGeoDecoderService geoDecoderService)
     {
         _mediaStoreContext = mediaStoreContext;
         _geoDecoderService = geoDecoderService;
     }
-
-
     public async Task<GeoAddress> DecodeAsync(
         double latitude,
         double longitude,
@@ -61,6 +61,7 @@ public class GeoDecoderCacheStore : IGeoDecoderService
                 Distric2 = geoAddress.Distric2,
                 EntityType = geoAddress.EntityType,
                 Name = geoAddress.Name,
+                Raw = geoAddress.Raw,
                 Id = id
             };
         }

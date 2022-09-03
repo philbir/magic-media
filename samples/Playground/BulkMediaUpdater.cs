@@ -11,7 +11,9 @@ using MagicMedia.Store;
 using MagicMedia.Store.MongoDb;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 using Serilog;
+using SixLabors.ImageSharp;
 
 namespace MagicMedia.Playground
 {
@@ -19,12 +21,18 @@ namespace MagicMedia.Playground
     {
         private readonly IMediaService _mediaService;
         private readonly IFaceService _faceService;
+        private readonly IMetadataExtractor _metadataExtractor;
         private readonly MediaStoreContext _dbContext;
 
-        public BulkMediaUpdater(IMediaService mediaService, IFaceService faceService, MediaStoreContext dbContext)
+        public BulkMediaUpdater(
+            IMediaService mediaService,
+            IFaceService faceService,
+            IMetadataExtractor metadataExtractor,
+            MediaStoreContext dbContext)
         {
             _mediaService = mediaService;
             _faceService = faceService;
+            _metadataExtractor = metadataExtractor;
             _dbContext = dbContext;
         }
 
@@ -64,6 +72,25 @@ namespace MagicMedia.Playground
             };
         }
 
+        public async Task UpdateLocationAsync(CancellationToken cancellationToken)
+        {
+            List<Guid> ids = await _dbContext.Medias.AsQueryable()
+                .Where(x => x.State == MediaState.Active && x.GeoLocation.Point != null && x.GeoLocation.Address == null)
+                .Take(10)
+                .Select(x => x.Id)
+                .ToListAsync(cancellationToken);
+
+            foreach (Guid id in ids)
+            {
+                Media media = await _mediaService.GetByIdAsync(id, cancellationToken);
+                MediaBlobData file = await _mediaService.GetMediaData(media, cancellationToken);
+                Image img = Image.Load(file.Data);
+
+                MediaMetadata meta = await _metadataExtractor.GetMetadataAsync(img, cancellationToken);
+            }
+
+        }
+
         public async Task DeleteMediaAIOrphansAsync()
         {
             List<Guid> allIds = _dbContext.Medias.AsQueryable()
@@ -82,7 +109,6 @@ namespace MagicMedia.Playground
                 mediaAIds.Contains(f.Id));
 
         }
-
 
         public async Task ResetMediaAIErrorsAsync()
         {

@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia;
 using MagicMedia.BingMaps;
@@ -30,14 +31,6 @@ namespace Playground
                 .WriteTo.Console()
                 .CreateLogger();
 
-            //using TracerProvider _ = Sdk.CreateTracerProviderBuilder()
-            //  .SetResourceBuilder(OpenTelemetryExtensions.CreateResourceBuilder("MagicMedia-Playground"))
-            //  .SetSampler(new AlwaysOnSampler())
-            //  .AddSource("MagicMedia.Playground")
-            //  .AddHttpClientInstrumentation()
-            //  .AddSources()
-            //  .Build();
-
             IServiceProvider sp = BuildServiceProvider();
             BulkMediaUpdater updater = sp.GetService<BulkMediaUpdater>();
             VideoConverter videoConverter = sp.GetService<VideoConverter>();
@@ -53,7 +46,8 @@ namespace Playground
             //await hasher.GetDuplicatesAsync();
             //await hasher.HashAsync();
 
-            await faceScanner.RunAsync(default);
+            await updater.UpdateLocationAsync(CancellationToken.None);
+            //await faceScanner.RunAsync(default);
 
             //await updater.DeleteMediaAIOrphansAsync();
 
@@ -80,8 +74,6 @@ namespace Playground
                 .AddClientThumbprintServices()
                 .AddWorkerMessaging();
 
-            services.AddOpenTelemetry(config);
-
             services.AddSingleton<ImportSample>();
             services.AddSingleton<DiscoverySample>();
             services.AddSingleton<FaceScanner>();
@@ -89,6 +81,18 @@ namespace Playground
             services.AddSingleton<BulkMediaUpdater>();
             services.AddSingleton<ImageHasher>();
             services.AddSingleton<ClientThumbprintLoader>();
+
+            //services.AddSingleton<IGeoDecoderService>(p =>
+            //{
+            //    return new GeoDecoderCacheStore(p.GetRequiredService<MediaStoreContext>(),
+            //        new BingMapsGeoDecoderService(p.GetRequiredService<BingMapsOptions>()));
+            //});
+
+            services.AddSingleton<IGeoDecoderService>(p =>
+            {
+                return new GeoDecoderCacheStore(p.GetRequiredService<MediaStoreContext>(),
+                    new GoogleMapsGeoDecoderService());
+            });
 
             services.AddSingleton<IUserContextFactory, NoOpUserContextFactory>();
             services.AddMemoryCache();

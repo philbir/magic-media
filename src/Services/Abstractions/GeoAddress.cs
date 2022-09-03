@@ -10,4 +10,12 @@ public class GeoAddress
     public string? Distric1 { get; set; }
     public string? Distric2 { get; set; }
     public string? EntityType { get; set; }
+    public RawGeoAddress Raw { get; set; }
+}
+
+public class RawGeoAddress
+{
+    public string Data { get; set; }
+
+    public string Format { get; set; }
 }
