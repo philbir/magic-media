@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using MagicMedia;
 using MagicMedia.BingMaps;
 using MagicMedia.Discovery;
+using MagicMedia.GoogleMaps;
 using MagicMedia.Messaging;
 using MagicMedia.Playground;
 using MagicMedia.Security;
@@ -68,6 +69,7 @@ namespace Playground
                 .AddMagicMediaServer(config)
                 .AddProcessingMediaServices()
                 .AddBingMaps()
+                .AddGoogleMaps()
                 .AddMongoDbStore()
                 .AddFileSystemStore()
                 .AddFileSystemDiscovery()
@@ -91,7 +93,7 @@ namespace Playground
             services.AddSingleton<IGeoDecoderService>(p =>
             {
                 return new GeoDecoderCacheStore(p.GetRequiredService<MediaStoreContext>(),
-                    new GoogleMapsGeoDecoderService());
+                    new GoogleMapsGeoDecoderService(p.GetRequiredService<GoogleMapsOptions>()));
             });
 
             services.AddSingleton<IUserContextFactory, NoOpUserContextFactory>();

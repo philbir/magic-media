@@ -345,7 +345,7 @@ export default {
         const loc = this.media.geoLocation;
 
         if (this.media.geoLocation.address != null) {
-          geoProps.push([
+          geoProps.push(... [
             {
               label: "Address",
               value: loc.address.name,
@@ -373,7 +373,7 @@ export default {
           ]);
         }
 
-        geoProps.push([
+        geoProps.push(... [
           {
             label: "Coordinates",
             value: `${this.media.geoLocation.point.coordinates[0]}, ${this.media.geoLocation.point.coordinates[1]}`,

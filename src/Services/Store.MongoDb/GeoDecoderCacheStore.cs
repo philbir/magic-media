@@ -18,6 +18,7 @@ public class GeoDecoderCacheStore : IGeoDecoderService
         _mediaStoreContext = mediaStoreContext;
         _geoDecoderService = geoDecoderService;
     }
+
     public async Task<GeoAddress> DecodeAsync(
         double latitude,
         double longitude,

@@ -397,6 +397,9 @@ export default {
         case 68: //d
           console.log(this.$vuetify.breakpoint);
           break;
+        case 73: //i
+          this.toggleInfo();
+          break;
         default:
           break;
       }

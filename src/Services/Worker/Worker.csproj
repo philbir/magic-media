@@ -21,6 +21,7 @@
     <ProjectReference Include="..\AzureAI\AzureAI.csproj" />
     <ProjectReference Include="..\BingMaps\BingMaps.csproj" />
     <ProjectReference Include="..\Core\Core.csproj" />
+    <ProjectReference Include="..\Google.Maps\Google.Maps.csproj" />
     <ProjectReference Include="..\Store.MongoDb\Store.MongoDb.csproj" />
   </ItemGroup>
 </Project>

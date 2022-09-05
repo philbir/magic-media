@@ -3,6 +3,7 @@
 using MagicMedia;
 using MagicMedia.BingMaps;
 using MagicMedia.Discovery;
+using MagicMedia.GoogleMaps;
 using MagicMedia.Jobs;
 using MagicMedia.Messaging;
 using MagicMedia.Scheduling;
@@ -49,7 +50,7 @@ Microsoft.Extensions.Hosting.IHost host = Host.CreateDefaultBuilder(args)
         services
             .AddMagicMediaServer(hostContext.Configuration)
             .AddProcessingMediaServices()
-            .AddBingMaps()
+            .AddGoogleMaps()
             .AddAzureAI()
             .AddMongoDbStore()
             .AddFileSystemStore()
@@ -58,6 +59,13 @@ Microsoft.Extensions.Hosting.IHost host = Host.CreateDefaultBuilder(args)
             .AddClientThumbprintServices()
             .AddScheduler()
             .AddJobs();
+
+        //TODO: Switch to decorater pattern
+        services.AddSingleton<IGeoDecoderService>(p =>
+        {
+            return new GeoDecoderCacheStore(p.GetRequiredService<MediaStoreContext>(),
+                new GoogleMapsGeoDecoderService(p.GetRequiredService<GoogleMapsOptions>()));
+        });
 
         services.AddSingleton<IUserContextFactory, WorkerUserContextFactory>();
         services.AddMemoryCache();

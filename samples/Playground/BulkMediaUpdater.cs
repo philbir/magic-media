@@ -75,20 +75,38 @@ namespace MagicMedia.Playground
         public async Task UpdateLocationAsync(CancellationToken cancellationToken)
         {
             List<Guid> ids = await _dbContext.Medias.AsQueryable()
-                .Where(x => x.State == MediaState.Active && x.GeoLocation.Point != null && x.GeoLocation.Address == null)
-                .Take(10)
+                .Where(x => x.State == MediaState.Active &&
+                            x.MediaType == MediaType.Image &&
+                            x.GeoLocation.Point != null &&
+                            x.GeoLocation.Address == null)
+                .Take(10000)
                 .Select(x => x.Id)
                 .ToListAsync(cancellationToken);
 
             foreach (Guid id in ids)
             {
-                Media media = await _mediaService.GetByIdAsync(id, cancellationToken);
-                MediaBlobData file = await _mediaService.GetMediaData(media, cancellationToken);
-                Image img = Image.Load(file.Data);
+                Console.WriteLine($"{id}");
+                try
+                {
+                    Media media = await _mediaService.GetByIdAsync(id, cancellationToken);
+                    MediaBlobData file = await _mediaService.GetMediaData(media, cancellationToken);
+                    Image img = Image.Load(file.Data);
 
-                MediaMetadata meta = await _metadataExtractor.GetMetadataAsync(img, cancellationToken);
+                    MediaMetadata meta = await _metadataExtractor.GetMetadataAsync(img, cancellationToken);
+
+                    await _dbContext.Medias.UpdateOneAsync(x => x.Id == id,
+                        Builders<Media>.Update.Set(x => x.GeoLocation, meta.GeoLocation),
+                        new UpdateOptions(),
+                        cancellationToken);
+
+                    Console.WriteLine($"{meta.GeoLocation?.Address?.Name}");
+                }
+
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
             }
-
         }
 
         public async Task DeleteMediaAIOrphansAsync()
@@ -103,11 +121,10 @@ namespace MagicMedia.Playground
 
             IFindFluent<MediaAI, MediaAI> cursor = _dbContext.MediaAI.Find(filter);
 
-            Guid[] mediaAIds = (await cursor.ToListAsync()).Select(x =>x.Id).ToArray();
+            Guid[] mediaAIds = (await cursor.ToListAsync()).Select(x => x.Id).ToArray();
 
             _dbContext.MediaAI.DeleteMany(f =>
                 mediaAIds.Contains(f.Id));
-
         }
 
         public async Task ResetMediaAIErrorsAsync()
