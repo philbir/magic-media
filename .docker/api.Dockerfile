@@ -4,7 +4,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 WORKDIR /app
 EXPOSE 80
 
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:6.0.400 AS build
 WORKDIR /src
 
 COPY ["global.json", "/"]
@@ -20,7 +20,6 @@ COPY ["src/Services/BingMaps/BingMaps.csproj", "src/Services/BingMaps/"]
 COPY ["src/Services/Core/Core.csproj", "Csrc/Services//"]
 COPY ["src/Services/GraphQL/GraphQL.csproj", "src/Services/GraphQL/"]
 COPY ["src/Services/Store.MongoDb/Store.MongoDb.csproj", "src/Services/Store.MongoDb/"]
-
 
 RUN dotnet restore "src/Services/Api.Host/Api.Host.csproj"
 
