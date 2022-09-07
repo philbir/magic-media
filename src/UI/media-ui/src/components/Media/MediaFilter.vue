@@ -37,6 +37,9 @@
       <camera-filter></camera-filter>
 
       <media-type-filter></media-type-filter>
+
+      <text-filter></text-filter>
+
     </div>
   </div>
 </template>
@@ -55,6 +58,7 @@ import AITagsFilter from "./Filters/AITagsFilter.vue";
 import AIObjectsFilter from "./Filters/AIObjectsFilter.vue";
 import CameraFilter from "./Filters/CameraFilter.vue";
 import GroupFilter from "./Filters/GroupFilter.vue";
+import TextFilter from './Filters/TextFilter.vue';
 
 export default {
   components: {
@@ -70,6 +74,7 @@ export default {
     AIObjectsFilter,
     CameraFilter,
     GroupFilter,
+    TextFilter,
   },
   created() {
     this.$store.dispatch("media/getSearchFacets");

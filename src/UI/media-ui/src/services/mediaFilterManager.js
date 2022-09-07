@@ -93,6 +93,11 @@ class MediaFilterManager {
                 default: null,
                 valueText: (rootState) => rootState.media.filter.date
             },
+            text: {
+                name: "Text",
+                default: null,
+                valueText: (rootState) => rootState.media.filter.text
+            },
             geoRadius: {
                 name: "Geo",
                 default: null,

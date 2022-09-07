@@ -28,6 +28,7 @@ public class CheckDuplicateTask : IMediaProcessorTask
             var dest = @"D:\MagicMedia\Duplicate";
             try
             {
+                Console.WriteLine($"Move {context.File.Id}");
                 File.Move(context.File.Id, Path.Combine(dest, Path.GetFileName(context.File.Id)), true);
             }
             catch (Exception ex)

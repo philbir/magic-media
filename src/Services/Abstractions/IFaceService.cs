@@ -19,7 +19,7 @@ public interface IFaceService
 
     Task DeleteAsync(Guid id, CancellationToken cancellationToken);
     Task DeleteByMediaIdAsync(Guid mediaId, CancellationToken cancellationToken);
-    Task<IEnumerable<Guid>> DeleteUnassingedByMediaAsync(Guid mediaId, CancellationToken cancellationToken);
+    Task<IEnumerable<Guid>> DeleteUnassignedByMediaAsync(Guid mediaId, CancellationToken cancellationToken);
     Task<MediaFace> GetByIdAsync(Guid id, CancellationToken cancellationToken);
     Task<IEnumerable<MediaFace>> GetFacesByMediaAsync(Guid mediaId, CancellationToken cancellationToken);
     Task<MediaThumbnail> GetThumbnailAsync(Guid id, CancellationToken cancellationToken);

@@ -5,15 +5,21 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using GreenDonut;
+using Grpc.Core;
 using MagicMedia.Extensions;
 using MagicMedia.Face;
 using MagicMedia.Store;
 using MagicMedia.Store.MongoDb;
+using MagicMedia.Stores;
+using MagicMedia.Video;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using Serilog;
 using SixLabors.ImageSharp;
+using MetadataEx = MetadataExtractor;
+
 
 namespace MagicMedia.Playground
 {
@@ -22,17 +28,23 @@ namespace MagicMedia.Playground
         private readonly IMediaService _mediaService;
         private readonly IFaceService _faceService;
         private readonly IMetadataExtractor _metadataExtractor;
+        private readonly IGeoDecoderService _geoDecoderService;
+        private readonly IMediaBlobStore _blobStore;
         private readonly MediaStoreContext _dbContext;
 
         public BulkMediaUpdater(
             IMediaService mediaService,
             IFaceService faceService,
             IMetadataExtractor metadataExtractor,
+            IGeoDecoderService geoDecoderService,
+            IMediaBlobStore blobStore,
             MediaStoreContext dbContext)
         {
             _mediaService = mediaService;
             _faceService = faceService;
             _metadataExtractor = metadataExtractor;
+            _geoDecoderService = geoDecoderService;
+            _blobStore = blobStore;
             _dbContext = dbContext;
         }
 
@@ -76,12 +88,15 @@ namespace MagicMedia.Playground
         {
             List<Guid> ids = await _dbContext.Medias.AsQueryable()
                 .Where(x => x.State == MediaState.Active &&
-                            x.MediaType == MediaType.Image &&
+                            x.MediaType == MediaType.Video &&
                             x.GeoLocation.Point != null &&
                             x.GeoLocation.Address == null)
+                .OrderByDescending(x => x.Source.ImportedAt)
                 .Take(10000)
                 .Select(x => x.Id)
                 .ToListAsync(cancellationToken);
+
+            VideoProcessingService videoProcessingService = new VideoProcessingService(_geoDecoderService);
 
             foreach (Guid id in ids)
             {
@@ -90,9 +105,24 @@ namespace MagicMedia.Playground
                 {
                     Media media = await _mediaService.GetByIdAsync(id, cancellationToken);
                     MediaBlobData file = await _mediaService.GetMediaData(media, cancellationToken);
-                    Image img = Image.Load(file.Data);
+                    
 
-                    MediaMetadata meta = await _metadataExtractor.GetMetadataAsync(img, cancellationToken);
+                    MediaMetadata meta = null;
+                    if (media.MediaType == MediaType.Image)
+                    {
+                        Image img = Image.Load(file.Data);
+                        meta = await _metadataExtractor.GetMetadataAsync(img, cancellationToken);
+                    }
+                    else
+                    {
+                        IReadOnlyList<MetadataEx.Directory>? vmeta = MetadataEx.ImageMetadataReader
+                            .ReadMetadata(_blobStore.GetFilename(file));
+
+                        meta = new MediaMetadata();
+
+                        meta.DateTaken = videoProcessingService.GetDateTaken(vmeta);
+                        meta.GeoLocation = await videoProcessingService.GetGpsLocation(vmeta, cancellationToken);
+                    }
 
                     await _dbContext.Medias.UpdateOneAsync(x => x.Id == id,
                         Builders<Media>.Update.Set(x => x.GeoLocation, meta.GeoLocation),

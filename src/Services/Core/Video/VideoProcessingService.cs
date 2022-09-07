@@ -28,13 +28,11 @@ public class VideoProcessingService : IVideoProcessingService
         string filename,
         CancellationToken cancellationToken)
     {
-        //Log.Information("Extract VideoData for: {Filename}", filename);
 
         ExtractVideoDataResult result = new ExtractVideoDataResult()
         {
             Meta = new MediaMetadata()
         };
-
 
         IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(filename, cancellationToken);
         IVideoStream? videoStream = mediaInfo.VideoStreams.FirstOrDefault();
@@ -169,7 +167,9 @@ public class VideoProcessingService : IVideoProcessingService
         return outfile;
     }
 
-    private async Task<GeoLocation?> GetGpsLocation(IReadOnlyList<MetadataEx.Directory> meta, CancellationToken cancellationToken)
+    public async Task<GeoLocation?> GetGpsLocation(
+        IReadOnlyList<MetadataEx.Directory> meta,
+        CancellationToken cancellationToken)
     {
         var geo = GetMetadataValue(meta, "QuickTime Metadata Header/GPS Location");
 
@@ -185,7 +185,10 @@ public class VideoProcessingService : IVideoProcessingService
                 double coordValue;
                 if (double.TryParse(value, out coordValue))
                 {
-                    coordintates.Add(coordValue);
+                    if (coordValue > 0)
+                    {
+                        coordintates.Add(coordValue);
+                    }
                 }
             }
 
@@ -216,7 +219,7 @@ public class VideoProcessingService : IVideoProcessingService
         return null;
     }
 
-    private DateTime? GetDateTaken(IReadOnlyList<MetadataEx.Directory> meta)
+    public DateTime? GetDateTaken(IReadOnlyList<MetadataEx.Directory> meta)
     {
         string? dateTime = GetMetadataValue(meta, "QuickTime Movie Header/Created");
 
@@ -237,7 +240,7 @@ public class VideoProcessingService : IVideoProcessingService
         return null;
     }
 
-    private string? GetMetadataValue(
+    public string? GetMetadataValue(
         IReadOnlyList<MetadataEx.Directory>? meta, string path)
     {
         if (meta == null)

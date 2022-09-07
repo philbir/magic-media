@@ -118,6 +118,7 @@ public class MongoMediaStore : IMediaStore
             albumMediaResolver,
             cancellationToken)
             .AddAuthorizedOn(request.AuthorizedOnMedia)
+            .AddText(request.Text)
             .AddFolder(request.Folder)
             .AddPersons(request.Persons)
             .AddGroups(request.Groups)

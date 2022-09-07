@@ -76,7 +76,8 @@ const mediaModule = {
       date: null,
       albumId: null,
       geoRadius: null,
-      folder: null
+      folder: null,
+      text: null
     },
     viewer: {
       showFaceBox: true,

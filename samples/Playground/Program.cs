@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia;
@@ -47,12 +49,41 @@ namespace Playground
             //await hasher.GetDuplicatesAsync();
             //await hasher.HashAsync();
 
+
+            //DeleteEmptyDirs("H:\\Photos\\MobileBackup");
+
             await updater.UpdateLocationAsync(CancellationToken.None);
             //await faceScanner.RunAsync(default);
 
             //await updater.DeleteMediaAIOrphansAsync();
 
             //await thumbprintLoader.LoadAuditThumbprintsAsync();
+
+
+        }
+
+        static void DeleteEmptyDirs(string dir)
+        {
+            try
+            {
+                foreach (var d in Directory.EnumerateDirectories(dir))
+                {
+                    DeleteEmptyDirs(d);
+                }
+
+                IEnumerable<string> entries = Directory.EnumerateFileSystemEntries(dir);
+
+                if (!entries.Any())
+                {
+                    try
+                    {
+                        Directory.Delete(dir);
+                    }
+                    catch (UnauthorizedAccessException) { }
+                    catch (DirectoryNotFoundException) { }
+                }
+            }
+            catch (UnauthorizedAccessException) { }
         }
 
         private static IServiceProvider BuildServiceProvider()
@@ -83,7 +114,6 @@ namespace Playground
             services.AddSingleton<BulkMediaUpdater>();
             services.AddSingleton<ImageHasher>();
             services.AddSingleton<ClientThumbprintLoader>();
-
             //services.AddSingleton<IGeoDecoderService>(p =>
             //{
             //    return new GeoDecoderCacheStore(p.GetRequiredService<MediaStoreContext>(),

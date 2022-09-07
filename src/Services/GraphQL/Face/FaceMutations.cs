@@ -94,7 +94,7 @@ public partial class FaceMutations
         Guid mediaId,
         CancellationToken cancellationToken)
     {
-        IEnumerable<Guid>? faceIds = await _faceService.DeleteUnassingedByMediaAsync(
+        IEnumerable<Guid>? faceIds = await _faceService.DeleteUnassignedByMediaAsync(
             mediaId,
             cancellationToken);
 

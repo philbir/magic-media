@@ -43,6 +43,25 @@ public class MediaFilterBuilder
         return this;
     }
 
+    public MediaFilterBuilder AddText(string? text)
+    {
+        if (!string.IsNullOrEmpty(text))
+        {
+            if (Guid.TryParse(text, out var id))
+            {
+                _filter &= Builders<Media>.Filter.Eq(x => x.Id, id);
+            }
+            else
+            {
+                _filter &= Builders<Media>.Filter.Regex(
+                    x => x.Filename,
+                        new BsonRegularExpression(Regex.Escape(text) + "*.", "i"));
+            }
+        }
+
+        return this;
+    }
+
     public MediaFilterBuilder AddFolder(string? folder)
     {
         if (!string.IsNullOrEmpty(folder))

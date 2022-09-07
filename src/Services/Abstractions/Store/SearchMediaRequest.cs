@@ -33,6 +33,8 @@ public class SearchMediaRequest
 
     public string? Date { get; set; }
 
+    public string? Text { get; set; }
+
     public IEnumerable<Guid>? AuthorizedOnMedia { get; set; }
 }
 

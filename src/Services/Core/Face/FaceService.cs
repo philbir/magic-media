@@ -264,7 +264,7 @@ public class FaceService : IFaceService
         return filtered;
     }
 
-    public async Task<IEnumerable<Guid>> DeleteUnassingedByMediaAsync(
+    public async Task<IEnumerable<Guid>> DeleteUnassignedByMediaAsync(
         Guid mediaId,
         CancellationToken cancellationToken)
     {
