@@ -5,13 +5,10 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using GreenDonut;
-using Grpc.Core;
 using MagicMedia.Extensions;
 using MagicMedia.Face;
 using MagicMedia.Store;
 using MagicMedia.Store.MongoDb;
-using MagicMedia.Stores;
 using MagicMedia.Video;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -19,7 +16,6 @@ using MongoDB.Driver.Linq;
 using Serilog;
 using SixLabors.ImageSharp;
 using MetadataEx = MetadataExtractor;
-
 
 namespace MagicMedia.Playground
 {

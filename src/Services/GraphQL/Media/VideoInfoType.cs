@@ -4,7 +4,6 @@ namespace MagicMedia.GraphQL;
 
 public partial class VideoInfoType : ObjectType<VideoInfo>
 {
-    [Obsolete]
     protected override void Configure(IObjectTypeDescriptor<VideoInfo> descriptor)
     {
         descriptor
@@ -17,7 +16,7 @@ public partial class VideoInfoType : ObjectType<VideoInfo>
             {
                 VideoInfo? info = c.Parent<VideoInfo>();
 
-                return info?.Duration.ToString(c.Argument<string>("format"));
+                return info?.Duration.ToString(@"mm\:ss");
             });
     }
 }

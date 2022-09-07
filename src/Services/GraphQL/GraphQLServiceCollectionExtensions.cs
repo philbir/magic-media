@@ -16,7 +16,7 @@ public static class GrapQLServiceCollectionExtensions
         builder.Services.AddGraphQLServer()
             .AddMagicMediaGrapQL();
 
-        builder.Services.AddHttpResultSerializer<ForbiddenHttpResultSerializer>();
+        //builder.Services.AddHttpResultSerializer<ForbiddenHttpResultSerializer>();
 
         return builder;
     }
