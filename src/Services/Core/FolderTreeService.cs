@@ -21,7 +21,6 @@ public class FolderTreeService : IFolderTreeService
         _userContextFactory = userContextFactory;
     }
 
-
     public async Task<FolderItem> GetTreeAsync(CancellationToken cancellationToken)
     {
         IUserContext userContext = await _userContextFactory.CreateAsync(cancellationToken);
@@ -37,6 +36,8 @@ public class FolderTreeService : IFolderTreeService
 
         List<FolderItem> flat = GetFlatList(all);
         FolderItem root = BuildStructure(flat);
+
+        SortTree(root);
 
         return root;
     }
@@ -90,42 +91,49 @@ public class FolderTreeService : IFolderTreeService
 
         return root;
     }
+
+
+    private void SortTree(FolderItem item)
+    {
+        foreach (FolderItem? child in item.Children)
+        {
+            item.Children = item.Children.OrderBy(x => x.Name, new FolderComparer()).ToList();
+            SortTree(child);
+        }
+    }
 }
+
+
 
 class FolderComparer : IComparer<string>
 {
     public int Compare(string? x, string? y)
     {
-        var xNr = GetNumber(x);
-        var yNr = GetNumber(y);
-
-        if (xNr.HasValue)
+        if (x is null || y is null)
         {
-            if (yNr.HasValue)
-            {
-                return yNr.Value.CompareTo(xNr);
-            }
-            else
-            {
-                return 1;
-            }
+            return 0;
         }
-        else
+        if (x.IsNumber() && y.IsNumber())
         {
-            return x.CompareTo(y);
+            var xn = int.Parse(x);
+            var yn = int.Parse(y);
+
+            return yn.CompareTo(xn);
         }
-    }
 
-
-    private int? GetNumber(string? value)
-    {
-        if (int.TryParse(value, out var nr))
+        if (!x.IsNumber() && y.IsNumber())
         {
-            return nr;
+            return 1;
         }
-        return null;
+        if (x.IsNumber() && !y.IsNumber())
+        {
+            return -1;
+        }
+
+        return x.CompareTo(y);
     }
 }
+
 
 
 
@@ -139,5 +147,13 @@ class FolderItemComparer : IEqualityComparer<FolderItem>
     public int GetHashCode(FolderItem obj)
     {
         return obj.Path.GetHashCode();
+    }
+}
+
+static class CompareExtensions
+{
+    internal static bool IsNumber(this string? value)
+    {
+        return int.TryParse(value, out _);
     }
 }
