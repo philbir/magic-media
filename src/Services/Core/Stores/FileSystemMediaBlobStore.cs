@@ -35,6 +35,7 @@ public class FileSystemMediaBlobStore : IMediaBlobStore
     {
         var filename = GetFilename(request);
 
+
         return new FileStream(filename, FileMode.Open);
     }
 

@@ -19,6 +19,7 @@ import { excuteGraphQL } from "./graphqlClient"
 import { mediaOperationTypeMap } from "../services/mediaOperationService";
 import { shareManyMedia } from "../services/shareService"
 import { addSnack } from "./snackService"
+import { mediaListViewMap } from "../services/mediaListViewMap";
 
 const getMediaIdsFromIndexes = state => {
   const ids = [];
@@ -241,9 +242,11 @@ const mediaModule = {
     async search({ commit, state, dispatch }) {
       commit("SET_MEDIALIST_LOADING", true);
 
+      const viewMap = mediaListViewMap[state.thumbnailSize];
+
       const result = await excuteGraphQL(() => searchMedia(
         state.filter,
-        state.thumbnailSize,
+        viewMap.thumbSize,
         state.loadThumbnailData), dispatch);
 
       if (result.success) {

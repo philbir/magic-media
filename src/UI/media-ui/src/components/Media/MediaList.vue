@@ -53,11 +53,49 @@
             left: box.left + 'px',
             height: box.height + 'px',
             width: box.width + 'px',
-            'background-image': 'url(' + box.media.imageUrl + ')',
+            'background-image': layout.withText
+              ? null
+              : 'url(' + box.media.imageUrl + ')',
           }"
         >
           <div v-if="box.media.mediaType === 'VIDEO'" class="duration">
             {{ box.media.videoInfo.duration }}
+          </div>
+
+          <div v-if="layout.withText" style="display: flex">
+            <div
+              :style="{
+                height: box.height + 'px',
+                width: '100px',
+                'background-image': 'url(' + box.media.imageUrl + ')',
+              }"
+            ></div>
+            <div
+              style="
+                margin-left: 4px;
+                font-size: 12px;
+                background-color: #e6e6e6;
+              "
+              :style="{
+                width: box.width - 100 + 'px',
+              }"
+            >
+              <div>
+                <strong>{{ box.media.filename }}</strong>
+              </div>
+              <div>{{ box.media.folder }}</div>
+              <div>{{ box.media.camera ? box.media.camera.title : "" }}</div>
+              <div>
+                {{ box.media.dateTaken | dateformat("DATETIME_SHORT") }}
+              </div>
+              <div class="text-elipsis" :title="box.media.source.identifier">
+                {{ box.media.source.identifier }}
+              </div>
+              <div>
+                <small>{{ box.media.id }}</small>
+              </div>
+            </div>
+            <div />
           </div>
         </div>
       </div>
@@ -106,6 +144,7 @@ export default {
         boxSpacing: viewMap.spacing,
         containerPadding: viewMap.spacing,
       });
+      layout.withText = viewMap.withText;
       layout.rowHeight = viewMap.rowHeight + viewMap.spacing;
       layout.clientHeight = window.innerHeight - 50;
       layout.boxes.forEach((box, i) => {
@@ -281,5 +320,11 @@ export default {
   position: absolute;
   margin: 0;
   height: 36px;
+}
+
+.text-elipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>

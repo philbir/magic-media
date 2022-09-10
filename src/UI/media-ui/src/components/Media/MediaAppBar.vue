@@ -182,6 +182,7 @@ export default {
       { text: "Small", code: "S" },
       { text: "Medium", code: "M" },
       { text: "Large", code: "L" },
+      { text: "Details", code: "D" },
     ],
     showUpload: false,
   }),
