@@ -183,6 +183,7 @@ export default {
       { text: "Medium", code: "M" },
       { text: "Large", code: "L" },
       { text: "Details", code: "D" },
+      { text: "Table", code: "T" },
     ],
     showUpload: false,
   }),
