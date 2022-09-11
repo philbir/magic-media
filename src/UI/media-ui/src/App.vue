@@ -7,7 +7,7 @@
     </template>
     <Upload :show="showUpload"></Upload>
     <v-app>
-      <router-view name="appbar"></router-view>
+      <router-view ref="appBarView" name="appbar"></router-view>
       <v-navigation-drawer clipped v-if="showSidebar" app v-model="nav">
         <router-view name="left"></router-view>
       </v-navigation-drawer>
@@ -58,7 +58,10 @@
       <signal-shell></signal-shell>
     </v-app>
     <v-dialog v-model="mediaViewerOpen" fullscreen>
-      <MediaViewer v-if="mediaViewerOpen"></MediaViewer>
+      <MediaViewer
+        @mediaAction="onMediaAction"
+        v-if="mediaViewerOpen"
+      ></MediaViewer>
     </v-dialog>
     <edit-face-dialog></edit-face-dialog>
   </me-loader>
@@ -253,6 +256,11 @@ export default {
     },
     selectAll: function () {
       this.$store.dispatch("media/selectAll");
+    },
+    onMediaAction: function (e) {
+      console.log("APP", e);
+      const view = this.$refs.appBarView;
+      view.onMediaAction(e);
     },
     updateAvailable(event) {
       this.registration = event.detail;

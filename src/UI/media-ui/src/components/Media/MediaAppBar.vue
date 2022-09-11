@@ -243,6 +243,13 @@ export default {
     clearSelected: function () {
       this.$store.dispatch("media/clearSelected");
     },
+    onMediaAction: function (action) {
+      console.log(action);
+      if (action.action === "ADD_TO_ALBUM") {
+        this.addAlbumType = "ID";
+        this.showAddToAlbum = true;
+      }
+    },
     onClickAction: function (action) {
       switch (action) {
         case "MOVE":
