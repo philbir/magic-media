@@ -168,8 +168,6 @@ const mediaModule = {
     MEDIA_CLOSED: function (state) {
       state.currentMediaId = null;
       state.current = null;
-
-      console.log('media_closes')
     },
     EDIT_MODE_TOGGLE: function (state, value) {
       state.isEditMode = value;

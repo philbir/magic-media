@@ -249,6 +249,8 @@ export default {
       if (action.action === "ADD_TO_ALBUM") {
         this.addAlbumType = "ID";
         this.showAddToAlbum = true;
+      } else if (action.action === "MOVE") {
+        this.showMove = true;
       }
     },
     onClickAction: function (action) {
@@ -303,7 +305,7 @@ export default {
             }
           }
           break;
-        case 77: //m
+        case 88: //x
           this.$store.dispatch("person/buildModel");
           break;
         case 68: //d

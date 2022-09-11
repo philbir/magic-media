@@ -373,6 +373,9 @@ export default {
         case 76: //l
           this.onMediaAction({ action: "ADD_TO_ALBUM" });
           break;
+        case 77: //m
+          this.onMediaAction({ action: "MOVE" });
+          break;
         case 32: //space
           this.$store.dispatch(
             "media/setViewerOptions",
@@ -435,9 +438,10 @@ export default {
         case "AI":
           this.analyseAI();
           break;
+        default:
+          this.$emit("mediaAction", action);
+          break;
       }
-
-      this.$emit("mediaAction", action);
     },
     approveAll: function () {
       this.$store.dispatch("face/approveAllByMedia", this.media.id);
