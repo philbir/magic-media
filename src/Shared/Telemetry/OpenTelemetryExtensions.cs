@@ -59,7 +59,7 @@ public static class OpenTelemetryExtensions
 
             if (Debugger.IsAttached)
             {
-                tracing.AddConsoleExporter();
+                //tracing.AddConsoleExporter();
             }
 
             builder?.Invoke(tracing);

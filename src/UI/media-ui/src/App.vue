@@ -57,7 +57,7 @@
       </v-snackbar>
       <signal-shell></signal-shell>
     </v-app>
-    <v-dialog v-model="mediaViewerOpen" fullscreen>
+    <v-dialog v-model="mediaViewerOpen" @keydown.esc.stop="handleEsc" fullscreen>
       <MediaViewer
         @mediaAction="onMediaAction"
         v-if="mediaViewerOpen"
@@ -230,7 +230,6 @@ export default {
   },
   watch: {
     currentMediaId: function (newValue) {
-      console.log(newValue);
       this.mediaViewerOpen = newValue !== null;
     },
     navDrawerOpen: function (newValue) {
@@ -245,6 +244,9 @@ export default {
     },
   },
   methods: {
+    handleEsc: function(){
+      this.$store.dispatch("media/close");
+    },
     setSize: function (code) {
       this.$store.dispatch("media/setThumbnailSize", code);
     },
@@ -258,7 +260,6 @@ export default {
       this.$store.dispatch("media/selectAll");
     },
     onMediaAction: function (e) {
-      console.log("APP", e);
       const view = this.$refs.appBarView;
       view.onMediaAction(e);
     },

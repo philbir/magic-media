@@ -346,7 +346,7 @@ export default {
         case 39:
           this.navigate(1);
           break;
-        case 27:
+        case 27: //esc
           this.handleHome();
           break;
         case 46:

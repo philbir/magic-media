@@ -80,6 +80,7 @@ const mediaModule = {
       folder: null,
       text: null
     },
+    recentMoves: [],
     viewer: {
       showFaceBox: true,
       showFaceList: true,
@@ -167,6 +168,8 @@ const mediaModule = {
     MEDIA_CLOSED: function (state) {
       state.currentMediaId = null;
       state.current = null;
+
+      console.log('media_closes')
     },
     EDIT_MODE_TOGGLE: function (state, value) {
       state.isEditMode = value;
@@ -304,7 +307,13 @@ const mediaModule = {
       if (!getters["canEdit"])
         return;
 
-      const ids = getMediaIdsFromIndexes(state);
+      let ids = [];
+      if (state.currentMediaId) {
+        ids.push(state.currentMediaId)
+      }
+      else {
+        ids = getMediaIdsFromIndexes(state);
+      }
 
       const operation = {
         type: 0,
@@ -315,6 +324,15 @@ const mediaModule = {
         }),
         dataField: "moveMedia",
         ids: ids,
+      }
+
+      const recents = state.recentMoves.filter(x => x == newLocation);
+      if (recents.length === 0) {
+
+        if (state.recentMoves.length > 3) {
+          state.recentAlbums.splice(0, 1);
+        }
+        state.recentMoves.push(newLocation);
       }
 
       dispatch('startOperation', operation);

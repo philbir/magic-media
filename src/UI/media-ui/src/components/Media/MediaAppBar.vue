@@ -290,7 +290,6 @@ export default {
       if (!this.userActions.media.edit) {
         return;
       }
-
       switch (e.which) {
         case 69: //e
           this.$store.dispatch("media/toggleEditMode");
@@ -310,8 +309,6 @@ export default {
         case 68: //d
           this.$store.dispatch("media/toggleLoadThumbnailData");
           break;
-        default:
-          console.log("KEYPress MediaBar", e.which);
       }
     },
   },

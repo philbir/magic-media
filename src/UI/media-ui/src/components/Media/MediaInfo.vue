@@ -456,7 +456,6 @@ export default {
       if (mediaId) {
         var res = await getInfo(mediaId);
         this.media = res.data.mediaById;
-        console.log(this.media);
       } else {
         this.media = null;
       }
