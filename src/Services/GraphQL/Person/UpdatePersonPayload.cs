@@ -1,20 +1,18 @@
-﻿using System.Collections.Generic;
 using MagicMedia.Store;
 
-namespace MagicMedia.GraphQL
+namespace MagicMedia.GraphQL;
+
+public class UpdatePersonPayload : Payload
 {
-    public class UpdatePersonPayload : Payload
+    public Person? Person { get; }
+
+    public UpdatePersonPayload(Person person)
     {
-        public Person? Person { get; }
+        Person = person;
+    }
 
-        public UpdatePersonPayload(Person person)
-        {
-            Person = person;
-        }
-
-        public UpdatePersonPayload(IReadOnlyList<UserError>? errors = null)
-            : base(errors)
-        {
-        }
+    public UpdatePersonPayload(IReadOnlyList<UserError>? errors = null)
+        : base(errors)
+    {
     }
 }

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30509.190
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31825.309
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Abstractions", "Services\Abstractions\Abstractions.csproj", "{C4486C73-1F1F-4191-B116-D07DD6073144}"
 EndProject
@@ -16,8 +16,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BingMaps.Tests", "..\test\BingMaps.Tests\BingMaps.Tests.csproj", "{3AD57308-CFCF-4FE5-8DC0-F58C0F5D81FF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{B9946157-A449-4176-805B-F47D209D29AA}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Web", "..\samples\Sample.Web\Sample.Web.csproj", "{12DB5097-C464-4757-8E96-7955F674DE58}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureAI", "Services\AzureAI\AzureAI.csproj", "{BE771D20-B1F1-4E37-9C7C-6F375FEAC1C1}"
 EndProject
@@ -52,6 +50,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".props", ".props", "{FFA07502-4FDB-40ED-A320-E922DFDB27E6}"
 	ProjectSection(SolutionItems) = preProject
 		Directory.Build.props = Directory.Build.props
+		..\global.json = ..\global.json
 		Versions.props = Versions.props
 	EndProjectSection
 EndProject
@@ -69,6 +68,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared.AspNetCore", "Shared\AspNetCore\Shared.AspNetCore.csproj", "{E1D28004-4E4D-42DE-9784-E4D80FF9347D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authorization", "Services\Authorization\Authorization.csproj", "{EB582658-D13C-43AA-81BF-BBD00B69F825}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telemetry", "Shared\Telemetry\Telemetry.csproj", "{ED20DF0C-C4F3-410A-A62E-AAFC87EFFBB0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Maps", "Services\Google.Maps\Google.Maps.csproj", "{7B342CDD-FB05-4E3D-AF80-5CDF25228D11}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -96,10 +99,6 @@ Global
 		{3AD57308-CFCF-4FE5-8DC0-F58C0F5D81FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3AD57308-CFCF-4FE5-8DC0-F58C0F5D81FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3AD57308-CFCF-4FE5-8DC0-F58C0F5D81FF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{12DB5097-C464-4757-8E96-7955F674DE58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{12DB5097-C464-4757-8E96-7955F674DE58}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{12DB5097-C464-4757-8E96-7955F674DE58}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{12DB5097-C464-4757-8E96-7955F674DE58}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BE771D20-B1F1-4E37-9C7C-6F375FEAC1C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BE771D20-B1F1-4E37-9C7C-6F375FEAC1C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE771D20-B1F1-4E37-9C7C-6F375FEAC1C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -172,6 +171,14 @@ Global
 		{EB582658-D13C-43AA-81BF-BBD00B69F825}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB582658-D13C-43AA-81BF-BBD00B69F825}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB582658-D13C-43AA-81BF-BBD00B69F825}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED20DF0C-C4F3-410A-A62E-AAFC87EFFBB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED20DF0C-C4F3-410A-A62E-AAFC87EFFBB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED20DF0C-C4F3-410A-A62E-AAFC87EFFBB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED20DF0C-C4F3-410A-A62E-AAFC87EFFBB0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B342CDD-FB05-4E3D-AF80-5CDF25228D11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B342CDD-FB05-4E3D-AF80-5CDF25228D11}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B342CDD-FB05-4E3D-AF80-5CDF25228D11}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B342CDD-FB05-4E3D-AF80-5CDF25228D11}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -179,7 +186,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{C22419BD-CDA0-49F7-A1A9-19CC45DFAEB3} = {F6075731-6037-4B36-B720-4A4E2CF5D42F}
 		{3AD57308-CFCF-4FE5-8DC0-F58C0F5D81FF} = {F6075731-6037-4B36-B720-4A4E2CF5D42F}
-		{12DB5097-C464-4757-8E96-7955F674DE58} = {B9946157-A449-4176-805B-F47D209D29AA}
 		{FBDD3AC8-33D4-4343-BCF5-A418FCCB38CA} = {B9946157-A449-4176-805B-F47D209D29AA}
 		{1A0A651C-CE15-40D1-97DC-8D425B5FAC8C} = {F6075731-6037-4B36-B720-4A4E2CF5D42F}
 		{0A699170-7A97-47B4-8E29-6D510A3DD879} = {5D19ABB7-7DB6-4EB6-87B2-893A3571ED0E}

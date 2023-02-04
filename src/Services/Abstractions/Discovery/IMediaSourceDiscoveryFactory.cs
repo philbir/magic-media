@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
-namespace MagicMedia.Discovery
+namespace MagicMedia.Discovery;
+
+public interface IMediaSourceDiscoveryFactory
 {
-    public interface IMediaSourceDiscoveryFactory
-    {
-        IMediaSourceDiscovery GetSource(MediaDiscoverySource type);
-        IEnumerable<IMediaSourceDiscovery> GetSources();
-    }
+    IMediaSourceDiscovery GetSource(MediaDiscoverySource type);
+    IEnumerable<IMediaSourceDiscovery> GetSources();
 }

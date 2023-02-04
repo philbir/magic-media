@@ -7,6 +7,7 @@ query search(
     items {
       id
       filename
+      folder
       dateTaken
       cameraId
       isFavorite
@@ -18,6 +19,7 @@ query search(
         id
         model
         make
+        title
       }
       dimension {
         height
@@ -34,6 +36,7 @@ query search(
       source {
         identifier
         type
+        importedAt
       }
     }
     hasMore

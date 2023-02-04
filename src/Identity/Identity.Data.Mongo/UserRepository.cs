@@ -3,47 +3,46 @@ using System.Threading.Tasks;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 
-namespace MagicMedia.Identity.Data.Mongo
+namespace MagicMedia.Identity.Data.Mongo;
+
+public class UserRepository : IUserRepository
 {
-    public class UserRepository : IUserRepository
+    private readonly IIdentityDbContext _loginDbContext;
+
+    public UserRepository(IIdentityDbContext loginDbContext)
     {
-        private readonly IIdentityDbContext _loginDbContext;
+        _loginDbContext = loginDbContext;
+    }
 
-        public UserRepository(IIdentityDbContext loginDbContext)
-        {
-            _loginDbContext = loginDbContext;
-        }
+    public async Task<User?> TryGetUserByProvider(
+        string provider,
+        string userIdentifier,
+        CancellationToken cancellationToken)
+    {
 
-        public async Task<User?> TryGetUserByProvider(
-            string provider,
-            string userIdentifier,
-            CancellationToken cancellationToken)
-        {
+        FilterDefinition<UserAuthProvider> providerFilter =
+            Builders<UserAuthProvider>.Filter.And(
+            Builders<UserAuthProvider>.Filter.Eq(
+                x => x.Name, provider),
+            Builders<UserAuthProvider>.Filter.Eq(
+                x => x.UserIdentifier, userIdentifier)
+            );
 
-            FilterDefinition<UserAuthProvider> providerFilter =
-                Builders<UserAuthProvider>.Filter.And(
-                Builders<UserAuthProvider>.Filter.Eq(
-                    x => x.Name, provider),
-                Builders<UserAuthProvider>.Filter.Eq(
-                    x => x.UserIdentifier, userIdentifier)
-                );
+        FilterDefinition<User> filter = Builders<User>.Filter
+            .ElemMatch(x => x.AuthProviders, providerFilter);
 
-            FilterDefinition<User> filter = Builders<User>.Filter
-                .ElemMatch(x => x.AuthProviders, providerFilter);
+        IAsyncCursor<User> cursor = await _loginDbContext.Users.FindAsync(filter, null, cancellationToken);
 
-            IAsyncCursor<User> cursor = await _loginDbContext.Users.FindAsync(filter, null, cancellationToken);
+        return await cursor.FirstOrDefaultAsync(cancellationToken);
+    }
 
-            return await cursor.FirstOrDefaultAsync(cancellationToken);
-        }
+    public async Task<User> AddAsync(User user, CancellationToken cancellationToken)
+    {
+        await _loginDbContext.Users.InsertOneAsync(
+            user,
+            options: null,
+            cancellationToken);
 
-        public async Task<User> AddAsync(User user, CancellationToken cancellationToken)
-        {
-            await _loginDbContext.Users.InsertOneAsync(
-                user,
-                options: null,
-                cancellationToken);
-
-            return user;
-        }
+        return user;
     }
 }

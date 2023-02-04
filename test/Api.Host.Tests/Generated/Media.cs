@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace MagicMedia.Api.Host.Tests
 {
@@ -6,12 +6,12 @@ namespace MagicMedia.Api.Host.Tests
         : IMedia
     {
         public Media(
-            System.Guid id, 
-            string filename, 
-            System.DateTimeOffset? dateTaken, 
-            IMediaDimension dimension, 
-            ICamera camera, 
-            IReadOnlyList<IMediaFace> faces, 
+            System.Guid id,
+            string filename,
+            System.DateTimeOffset? dateTaken,
+            IMediaDimension dimension,
+            ICamera camera,
+            IReadOnlyList<IMediaFace> faces,
             IMediaThumbnail thumbnail)
         {
             Id = id;

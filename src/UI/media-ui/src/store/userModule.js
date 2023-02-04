@@ -74,13 +74,11 @@ const userModule = {
         },
         async getMe({ commit, dispatch }) {
             const result = await excuteGraphQL(() => getMe(), dispatch);
-
             if (result.success) {
                 commit("ME_LOADED", result.data.me);
             }
             else {
                 commit("ERROR");
-                console.log('Load ME Error')
             }
         },
         resetError: function ({ commit }) {

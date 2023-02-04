@@ -1,78 +1,71 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using GreenDonut;
-using HotChocolate.DataLoader;
 using MagicMedia.Store;
 
-namespace MagicMedia.GraphQL.DataLoaders
+namespace MagicMedia.GraphQL.DataLoaders;
+
+public class ThumbnailDataDataLoader : BatchDataLoader<MediaThumbnail, MediaThumbnail>
 {
-    public class ThumbnailDataDataLoader : BatchDataLoader<MediaThumbnail, MediaThumbnail>
+    private readonly IThumbnailBlobStore _thumbnailBlobStore;
+
+    public ThumbnailDataDataLoader(
+        IBatchScheduler batchScheduler,
+        IThumbnailBlobStore thumbnailBlobStore)
+            : base(batchScheduler)
     {
-        private readonly IThumbnailBlobStore _thumbnailBlobStore;
-
-        public ThumbnailDataDataLoader(
-            IBatchScheduler batchScheduler,
-            IThumbnailBlobStore thumbnailBlobStore)
-                : base(batchScheduler)
-        {
-            _thumbnailBlobStore = thumbnailBlobStore;
-        }
-
-        protected async override Task<IReadOnlyDictionary<MediaThumbnail, MediaThumbnail>> LoadBatchAsync(
-            IReadOnlyList<MediaThumbnail> keys,
-            CancellationToken cancellationToken)
-        {
-            Dictionary<MediaThumbnail, MediaThumbnail> result = new();
-
-            var tasks = new List<Task>();
-
-            foreach (MediaThumbnail thumb in keys)
-            {
-                tasks.Add(LoadThumbnailData(thumb, cancellationToken));
-            }
-
-            await Task.WhenAll(tasks);
-
-            return keys.ToDictionary(x => x, y => y);
-        }
-
-        private async Task LoadThumbnailData(MediaThumbnail thumbnail, CancellationToken cancellationToken)
-        {
-            thumbnail.Data = await _thumbnailBlobStore.GetAsync(thumbnail.Id, cancellationToken);
-        }
-
+        _thumbnailBlobStore = thumbnailBlobStore;
     }
 
-
-
-    public class ThumbnailByMediaIdDataLoader : BatchDataLoader<Tuple<Guid, ThumbnailSizeName>, MediaThumbnail>
+    protected async override Task<IReadOnlyDictionary<MediaThumbnail, MediaThumbnail>> LoadBatchAsync(
+        IReadOnlyList<MediaThumbnail> keys,
+        CancellationToken cancellationToken)
     {
-        private readonly IMediaStore _mediaStore;
+        Dictionary<MediaThumbnail, MediaThumbnail> result = new();
 
-        public ThumbnailByMediaIdDataLoader(
-            IBatchScheduler batchScheduler,
-            IMediaStore mediaStore)
-             : base(batchScheduler)
+        var tasks = new List<Task>();
+
+        foreach (MediaThumbnail thumb in keys)
         {
-            _mediaStore = mediaStore;
+            tasks.Add(LoadThumbnailData(thumb, cancellationToken));
         }
 
-        protected async override Task<IReadOnlyDictionary<Tuple<Guid, ThumbnailSizeName>, MediaThumbnail>> LoadBatchAsync(
-            IReadOnlyList<Tuple<Guid, ThumbnailSizeName>> keys,
-            CancellationToken cancellationToken)
-        {
-            ThumbnailSizeName size = keys.First().Item2;
+        await Task.WhenAll(tasks);
 
-            IReadOnlyDictionary<Guid, MediaThumbnail> thumbs = await _mediaStore
-                .GetThumbnailsByMediaIdsAsync(
-                    keys.Select(x => x.Item1),
-                    size,
-                    cancellationToken);
+        return keys.ToDictionary(x => x, y => y);
+    }
 
-            return thumbs.ToDictionary(k => new Tuple<Guid, ThumbnailSizeName>(k.Key, size), v => v.Value);
-        }
+    private async Task LoadThumbnailData(MediaThumbnail thumbnail, CancellationToken cancellationToken)
+    {
+        thumbnail.Data = await _thumbnailBlobStore.GetAsync(thumbnail.Id, cancellationToken);
+    }
+
+}
+
+
+
+public class ThumbnailByMediaIdDataLoader : BatchDataLoader<Tuple<Guid, ThumbnailSizeName>, MediaThumbnail>
+{
+    private readonly IMediaStore _mediaStore;
+
+    public ThumbnailByMediaIdDataLoader(
+        IBatchScheduler batchScheduler,
+        IMediaStore mediaStore)
+         : base(batchScheduler)
+    {
+        _mediaStore = mediaStore;
+    }
+
+    protected async override Task<IReadOnlyDictionary<Tuple<Guid, ThumbnailSizeName>, MediaThumbnail>> LoadBatchAsync(
+        IReadOnlyList<Tuple<Guid, ThumbnailSizeName>> keys,
+        CancellationToken cancellationToken)
+    {
+        ThumbnailSizeName size = keys.First().Item2;
+
+        IReadOnlyDictionary<Guid, MediaThumbnail> thumbs = await _mediaStore
+            .GetThumbnailsByMediaIdsAsync(
+                keys.Select(x => x.Item1),
+                size,
+                cancellationToken);
+
+        return thumbs.ToDictionary(k => new Tuple<Guid, ThumbnailSizeName>(k.Key, size), v => v.Value);
     }
 }

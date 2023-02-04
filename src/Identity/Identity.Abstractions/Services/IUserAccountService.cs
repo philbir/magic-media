@@ -1,10 +1,9 @@
-﻿using System.Threading;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace MagicMedia.Identity.Services
+namespace MagicMedia.Identity.Services;
+
+public interface IUserAccountService
 {
-    public interface IUserAccountService
-    {
-        Task<AuthenticateUserResult> AuthenticateExternalUserAsync(AuthenticateExternalUserRequest request, CancellationToken cancellationToken);
-    }
+    Task<AuthenticateUserResult> AuthenticateExternalUserAsync(AuthenticateExternalUserRequest request, CancellationToken cancellationToken);
 }

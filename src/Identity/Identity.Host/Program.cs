@@ -1,45 +1,80 @@
-using System;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using Serilog;
 
-namespace MagicMedia.Identity
+using System.IdentityModel.Tokens.Jwt;
+using Duende.IdentityServer;
+using MagicMedia.AspNetCore;
+using MagicMedia.Identity;
+using MagicMedia.Identity.Data.Mongo;
+using MagicMedia.Identity.Data.Mongo.Seeding;
+using MagicMedia.Identity.Messaging;
+using MagicMedia.Identity.Services;
+using MagicMedia.Telemetry;
+using MassTransit;
+
+WebApplicationBuilder? builder = WebApplication.CreateBuilder(args);
+builder.Logging.ConfigureSerilog(builder.Configuration);
+
+builder.Configuration
+    .AddJsonFile("appsettings.json")
+    .AddUserSecrets<Program>(optional: true)
+    .AddJsonFile("appsettings.local.json", optional: true)
+    .AddEnvironmentVariables();
+
+JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
+IIdentityServerBuilder idBuilder = builder.Services
+    .AddIdentityServer(builder.Configuration, builder.Environment);
+
+idBuilder.AddDeveloperSigningCredential();
+
+builder.Services.AddDataAccess(builder.Configuration);
+builder.Services.AddIdentityCore(builder.Configuration);
+
+builder.Services.ConfigureSameSiteCookies();
+
+builder.Services.AddControllersWithViews()
+    .AddRazorRuntimeCompilation();
+
+builder.Services.AddMessaging(builder.Configuration);
+builder.Services.AddMassTransitHostedService();
+builder.Services.AddOpenTelemetry(builder.Configuration, b =>
 {
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            LoggingConfig.Configure("Identity");
+    b.AddSource(IdentityServerConstants.Tracing.ServiceName);
+});
 
-            try
-            {
-                Log.Information("Starting IdentityServer");
-                CreateHostBuilder(args).Build().Run();
-            }
-            catch (Exception ex)
-            {
-                Log.Fatal(ex, "IdentityServer terminated unexpectedly");
-            }
-            finally
-            {
-                Log.CloseAndFlush();
-            }
-        }
+builder.Services.AddSingleton<IDemoUserService>(s => new DemoUserService(
+    builder.Environment.IsDemo(),
+    builder.Configuration));
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .UseSerilog()
-                .ConfigureAppConfiguration(builder =>
-                {
-                    builder.AddJsonFile("appsettings.json");
-                    builder.AddUserSecrets<Program>(optional: true);
-                    builder.AddJsonFile("appsettings.local.json", optional: true);
-                    builder.AddEnvironmentVariables();
-                })
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
-    }
+WebApplication app = builder.Build();
+if (builder.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
 }
+else
+{
+    app.UseExceptionHandler("/Home/Error");
+}
+
+if (builder.Environment.IsDevelopment() || builder.Environment.IsDemo())
+{
+    await app.Services.GetRequiredService<DataSeeder>()
+        .SeedIntialDataAsync(default);
+}
+
+app.UseDefaultForwardedHeaders();
+app.UseCookiePolicy();
+app.UseStaticFiles();
+
+app.UseRouting();
+app.UseIdentityServer();
+
+app.UseAuthorization();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Home}/{action=Index}/{id?}");
+});
+
+app.Run();

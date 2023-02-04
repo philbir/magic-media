@@ -1,24 +1,23 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MagicMedia.Processing
+namespace MagicMedia.Processing;
+
+public class ExtractMetadataTask : IMediaProcessorTask
 {
-    public class ExtractMetadataTask : IMediaProcessorTask
+    private readonly IMetadataExtractor _metadataExtractor;
+
+    public ExtractMetadataTask(IMetadataExtractor metadataExtractor)
     {
-        private readonly IMetadataExtractor _metadataExtractor;
+        _metadataExtractor = metadataExtractor;
+    }
 
-        public ExtractMetadataTask(IMetadataExtractor metadataExtractor)
-        {
-            _metadataExtractor = metadataExtractor;
-        }
+    public string Name => MediaProcessorTaskNames.ExtractMetadata;
 
-        public string Name => MediaProcessorTaskNames.ExtractMetadata;
-
-        public async Task ExecuteAsync(
-            MediaProcessorContext context,
-            CancellationToken cancellationToken)
-        {
-            context.Metadata = await _metadataExtractor.GetMetadataAsync(context.Image, default);
-        }
+    public async Task ExecuteAsync(
+        MediaProcessorContext context,
+        CancellationToken cancellationToken)
+    {
+        context.Metadata = await _metadataExtractor.GetMetadataAsync(context.Image, default);
     }
 }

@@ -1,30 +1,29 @@
-﻿using System.IO;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MagicMedia.Processing
+namespace MagicMedia.Processing;
+
+public class CleanUpSourceTask : IMediaProcessorTask
 {
-    public class CleanUpSourceTask : IMediaProcessorTask
+    public string Name => MediaProcessorTaskNames.CleanUpSource;
+
+    public Task ExecuteAsync(MediaProcessorContext context, CancellationToken cancellationToken)
     {
-        public string Name => MediaProcessorTaskNames.CleanUpSource;
 
-        public Task ExecuteAsync(MediaProcessorContext context, CancellationToken cancellationToken)
+        if (context.Options.SaveMedia.SourceAction == SaveMediaSourceAction.Delete)
         {
-
-            if (context.Options.SaveMedia.SourceAction == SaveMediaSourceAction.Delete)
-            {
-                File.Delete(context.File.Id);
-            }
-            else if (context.Options.SaveMedia.SourceAction == SaveMediaSourceAction.Move)
-            {
-                //TODO: Move
-            }
-            else if (context.Options.SaveMedia.SourceAction == SaveMediaSourceAction.Replace)
-            {
-                //TODO: Overwrite source
-            }
-
-            return Task.CompletedTask;
+            File.Delete(context.File.Id);
         }
+        else if (context.Options.SaveMedia.SourceAction == SaveMediaSourceAction.Move)
+        {
+            //TODO: Move
+        }
+        else if (context.Options.SaveMedia.SourceAction == SaveMediaSourceAction.Replace)
+        {
+            //TODO: Overwrite source
+        }
+
+        return Task.CompletedTask;
     }
 }

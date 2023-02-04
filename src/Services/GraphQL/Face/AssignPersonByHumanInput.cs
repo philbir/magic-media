@@ -1,10 +1,7 @@
-using System;
+namespace MagicMedia.GraphQL.Face;
 
-namespace MagicMedia.GraphQL.Face
+public class AssignPersonByHumanInput
 {
-    public class AssignPersonByHumanInput
-    {
-        public Guid FaceId { get; set; }
-        public string PersonName { get; set; }
-    }
+    public Guid FaceId { get; set; }
+    public string? PersonName { get; set; }
 }

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <AssemblyName>MagicMedia.Identity.Host.Tests</AssemblyName>
@@ -32,7 +32,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="IdentityModel" Version="5.0.0-preview.0" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="5.0.0" />
   </ItemGroup>
 

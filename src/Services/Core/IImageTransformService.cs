@@ -1,10 +1,9 @@
-﻿using SixLabors.ImageSharp;
+using SixLabors.ImageSharp;
 
-namespace MagicMedia
+namespace MagicMedia;
+
+public interface IImageTransformService
 {
-    public interface IImageTransformService
-    {
-        Image AutoOrient(Image image);
-        Image Rotate(Image image, float degrees);
-    }
+    Image AutoOrient(Image image);
+    Image Rotate(Image image, float degrees);
 }

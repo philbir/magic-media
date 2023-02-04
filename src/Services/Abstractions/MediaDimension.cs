@@ -1,8 +1,7 @@
-﻿namespace MagicMedia
+namespace MagicMedia;
+
+public class MediaDimension
 {
-    public class MediaDimension
-    {
-        public int Height { get; set; }
-        public int Width { get; set; }
-    }
+    public int Height { get; set; }
+    public int Width { get; set; }
 }

@@ -1,22 +1,21 @@
 using System;
 using System.IO;
 
-namespace MagicMedia
+namespace MagicMedia;
+
+public class MediaDownload : IDisposable
 {
-    public class MediaDownload : IDisposable
+    public MediaDownload(Stream stream, string filename)
     {
-        public MediaDownload(Stream stream, string filename)
-        {
-            Stream = stream;
-            Filename = filename;
-        }
+        Stream = stream;
+        Filename = filename;
+    }
 
-        public Stream Stream { get; }
-        public string Filename { get; }
+    public Stream Stream { get; }
+    public string Filename { get; }
 
-        public void Dispose()
-        {
-            Stream?.Dispose();
-        }
+    public void Dispose()
+    {
+        Stream?.Dispose();
     }
 }

@@ -1,18 +1,18 @@
 using System.Collections.Generic;
+using Duende.IdentityServer;
+using Duende.IdentityServer.Models;
 using IdentityModel;
-using IdentityServer4;
-using IdentityServer4.Models;
 
-namespace MagicMedia.Identity.Data.Mongo.Seeding
+namespace MagicMedia.Identity.Data.Mongo.Seeding;
+
+public class InitialData
 {
-    public class InitialData
-    {
-        private static readonly ICollection<Secret> DefaultSecrets = new List<Secret>
+    private static readonly ICollection<Secret> DefaultSecrets = new List<Secret>
                         { new Secret("geCDNACu94a5DfZQ2Sm46DBjkSErAnNA".ToSha256()) };
 
-        public static IEnumerable<MagicIdentityResource> IdentityResources =>
-            new List<MagicIdentityResource>
-            {
+    public static IEnumerable<MagicIdentityResource> IdentityResources =>
+        new List<MagicIdentityResource>
+        {
                 new MagicIdentityResource
                 {
                     Name = "openid",
@@ -25,11 +25,11 @@ namespace MagicMedia.Identity.Data.Mongo.Seeding
                     ShowInDiscoveryDocument = true,
                     UserClaims = new List<string> { "email", "given_name", "family_name" }
                 }
-            };
+        };
 
-        public static IEnumerable<MagicApiResource> ApiResources =>
-            new List<MagicApiResource>
-            {
+    public static IEnumerable<MagicApiResource> ApiResources =>
+        new List<MagicApiResource>
+        {
                 new MagicApiResource
                 {
                     Name = "api.magic",
@@ -41,11 +41,11 @@ namespace MagicMedia.Identity.Data.Mongo.Seeding
                         "api.magic.imageai"
                     }
                 }
-            };
+        };
 
-        public static IEnumerable<MagicApiScope> ApiScopes =>
-            new List<MagicApiScope>
-            {
+    public static IEnumerable<MagicApiScope> ApiScopes =>
+        new List<MagicApiScope>
+        {
                 new MagicApiScope
                 {
                     Name = "api.magic.read",
@@ -61,11 +61,11 @@ namespace MagicMedia.Identity.Data.Mongo.Seeding
                     Name = "api.magic.imageai",
                     DisplayName = "Read an write ImageAI controller",
                 },
-            };
+        };
 
-        public static IEnumerable<MagicClient> Clients =>
-            new List<MagicClient>
-            {
+    public static IEnumerable<MagicClient> Clients =>
+        new List<MagicClient>
+        {
                 new MagicClient
                 {
                     ClientName = "Media UI",
@@ -116,6 +116,5 @@ namespace MagicMedia.Identity.Data.Mongo.Seeding
                         "api.magic.imageai",
                     },
                 }
-            };
-    }
+        };
 }

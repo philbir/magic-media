@@ -1,11 +1,10 @@
-namespace MagicMedia.Search
+namespace MagicMedia.Search;
+
+public class SearchFacetItem
 {
-    public class SearchFacetItem
-    {
-        public string Text { get; set; }
+    public string? Text { get; set; }
 
-        public string Value { get; set; }
+    public string? Value { get; set; }
 
-        public int Count  { get; set; }
-    }
+    public int Count { get; set; }
 }

@@ -3,11 +3,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Search;
 
-namespace MagicMedia.Store
+namespace MagicMedia.Store;
+
+public interface IAuditEventStore
 {
-    public interface IAuditEventStore
-    {
-        Task AddManyAsync(IEnumerable<AuditEvent> auditEvents, CancellationToken cancellationToken);
-        Task<SearchResult<AuditEvent>> SearchAsync(SearchAuditRequest request, CancellationToken cancellationToken);
-    }
+    Task AddManyAsync(IEnumerable<AuditEvent> auditEvents, CancellationToken cancellationToken);
+    Task<SearchResult<AuditEvent>> SearchAsync(SearchAuditRequest request, CancellationToken cancellationToken);
 }

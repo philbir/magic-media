@@ -53,16 +53,83 @@
             left: box.left + 'px',
             height: box.height + 'px',
             width: box.width + 'px',
-            'background-image': 'url(' + box.media.imageUrl + ')',
+            'background-image': layout.type === 'image'
+              ? 'url(' + box.media.imageUrl + ')'
+              : null,
           }"
         >
-          <div v-if="box.media.mediaType === 'VIDEO'" class="duration">
+          <div v-if="box.media.mediaType === 'VIDEO' && layout.type === 'image'" class="duration">
             {{ box.media.videoInfo.duration }}
+          </div>
+
+          <div v-if="layout.type ==='detail'" class="media-detail-wrapper">
+            <div
+              class="media-detail-image"
+              :style="{
+                height: box.height + 'px',
+                width: '100px',
+                'background-image': 'url(' + box.media.imageUrl + ')',
+              }"
+            ></div>
+            <div
+              style="
+                padding-left: 6px;
+                font-size: 12px;
+                background-color: #fff;"
+                :style="{
+                'width': (box.width -100) + 'px',
+              }"
+            >
+              <div class="detail-row" >
+                <strong>{{ box.media.filename }}</strong>
+              </div>
+              <div class="detail-row" >{{ box.media.folder }}</div>
+              <div class="detail-row">{{ box.media.camera ? box.media.camera.title : "" }}</div>
+              <div class="detail-row">
+                {{ box.media.dateTaken | dateformat("DATETIME_SHORT") }}
+              </div>
+              <div class="detail-row" :title="box.media.source.identifier">
+                {{ box.media.source.identifier }}
+              </div>
+              <div>
+                <small>{{ box.media.id }}</small>
+              </div>
+            </div>
+            <div />
+          </div>
+
+          <div v-if="layout.type === 'table'" class="media-detail-wrapper">
+            <div
+              class="media-detail-image"
+              :style="{
+                height: box.height + 'px',
+                width: '40px',
+                'background-image': 'url(' + box.media.imageUrl + ')',
+              }"
+            ></div>
+
+            <div class="table-column" style="width: 200px">
+             <strong> {{ box.media.filename}}</strong>
+            </div>
+            <div class="table-column" style="width: 200px">
+              {{ box.media.folder}}
+            </div>
+            <div class="table-column" style="width: 150px">{{ box.media.camera ? box.media.camera.title : "" }}</div>
+              <div class="table-column" style="width: 150px">
+                {{ box.media.dateTaken | dateformat("DATETIME_SHORT") }}
+              </div>
+
+              <div class="table-column" style="width: 220px">
+                {{ box.media.id }}
+              </div>
+              <div class="table-column" :title="box.media.source.identifier">
+                {{ box.media.source.identifier }}
+              </div>
           </div>
         </div>
       </div>
       <div
-        :key="i"
+        :key="i + ''"
         v-else
         :style="{ top: row.top + 'px', height: row.boxes[0].height + 'px' }"
         class="media-row hidden"
@@ -106,6 +173,8 @@ export default {
         boxSpacing: viewMap.spacing,
         containerPadding: viewMap.spacing,
       });
+      layout.withText = viewMap.withText;
+      layout.type = viewMap.layoutType;
       layout.rowHeight = viewMap.rowHeight + viewMap.spacing;
       layout.clientHeight = window.innerHeight - 50;
       layout.boxes.forEach((box, i) => {
@@ -282,4 +351,32 @@ export default {
   margin: 0;
   height: 36px;
 }
+
+.media-detail-wrapper{
+  display: flex;
+  font-size: 12px;
+}
+
+.media-detail-image{
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+.detail-row {
+  border-bottom: 1px solid #d0d0d0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.table-column{
+  padding-left: 4px;
+  border-left: 2px solid #fff;
+  margin-top: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+}
+
 </style>

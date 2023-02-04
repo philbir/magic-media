@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
 
-namespace MagicMedia.Authorization
-{
-    public class AuhorizedOnAlbumRequirement : IAuthorizationRequirement { }
-}
+namespace MagicMedia.Authorization;
+
+public class AuhorizedOnAlbumRequirement : IAuthorizationRequirement { }

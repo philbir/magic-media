@@ -1,7 +1,6 @@
-namespace MagicMedia.Stores
-{
-    public class MediaStore 
-    {
+namespace MagicMedia.Stores;
 
-    }
+public class MediaStore
+{
+
 }

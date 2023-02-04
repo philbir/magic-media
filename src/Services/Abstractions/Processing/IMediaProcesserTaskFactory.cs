@@ -1,7 +1,6 @@
-﻿namespace MagicMedia.Processing
+namespace MagicMedia.Processing;
+
+public interface IMediaProcesserTaskFactory
 {
-    public interface IMediaProcesserTaskFactory
-    {
-        IMediaProcessorTask GetTask(string name);
-    }
+    IMediaProcessorTask GetTask(string name);
 }

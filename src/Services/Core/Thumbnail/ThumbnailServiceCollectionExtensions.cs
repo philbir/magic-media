@@ -1,15 +1,15 @@
 using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace MagicMedia.Thumbnail
-{
-    public static class ThumbnailServiceCollectionExtensions
-    {
-        public static IServiceCollection AddThumbnailService(this IServiceCollection services)
-        {
-            services.AddSingleton<IThumbnailService, ThumbnailService>();
+namespace MagicMedia.Thumbnail;
 
-            var defs = new List<ThumbnailSizeDefinition>
+public static class ThumbnailServiceCollectionExtensions
+{
+    public static IServiceCollection AddThumbnailService(this IServiceCollection services)
+    {
+        services.AddSingleton<IThumbnailService, ThumbnailService>();
+
+        var defs = new List<ThumbnailSizeDefinition>
             {
                 new ThumbnailSizeDefinition
                 {
@@ -45,9 +45,8 @@ namespace MagicMedia.Thumbnail
                 }
             };
 
-            services.AddSingleton((IEnumerable<ThumbnailSizeDefinition>) defs);
+        services.AddSingleton((IEnumerable<ThumbnailSizeDefinition>)defs);
 
-            return services;
-        }
+        return services;
     }
 }

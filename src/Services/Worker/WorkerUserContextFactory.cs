@@ -1,75 +1,72 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Security;
 
-namespace MagicMedia
-{
-    public class WorkerUserContextFactory : IUserContextFactory
-    {
-        public Task<IUserContext> CreateAsync(CancellationToken cancellationToken)
-        {
-            return Task.FromResult((IUserContext) new WorkerUserContext());
-        }
+namespace MagicMedia;
 
-        public Task<IUserContext> CreateAsync(ClaimsPrincipal? principal, CancellationToken cancellationToken)
-        {
-            return Task.FromResult((IUserContext) new WorkerUserContext());
-        }
+public class WorkerUserContextFactory : IUserContextFactory
+{
+    public Task<IUserContext> CreateAsync(CancellationToken cancellationToken)
+    {
+        return Task.FromResult((IUserContext)new WorkerUserContext());
     }
 
-    public class WorkerUserContext : IUserContext
+    public Task<IUserContext> CreateAsync(ClaimsPrincipal? principal, CancellationToken cancellationToken)
     {
-        public bool IsAuthenticated => true;
+        return Task.FromResult((IUserContext)new WorkerUserContext());
+    }
+}
 
-        public Guid? UserId => Guid.Empty;
+public class WorkerUserContext : IUserContext
+{
+    public bool IsAuthenticated => true;
 
-        public IEnumerable<string> Roles => new List<string>();
+    public Guid? UserId => Guid.Empty;
 
-        private IEnumerable<Guid> _emptyList = new List<Guid>();
+    public IEnumerable<string> Roles => new List<string>();
 
-        public Task<IEnumerable<Guid>> GetAuthorizedAlbumAsync(CancellationToken cancellationToken)
-        {
-            return Task.FromResult(_emptyList);
-        }
+    private IEnumerable<Guid> _emptyList = new List<Guid>();
 
-        public Task<IEnumerable<Guid>> GetAuthorizedFaceAsync(CancellationToken cancellationToken)
-        {
-            return Task.FromResult(_emptyList);
-        }
+    public Task<IEnumerable<Guid>> GetAuthorizedAlbumAsync(CancellationToken cancellationToken)
+    {
+        return Task.FromResult(_emptyList);
+    }
 
-        public Task<IEnumerable<Guid>> GetAuthorizedMediaAsync(CancellationToken cancellationToken)
-        {
-            return Task.FromResult(_emptyList);
-        }
+    public Task<IEnumerable<Guid>> GetAuthorizedFaceAsync(CancellationToken cancellationToken)
+    {
+        return Task.FromResult(_emptyList);
+    }
 
-        public Task<IEnumerable<Guid>> GetAuthorizedPersonsAsync(CancellationToken cancellationToken)
-        {
-            return Task.FromResult(_emptyList);
-        }
+    public Task<IEnumerable<Guid>> GetAuthorizedMediaAsync(CancellationToken cancellationToken)
+    {
+        return Task.FromResult(_emptyList);
+    }
 
-        public bool HasPermission(string permission)
-        {
-            return true;
-        }
+    public Task<IEnumerable<Guid>> GetAuthorizedPersonsAsync(CancellationToken cancellationToken)
+    {
+        return Task.FromResult(_emptyList);
+    }
 
-        public bool HasRole(string role)
-        {
-            return true;
-        }
+    public bool HasPermission(string permission)
+    {
+        return true;
+    }
 
-        public Task<bool> IsAuthorizedAsync(object resourceId, ProtectedResourceType type, CancellationToken cancellationToken)
-        {
-            return Task.FromResult(true);
-        }
+    public bool HasRole(string role)
+    {
+        return true;
+    }
 
-        public ClientInfo GetClientInfo()
-        {
-            return new ClientInfo();
-        }
+    public Task<bool> IsAuthorizedAsync(object resourceId, ProtectedResourceType type, CancellationToken cancellationToken)
+    {
+        return Task.FromResult(true);
+    }
+
+    public ClientInfo GetClientInfo()
+    {
+        return new ClientInfo();
     }
 }

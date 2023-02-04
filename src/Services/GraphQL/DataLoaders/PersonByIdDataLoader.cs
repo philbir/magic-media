@@ -1,55 +1,48 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using GreenDonut;
-using HotChocolate.DataLoader;
 using MagicMedia.Store;
 
-namespace MagicMedia.GraphQL.DataLoaders
+namespace MagicMedia.GraphQL.DataLoaders;
+
+public class GroupsByPersonIdDataLoader : BatchDataLoader<Guid, Group>
 {
-    public class GroupsByPersonIdDataLoader : BatchDataLoader<Guid, Group>
+    private readonly IGroupService _groupService;
+
+    public GroupsByPersonIdDataLoader(
+        IBatchScheduler batchScheduler,
+        IGroupService groupService)
+        : base(batchScheduler)
     {
-        private readonly IGroupService _groupService;
-
-        public GroupsByPersonIdDataLoader(
-            IBatchScheduler batchScheduler,
-            IGroupService groupService)
-            : base(batchScheduler)
-        {
-            _groupService = groupService;
-        }
-
-        protected override Task<IReadOnlyDictionary<Guid, Group>> LoadBatchAsync(
-            IReadOnlyList<Guid> keys,
-            CancellationToken cancellationToken)
-        {
-            return null;
-        }
+        _groupService = groupService;
     }
 
-    public class PersonByIdDataLoader : BatchDataLoader<Guid, Person>
+    protected override Task<IReadOnlyDictionary<Guid, Group>>? LoadBatchAsync(
+        IReadOnlyList<Guid> keys,
+        CancellationToken cancellationToken)
     {
-        private readonly IPersonService _personService;
+        return null;
+    }
+}
 
-        public PersonByIdDataLoader(
-            IBatchScheduler batchScheduler,
-            IPersonService personService)
-            : base(batchScheduler)
-        {
-            _personService = personService;
-        }
+public class PersonByIdDataLoader : BatchDataLoader<Guid, Person>
+{
+    private readonly IPersonService _personService;
 
-        protected async override Task<IReadOnlyDictionary<Guid, Person>> LoadBatchAsync(
-            IReadOnlyList<Guid> keys,
-            CancellationToken cancellationToken)
-        {
-            IEnumerable<Person> persons = await _personService.GetPersonsAsync(
-                keys,
-                cancellationToken);
+    public PersonByIdDataLoader(
+        IBatchScheduler batchScheduler,
+        IPersonService personService)
+        : base(batchScheduler)
+    {
+        _personService = personService;
+    }
 
-            return persons.ToDictionary(x => x.Id);
-        }
+    protected async override Task<IReadOnlyDictionary<Guid, Person>> LoadBatchAsync(
+        IReadOnlyList<Guid> keys,
+        CancellationToken cancellationToken)
+    {
+        IEnumerable<Person> persons = await _personService.GetPersonsAsync(
+            keys,
+            cancellationToken);
+
+        return persons.ToDictionary(x => x.Id);
     }
 }

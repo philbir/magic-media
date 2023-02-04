@@ -1,11 +1,10 @@
 using System.Collections.Generic;
 
-namespace MagicMedia.Face
-{
-    public class PredictPersonRequest
-    {
-        public IEnumerable<double> Encoding { get; set; }
+namespace MagicMedia.Face;
 
-        public double Distance { get; set; }
-    }
+public class PredictPersonRequest
+{
+    public IEnumerable<double>? Encoding { get; set; }
+
+    public double Distance { get; set; }
 }

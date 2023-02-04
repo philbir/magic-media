@@ -1,15 +1,14 @@
 using System;
 
-namespace MagicMedia.Jobs
+namespace MagicMedia.Jobs;
+
+public class JobScheduleOptions
 {
-    public class JobScheduleOptions
-    {
-        public string Name { get; set; }
+    public string? Name { get; set; }
 
-        public bool Enabled { get; set; }
+    public bool Enabled { get; set; }
 
-        public TimeSpan? Interval { get; set; }
+    public TimeSpan? Interval { get; set; }
 
-        public string? Cron { get; set; }
-    }
+    public string? Cron { get; set; }
 }

@@ -1,22 +1,21 @@
 using System.Threading.Tasks;
 using MassTransit;
 
-namespace MagicMedia.Messaging.Consumers
+namespace MagicMedia.Messaging.Consumers;
+
+public class ItemsAddedToAlbumConsumer : IConsumer<ItemsAddedToAlbumMessage>
 {
-    public class ItemsAddedToAlbumConsumer : IConsumer<ItemsAddedToAlbumMessage>
+    private readonly IAlbumSummaryService _albumSummaryService;
+
+    public ItemsAddedToAlbumConsumer(IAlbumSummaryService albumSummaryService)
     {
-        private readonly IAlbumSummaryService _albumSummaryService;
+        _albumSummaryService = albumSummaryService;
+    }
 
-        public ItemsAddedToAlbumConsumer(IAlbumSummaryService albumSummaryService)
-        {
-            _albumSummaryService = albumSummaryService;
-        }
-
-        public async Task Consume(ConsumeContext<ItemsAddedToAlbumMessage> context)
-        {
-            await _albumSummaryService.UpdateAsync(
-                context.Message.Id,
-                context.CancellationToken);
-        }
+    public async Task Consume(ConsumeContext<ItemsAddedToAlbumMessage> context)
+    {
+        await _albumSummaryService.UpdateAsync(
+            context.Message.Id,
+            context.CancellationToken);
     }
 }

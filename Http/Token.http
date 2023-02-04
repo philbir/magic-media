@@ -1,5 +1,5 @@
 POST http://localhost:5500/connect/token
-Authorization: Basic Media.Test geCDNACu94a5DfZQ2Sm46DBjkSErAnNA
+Authorization: Basic Media.Test XXX
 Accept: application/json
 Content-Type: application/x-www-form-urlencoded
 

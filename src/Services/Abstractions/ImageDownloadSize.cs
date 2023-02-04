@@ -1,9 +1,8 @@
-﻿namespace MagicMedia
+namespace MagicMedia;
+
+public enum ImageDownloadSize
 {
-    public enum ImageDownloadSize
-    {
-        Original,
-        Medium,
-        Small
-    }
+    Original,
+    Medium,
+    Small
 }

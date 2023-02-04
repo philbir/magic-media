@@ -8,7 +8,7 @@ using Xunit;
 namespace MagicMedia.Api.Host.Tests.GraphQL
 {
     [Collection(TestCollectionNames.ApiServerWithIdentity)]
-    public class GetMediaByIdTests 
+    public class GetMediaByIdTests
     {
         private readonly ApiTestServerWithIdentity _apiTestServer;
 

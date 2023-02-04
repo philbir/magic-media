@@ -1,15 +1,9 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MagicMedia.Identity.Data;
 
-namespace MagicMedia.Messaging
-{
-    public record InviteUserRequestedMessage(Guid UserId, string Name, string Email);
+namespace MagicMedia.Messaging;
 
-    public record InviteUserCreatedMessage(Guid UserId, string Name, string Email, string Code);
+public record InviteUserRequestedMessage(Guid UserId, string Name, string Email);
 
-    public record UserAccountCreatedMessage(Guid UserId);
-}
+public record InviteUserCreatedMessage(Guid UserId, string Name, string Email, string Code);
+
+public record UserAccountCreatedMessage(Guid UserId);

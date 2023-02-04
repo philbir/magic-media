@@ -16,6 +16,7 @@ const albumModule = {
   namespaced: true,
   state: () => ({
     albums: [],
+    recentAlbums: [],
     allAlbums: [],
     filter: {
       searchText: "",
@@ -27,6 +28,15 @@ const albumModule = {
     ITEM_ADDED(state, album) {
       const albums = state.allAlbums.filter(x => x.id == album.id);
       if (albums.length === 0) state.allAlbums.push(album);
+
+      const recents = state.recentAlbums.filter(x => x.id == album.id);
+      if (recents.length === 0) {
+
+        if (state.recentAlbums.length > 5) {
+          state.recentAlbums.splice(0, 1);
+        }
+        state.recentAlbums.push(album);
+      }
     },
     ALBUM_UPDATED(state, album) {
       let idx = state.allAlbums.findIndex(x => x.id == album.id);

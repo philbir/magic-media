@@ -1,4 +1,4 @@
-mutation deletePerson($id: Uuid!) {
+mutation deletePerson($id: UUID!) {
   Person_Delete(id: $id) {
     id
     errors {

@@ -1,121 +1,120 @@
-using IdentityServer4.Models;
+using Duende.IdentityServer.Models;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 using MongoDB.Extensions.Context;
 
-namespace MagicMedia.Identity.Data.Mongo
+namespace MagicMedia.Identity.Data.Mongo;
+
+public class IdentityDbContext : MongoDbContext, IIdentityDbContext
 {
-    public class IdentityDbContext : MongoDbContext, IIdentityDbContext
+    public IdentityDbContext(MongoOptions mongoOptions)
+        : base(mongoOptions, enableAutoInitialize: true)
+    { }
+
+    private IMongoCollection<MagicClient>? _clients = null;
+    private IMongoCollection<PersistedGrant>? _grants = null;
+    private IMongoCollection<MagicApiScope>? _apiScopes = null;
+    private IMongoCollection<MagicIdentityResource>? _identityResources = null;
+    private IMongoCollection<MagicApiResource>? _apiResources = null;
+    private IMongoCollection<SignUpSession>? _signUpSessions = null;
+    private IMongoCollection<User>? _users = null;
+    private IMongoCollection<Invite>? _invites = null;
+
+    public IMongoCollection<MagicClient> Clients
     {
-        public IdentityDbContext(MongoOptions mongoOptions)
-            : base(mongoOptions, enableAutoInitialize: true)
-        { }
-
-        private IMongoCollection<MagicClient>? _clients = null;
-        private IMongoCollection<PersistedGrant>? _grants = null;
-        private IMongoCollection<MagicApiScope>? _apiScopes = null;
-        private IMongoCollection<MagicIdentityResource>? _identityResources = null;
-        private IMongoCollection<MagicApiResource>? _apiResources = null;
-        private IMongoCollection<SignUpSession>? _signUpSessions = null;
-        private IMongoCollection<User>? _users = null;
-        private IMongoCollection<Invite>? _invites = null;
-
-        public IMongoCollection<MagicClient> Clients
+        get
         {
-            get
-            {
-                if (_clients == null)
-                    _clients = CreateCollection<MagicClient>();
-                return _clients;
-            }
+            if (_clients == null)
+                _clients = CreateCollection<MagicClient>();
+            return _clients;
         }
+    }
 
-        public IMongoCollection<PersistedGrant> PersistedGrants
+    public IMongoCollection<PersistedGrant> PersistedGrants
+    {
+        get
         {
-            get
-            {
-                if (_grants == null)
-                    _grants = CreateCollection<PersistedGrant>();
-                return _grants;
-            }
+            if (_grants == null)
+                _grants = CreateCollection<PersistedGrant>();
+            return _grants;
         }
+    }
 
-        public IMongoCollection<MagicApiScope> ApiScopes
+    public IMongoCollection<MagicApiScope> ApiScopes
+    {
+        get
         {
-            get
-            {
-                if (_apiScopes == null)
-                    _apiScopes = CreateCollection<MagicApiScope>();
-                return _apiScopes;
-            }
+            if (_apiScopes == null)
+                _apiScopes = CreateCollection<MagicApiScope>();
+            return _apiScopes;
         }
+    }
 
-        public IMongoCollection<MagicIdentityResource> IdentityResources
+    public IMongoCollection<MagicIdentityResource> IdentityResources
+    {
+        get
         {
-            get
-            {
-                if (_identityResources == null)
-                    _identityResources = CreateCollection<MagicIdentityResource>();
-                return _identityResources;
-            }
+            if (_identityResources == null)
+                _identityResources = CreateCollection<MagicIdentityResource>();
+            return _identityResources;
         }
+    }
 
-        public IMongoCollection<MagicApiResource> ApiResources
+    public IMongoCollection<MagicApiResource> ApiResources
+    {
+        get
         {
-            get
-            {
-                if (_apiResources == null)
-                    _apiResources = CreateCollection<MagicApiResource>();
-                return _apiResources;
-            }
+            if (_apiResources == null)
+                _apiResources = CreateCollection<MagicApiResource>();
+            return _apiResources;
         }
+    }
 
-        public IMongoCollection<SignUpSession> SignUpSessions
+    public IMongoCollection<SignUpSession> SignUpSessions
+    {
+        get
         {
-            get
-            {
-                if (_signUpSessions == null)
-                    _signUpSessions = CreateCollection<SignUpSession>();
-                return _signUpSessions;
-            }
+            if (_signUpSessions == null)
+                _signUpSessions = CreateCollection<SignUpSession>();
+            return _signUpSessions;
         }
+    }
 
-        public IMongoCollection<Invite> Invites
+    public IMongoCollection<Invite> Invites
+    {
+        get
         {
-            get
-            {
-                if (_invites == null)
-                    _invites = CreateCollection<Invite>();
-                return _invites;
-            }
+            if (_invites == null)
+                _invites = CreateCollection<Invite>();
+            return _invites;
         }
+    }
 
-        public IMongoCollection<User> Users
+    public IMongoCollection<User> Users
+    {
+        get
         {
-            get
-            {
-                if (_users == null)
-                    _users = CreateCollection<User>();
-                return _users;
-            }
+            if (_users == null)
+                _users = CreateCollection<User>();
+            return _users;
         }
+    }
 
-        protected override void OnConfiguring(IMongoDatabaseBuilder mongoDatabaseBuilder)
-        {
-            mongoDatabaseBuilder
-                    .RegisterSerializer(new DateTimeOffsetSerializer(BsonType.String))
-                    .ConfigureConnection(con => con.ReadConcern = ReadConcern.Majority)
-                    .ConfigureConnection(con => con.WriteConcern = WriteConcern.WMajority)
-                    .ConfigureConnection(con => con.ReadPreference = ReadPreference.Primary)
-                    .ConfigureCollection(new ApiScopeCollectionConfiguration())
-                    .ConfigureCollection(new PersistedGrantCollectionConfiguration())
-                    .ConfigureCollection(new IdentityResourceCollectionConfiguration())
-                    .ConfigureCollection(new ApiResourceCollectionConfiguration())
-                    .ConfigureCollection(new SignUpSessionCollectionConfiguration())
-                    .ConfigureCollection(new UserCollectionConfiguration())
-                    .ConfigureCollection(new InviteCollectionConfiguration())
-                    .ConfigureCollection(new OneLoginClientCollectionConfiguration());
-        }
+    protected override void OnConfiguring(IMongoDatabaseBuilder mongoDatabaseBuilder)
+    {
+        mongoDatabaseBuilder
+                .RegisterSerializer(new DateTimeOffsetSerializer(BsonType.String))
+                .ConfigureConnection(con => con.ReadConcern = ReadConcern.Majority)
+                .ConfigureConnection(con => con.WriteConcern = WriteConcern.WMajority)
+                .ConfigureConnection(con => con.ReadPreference = ReadPreference.Primary)
+                .ConfigureCollection(new ApiScopeCollectionConfiguration())
+                .ConfigureCollection(new PersistedGrantCollectionConfiguration())
+                .ConfigureCollection(new IdentityResourceCollectionConfiguration())
+                .ConfigureCollection(new ApiResourceCollectionConfiguration())
+                .ConfigureCollection(new SignUpSessionCollectionConfiguration())
+                .ConfigureCollection(new UserCollectionConfiguration())
+                .ConfigureCollection(new InviteCollectionConfiguration())
+                .ConfigureCollection(new OneLoginClientCollectionConfiguration());
     }
 }

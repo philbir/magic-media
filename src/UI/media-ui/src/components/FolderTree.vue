@@ -48,6 +48,12 @@ export default {
     files: {},
     active: [],
     specialFolders: [
+    {
+        name: "Inbox",
+        path: "New",
+        icon: "mdi-mailbox-up",
+        color: "blue"
+      },
       {
         name: "Favorites",
         path: "SPECIAL:FAVORITES",
@@ -72,7 +78,7 @@ export default {
   computed: {
     folderTree: function () {
       return [
-        ...this.$store.state.media.folderTree.children,
+        ...this.$store.state.media.folderTree.children.filter(x => x.name !== "New"),
         ...this.specialFolders,
       ];
     },

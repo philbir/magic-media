@@ -1,4 +1,4 @@
-query getAlbumById($id: Uuid!) {
+query getAlbumById($id: UUID!) {
   album(id: $id) {
     id
     title

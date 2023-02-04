@@ -1,71 +1,71 @@
 using System;
 
-namespace MagicMedia.Processing
+namespace MagicMedia.Processing;
+
+public class MediaProcessorFlowFactory : IMediaProcessorFlowFactory
 {
-    public class MediaProcessorFlowFactory : IMediaProcessorFlowFactory
+    private readonly IMediaProcesserTaskFactory _taskFactory;
+
+    public MediaProcessorFlowFactory(IMediaProcesserTaskFactory taskFactory)
     {
-        private readonly IMediaProcesserTaskFactory _taskFactory;
+        _taskFactory = taskFactory;
+    }
 
-        public MediaProcessorFlowFactory(IMediaProcesserTaskFactory taskFactory)
+    public IMediaProcessorFlow CreateFlow(string name)
+    {
+        switch (name)
         {
-            _taskFactory = taskFactory;
-        }
-
-        public IMediaProcessorFlow CreateFlow(string name)
-        {
-            switch (name)
-            {
-                case "ImportImageWithFace":
-                    return new MediaProcessorFlow(_taskFactory, new[]
-                    {
+            case "ImportImageWithFace":
+                return new MediaProcessorFlow(_taskFactory, new[]
+                {
                         MediaProcessorTaskNames.AutoOrient,
                         MediaProcessorTaskNames.ExtractMetadata,
+                        MediaProcessorTaskNames.CreateHashes,
+                        MediaProcessorTaskNames.CheckDuplicate,
                         MediaProcessorTaskNames.GenerateThumbnails,
                         MediaProcessorTaskNames.BuildFaceData,
                         MediaProcessorTaskNames.PredictPersons,
                         MediaProcessorTaskNames.GenerateWebImage,
-                        MediaProcessorTaskNames.CreateHashes,
                         MediaProcessorTaskNames.SaveMedia,
                     });
-                case "ImportImage":
-                    return new MediaProcessorFlow(_taskFactory, new[]
-                    {
+            case "ImportImage":
+                return new MediaProcessorFlow(_taskFactory, new[]
+                {
                         MediaProcessorTaskNames.AutoOrient,
                         MediaProcessorTaskNames.ExtractMetadata,
+                        MediaProcessorTaskNames.CreateHashes,
+                        MediaProcessorTaskNames.CheckDuplicate,
                         MediaProcessorTaskNames.GenerateThumbnails,
                         MediaProcessorTaskNames.GenerateWebImage,
-                        MediaProcessorTaskNames.CreateHashes,
                         MediaProcessorTaskNames.SaveMedia,
                         MediaProcessorTaskNames.CleanUpSource
                     });
-                case "ScanFaces":
-                    return new MediaProcessorFlow(_taskFactory, new[]
-                    {
+            case "ScanFaces":
+                return new MediaProcessorFlow(_taskFactory, new[]
+                {
                         MediaProcessorTaskNames.BuildFaceData,
                         MediaProcessorTaskNames.PredictPersons,
                         MediaProcessorTaskNames.SaveFaces,
                     });
-                case "ImportVideo":
-                    return new MediaProcessorFlow(_taskFactory, new[]
-                    {
+            case "ImportVideo":
+                return new MediaProcessorFlow(_taskFactory, new[]
+                {
                         MediaProcessorTaskNames.ExtractVideoData,
+                        MediaProcessorTaskNames.CreateHashes,
+                        MediaProcessorTaskNames.CheckDuplicate,
                         MediaProcessorTaskNames.GenerateThumbnails,
                         MediaProcessorTaskNames.GenerateWebImage,
-                        MediaProcessorTaskNames.CreateHashes,
                         MediaProcessorTaskNames.SaveMedia,
                         MediaProcessorTaskNames.CleanUpSource
                     });
-                case "BuildPreviewVideos":
-                    return new MediaProcessorFlow(_taskFactory, new[]
-                    {
+            case "BuildPreviewVideos":
+                return new MediaProcessorFlow(_taskFactory, new[]
+                {
                         MediaProcessorTaskNames.BuildGifVideoPreview,
                         MediaProcessorTaskNames.BuildVideoPreview,
                     });
-                default:
-                    throw new ArgumentException("Invalid flow", nameof(name));
-            }
+            default:
+                throw new ArgumentException("Invalid flow", nameof(name));
         }
     }
-
-
 }

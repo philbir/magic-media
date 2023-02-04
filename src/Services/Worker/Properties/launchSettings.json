@@ -3,7 +3,9 @@
     "Worker": {
       "commandName": "Project",
       "environmentVariables": {
-        "DOTNET_ENVIRONMENT": "Development"
+        "DOTNET_ENVIRONMENT": "Development",
+        "OTEL_EXPORTER_OTLP_ENDPOINT": "elastic.home:8200",
+        "OTEL_EXPORTER_OTLP_INSECURE": "true"
       },
       "dotnetRunMessages": "true"
     },

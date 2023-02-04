@@ -182,6 +182,8 @@ export default {
       { text: "Small", code: "S" },
       { text: "Medium", code: "M" },
       { text: "Large", code: "L" },
+      { text: "Details", code: "D" },
+      { text: "Table", code: "T" },
     ],
     showUpload: false,
   }),
@@ -242,6 +244,15 @@ export default {
     clearSelected: function () {
       this.$store.dispatch("media/clearSelected");
     },
+    onMediaAction: function (action) {
+      console.log(action);
+      if (action.action === "ADD_TO_ALBUM") {
+        this.addAlbumType = "ID";
+        this.showAddToAlbum = true;
+      } else if (action.action === "MOVE") {
+        this.showMove = true;
+      }
+    },
     onClickAction: function (action) {
       switch (action) {
         case "MOVE":
@@ -281,7 +292,6 @@ export default {
       if (!this.userActions.media.edit) {
         return;
       }
-
       switch (e.which) {
         case 69: //e
           this.$store.dispatch("media/toggleEditMode");
@@ -295,14 +305,12 @@ export default {
             }
           }
           break;
-        case 77: //m
+        case 88: //x
           this.$store.dispatch("person/buildModel");
           break;
         case 68: //d
           this.$store.dispatch("media/toggleLoadThumbnailData");
           break;
-        default:
-          console.log("KEYPress MediaBar", e.which);
       }
     },
   },

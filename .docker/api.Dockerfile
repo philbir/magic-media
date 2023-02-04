@@ -1,10 +1,10 @@
 #See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
-FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 WORKDIR /app
 EXPOSE 80
 
-FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:6.0.400 AS build
 WORKDIR /src
 
 COPY ["global.json", "/"]
@@ -12,6 +12,7 @@ COPY ["Directory.Build.props", "/"]
 COPY ["src/Directory.Build.props", "/src"]
 COPY ["src/Versions.props", "/src"]
 COPY ["src/Shared/AspNetCore/Shared.AspNetCore.csproj", "src/Shared/AspNetCore/"]
+COPY ["src/Shared/Telemetry/Telemetry.csproj", "src/Shared/Telemetry/"]
 COPY ["src/Services/Api.Host/Api.Host.csproj", "src/Services/Api.Host/"]
 COPY ["src/Services/Authorization/Authorization.csproj", "src/Services/Authorization/"]
 COPY ["src/Services/AzureAI/AzureAI.csproj", "src/Services/AzureAI/"]
@@ -33,3 +34,5 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "MagicMedia.Api.Host.dll"]
+
+

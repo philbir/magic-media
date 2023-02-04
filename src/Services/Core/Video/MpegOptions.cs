@@ -4,43 +4,42 @@ using Serilog;
 using Xabe.FFmpeg;
 using Xabe.FFmpeg.Downloader;
 
-namespace MagicMedia.Video
+namespace MagicMedia.Video;
+
+public class FFmpegInitializer : IFFmpegInitializer
 {
-    public class FFmpegInitializer : IFFmpegInitializer
+    private readonly FFmpegOption _options;
+
+    public FFmpegInitializer(FFmpegOption options)
     {
-        private readonly FFmpegOption _options;
+        _options = options;
+    }
 
-        public FFmpegInitializer(FFmpegOption options)
+    public async Task Intitialize()
+    {
+        var location = GetDirectory();
+
+        Log.Information("Initialize FFmpeg with location: {Location}", location);
+        if (_options.AutoDownload)
         {
-            _options = options;
+            Log.Information("FFmpeg GetLatestVersion");
+            await FFmpegDownloader.GetLatestVersion(
+                FFmpegVersion.Official,
+                location);
         }
 
-        public async Task Intitialize()
+        FFmpeg.SetExecutablesPath(location);
+    }
+
+    private string GetDirectory()
+    {
+        if (_options.Location == null)
         {
-            var location = GetDirectory();
-
-            Log.Information("Initialize FFmpeg with location: {Location}", location);
-            if (_options.AutoDownload)
-            {
-                Log.Information("FFmpeg GetLatestVersion");
-                await FFmpegDownloader.GetLatestVersion(
-                    FFmpegVersion.Official,
-                    location);
-            }
-
-            FFmpeg.SetExecutablesPath(location);
+            return Path.Combine(Directory.GetCurrentDirectory(), "ffmpeg");
         }
-
-        private string GetDirectory()
+        else
         {
-            if (_options.Location == null)
-            {
-                return Path.Combine(Directory.GetCurrentDirectory(), "ffmpeg");
-            }
-            else
-            {
-                return _options.Location;
-            }
+            return _options.Location;
         }
     }
 }

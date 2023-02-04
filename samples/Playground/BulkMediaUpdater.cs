@@ -9,9 +9,13 @@ using MagicMedia.Extensions;
 using MagicMedia.Face;
 using MagicMedia.Store;
 using MagicMedia.Store.MongoDb;
+using MagicMedia.Video;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 using Serilog;
+using SixLabors.ImageSharp;
+using MetadataEx = MetadataExtractor;
 
 namespace MagicMedia.Playground
 {
@@ -19,15 +23,26 @@ namespace MagicMedia.Playground
     {
         private readonly IMediaService _mediaService;
         private readonly IFaceService _faceService;
+        private readonly IMetadataExtractor _metadataExtractor;
+        private readonly IGeoDecoderService _geoDecoderService;
+        private readonly IMediaBlobStore _blobStore;
         private readonly MediaStoreContext _dbContext;
 
-        public BulkMediaUpdater(IMediaService mediaService, IFaceService faceService, MediaStoreContext dbContext)
+        public BulkMediaUpdater(
+            IMediaService mediaService,
+            IFaceService faceService,
+            IMetadataExtractor metadataExtractor,
+            IGeoDecoderService geoDecoderService,
+            IMediaBlobStore blobStore,
+            MediaStoreContext dbContext)
         {
             _mediaService = mediaService;
             _faceService = faceService;
+            _metadataExtractor = metadataExtractor;
+            _geoDecoderService = geoDecoderService;
+            _blobStore = blobStore;
             _dbContext = dbContext;
         }
-
 
         public async Task UpdateMediaAISummaryAsync(CancellationToken cancellationToken)
         {
@@ -50,12 +65,9 @@ namespace MagicMedia.Playground
                 }
 
                 await _dbContext.Medias.BulkWriteAsync(bulkUpdates, null, cancellationToken);
-                Console.WriteLine("Chunk updated...");
+                Console.WriteLine("Chunks updated...");
             }
         }
-
-
-
 
         private MediaAISummary BuildSummary(MediaAI mediaAI)
         {
@@ -66,6 +78,79 @@ namespace MagicMedia.Playground
                 PersonCount = mediaAI.Objects.Count(x => x.Name.Equals("person", StringComparison.InvariantCultureIgnoreCase)),
                 TagCount = mediaAI.Tags.Count()
             };
+        }
+
+        public async Task UpdateLocationAsync(CancellationToken cancellationToken)
+        {
+            List<Guid> ids = await _dbContext.Medias.AsQueryable()
+                .Where(x => x.State == MediaState.Active &&
+                            x.MediaType == MediaType.Video &&
+                            x.GeoLocation.Point != null &&
+                            x.GeoLocation.Address == null)
+                .OrderByDescending(x => x.Source.ImportedAt)
+                .Take(10000)
+                .Select(x => x.Id)
+                .ToListAsync(cancellationToken);
+
+            VideoProcessingService videoProcessingService = new VideoProcessingService(_geoDecoderService);
+
+            foreach (Guid id in ids)
+            {
+                Console.WriteLine($"{id}");
+                try
+                {
+                    Media media = await _mediaService.GetByIdAsync(id, cancellationToken);
+                    MediaBlobData file = await _mediaService.GetMediaData(media, cancellationToken);
+                    
+
+                    MediaMetadata meta = null;
+                    if (media.MediaType == MediaType.Image)
+                    {
+                        Image img = Image.Load(file.Data);
+                        meta = await _metadataExtractor.GetMetadataAsync(img, cancellationToken);
+                    }
+                    else
+                    {
+                        IReadOnlyList<MetadataEx.Directory>? vmeta = MetadataEx.ImageMetadataReader
+                            .ReadMetadata(_blobStore.GetFilename(file));
+
+                        meta = new MediaMetadata();
+
+                        meta.DateTaken = videoProcessingService.GetDateTaken(vmeta);
+                        meta.GeoLocation = await videoProcessingService.GetGpsLocation(vmeta, cancellationToken);
+                    }
+
+                    await _dbContext.Medias.UpdateOneAsync(x => x.Id == id,
+                        Builders<Media>.Update.Set(x => x.GeoLocation, meta.GeoLocation),
+                        new UpdateOptions(),
+                        cancellationToken);
+
+                    Console.WriteLine($"{meta.GeoLocation?.Address?.Name}");
+                }
+
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+        }
+
+        public async Task DeleteMediaAIOrphansAsync()
+        {
+            List<Guid> allIds = _dbContext.Medias.AsQueryable()
+                            .Where(x => x.State == MediaState.Active)
+                            .Select(x => x.Id)
+                            .ToList();
+
+            FilterDefinition<MediaAI> filter = Builders<MediaAI>.Filter.Not(
+                Builders<MediaAI>.Filter.In(x => x.MediaId, allIds));
+
+            IFindFluent<MediaAI, MediaAI> cursor = _dbContext.MediaAI.Find(filter);
+
+            Guid[] mediaAIds = (await cursor.ToListAsync()).Select(x => x.Id).ToArray();
+
+            _dbContext.MediaAI.DeleteMany(f =>
+                mediaAIds.Contains(f.Id));
         }
 
         public async Task ResetMediaAIErrorsAsync()
@@ -88,8 +173,8 @@ namespace MagicMedia.Playground
             {
                 Console.WriteLine($"{todo} - {mediaAI.MediaId}");
 
-                if ( mediaAI.SourceInfo.Count() == 1)
-                {   
+                if (mediaAI.SourceInfo.Count() == 1)
+                {
                     await _dbContext.MediaAI.DeleteOneAsync(x => x.Id == mediaAI.Id);
                 }
                 else
@@ -106,7 +191,6 @@ namespace MagicMedia.Playground
                 todo--;
             }
         }
-
 
         public async Task CleanUpDeletedAsync(CancellationToken cancellationToken)
         {

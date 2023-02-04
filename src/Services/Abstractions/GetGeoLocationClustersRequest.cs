@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
 
-namespace MagicMedia
+namespace MagicMedia;
+
+public record GetGeoLocationClustersRequest(GeoBox Box, int Precision)
 {
-    public record GetGeoLocationClustersRequest(GeoBox Box, int Precision)
-    {
-        public IEnumerable<Guid>? AuthorizedOn { get; init; }
-    }
+    public IEnumerable<Guid>? AuthorizedOn { get; init; }
 }

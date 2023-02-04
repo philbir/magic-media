@@ -1,27 +1,26 @@
-﻿using System;
+using System;
 
-namespace MagicMedia.Store
+namespace MagicMedia.Store;
+
+public class DateSearch
 {
-    public class DateSearch
+    public int Yaer { get; set; }
+    public int Month { get; set; }
+    public int Day { get; set; }
+
+
+    public static DateSearch? Create(DateTimeOffset? date)
     {
-        public int Yaer { get; set; }
-        public int Month { get; set; }
-        public int Day { get; set; }
-
-
-        public static DateSearch? Create(DateTimeOffset? date)
+        if (date.HasValue)
         {
-            if ( date.HasValue)
+            return new DateSearch
             {
-                return new DateSearch
-                {
-                    Yaer = date.Value.Year,
-                    Month = date.Value.Month,
-                    Day = date.Value.Day
-                };
-            }
-
-            return null;
+                Yaer = date.Value.Year,
+                Month = date.Value.Month,
+                Day = date.Value.Day
+            };
         }
+
+        return null;
     }
 }

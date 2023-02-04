@@ -1,17 +1,16 @@
 using MagicMedia.Store;
 
-namespace MagicMedia
+namespace MagicMedia;
+
+public static class MediaExtensions
 {
-    public static class MediaExtensions
+    public static MediaBlobData ToBlobDataRequest(this Media media)
     {
-        public static MediaBlobData ToBlobDataRequest(this Media media)
+        return new MediaBlobData
         {
-            return new MediaBlobData
-            {
-                Type = MediaBlobType.Media,
-                Directory = media.Folder,
-                Filename = media.Filename
-            };
-        }
+            Type = MediaBlobType.Media,
+            Directory = media.Folder,
+            Filename = media.Filename
+        };
     }
 }

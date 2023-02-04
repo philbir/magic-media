@@ -3,43 +3,42 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Serilog;
 
-namespace MagicMedia.Identity.AuthProviders
+namespace MagicMedia.Identity.AuthProviders;
+
+public static class AuthProviderEventsExtensions
 {
-    public static class AuthProviderEventsExtensions
+    public static Task HandleRemoteFailure(this RemoteFailureContext context)
     {
-        public static Task HandleRemoteFailure(this RemoteFailureContext context)
-        {
-            Log.Error(
-                context.Failure,
-                "External authentication remote failure. {Scheme}",
-                context.Scheme.Name);
+        Log.Error(
+            context.Failure,
+            "External authentication remote failure. {Scheme}",
+            context.Scheme.Name);
 
-            context.Response.RedirectExternalError(context.Scheme.Name, context.Properties);
-            context.HandleResponse();
+        context.Response.RedirectExternalError(context.Scheme.Name, context.Properties);
+        context.HandleResponse();
 
-            return Task.CompletedTask;
-        }
+        return Task.CompletedTask;
+    }
 
 
-        public static Task HandleAccessDenied(this AccessDeniedContext context)
-        {
-            Log.Error(
-                "External authentication access denied. {Scheme}",
-                context.Scheme.Name);
+    public static Task HandleAccessDenied(this AccessDeniedContext context)
+    {
+        Log.Error(
+            "External authentication access denied. {Scheme}",
+            context.Scheme.Name);
 
-            context.Response.RedirectExternalError(context.Scheme.Name, context.Properties);
-            context.HandleResponse();
+        context.Response.RedirectExternalError(context.Scheme.Name, context.Properties);
+        context.HandleResponse();
 
-            return Task.CompletedTask;
-        }
+        return Task.CompletedTask;
+    }
 
-        public static void RedirectExternalError(
-            this HttpResponse response,
-            string scheme,
-            AuthenticationProperties? properties)
-        {
-            response.Redirect(
-                $"/External/Error/{scheme}");
-        }
+    public static void RedirectExternalError(
+        this HttpResponse response,
+        string scheme,
+        AuthenticationProperties? properties)
+    {
+        response.Redirect(
+            $"/External/Error/{scheme}");
     }
 }

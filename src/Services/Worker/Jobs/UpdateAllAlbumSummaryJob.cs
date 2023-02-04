@@ -1,20 +1,23 @@
+using System.Diagnostics;
 using System.Threading.Tasks;
+using MagicMedia.Telemetry;
 using Quartz;
 
-namespace MagicMedia.Jobs
+namespace MagicMedia.Jobs;
+
+public class UpdateAllAlbumSummaryJob : IJob
 {
-    public class UpdateAllAlbumSummaryJob : IJob
+    private readonly IAlbumSummaryService _albumSummaryService;
+
+    public UpdateAllAlbumSummaryJob(IAlbumSummaryService albumSummaryService)
     {
-        private readonly IAlbumSummaryService _albumSummaryService;
+        _albumSummaryService = albumSummaryService;
+    }
 
-        public UpdateAllAlbumSummaryJob(IAlbumSummaryService albumSummaryService)
-        {
-            _albumSummaryService = albumSummaryService;
-        }
+    public async Task Execute(IJobExecutionContext context)
+    {
+        using Activity? _ = Tracing.Source.StartRootActivity("Execut UpdateAllAlbumSummary job");
 
-        public async Task Execute(IJobExecutionContext context)
-        {
-            await _albumSummaryService.UpdateAllAsync(context.CancellationToken);
-        }
+        await _albumSummaryService.UpdateAllAsync(context.CancellationToken);
     }
 }

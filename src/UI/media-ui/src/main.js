@@ -27,6 +27,15 @@ const magicPlugin = {
   }
 };
 
+Vue.use(GmapVue, {
+  load: {
+    key: process.env.VUE_APP_GOOGLE_MAPS_KEY,
+    libraries: "places"
+  },
+
+  installComponents: true
+});
+
 Vue.use(VueCoreVideoPlayer);
 Vue.use(magicPlugin);
 Vue.use(signalrHub);

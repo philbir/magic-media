@@ -7,60 +7,59 @@ using MagicMedia.Messaging;
 using MagicMedia.Processing;
 using MassTransit;
 
-namespace MagicMedia.Operations
+namespace MagicMedia.Operations;
+
+public class RescanFacesHandler : IRescanFacesHandler
 {
-    public class RescanFacesHandler : IRescanFacesHandler
+    private readonly IMediaFaceScanner _mediaFaceScanner;
+    private readonly IBus _bus;
+
+    public RescanFacesHandler(
+        IMediaFaceScanner mediaFaceScanner,
+        IBus bus)
     {
-        private readonly IMediaFaceScanner _mediaFaceScanner;
-        private readonly IBus _bus;
+        _mediaFaceScanner = mediaFaceScanner;
+        _bus = bus;
+    }
 
-        public RescanFacesHandler(
-            IMediaFaceScanner mediaFaceScanner,
-            IBus bus)
+    public async Task ExecuteAsync(
+        RescanFacesMessage message,
+        CancellationToken cancellationToken)
+    {
+        var messages = new List<MediaOperationCompletedMessage>();
+
+        foreach (Guid mediaId in message.Ids)
         {
-            _mediaFaceScanner = mediaFaceScanner;
-            _bus = bus;
-        }
+            MediaOperationCompletedMessage msg = new();
+            msg.Type = MediaOperationType.RescanFaces;
 
-        public async Task ExecuteAsync(
-            RescanFacesMessage message,
-            CancellationToken cancellationToken)
-        {
-            var messages = new List<MediaOperationCompletedMessage>();
-
-            foreach (Guid mediaId in message.Ids)
+            try
             {
-                MediaOperationCompletedMessage msg = new();
+                await _mediaFaceScanner
+                    .ScanByMediaIdAsync(mediaId, cancellationToken);
+
+                msg.IsSuccess = true;
                 msg.Type = MediaOperationType.RescanFaces;
-
-                try
-                {
-                    await _mediaFaceScanner
-                        .ScanByMediaIdAsync(mediaId, cancellationToken);
-
-                    msg.IsSuccess = true;
-                    msg.Type = MediaOperationType.RescanFaces;
-                    msg.MediaId = mediaId;
-                    msg.OperationId = message.OperationId;
-                }
-                catch (Exception ex)
-                {
-                    msg.IsSuccess = false;
-                    msg.Message = ex.Message;
-                }
-
-                await _bus.Publish(msg, cancellationToken);
+                msg.MediaId = mediaId;
+                msg.OperationId = message.OperationId;
+            }
+            catch (Exception ex)
+            {
+                msg.IsSuccess = false;
+                msg.Message = ex.Message;
             }
 
-            var completedmsg = new MediaOperationRequestCompletedMessage
-            {
-                Type = MediaOperationType.RescanFaces,
-                OperationId = message.OperationId,
-                SuccessCount = messages.Where(x => x.IsSuccess).Count(),
-                ErrorCount = messages.Where(x => !x.IsSuccess).Count(),
-            };
-
-            await _bus.Publish(completedmsg, cancellationToken);
+            await _bus.Publish(msg, cancellationToken);
         }
+
+        var completedmsg = new MediaOperationRequestCompletedMessage
+        {
+            Type = MediaOperationType.RescanFaces,
+            OperationId = message.OperationId,
+            SuccessCount = messages.Where(x => x.IsSuccess).Count(),
+            ErrorCount = messages.Where(x => !x.IsSuccess).Count(),
+        };
+
+        await _bus.Publish(completedmsg, cancellationToken);
     }
 }

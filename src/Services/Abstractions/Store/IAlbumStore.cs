@@ -1,20 +1,19 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Search;
 
-namespace MagicMedia.Store.MongoDb
+namespace MagicMedia.Store.MongoDb;
+
+public interface IAlbumStore
 {
-    public interface IAlbumStore
-    {
-        Task<Album> AddAsync(Album album, CancellationToken cancellationToken);
-        Task DeleteAsync(Guid id, CancellationToken cancellationToken);
-        Task<IEnumerable<Album>> GetAllAsync(CancellationToken cancellationToken);
-        Task<Album> GetByIdAsync(Guid id, CancellationToken cancellationToken);
-        Task<IEnumerable<Album>> GetSharedWithUserIdAsync(Guid userId, CancellationToken cancellationToken);
-        Task<IEnumerable<Album>> GetWithPersonAsync(Guid personId, CancellationToken cancellationToken);
-        Task<SearchResult<Album>> SearchAsync(SearchAlbumRequest request, CancellationToken cancellationToken);
-        Task<Album> UpdateAsync(Album album, CancellationToken cancellationToken);
-    }
+    Task<Album> AddAsync(Album album, CancellationToken cancellationToken);
+    Task DeleteAsync(Guid id, CancellationToken cancellationToken);
+    Task<IEnumerable<Album>> GetAllAsync(CancellationToken cancellationToken);
+    Task<Album> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+    Task<IEnumerable<Album>> GetSharedWithUserIdAsync(Guid userId, CancellationToken cancellationToken);
+    Task<IEnumerable<Album>> GetWithPersonAsync(Guid personId, CancellationToken cancellationToken);
+    Task<SearchResult<Album>> SearchAsync(SearchAlbumRequest request, CancellationToken cancellationToken);
+    Task<Album> UpdateAsync(Album album, CancellationToken cancellationToken);
 }

@@ -1,6 +1,6 @@
 #import "../UserErrorFragment.gql"
 
-mutation approveFaceComputer($id: Uuid!) {
+mutation approveFaceComputer($id: UUID!) {
   approveFaceComputer(id: $id) {
     face {
       id

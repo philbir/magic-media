@@ -1,11 +1,11 @@
-﻿namespace MagicMedia.Api.Host.Tests
+namespace MagicMedia.Api.Host.Tests
 {
     public class Camera
         : ICamera
     {
         public Camera(
-            System.Guid id, 
-            string model, 
+            System.Guid id,
+            string model,
             string make)
         {
             Id = id;

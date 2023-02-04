@@ -1,20 +1,23 @@
+using System.Diagnostics;
 using System.Threading.Tasks;
+using MagicMedia.Telemetry;
 using Quartz;
 
-namespace MagicMedia.Jobs
+namespace MagicMedia.Jobs;
+
+public class UpdateAllPersonSummaryJob : IJob
 {
-    public class UpdateAllPersonSummaryJob : IJob
+    private readonly IPersonService _personService;
+
+    public UpdateAllPersonSummaryJob(IPersonService personService)
     {
-        private readonly IPersonService _personService;
+        _personService = personService;
+    }
 
-        public UpdateAllPersonSummaryJob(IPersonService personService)
-        {
-            _personService = personService;
-        }
+    public async Task Execute(IJobExecutionContext context)
+    {
+        using Activity? _ = Tracing.Source.StartRootActivity("Execute UpdateAllPersonSummary job");
 
-        public async Task Execute(IJobExecutionContext context)
-        {
-            await _personService.UpdateAllSummaryAsync(context.CancellationToken);
-        }
+        await _personService.UpdateAllSummaryAsync(context.CancellationToken);
     }
 }

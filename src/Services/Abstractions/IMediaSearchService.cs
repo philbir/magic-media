@@ -4,11 +4,10 @@ using System.Threading.Tasks;
 using MagicMedia.Search;
 using MagicMedia.Store;
 
-namespace MagicMedia
+namespace MagicMedia;
+
+public interface IMediaSearchService
 {
-    public interface IMediaSearchService
-    {
-        Task<IEnumerable<GeoClusterLocation>> GetGeoLocationClustersAsync(GetGeoLocationClustersRequest request, CancellationToken cancellationToken);
-        Task<SearchResult<Media>> SearchAsync(SearchMediaRequest request, CancellationToken cancellationToken);
-    }
+    Task<IEnumerable<GeoClusterLocation>> GetGeoLocationClustersAsync(GetGeoLocationClustersRequest request, CancellationToken cancellationToken);
+    Task<SearchResult<Media>> SearchAsync(SearchMediaRequest request, CancellationToken cancellationToken);
 }

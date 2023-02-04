@@ -1,7 +1,6 @@
-namespace MagicMedia.Face
+namespace MagicMedia.Face;
+
+public class BuildFaceModelResult
 {
-    public class BuildFaceModelResult
-    {
-        public int FaceCount { get; set; }
-    }
+    public int FaceCount { get; set; }
 }

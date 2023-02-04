@@ -3,39 +3,38 @@ using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Video;
 
-namespace MagicMedia.Processing
+namespace MagicMedia.Processing;
+
+public class BuildVideoPreviewTask : IMediaProcessorTask
 {
-    public class BuildVideoPreviewTask : IMediaProcessorTask
+    private readonly IMediaService _mediaService;
+    private readonly IVideoProcessingService _videoProcessingService;
+
+    public string Name => MediaProcessorTaskNames.BuildVideoPreview;
+
+    public BuildVideoPreviewTask(
+        IMediaService mediaService,
+        IVideoProcessingService videoProcessingService)
     {
-        private readonly IMediaService _mediaService;
-        private readonly IVideoProcessingService _videoProcessingService;
+        _mediaService = mediaService;
+        _videoProcessingService = videoProcessingService;
+    }
 
-        public string Name => MediaProcessorTaskNames.BuildVideoPreview;
+    public async Task ExecuteAsync(
+        MediaProcessorContext context,
+        CancellationToken cancellationToken)
+    {
+        var filename = _mediaService.GetFilename(context.Media, MediaFileType.Original);
+        var convertedFilename = _mediaService.GetFilename(context.Media, MediaFileType.Video720);
 
-        public BuildVideoPreviewTask(
-            IMediaService mediaService,
-            IVideoProcessingService videoProcessingService)
+        if (File.Exists(convertedFilename))
         {
-            _mediaService = mediaService;
-            _videoProcessingService = videoProcessingService;
+            File.Delete(convertedFilename);
         }
 
-        public async Task ExecuteAsync(
-            MediaProcessorContext context,
-            CancellationToken cancellationToken)
-        {
-            var filename = _mediaService.GetFilename(context.Media, MediaFileType.Original);
-            var convertedFilename = _mediaService.GetFilename(context.Media, MediaFileType.Video720);
-
-            if (File.Exists(convertedFilename))
-            {
-                File.Delete(convertedFilename);
-            }
-
-            await _videoProcessingService.ConvertTo720Async(
-                filename,
-                convertedFilename,
-                cancellationToken);
-        }
+        await _videoProcessingService.ConvertTo720Async(
+            filename,
+            convertedFilename,
+            cancellationToken);
     }
 }

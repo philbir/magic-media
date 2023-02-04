@@ -1,11 +1,10 @@
-﻿using System.Threading;
+using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Messaging;
 
-namespace MagicMedia.Operations
+namespace MagicMedia.Operations;
+
+public interface IUpdateMediaMetadataHandler
 {
-    public interface IUpdateMediaMetadataHandler
-    {
-        Task ExecuteAsync(UpdateMediaMetadataMessage message, CancellationToken cancellationToken);
-    }
+    Task ExecuteAsync(UpdateMediaMetadataMessage message, CancellationToken cancellationToken);
 }

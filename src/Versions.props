@@ -1,10 +1,10 @@
 <Project>
   <PropertyGroup>
-    <MassTransitVersion>7.0.6</MassTransitVersion>
-    <SixLaborsImageSharpVersion>1.0.1</SixLaborsImageSharpVersion>
-    <AspNetCoreVersion>5.0.0</AspNetCoreVersion>
-    <HotChocolateVersion>11.0.0</HotChocolateVersion>
-    <IdentityServerVersion>4.1.1</IdentityServerVersion>
-    <SerilogVersion>2.10.0</SerilogVersion>
+    <MassTransitVersion>7.3.1</MassTransitVersion>
+    <SixLaborsImageSharpVersion>2.1.3</SixLaborsImageSharpVersion>
+    <AspNetCoreVersion>6.0.0</AspNetCoreVersion>
+    <HotChocolateVersion>13.0.0-preview.47</HotChocolateVersion>
+    <IdentityServerVersion>6.1.5</IdentityServerVersion>
+    <SerilogVersion>2.11.0</SerilogVersion>
   </PropertyGroup>
 </Project>

@@ -1,10 +1,9 @@
-﻿namespace MagicMedia
+namespace MagicMedia;
+
+public enum MediaFileType
 {
-    public enum MediaFileType
-    {
-        Original,
-        WebPreview,
-        VideoGif,
-        Video720
-    }
+    Original,
+    WebPreview,
+    VideoGif,
+    Video720
 }

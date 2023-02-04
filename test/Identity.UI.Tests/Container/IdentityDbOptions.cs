@@ -1,4 +1,4 @@
-﻿using Squadron;
+using Squadron;
 
 namespace Identity.UI.Tests.Container
 {

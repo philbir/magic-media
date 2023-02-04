@@ -55,6 +55,20 @@
               </div>
             </v-col>
           </v-row>
+          <v-row>
+            <v-col sm="12"
+              ><v-chip
+                v-for="path in recentMoves"
+                :key="path"
+                class="mr-2"
+                color="primary"
+                label
+                small
+                @click="moveRecent(path)"
+                >{{ path }}</v-chip
+              ></v-col
+            >
+          </v-row>
         </v-container>
       </v-card-text>
       <v-card-actions class="pa-1">
@@ -90,14 +104,23 @@ export default {
     folderTree: function () {
       return this.$store.state.media.folderTree.children;
     },
+    recentMoves: function () {
+      return this.$store.state.media.recentMoves;
+    },
   },
   methods: {
     close: function () {
       this.isOpen = false;
     },
+    moveRecent: function (path) {
+      this.newLocation = path;
+      this.save();
+    },
     save: function () {
       this.$store.dispatch("media/moveSelected", this.newLocation);
-      this.isOpen = false;
+      this.searchText = "";
+      this.newLocation = null;
+      this.close();
     },
     onSelect(e) {
       if (e.length > 0) {

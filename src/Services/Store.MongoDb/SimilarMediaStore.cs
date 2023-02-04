@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -6,81 +5,81 @@ using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
-namespace MagicMedia.Store.MongoDb
+namespace MagicMedia.Store.MongoDb;
+
+public class SimilarMediaStore : ISimilarMediaStore
 {
-    public class SimilarMediaStore : ISimilarMediaStore
+    private readonly MediaStoreContext _mediaStoreContext;
+
+    public SimilarMediaStore(MediaStoreContext mediaStoreContext)
     {
-        private readonly MediaStoreContext _mediaStoreContext;
+        _mediaStoreContext = mediaStoreContext;
+    }
 
-        public SimilarMediaStore(MediaStoreContext mediaStoreContext)
+    public async Task AddAsync(IEnumerable<SimilarMediaInfo> similarInfos, CancellationToken cancellationToken)
+    {
+        IEnumerable<ReplaceOneModel<SimilarMediaInfo>>? operations = similarInfos.Select(x =>
         {
-            _mediaStoreContext = mediaStoreContext;
-        }
-
-        public async Task AddAsync(IEnumerable<SimilarMediaInfo> similarInfos, CancellationToken cancellationToken)
-        {
-            IEnumerable<ReplaceOneModel<SimilarMediaInfo>>? operations = similarInfos.Select(x =>
+            return new ReplaceOneModel<SimilarMediaInfo>(
+                Builders<SimilarMediaInfo>.Filter.Eq(f => f.Id, x.Id), x)
             {
-                return new ReplaceOneModel<SimilarMediaInfo>(
-                    Builders<SimilarMediaInfo>.Filter.Eq(f => f.Id, x.Id),x)
-                    {
-                        IsUpsert = true
-                    };
-            });
+                IsUpsert = true
+            };
+        });
 
-            await _mediaStoreContext.SimilarInfo.BulkWriteAsync(
-                operations,
-                options: null,
-                cancellationToken);
-        }
+        await _mediaStoreContext.SimilarInfo.BulkWriteAsync(
+            operations,
+            options: null,
+            cancellationToken);
+    }
 
-        public async Task<IEnumerable<SimilarMediaGroup>> GetSimilarGroupsAsync(
-            SearchSimilarMediaRequest request,
-            CancellationToken cancellationToken)
+    public async Task<IEnumerable<SimilarMediaGroup>> GetSimilarGroupsAsync(
+        SearchSimilarMediaRequest request,
+        CancellationToken cancellationToken)
+    {
+        if (request.HashType < MediaHashType.ImageAverageHash)
         {
-            if (request.HashType < MediaHashType.ImageAverageHash)
-            {
-                return await GetSimilarGroupsFromMediaHashedAsync(request, cancellationToken);
-            }
-            else
-            {
-                return await GetSimilarGroupsFromSimilarMediaAsync(request, cancellationToken);
-            }
+            return await GetSimilarGroupsFromMediaHashedAsync(request, cancellationToken);
         }
-
-        private async Task<IEnumerable<SimilarMediaGroup>> GetSimilarGroupsFromMediaHashedAsync(SearchSimilarMediaRequest request, CancellationToken cancellationToken)
+        else
         {
-            var parameters = new List<AggregationParameter>()
+            return await GetSimilarGroupsFromSimilarMediaAsync(request, cancellationToken);
+        }
+    }
+
+    private async Task<IEnumerable<SimilarMediaGroup>> GetSimilarGroupsFromMediaHashedAsync(SearchSimilarMediaRequest request, CancellationToken cancellationToken)
+    {
+        var parameters = new List<AggregationParameter>()
             {
                 new AggregationParameter("HashType", (int) request.HashType),
                 new AggregationParameter("Skip",request.PageNr * request.PageSize),
                 new AggregationParameter("Limit",request.PageSize),
             };
 
-            IEnumerable<BsonDocument> docs = await _mediaStoreContext.ExecuteAggregation(
-                CollectionNames.Media,
-                "Duplicate_ByHashes",
-                parameters,
-                cancellationToken);
+        IEnumerable<BsonDocument> docs = await _mediaStoreContext.ExecuteAggregation(
+            CollectionNames.Media,
+            "Duplicate_ByHashes",
+            parameters,
+            cancellationToken);
 
-            IEnumerable<SimilarMediaGroup> groups = docs.Select(x => new SimilarMediaGroup
-            {
-                Identifier = x["_id"] != BsonNull.Value ? x["_id"].AsString : null,
-                Count = x["Count"].AsInt32,
-                MediaIds = x["MediaIds"].AsBsonArray.Select(i => i.AsGuid)
-            }).ToList();
+        IEnumerable<SimilarMediaGroup> groups = docs.Select(x => new SimilarMediaGroup
+        {
+            Identifier = x["_id"] != BsonNull.Value ? x["_id"].AsString : null,
+            Count = x["Count"].AsInt32,
+            MediaIds = x["MediaIds"].AsBsonArray.Select(i => i.AsGuid)
+        }).ToList();
 
-            foreach (SimilarMediaGroup group in groups)
-            {
-                group.Id = group.MediaIds.First();
-            }
-
-            return groups;
+        foreach (SimilarMediaGroup group in groups)
+        {
+            group.Id = group.MediaIds.First();
         }
 
-        private async Task<IEnumerable<SimilarMediaGroup>> GetSimilarGroupsFromSimilarMediaAsync(SearchSimilarMediaRequest request, CancellationToken cancellationToken)
-        {
-            var parameters = new List<AggregationParameter>()
+        return groups;
+    }
+
+    private async Task<IEnumerable<SimilarMediaGroup>> GetSimilarGroupsFromSimilarMediaAsync(SearchSimilarMediaRequest request, CancellationToken cancellationToken)
+    {
+        var parameters = new List<AggregationParameter>()
             {
                 new AggregationParameter("HashType", (int) request.HashType),
                 new AggregationParameter("Similarity",request.Similarity),
@@ -88,20 +87,17 @@ namespace MagicMedia.Store.MongoDb
                 new AggregationParameter("Limit",request.PageSize),
             };
 
-            IEnumerable<BsonDocument> docs = await _mediaStoreContext.ExecuteAggregation(
-                CollectionNames.SimilarMedia,
-                "SimilarMedia",
-                parameters,
-                cancellationToken);
+        IEnumerable<BsonDocument> docs = await _mediaStoreContext.ExecuteAggregation(
+            CollectionNames.SimilarMedia,
+            "SimilarMedia",
+            parameters,
+            cancellationToken);
 
-            return docs.Select(x => new SimilarMediaGroup
-            {
-                Id = x["_id"].AsGuid,
-                Count = x["Count"].AsInt32,
-                MediaIds = x["MediaIds"].AsBsonArray.Select(i => i.AsGuid)
-            });
-        }
+        return docs.Select(x => new SimilarMediaGroup
+        {
+            Id = x["_id"].AsGuid,
+            Count = x["Count"].AsInt32,
+            MediaIds = x["MediaIds"].AsBsonArray.Select(i => i.AsGuid)
+        });
     }
-
-
 }

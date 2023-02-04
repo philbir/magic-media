@@ -1,12 +1,11 @@
-﻿using System.Threading;
+using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Discovery;
 
-namespace MagicMedia.Processing
+namespace MagicMedia.Processing;
+
+public interface IMediaSourceScanner
 {
-    public interface IMediaSourceScanner
-    {
-        Task ProcessFileAsync(MediaDiscoveryIdentifier file, CancellationToken cancellationToken);
-        Task ScanAsync(CancellationToken cancellationToken);
-    }
+    Task ProcessFileAsync(MediaDiscoveryIdentifier file, CancellationToken cancellationToken);
+    Task ScanAsync(CancellationToken cancellationToken);
 }

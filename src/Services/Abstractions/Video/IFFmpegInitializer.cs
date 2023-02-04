@@ -1,16 +1,15 @@
 using System.Threading.Tasks;
 
-namespace MagicMedia.Video
+namespace MagicMedia.Video;
+
+public interface IFFmpegInitializer
 {
-    public interface IFFmpegInitializer
-    {
-        Task Intitialize();
-    }
+    Task Intitialize();
+}
 
-    public class FFmpegOption
-    {
-        public string? Location { get; set; }
+public class FFmpegOption
+{
+    public string? Location { get; set; }
 
-        public bool AutoDownload { get; set; }
-    }
+    public bool AutoDownload { get; set; }
 }

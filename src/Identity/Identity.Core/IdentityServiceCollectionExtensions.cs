@@ -3,27 +3,26 @@ using MagicMedia.Identity.Services.Sms;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace MagicMedia.Identity
+namespace MagicMedia.Identity;
+
+public static class IdentityServiceCollectionExtensions
 {
-    public static class IdentityServiceCollectionExtensions
+    public static IServiceCollection AddIdentityCore(
+        this IServiceCollection services,
+        IConfiguration configuration)
     {
-        public static IServiceCollection AddIdentityCore(
-            this IServiceCollection services,
-            IConfiguration configuration)
-        {
-            services.AddSingleton<IUserAccountService, UserAccountService>();
+        services.AddSingleton<IUserAccountService, UserAccountService>();
 
-            UserAccountOptions accountOptions = configuration.GetSection("Identity:Account")
-                .Get<UserAccountOptions>();
+        UserAccountOptions accountOptions = configuration.GetSection("Identity:Account")
+            .Get<UserAccountOptions>();
 
-            services.AddSingleton(accountOptions);
+        services.AddSingleton(accountOptions);
 
-            services.AddSingleton<IUserFactory, UserFactory>();
-            services.AddSingleton<ITotpCodeService, TotpCodeService>();
-            services.AddSingleton<IInviteService, InviteService>();
-            services.AddECallSms(configuration);
+        services.AddSingleton<IUserFactory, UserFactory>();
+        services.AddSingleton<ITotpCodeService, TotpCodeService>();
+        services.AddSingleton<IInviteService, InviteService>();
+        services.AddECallSms(configuration);
 
-            return services;
-        }
+        return services;
     }
 }

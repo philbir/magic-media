@@ -1,22 +1,21 @@
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 
-namespace MagicMedia
+namespace MagicMedia;
+
+public class ImageTransformService : IImageTransformService
 {
-    public class ImageTransformService : IImageTransformService
+    public Image AutoOrient(Image image)
     {
-        public Image AutoOrient(Image image)
-        {
-            Image oriented = image.Clone(x => x.AutoOrient());
+        Image oriented = image.Clone(x => x.AutoOrient());
 
-            return oriented;
-        }
+        return oriented;
+    }
 
-        public Image Rotate(Image image, float degrees)
-        {
-            Image rotated = image.Clone(x => x.Rotate(degrees));
+    public Image Rotate(Image image, float degrees)
+    {
+        Image rotated = image.Clone(x => x.Rotate(degrees));
 
-            return rotated;
-        }
+        return rotated;
     }
 }

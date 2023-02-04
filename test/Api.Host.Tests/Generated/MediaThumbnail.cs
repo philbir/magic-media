@@ -1,12 +1,12 @@
-﻿namespace MagicMedia.Api.Host.Tests
+namespace MagicMedia.Api.Host.Tests
 {
     public class MediaThumbnail
         : IMediaThumbnail
     {
         public MediaThumbnail(
-            System.Guid id, 
-            ThumbnailSizeName size, 
-            string dataUrl, 
+            System.Guid id,
+            ThumbnailSizeName size,
+            string dataUrl,
             IMediaDimension1 dimensions)
         {
             Id = id;

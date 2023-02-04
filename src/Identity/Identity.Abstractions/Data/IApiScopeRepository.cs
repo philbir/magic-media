@@ -1,16 +1,15 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using IdentityServer4.Models;
+using Duende.IdentityServer.Models;
 
-namespace MagicMedia.Identity.Data
+namespace MagicMedia.Identity.Data;
+
+public interface IApiScopeRepository
 {
-    public interface IApiScopeRepository
-    {
-        Task<IEnumerable<ApiScope>> GetAllAsync(CancellationToken cancellationToken);
+    Task<IEnumerable<ApiScope>> GetAllAsync(CancellationToken cancellationToken);
 
-        Task<IEnumerable<ApiScope>> GetByNameAsync(
-            IEnumerable<string> scopeNames,
-            CancellationToken cancellationToken);
-    }
+    Task<IEnumerable<ApiScope>> GetByNameAsync(
+        IEnumerable<string> scopeNames,
+        CancellationToken cancellationToken);
 }

@@ -1,9 +1,8 @@
-namespace MagicMedia.BingMaps
-{
-    public class BingMapsOptions
-    {
-        public string ApiKey { get; set; }
+namespace MagicMedia.BingMaps;
 
-        public bool Enabled { get; set; }
-    }
+public class BingMapsOptions
+{
+    public string? ApiKey { get; set; }
+
+    public bool Enabled { get; set; }
 }

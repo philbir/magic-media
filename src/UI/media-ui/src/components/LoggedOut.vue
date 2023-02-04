@@ -23,7 +23,6 @@
 <script>
 export default {
   created() {
-    console.log("LLL");
   },
   methods: {
     login: function () {

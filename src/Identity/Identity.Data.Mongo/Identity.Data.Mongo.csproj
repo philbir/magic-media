@@ -6,11 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="IdentityServer4" Version="$(IdentityServerVersion)" />
-    <PackageReference Include="MongoDB.Extensions.Context" Version="0.3.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
+    <PackageReference Include="Duende.IdentityServer" Version="$(IdentityServerVersion)" />
+    <PackageReference Include="MongoDB.Extensions.Context" Version="0.7.2" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(AspNetCoreVersion)" />
     <PackageReference Include="Serilog" Version="$(SerilogVersion)" />
-
   </ItemGroup>
 
   <ItemGroup>

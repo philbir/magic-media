@@ -137,7 +137,6 @@ namespace MagicMedia.Playground
                     Console.WriteLine(ex.Message);
                 }
 
-
                 //TODO: Move to Imported or delete
             }
         }

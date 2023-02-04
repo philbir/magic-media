@@ -1,9 +1,8 @@
-﻿using System;
+using System;
 
-namespace MagicMedia.Configuration
+namespace MagicMedia.Configuration;
+
+public class FaceOptions
 {
-    public class FaceOptions
-    {
-        public Uri Url { get; set; }
-    }
+    public Uri? Url { get; set; }
 }

@@ -9,127 +9,128 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 
-namespace MagicMedia.Store.MongoDb
+namespace MagicMedia.Store.MongoDb;
+
+public class AlbumStore : IAlbumStore
 {
-    public class AlbumStore : IAlbumStore
+    private readonly MediaStoreContext _mediaStoreContext;
+
+    public AlbumStore(MediaStoreContext mediaStoreContext)
     {
-        private readonly MediaStoreContext _mediaStoreContext;
+        _mediaStoreContext = mediaStoreContext;
+    }
 
-        public AlbumStore(MediaStoreContext mediaStoreContext)
+    public async Task<Album> AddAsync(Album album, CancellationToken cancellationToken)
+    {
+        await _mediaStoreContext.Albums.InsertOneAsync(
+            album,
+            options: null,
+            cancellationToken);
+
+        return album;
+    }
+
+    public async Task<Album> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    {
+        return await _mediaStoreContext.Albums.AsQueryable()
+            .Where(x => x.Id == id)
+            .FirstOrDefaultAsync(cancellationToken);
+    }
+
+    public async Task<IEnumerable<Album>> GetAllAsync(CancellationToken cancellationToken)
+    {
+        return await _mediaStoreContext.Albums.AsQueryable()
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<IEnumerable<Album>> GetSharedWithUserIdAsync(
+        Guid userId,
+        CancellationToken cancellationToken)
+    {
+        List<Album> albums = await _mediaStoreContext.Albums.AsQueryable()
+            .Where(x => x.SharedWith.Contains(userId))
+            .ToListAsync(cancellationToken);
+
+        return albums;
+    }
+
+    public async Task<IEnumerable<Album>> GetWithPersonAsync(
+        Guid personId,
+        CancellationToken cancellationToken)
+    {
+        List<Album> albums = await _mediaStoreContext.Albums.AsQueryable()
+            .Where(x => x.Persons.Any(p => p.PersonId == personId))
+            .ToListAsync(cancellationToken);
+
+        return albums;
+    }
+
+    public async Task<Album> UpdateAsync(
+        Album album,
+        CancellationToken cancellationToken)
+    {
+        await _mediaStoreContext.Albums.ReplaceOneAsync(
+            x => x.Id == album.Id,
+            album,
+            options: new ReplaceOptions(),
+            cancellationToken);
+
+        return album;
+    }
+
+    public async Task DeleteAsync(
+        Guid id,
+        CancellationToken cancellationToken)
+    {
+        await _mediaStoreContext.Albums.DeleteOneAsync(
+            x => x.Id == id,
+            DefaultMongoOptions.Delete,
+            cancellationToken);
+    }
+
+    public async Task<SearchResult<Album>> SearchAsync(
+        SearchAlbumRequest request,
+        CancellationToken cancellationToken)
+    {
+        FilterDefinition<Album> filter = Builders<Album>.Filter.Empty;
+
+        if (request.SharedWithUserId.HasValue)
         {
-            _mediaStoreContext = mediaStoreContext;
+            filter &= Builders<Album>.Filter.AnyEq(
+                x => x.SharedWith, request.SharedWithUserId.Value);
         }
 
-        public async Task<Album> AddAsync(Album album, CancellationToken cancellationToken)
+        if (!string.IsNullOrWhiteSpace(request.SearchText))
         {
-            await _mediaStoreContext.Albums.InsertOneAsync(
-                album,
-                options: null,
-                cancellationToken);
-
-            return album;
+            filter &= Builders<Album>.Filter.Regex(
+                x => x.Title,
+                new BsonRegularExpression($".*{Regex.Escape(request.SearchText)}.*", "i"));
         }
 
-        public async Task<Album> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+        if (request.Persons is { } persons && persons.Any())
         {
-            return await _mediaStoreContext.Albums.AsQueryable()
-                .Where(x => x.Id == id)
-                .FirstOrDefaultAsync(cancellationToken);
+            FilterDefinition<AlbumPerson> personFilter = Builders<AlbumPerson>.Filter
+                .In(x => x.PersonId, persons);
+
+            filter &= Builders<Album>.Filter.ElemMatch(x => x.Persons, personFilter);
         }
 
-        public async Task<IEnumerable<Album>> GetAllAsync(CancellationToken cancellationToken)
-        {
-            return await _mediaStoreContext.Albums.AsQueryable()
-                .ToListAsync(cancellationToken);
-        }
+        IFindFluent<Album, Album>? cursor = _mediaStoreContext.Albums.Find(filter);
+        long totalCount = await cursor.CountDocumentsAsync(cancellationToken);
 
-        public async Task<IEnumerable<Album>> GetSharedWithUserIdAsync(
-            Guid userId,
-            CancellationToken cancellationToken)
-        {
-            List<Album> albums = await _mediaStoreContext.Albums.AsQueryable()
-                .Where(x => x.SharedWith.Contains(userId))
-                .ToListAsync(cancellationToken);
+        List<Album> medias = await cursor
+            .SortByDescending(x => x.StartDate)
+            .Skip(request.PageNr * request.PageSize)
+            .Limit(request.PageSize)
+            .ToListAsync();
 
-            return albums;
-        }
+        return new SearchResult<Album>(medias, (int)totalCount);
+    }
 
-        public async Task<IEnumerable<Album>> GetWithPersonAsync(
-            Guid personId,
-            CancellationToken cancellationToken)
-        {
-            List<Album> albums = await _mediaStoreContext.Albums.AsQueryable()
-                .Where(x => x.Persons.Any( p => p.PersonId == personId))
-                .ToListAsync(cancellationToken);
+    public Task<IEnumerable<Album>> GetSharedWithAlbumsAsync(Guid userId, CancellationToken cancellationToken)
+    {
+        IEnumerable<Album> list = Array.Empty<Album>();
 
-            return albums;
-        }
-
-        public async Task<Album> UpdateAsync(
-            Album album,
-            CancellationToken cancellationToken)
-        {
-            await _mediaStoreContext.Albums.ReplaceOneAsync(
-                x => x.Id == album.Id,
-                album,
-                options: new ReplaceOptions(),
-                cancellationToken);
-
-            return album;
-        }
-
-        public async Task DeleteAsync(
-            Guid id,
-            CancellationToken cancellationToken)
-        {
-            await _mediaStoreContext.Albums.DeleteOneAsync(
-                x => x.Id == id,
-                DefaultMongoOptions.Delete,
-                cancellationToken);
-        }
-
-        public async Task<SearchResult<Album>> SearchAsync(
-            SearchAlbumRequest request,
-            CancellationToken cancellationToken)
-        {
-            FilterDefinition<Album> filter = Builders<Album>.Filter.Empty;
-
-            if (request.SharedWithUserId.HasValue)
-            {
-                filter &= Builders<Album>.Filter.AnyEq(
-                    x => x.SharedWith, request.SharedWithUserId.Value);
-            }
-
-            if (!string.IsNullOrWhiteSpace(request.SearchText))
-            {
-                filter &= Builders<Album>.Filter.Regex(
-                    x => x.Title,
-                    new BsonRegularExpression($".*{Regex.Escape(request.SearchText)}.*", "i"));
-            }
-
-            if (request.Persons is { } persons && persons.Any())
-            {
-                FilterDefinition<AlbumPerson> personFilter = Builders<AlbumPerson>.Filter
-                    .In(x => x.PersonId, persons);
-
-                filter &= Builders<Album>.Filter.ElemMatch(x => x.Persons, personFilter);
-            }
-
-            IFindFluent<Album, Album>? cursor = _mediaStoreContext.Albums.Find(filter);
-            long totalCount = await cursor.CountDocumentsAsync(cancellationToken);
-
-            List<Album> medias = await cursor
-                .SortByDescending(x => x.StartDate)
-                .Skip(request.PageNr * request.PageSize)
-                .Limit(request.PageSize)
-                .ToListAsync();
-
-            return new SearchResult<Album>(medias, (int)totalCount);
-        }
-
-        public async Task<IEnumerable<Album>> GetSharedWithAlbumsAsync(Guid userId, CancellationToken cancellationToken)
-        {
-            return null;
-        }
+        return Task.FromResult(list);
     }
 }

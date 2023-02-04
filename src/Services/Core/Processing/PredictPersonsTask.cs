@@ -4,51 +4,50 @@ using System.Threading.Tasks;
 using MagicMedia.Face;
 using MagicMedia.Store;
 
-namespace MagicMedia.Processing
+namespace MagicMedia.Processing;
+
+public class PredictPersonsTask : IMediaProcessorTask
 {
-    public class PredictPersonsTask : IMediaProcessorTask
+    private readonly IFaceDetectionService _faceDetectionService;
+
+    public PredictPersonsTask(IFaceDetectionService faceDetectionService)
     {
-        private readonly IFaceDetectionService _faceDetectionService;
+        _faceDetectionService = faceDetectionService;
+    }
 
-        public PredictPersonsTask(IFaceDetectionService faceDetectionService)
+    public string Name => MediaProcessorTaskNames.PredictPersons;
+
+    public async Task ExecuteAsync(
+        MediaProcessorContext context,
+        CancellationToken cancellationToken)
+    {
+        if (context.FaceData != null)
         {
-            _faceDetectionService = faceDetectionService;
-        }
+            double distance = 0.4;
 
-        public string Name => MediaProcessorTaskNames.PredictPersons;
-
-        public async Task ExecuteAsync(
-            MediaProcessorContext context,
-            CancellationToken cancellationToken)
-        {
-            if (context.FaceData != null)
+            foreach (FaceData face in context.FaceData)
             {
-                double distance = 0.4;
-
-                foreach (FaceData face in context.FaceData)
+                try
                 {
-                    try
-                    {
-                        Guid? personId = await _faceDetectionService.PredictPersonAsync(
-                            new PredictPersonRequest
-                            {
-                                Distance = distance,
-                                Encoding = face.Encoding
-                            }, cancellationToken);
-
-                        if (personId.HasValue)
+                    Guid? personId = await _faceDetectionService.PredictPersonAsync(
+                        new PredictPersonRequest
                         {
-                            face.PersonId = personId;
-                            face.DistanceThreshold = distance;
-                            face.RecognitionType = FaceRecognitionType.Computer;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                    }
+                            Distance = distance,
+                            Encoding = face.Encoding
+                        }, cancellationToken);
 
+                    if (personId.HasValue)
+                    {
+                        face.PersonId = personId;
+                        face.DistanceThreshold = distance;
+                        face.RecognitionType = FaceRecognitionType.Computer;
+                    }
                 }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+
             }
         }
     }

@@ -1,11 +1,10 @@
-﻿namespace MagicMedia.Store
+namespace MagicMedia.Store;
+
+public enum MediaHashType
 {
-    public enum MediaHashType
-    {
-        FileHashSha256,
-        Identifiers,
-        ImageAverageHash,
-        ImageDifferenceHash,
-        ImagePerceptualHash
-    }
+    FileHashSha256,
+    Identifiers,
+    ImageAverageHash,
+    ImageDifferenceHash,
+    ImagePerceptualHash
 }

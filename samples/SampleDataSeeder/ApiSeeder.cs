@@ -27,13 +27,12 @@ namespace MagicMedia.SampleDataSeader
                     await UploadAsync(file, cancellationToken);
 
                 }
-                catch  (Exception ex)
+                catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
                 }
             }
         }
-
 
         public async Task UploadAsync(FileInfo file, CancellationToken cancellationToken)
         {

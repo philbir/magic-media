@@ -1,10 +1,9 @@
-﻿using System.Threading;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace MagicMedia.Security
+namespace MagicMedia.Security;
+
+public interface IUserAuthorizationService
 {
-    public interface IUserAuthorizationService
-    {
-        Task<UserResourceAccessInfo> GetAuthorizedOnAsync(ProtectedResourceType type, CancellationToken cancellationToken);
-    }
+    Task<UserResourceAccessInfo> GetAuthorizedOnAsync(ProtectedResourceType type, CancellationToken cancellationToken);
 }

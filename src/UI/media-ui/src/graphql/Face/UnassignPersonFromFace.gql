@@ -1,7 +1,7 @@
 #import "./FaceFragment.gql"
 #import "../UserErrorFragment.gql"
 
-mutation unassignPersonFromFace($id: Uuid!) {
+mutation unassignPersonFromFace($id: UUID!) {
   unAssignPersonFromFace(id: $id) {
     face {
       ...face

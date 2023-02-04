@@ -4,20 +4,19 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MagicMedia.Face
+namespace MagicMedia.Face;
+
+public interface IFaceDetectionService
 {
-    public interface IFaceDetectionService
-    {
-        Task<BuildFaceModelResult> BuildModelAsync(
-            IEnumerable<PersonEncodingData> encodings,
-            CancellationToken cancellationToken);
+    Task<BuildFaceModelResult> BuildModelAsync(
+        IEnumerable<PersonEncodingData> encodings,
+        CancellationToken cancellationToken);
 
-        Task<IEnumerable<FaceDetectionResponse>> DetectFacesAsync(
-            Stream stream,
-            CancellationToken cancellationToken);
+    Task<IEnumerable<FaceDetectionResponse>> DetectFacesAsync(
+        Stream stream,
+        CancellationToken cancellationToken);
 
-        Task<Guid?> PredictPersonAsync(
-            PredictPersonRequest request,
-            CancellationToken cancellationToken);
-    }
+    Task<Guid?> PredictPersonAsync(
+        PredictPersonRequest request,
+        CancellationToken cancellationToken);
 }

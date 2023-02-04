@@ -84,7 +84,6 @@ export default {
     },
   },
   mounted() {
-    console.log("Show filter:", this.showFilter);
     this.expanded = this.open || !this.showFilter;
   },
   data() {

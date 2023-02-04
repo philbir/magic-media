@@ -1,30 +1,31 @@
-﻿using System.IO;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Metadata;
 
-namespace MagicMedia.Processing
+namespace MagicMedia.Processing;
+
+public class DataTakenParserTask : IMediaProcessorTask
 {
-    public class DataTakenParserTask : IMediaProcessorTask
+    private readonly IDateTakenParser _dateTakenParser;
+
+    public DataTakenParserTask(IDateTakenParser dateTakenParser)
     {
-        private readonly IDateTakenParser _dateTakenParser;
+        _dateTakenParser = dateTakenParser;
+    }
 
-        public DataTakenParserTask(IDateTakenParser dateTakenParser)
+    public string Name => MediaProcessorTaskNames.ParseDateTaken;
+
+    public Task ExecuteAsync(
+        MediaProcessorContext context,
+        CancellationToken cancellationToken)
+    {
+        if (!context.Metadata.DateTaken.HasValue)
         {
-            _dateTakenParser = dateTakenParser;
+            context.Metadata.DateTaken = _dateTakenParser.Parse(
+                Path.GetFileNameWithoutExtension(context.File.Id));
         }
 
-        public string Name => MediaProcessorTaskNames.ParseDateTaken;
-
-        public async Task ExecuteAsync(
-            MediaProcessorContext context,
-            CancellationToken cancellationToken)
-        {
-            if (!context.Metadata.DateTaken.HasValue)
-            {
-                context.Metadata.DateTaken = _dateTakenParser.Parse(
-                    Path.GetFileNameWithoutExtension(context.File.Id));
-            }
-        }
+        return Task.CompletedTask;
     }
 }

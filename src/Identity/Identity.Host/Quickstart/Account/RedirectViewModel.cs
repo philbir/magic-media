@@ -3,10 +3,9 @@
 
 
 
-namespace MagicMedia.Identity
+namespace MagicMedia.Identity;
+
+public class RedirectViewModel
 {
-    public class RedirectViewModel
-    {
-        public string RedirectUrl { get; set; }
-    }
+    public string? RedirectUrl { get; set; }
 }

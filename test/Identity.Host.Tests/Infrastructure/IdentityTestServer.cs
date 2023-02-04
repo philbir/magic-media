@@ -4,9 +4,9 @@ using System.IO;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Duende.IdentityServer.Models;
+using Duende.IdentityServer.Services;
 using IdentityModel;
-using IdentityServer4.Models;
-using IdentityServer4.Services;
 using MagicMedia.Identity.Data;
 using MagicMedia.Identity.Data.Mongo.Seeding;
 using MagicMedia.Identity.Host.Tests.Infrastructure;
@@ -53,8 +53,7 @@ namespace MagicMedia.Identity.Host.Tests
                 .ConfigureTestServices(services =>
                 {
 
-                })
-               .UseStartup<Startup>();
+                });
 
             var server = new TestServer(hostBuilder);
 

@@ -1,22 +1,32 @@
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia;
 using MagicMedia.BingMaps;
 using MagicMedia.Discovery;
+using MagicMedia.GoogleMaps;
 using MagicMedia.Messaging;
 using MagicMedia.Playground;
 using MagicMedia.Security;
 using MagicMedia.Store.MongoDb;
 using MagicMedia.Stores;
+using MagicMedia.Telemetry;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using OpenTelemetry;
+using OpenTelemetry.Trace;
 using Serilog;
 
 namespace Playground
 {
     class Program
     {
+        private static readonly ActivitySource PlaygroundActivitySource = new ActivitySource("MagicMedia.Playground");
+
         static async Task Main(string[] args)
         {
             Log.Logger = new LoggerConfiguration()
@@ -31,19 +41,50 @@ namespace Playground
             ImageHasher hasher = sp.GetService<ImageHasher>();
             ClientThumbprintLoader thumbprintLoader = sp.GetService<ClientThumbprintLoader>();
 
+            //FileSystemSnapshotBuilder.BuildSnapshot();
             //await videoConverter.GenerateVideosAsync(default);
 
             //await updater.UpdateMediaAISummaryAsync(default);
 
-            await hasher.GetDuplicatesAsync();
+            //await hasher.GetDuplicatesAsync();
             //await hasher.HashAsync();
 
+
+            //DeleteEmptyDirs("H:\\Photos\\MobileBackup");
+
+            await updater.UpdateLocationAsync(CancellationToken.None);
             //await faceScanner.RunAsync(default);
 
-            //await updater.ResetMediaAIErrorsAsync();
+            //await updater.DeleteMediaAIOrphansAsync();
 
             //await thumbprintLoader.LoadAuditThumbprintsAsync();
-          }
+
+
+        }
+
+        static void DeleteEmptyDirs(string dir)
+        {
+            try
+            {
+                foreach (var d in Directory.EnumerateDirectories(dir))
+                {
+                    DeleteEmptyDirs(d);
+                }
+
+                IEnumerable<string> entries = Directory.EnumerateFileSystemEntries(dir);
+
+                if (!entries.Any())
+                {
+                    try
+                    {
+                        Directory.Delete(dir);
+                    }
+                    catch (UnauthorizedAccessException) { }
+                    catch (DirectoryNotFoundException) { }
+                }
+            }
+            catch (UnauthorizedAccessException) { }
+        }
 
         private static IServiceProvider BuildServiceProvider()
         {
@@ -59,6 +100,7 @@ namespace Playground
                 .AddMagicMediaServer(config)
                 .AddProcessingMediaServices()
                 .AddBingMaps()
+                .AddGoogleMaps()
                 .AddMongoDbStore()
                 .AddFileSystemStore()
                 .AddFileSystemDiscovery()
@@ -72,6 +114,17 @@ namespace Playground
             services.AddSingleton<BulkMediaUpdater>();
             services.AddSingleton<ImageHasher>();
             services.AddSingleton<ClientThumbprintLoader>();
+            //services.AddSingleton<IGeoDecoderService>(p =>
+            //{
+            //    return new GeoDecoderCacheStore(p.GetRequiredService<MediaStoreContext>(),
+            //        new BingMapsGeoDecoderService(p.GetRequiredService<BingMapsOptions>()));
+            //});
+
+            services.AddSingleton<IGeoDecoderService>(p =>
+            {
+                return new GeoDecoderCacheStore(p.GetRequiredService<MediaStoreContext>(),
+                    new GoogleMapsGeoDecoderService(p.GetRequiredService<GoogleMapsOptions>()));
+            });
 
             services.AddSingleton<IUserContextFactory, NoOpUserContextFactory>();
             services.AddMemoryCache();

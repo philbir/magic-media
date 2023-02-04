@@ -1,4 +1,4 @@
-mutation createInvite($id: Uuid!) {
+mutation createInvite($id: UUID!) {
   User_CreateInvite(id: $id) {
     user {
       id

@@ -1,110 +1,105 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using HotChocolate.AspNetCore.Authorization;
-using HotChocolate.Types;
 using MagicMedia.Authorization;
 using MagicMedia.Operations;
 using MagicMedia.Store;
 
-namespace MagicMedia.GraphQL
+namespace MagicMedia.GraphQL;
+
+[ExtendObjectType(RootTypes.Mutation)]
+[Authorize(Apply = ApplyPolicy.BeforeResolver, Policy = AuthorizationPolicies.Names.MediaEdit)]
+public class MediaMutations
 {
-    [ExtendObjectType(Name = "Mutation")]
-    [Authorize(Apply = ApplyPolicy.BeforeResolver, Policy = AuthorizationPolicies.Names.MediaEdit)]
-    public class MediaMutations
+    private readonly IMediaOperationsService _operationsService;
+    private readonly IMediaAIService _cloudAIMediaProcessing;
+
+    public MediaMutations(
+        IMediaOperationsService operationsService,
+        IMediaAIService cloudAIMediaProcessing)
     {
-        private readonly IMediaOperationsService _operationsService;
-        private readonly IMediaAIService _cloudAIMediaProcessing;
+        _operationsService = operationsService;
+        _cloudAIMediaProcessing = cloudAIMediaProcessing;
+    }
 
-        public MediaMutations(
-            IMediaOperationsService operationsService,
-            IMediaAIService cloudAIMediaProcessing)
+    public async Task<MediaOperationPayload> MoveMediaAsync(
+        MoveMediaRequest request,
+        CancellationToken cancellationToken)
+    {
+        request.OperationId = request.OperationId ?? Guid.NewGuid().ToString("N");
+        await _operationsService.MoveMediaAsync(request, cancellationToken);
+
+        return new MediaOperationPayload(request.OperationId);
+    }
+
+    public async Task<ToggleMediaFavoritePayload> ToggleMediaFavoriteAsync(
+        ToggleMediaFavoriteInput input, CancellationToken cancellationToken)
+    {
+        await _operationsService.ToggleFavoriteAsync(
+            input.Id,
+            input.IsFavorite,
+            cancellationToken);
+
+        return new ToggleMediaFavoritePayload(input.Id, input.IsFavorite);
+    }
+
+    public async Task<MediaOperationPayload> RecycleMediaAsync(
+        RecycleMediaRequest input,
+        CancellationToken cancellationToken)
+    {
+        RecycleMediaRequest request = input with
         {
-            _operationsService = operationsService;
-            _cloudAIMediaProcessing = cloudAIMediaProcessing;
-        }
+            OperationId = input.OperationId ?? Guid.NewGuid().ToString("N")
+        };
 
-        public async Task<MediaOperationPayload> MoveMediaAsync(
-            MoveMediaRequest request,
-            CancellationToken cancellationToken)
+        await _operationsService.RecycleAsync(request, cancellationToken);
+
+        return new MediaOperationPayload(request.OperationId);
+    }
+
+    public async Task<MediaOperationPayload> DeleteMediaAsync(
+        DeleteMediaRequest input,
+        CancellationToken cancellationToken)
+    {
+        DeleteMediaRequest request = input with
         {
-            request.OperationId = request.OperationId ?? Guid.NewGuid().ToString("N");
-            await _operationsService.MoveMediaAsync(request, cancellationToken);
+            OperationId = input.OperationId ?? Guid.NewGuid().ToString("N")
+        };
 
-            return new MediaOperationPayload(request.OperationId);
-        }
+        await _operationsService.DeleteAsync(request, cancellationToken);
 
-        public async Task<ToggleMediaFavoritePayload> ToggleMediaFavoriteAsync(
-            ToggleMediaFavoriteInput input, CancellationToken cancellationToken)
+        return new MediaOperationPayload(request.OperationId);
+    }
+
+    public async Task<MediaOperationPayload> UpdateMediaMetadataAsync(
+        UpdateMediaMetadataRequest input,
+        CancellationToken cancellationToken)
+    {
+        input.OperationId = input.OperationId ?? Guid.NewGuid().ToString("N");
+        await _operationsService.UpdateMetadataAsync(input, cancellationToken);
+
+        return new MediaOperationPayload(input.OperationId);
+    }
+
+    public async Task<MediaOperationPayload> ReScanFacesAsync(
+        RescanFacesRequest input,
+        CancellationToken cancellationToken)
+    {
+        RescanFacesRequest request = input with
         {
-            await _operationsService.ToggleFavoriteAsync(
-                input.Id,
-                input.IsFavorite,
-                cancellationToken);
+            OperationId = input.OperationId ?? Guid.NewGuid().ToString("N")
+        };
 
-            return new ToggleMediaFavoritePayload(input.Id, input.IsFavorite);
-        }
+        await _operationsService.ReScanFacesAsync(request, cancellationToken);
 
-        public async Task<MediaOperationPayload> RecycleMediaAsync(
-            RecycleMediaRequest input,
-            CancellationToken cancellationToken)
-        {
-            RecycleMediaRequest request = input with
-            {
-                OperationId = input.OperationId ?? Guid.NewGuid().ToString("N")
-            };
+        return new MediaOperationPayload(request.OperationId);
+    }
 
-            await _operationsService.RecycleAsync(request, cancellationToken);
+    public async Task<AnalyseMediaPayload> AnalyseMediaAsync(
+        AnalyseMediaInput input,
+        CancellationToken cancellationToken)
+    {
+        MediaAI? mediaAi = await _cloudAIMediaProcessing
+            .AnalyseMediaAsync(input.Id, cancellationToken);
 
-            return new MediaOperationPayload(request.OperationId);
-        }
-
-        public async Task<MediaOperationPayload> DeleteMediaAsync(
-            DeleteMediaRequest input,
-            CancellationToken cancellationToken)
-        {
-            DeleteMediaRequest request = input with
-            {
-                OperationId = input.OperationId ?? Guid.NewGuid().ToString("N")
-            };
-
-            await _operationsService.DeleteAsync(request, cancellationToken);
-
-            return new MediaOperationPayload(request.OperationId);
-        }
-
-        public async Task<MediaOperationPayload> UpdateMediaMetadataAsync(
-            UpdateMediaMetadataRequest input,
-            CancellationToken cancellationToken)
-        {
-            input.OperationId = input.OperationId ?? Guid.NewGuid().ToString("N");
-            await _operationsService.UpdateMetadataAsync(input, cancellationToken);
-
-            return new MediaOperationPayload(input.OperationId);
-        }
-
-        public async Task<MediaOperationPayload> ReScanFacesAsync(
-            RescanFacesRequest input,
-            CancellationToken cancellationToken)
-        {
-            RescanFacesRequest request = input with
-            {
-                OperationId = input.OperationId ?? Guid.NewGuid().ToString("N")
-            };
-
-            await _operationsService.ReScanFacesAsync(request, cancellationToken);
-
-            return new MediaOperationPayload(request.OperationId);
-        }
-
-        public async Task<AnalyseMediaPayload> AnalyseMediaAsync(
-            AnalyseMediaInput input,
-            CancellationToken cancellationToken)
-        {
-            MediaAI? mediaAi = await _cloudAIMediaProcessing
-                .AnalyseMediaAsync(input.Id, cancellationToken);
-
-            return new AnalyseMediaPayload(mediaAi);
-        }
+        return new AnalyseMediaPayload(mediaAi);
     }
 }

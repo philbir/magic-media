@@ -346,7 +346,7 @@ export default {
         case 39:
           this.navigate(1);
           break;
-        case 27:
+        case 27: //esc
           this.handleHome();
           break;
         case 46:
@@ -369,6 +369,12 @@ export default {
           break;
         case 67: //c
           this.analyseAI();
+          break;
+        case 76: //l
+          this.onMediaAction({ action: "ADD_TO_ALBUM" });
+          break;
+        case 77: //m
+          this.onMediaAction({ action: "MOVE" });
           break;
         case 32: //space
           this.$store.dispatch(
@@ -397,7 +403,11 @@ export default {
         case 68: //d
           console.log(this.$vuetify.breakpoint);
           break;
+        case 73: //i
+          this.toggleInfo();
+          break;
         default:
+          console.log(e.which);
           break;
       }
     },
@@ -427,6 +437,9 @@ export default {
           break;
         case "AI":
           this.analyseAI();
+          break;
+        default:
+          this.$emit("mediaAction", action);
           break;
       }
     },

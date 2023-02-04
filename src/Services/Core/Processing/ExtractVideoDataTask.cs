@@ -3,29 +3,30 @@ using System.Threading.Tasks;
 using MagicMedia.Video;
 using SixLabors.ImageSharp;
 
-namespace MagicMedia.Processing
+namespace MagicMedia.Processing;
+
+public class ExtractVideoDataTask : IMediaProcessorTask
 {
-    public class ExtractVideoDataTask : IMediaProcessorTask
+    private readonly IVideoProcessingService _videoProcessingService;
+
+    public string Name => MediaProcessorTaskNames.ExtractVideoData;
+
+    public ExtractVideoDataTask(IVideoProcessingService videoProcessingService)
     {
-        private readonly IVideoProcessingService _videoProcessingService;
+        _videoProcessingService = videoProcessingService;
+    }
 
-        public string Name => MediaProcessorTaskNames.ExtractVideoData;
+    public async Task ExecuteAsync(MediaProcessorContext context, CancellationToken cancellationToken)
+    {
+        ExtractVideoDataResult? videoData = await _videoProcessingService.ExtractVideoDataAsync(
+            context.File.Id,
+            cancellationToken);
 
-        public ExtractVideoDataTask(IVideoProcessingService videoProcessingService)
-        {
-            _videoProcessingService = videoProcessingService;
-        }
+        //File.WriteAllBytes(@"c:\temp\vidimg.png", videoData.ImageData);
 
-        public async Task ExecuteAsync(MediaProcessorContext context, CancellationToken cancellationToken)
-        {
-            ExtractVideoDataResult? videoData = await _videoProcessingService.ExtractVideoDataAsync(
-                context.File.Id,
-                cancellationToken);
-
-            context.Image = Image.Load(videoData.ImageData);
-            context.Metadata = videoData.Meta;
-            context.VideoInfo = videoData.Info;
-            context.Size = videoData.Size;
-        }
+        context.Image = Image.Load(videoData.ImageData);
+        context.Metadata = videoData.Meta;
+        context.VideoInfo = videoData.Info;
+        context.Size = videoData.Size;
     }
 }

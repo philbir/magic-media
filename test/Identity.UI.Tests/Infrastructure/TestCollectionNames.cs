@@ -1,4 +1,4 @@
-﻿namespace MagicMedia.Identity.UI.Tests
+namespace MagicMedia.Identity.UI.Tests
 {
     public static class TestCollectionNames
     {

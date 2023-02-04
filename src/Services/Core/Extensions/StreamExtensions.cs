@@ -1,20 +1,19 @@
 using System.IO;
 
-namespace MagicMedia.Extensions
+namespace MagicMedia.Extensions;
+
+public static class StreamExtensions
 {
-    public static class StreamExtensions
+    public static byte[] ToByteArray(this Stream stream)
     {
-        public static byte[] ToByteArray(this Stream stream)
+        if (stream is MemoryStream s)
         {
-            if (stream is MemoryStream s)
-            {
-                return s.ToArray();
-            }
-
-            using MemoryStream ms = new MemoryStream();
-            stream.CopyTo(ms);
-
-            return ms.ToArray();
+            return s.ToArray();
         }
+
+        using MemoryStream ms = new MemoryStream();
+        stream.CopyTo(ms);
+
+        return ms.ToArray();
     }
 }

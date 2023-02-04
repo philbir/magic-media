@@ -40,9 +40,7 @@ const similarMediaModule = {
     actions: {
         async getGroups({ state, commit, dispatch }) {
             commit("SET_LOADING", true);
-
             const result = await excuteGraphQL(() => getSimilarGroups(state.filter), dispatch);
-            console.log(result)
             if (result.success) {
 
                 commit("GROUPS_LOADED", result.data.similarMediaGroups);

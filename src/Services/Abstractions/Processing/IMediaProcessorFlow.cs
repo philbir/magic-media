@@ -1,10 +1,9 @@
-﻿using System.Threading;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace MagicMedia.Processing
+namespace MagicMedia.Processing;
+
+public interface IMediaProcessorFlow
 {
-    public interface IMediaProcessorFlow
-    {
-        Task ExecuteAsync(MediaProcessorContext context, CancellationToken cancellationToken);
-    }
+    Task ExecuteAsync(MediaProcessorContext context, CancellationToken cancellationToken);
 }

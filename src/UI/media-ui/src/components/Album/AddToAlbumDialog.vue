@@ -36,6 +36,7 @@
               ></v-text-field
             ></v-col>
           </v-row>
+
           <div v-if="context !== 'QUERY'">
             <v-row dense>
               <v-col cols="12" sm="12">
@@ -87,6 +88,20 @@
                 </v-list>
               </v-col>
             </v-row>
+            <v-row>
+              <v-col sm="12"
+                ><v-chip
+                  v-for="album in recentAlbums"
+                  :key="album.id"
+                  class="mr-2"
+                  color="primary"
+                  label
+                  small
+                  @click="addToRecent(album)"
+                  >{{ album.title }}</v-chip
+                ></v-col
+              >
+            </v-row>
           </div>
         </v-container>
       </v-card-text>
@@ -133,11 +148,16 @@ export default {
         return x.title.toLowerCase().includes(this.searchText.toLowerCase());
       });
     },
+    recentAlbums: function () {
+      return this.$store.state.album.recentAlbums;
+    },
     folder: function () {
       return this.$store.state.media.filter.folder;
     },
     title: function () {
       switch (this.context) {
+        case "ID":
+          return "Add media to Album";
         case "IDS":
           return `Add ${this.$store.state.media.selectedIndexes.length} items to album`;
         case "FOLDER":
@@ -155,15 +175,16 @@ export default {
     close: function () {
       this.isOpen = false;
     },
-    save: function () {
-      let input = {};
-      if (this.selectedAlbum) {
-        input.albumId = this.selectedAlbum.id;
-      } else if (this.newTitle.length > 2) {
-        input.newAlbumTitle = this.newTitle;
-      }
-
+    addToRecent: function (album) {
+      this.add({
+        albumId: album.id,
+      });
+    },
+    add: function (input) {
       switch (this.context) {
+        case "ID":
+          input.mediaIds = [this.$store.state.media.currentMediaId];
+          break;
         case "IDS":
           input.mediaIds = this.selectedMediaIds;
           break;
@@ -187,8 +208,17 @@ export default {
       if (this.context === "IDS") {
         this.$store.dispatch("media/clearSelected");
       }
-
+      this.searchText = null;
       this.isOpen = false;
+    },
+    save: function () {
+      let input = {};
+      if (this.selectedAlbum) {
+        input.albumId = this.selectedAlbum.id;
+      } else if (this.newTitle.length > 2) {
+        input.newAlbumTitle = this.newTitle;
+      }
+      this.add(input);
     },
   },
 };

@@ -2,22 +2,21 @@ using System.Threading.Tasks;
 using MagicMedia.Operations;
 using MassTransit;
 
-namespace MagicMedia.Messaging.Consumers
+namespace MagicMedia.Messaging.Consumers;
+
+public class MoveMediaConsumer : IConsumer<MoveMediaMessage>
 {
-    public class MoveMediaConsumer : IConsumer<MoveMediaMessage>
+    private readonly IMoveMediaHandler _moveMediaHandler;
+
+    public MoveMediaConsumer(IMoveMediaHandler moveMediaHandler)
     {
-        private readonly IMoveMediaHandler _moveMediaHandler;
+        _moveMediaHandler = moveMediaHandler;
+    }
 
-        public MoveMediaConsumer(IMoveMediaHandler moveMediaHandler)
-        {
-            _moveMediaHandler = moveMediaHandler;
-        }
-
-        public async Task Consume(ConsumeContext<MoveMediaMessage> context)
-        {
-            await _moveMediaHandler.ExecuteAsync(
-                context.Message,
-                context.CancellationToken);
-        }
+    public async Task Consume(ConsumeContext<MoveMediaMessage> context)
+    {
+        await _moveMediaHandler.ExecuteAsync(
+            context.Message,
+            context.CancellationToken);
     }
 }

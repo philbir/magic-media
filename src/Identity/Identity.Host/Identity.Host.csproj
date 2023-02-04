@@ -4,24 +4,21 @@
     <AssemblyName>MagicMedia.Identity.Host</AssemblyName>
     <RootNamespace>MagicMedia.Identity</RootNamespace>
     <UserSecretsId>88de70dc-7f81-4604-ae70-d6d320654f8d</UserSecretsId>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Serilog.AspNetCore" Version="3.4.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="5.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="$(AspNetCoreVersion)" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\AspNetCore\Shared.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\Shared\Telemetry\Telemetry.csproj" />
     <ProjectReference Include="..\Identity.Abstractions\Identity.Abstractions.csproj" />
     <ProjectReference Include="..\Identity.Core\Identity.Core.csproj" />
     <ProjectReference Include="..\Identity.Data.Mongo\Identity.Data.Mongo.csproj" />
     <PackageReference Include="MassTransit.AspNetCore" Version="$(MassTransitVersion)" />
-
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\" />
   </ItemGroup>
 
 </Project>

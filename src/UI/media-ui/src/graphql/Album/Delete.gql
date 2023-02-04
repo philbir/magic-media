@@ -1,4 +1,4 @@
-mutation deleteAlbum($id: Uuid!) {
+mutation deleteAlbum($id: UUID!) {
   Album_Delete(id: $id) {
     id
     errors {

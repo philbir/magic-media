@@ -1,38 +1,34 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using MagicMedia.Authorization;
 using MagicMedia.Store;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MagicMedia.Api.Controllers
+namespace MagicMedia.Api.Controllers;
+
+[Authorize(AuthorizationPolicies.Names.ApiAccess)]
+[Route("api/person")]
+public class PersonController : Controller
 {
-    [Authorize(AuthorizationPolicies.Names.ApiAccess)]
-    [Route("api/person")]
-    public class PersonController : Controller
+    private readonly IPersonService _personService;
+
+    public PersonController(IPersonService personService)
     {
-        private readonly IPersonService _personService;
+        _personService = personService;
+    }
 
-        public PersonController(IPersonService personService)
+    [HttpGet]
+    [Route("thumbnail/{id}")]
+    public async Task<IActionResult> FaceThumbnailAsync(Guid id, CancellationToken cancellationToken)
+    {
+        MediaThumbnail? thumb = await _personService.TryGetFaceThumbnailAsync(id, cancellationToken);
+
+        if (thumb != null)
         {
-            _personService = personService;
+            Response.Headers["X-Sw-Cache-Thumbnail"] = "true";
+
+            return new FileContentResult(thumb.Data, "image/jpg");
         }
 
-        [HttpGet]
-        [Route("thumbnail/{id}")]
-        public async Task<IActionResult> FaceThumbnailAsync(Guid id, CancellationToken cancellationToken)
-        {
-            MediaThumbnail? thumb = await _personService.TryGetFaceThumbnailAsync(id, cancellationToken);
-
-            if ( thumb != null)
-            {
-                Response.Headers["X-Sw-Cache-Thumbnail"] = "true";
-
-                return new FileContentResult(thumb.Data, "image/jpg");
-            }
-
-            return NotFound();
-        }
+        return NotFound();
     }
 }

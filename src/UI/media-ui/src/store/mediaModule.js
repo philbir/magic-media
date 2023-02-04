@@ -1,4 +1,5 @@
 import Vue from "vue";
+import { v4 as uuidv4 } from 'uuid';
 
 import {
   analyseMedia,
@@ -18,6 +19,7 @@ import { excuteGraphQL } from "./graphqlClient"
 import { mediaOperationTypeMap } from "../services/mediaOperationService";
 import { shareManyMedia } from "../services/shareService"
 import { addSnack } from "./snackService"
+import { mediaListViewMap } from "../services/mediaListViewMap";
 
 const getMediaIdsFromIndexes = state => {
   const ids = [];
@@ -60,7 +62,7 @@ const mediaModule = {
     hasMore: true,
     isEditMode: false,
     thumbnailSize: "M",
-    loadThumbnailData: false,
+    loadThumbnailData: true,
     filter: {
       pageNr: 0,
       pageSize: 200,
@@ -75,8 +77,10 @@ const mediaModule = {
       date: null,
       albumId: null,
       geoRadius: null,
-      folder: null
+      folder: null,
+      text: null
     },
+    recentMoves: [],
     viewer: {
       showFaceBox: true,
       showFaceList: true,
@@ -239,9 +243,11 @@ const mediaModule = {
     async search({ commit, state, dispatch }) {
       commit("SET_MEDIALIST_LOADING", true);
 
+      const viewMap = mediaListViewMap[state.thumbnailSize];
+
       const result = await excuteGraphQL(() => searchMedia(
         state.filter,
-        state.thumbnailSize,
+        viewMap.thumbSize,
         state.loadThumbnailData), dispatch);
 
       if (result.success) {
@@ -299,16 +305,32 @@ const mediaModule = {
       if (!getters["canEdit"])
         return;
 
-      const ids = getMediaIdsFromIndexes(state);
+      let ids = [];
+      if (state.currentMediaId) {
+        ids.push(state.currentMediaId)
+      }
+      else {
+        ids = getMediaIdsFromIndexes(state);
+      }
 
       const operation = {
         type: 0,
         api: moveMedia({
           ids,
-          newLocation
+          newLocation,
+          operationId: uuidv4()
         }),
         dataField: "moveMedia",
         ids: ids,
+      }
+
+      const recents = state.recentMoves.filter(x => x == newLocation);
+      if (recents.length === 0) {
+
+        if (state.recentMoves.length > 3) {
+          state.recentAlbums.splice(0, 1);
+        }
+        state.recentMoves.push(newLocation);
       }
 
       dispatch('startOperation', operation);
@@ -322,7 +344,8 @@ const mediaModule = {
       const operation = {
         type: 1,
         api: recycleMedia({
-          ids
+          ids,
+          operationId: uuidv4()
         }),
         dataField: "recycleMedia",
         ids: ids,
@@ -339,7 +362,8 @@ const mediaModule = {
       const operation = {
         type: 4,
         api: deleteMedia({
-          ids
+          ids,
+          operationId: uuidv4()
         }),
         dataField: "deleteMedia",
         ids: ids,

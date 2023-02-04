@@ -268,7 +268,9 @@
                 rounded="lg"
                 class="ma-2 pa-4 card-details-content"
               >
-                <div class="json-wrapper"></div>
+                <div class="json-wrapper">
+                  <vue-json-pretty :data="media"> </vue-json-pretty>
+                </div>
               </v-sheet>
             </v-tab-item>
           </v-tabs-items>
@@ -279,15 +281,13 @@
 </template>
 
 <script>
-import VueJsonPretty from "vue-json-pretty";
 import "vue-json-pretty/lib/styles.css";
+import VueJsonPretty from "vue-json-pretty";
 import { getFaceColor } from "../../services/faceColor";
 import { getInfo } from "../../services/mediaService";
 
 export default {
-  components: {
-    VueJsonPretty,
-  },
+  components: { VueJsonPretty },
   props: {
     mediaId: String,
   },
@@ -339,33 +339,41 @@ export default {
       return this.media.geoLocation != null;
     },
     location: function () {
+      const geoProps = [];
+
       if (this.hasLocation) {
         const loc = this.media.geoLocation;
-        return [
-          {
-            label: "Address",
-            value: loc.address.name,
-          },
-          {
-            label: "Street",
-            value: loc.address.address,
-          },
-          {
-            label: "City",
-            value: loc.address.city,
-          },
-          {
-            label: "Country",
-            value: loc.address.country,
-          },
-          {
-            label: "District 1",
-            value: loc.address.distric1,
-          },
-          {
-            label: "District 2",
-            value: loc.address.distric2,
-          },
+
+        if (this.media.geoLocation.address != null) {
+          geoProps.push(... [
+            {
+              label: "Address",
+              value: loc.address.name,
+            },
+            {
+              label: "Street",
+              value: loc.address.address,
+            },
+            {
+              label: "City",
+              value: loc.address.city,
+            },
+            {
+              label: "Country",
+              value: loc.address.country,
+            },
+            {
+              label: "District 1",
+              value: loc.address.distric1,
+            },
+            {
+              label: "District 2",
+              value: loc.address.distric2,
+            },
+          ]);
+        }
+
+        geoProps.push(... [
           {
             label: "Coordinates",
             value: `${this.media.geoLocation.point.coordinates[0]}, ${this.media.geoLocation.point.coordinates[1]}`,
@@ -374,10 +382,10 @@ export default {
             label: "Altitude",
             value: loc.altitude,
           },
-        ];
+        ]);
       }
 
-      return [];
+      return geoProps;
     },
     attributes: function () {
       var data = [
@@ -448,7 +456,6 @@ export default {
       if (mediaId) {
         var res = await getInfo(mediaId);
         this.media = res.data.mediaById;
-        console.log(this.media);
       } else {
         this.media = null;
       }

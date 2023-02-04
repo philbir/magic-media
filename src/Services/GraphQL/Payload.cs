@@ -1,16 +1,13 @@
-using System.Collections.Generic;
+namespace MagicMedia.GraphQL;
 
-namespace MagicMedia.GraphQL
+public abstract class Payload
 {
-    public abstract class Payload
+    protected Payload(IReadOnlyList<UserError>? errors = null)
     {
-        protected Payload(IReadOnlyList<UserError>? errors = null)
-        {
-            Errors = errors;
-        }
-
-        public IReadOnlyList<UserError>? Errors { get; }
+        Errors = errors;
     }
 
-    public record UserError(string Message, string Code);
+    public IReadOnlyList<UserError>? Errors { get; }
 }
+
+public record UserError(string Message, string Code);

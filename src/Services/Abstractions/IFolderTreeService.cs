@@ -1,10 +1,9 @@
-﻿using System.Threading;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace MagicMedia
+namespace MagicMedia;
+
+public interface IFolderTreeService
 {
-    public interface IFolderTreeService
-    {
-        Task<FolderItem> GetTreeAsync(CancellationToken cancellationToken);
-    }
+    Task<FolderItem> GetTreeAsync(CancellationToken cancellationToken);
 }

@@ -1,10 +1,9 @@
-﻿using System;
+using System;
 
-namespace MagicMedia.Messaging
+namespace MagicMedia.Messaging;
+
+public interface IUserContextMessage
 {
-    public interface IUserContextMessage
-    {
-        ClientInfo? ClientInfo { get; set; }
-        Guid UserId { get; set; }
-    }
+    ClientInfo? ClientInfo { get; set; }
+    Guid UserId { get; set; }
 }

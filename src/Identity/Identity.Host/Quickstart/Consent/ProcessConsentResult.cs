@@ -2,20 +2,19 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
-using IdentityServer4.Models;
+using Duende.IdentityServer.Models;
 
-namespace MagicMedia.Identity
+namespace MagicMedia.Identity;
+
+public class ProcessConsentResult
 {
-    public class ProcessConsentResult
-    {
-        public bool IsRedirect => RedirectUri != null;
-        public string RedirectUri { get; set; }
-        public Client Client { get; set; }
+    public bool IsRedirect => RedirectUri != null;
+    public string? RedirectUri { get; set; }
+    public Client? Client { get; set; }
 
-        public bool ShowView => ViewModel != null;
-        public ConsentViewModel ViewModel { get; set; }
+    public bool ShowView => ViewModel != null;
+    public ConsentViewModel? ViewModel { get; set; }
 
-        public bool HasValidationError => ValidationError != null;
-        public string ValidationError { get; set; }
-    }
+    public bool HasValidationError => ValidationError != null;
+    public string? ValidationError { get; set; }
 }

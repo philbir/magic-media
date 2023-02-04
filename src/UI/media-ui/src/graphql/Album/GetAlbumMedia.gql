@@ -1,4 +1,4 @@
-query GetAlbumMedia($albumId: Uuid!) {
+query GetAlbumMedia($albumId: UUID!) {
   searchMedia(request: {
     pageNr: 0,
     pageSize: 250,

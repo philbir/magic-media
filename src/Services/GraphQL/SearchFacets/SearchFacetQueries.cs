@@ -1,18 +1,13 @@
-using System.Threading;
-using HotChocolate;
-using HotChocolate.Types;
+namespace MagicMedia.GraphQL.SearchFacets;
 
-namespace MagicMedia.GraphQL.SearchFacets
+[ExtendObjectType(RootTypes.Query)]
+public class SearchFacetQueries
 {
-    [ExtendObjectType(Name = "Query")]
-    public class SearchFacetQueries
-    {
-        static readonly object NoOp = new object();
+    static readonly object NoOp = new object();
 
-        [GraphQLType(typeof(SearchFacetType))]
-        public object GetFacets(CancellationToken cancellationToken)
-        {
-            return NoOp;
-        }
+    [GraphQLType(typeof(SearchFacetType))]
+    public object GetFacets(CancellationToken cancellationToken)
+    {
+        return NoOp;
     }
 }
