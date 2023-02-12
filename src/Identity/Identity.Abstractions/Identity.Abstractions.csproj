@@ -6,6 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Duende.IdentityServer.Storage" Version="$(IdentityServerVersion)" />
+    <PackageReference Include="Duende.IdentityServer.Storage" />
   </ItemGroup>
 </Project>

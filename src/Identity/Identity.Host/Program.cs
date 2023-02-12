@@ -1,4 +1,3 @@
-
 using System.IdentityModel.Tokens.Jwt;
 using Duende.IdentityServer;
 using MagicMedia.AspNetCore;
@@ -16,7 +15,6 @@ builder.Logging.ConfigureSerilog(builder.Configuration);
 builder.Configuration
     .AddJsonFile("appsettings.json")
     .AddUserSecrets<Program>(optional: true)
-    .AddJsonFile("appsettings.local.json", optional: true)
     .AddEnvironmentVariables();
 
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
@@ -38,7 +36,11 @@ builder.Services.AddMessaging(builder.Configuration);
 builder.Services.AddMassTransitHostedService();
 builder.Services.AddOpenTelemetry(builder.Configuration, b =>
 {
-    b.AddSource(IdentityServerConstants.Tracing.ServiceName);
+    b.AddSource(IdentityServerConstants.Tracing.Basic)
+        .AddSource(IdentityServerConstants.Tracing.Cache)
+        .AddSource(IdentityServerConstants.Tracing.Services)
+        .AddSource(IdentityServerConstants.Tracing.Stores)
+        .AddSource(IdentityServerConstants.Tracing.Validation);
 });
 
 builder.Services.AddSingleton<IDemoUserService>(s => new DemoUserService(

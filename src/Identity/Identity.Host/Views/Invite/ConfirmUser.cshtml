@@ -14,12 +14,12 @@
           <div class="card-body">
             <p>Please check the data below:</p>
 
-            <span>Provider: <strong>@Model.Provider</strong></span><br />
+            <span>Provider: <strong>@Model.Provider</strong></span><br/>
             <span>User: <strong>@Model.Name</strong> </span>
-            <br />
-            <br />
+            <br/>
+            <br/>
             <form method="post" asp-action="ConfirmUser" asp-controller="Invite">
-              <input type="hidden" asp-for="Id" />
+              <input type="hidden" asp-for="Id"/>
               <button class="btn btn-primary" name="button">Complete</button>
             </form>
           </div>
@@ -27,3 +27,4 @@
       </div>
     </div>
   </div>
+</div>

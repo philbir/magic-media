@@ -52,6 +52,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".props", ".props", "{FFA075
 		Directory.Build.props = Directory.Build.props
 		..\global.json = ..\global.json
 		Versions.props = Versions.props
+		..\Directory.Packages.props = ..\Directory.Packages.props
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".props", ".props", "{43BC2FC5-234F-4B58-BF47-B8C5149956CB}"
