@@ -33,7 +33,7 @@ builder.Services.AddControllersWithViews()
     .AddRazorRuntimeCompilation();
 
 builder.Services.AddMessaging(builder.Configuration);
-builder.Services.AddMassTransitHostedService();
+//builder.Services.AddMassTransitHostedService();
 builder.Services.AddOpenTelemetry(builder.Configuration, b =>
 {
     b.AddSource(IdentityServerConstants.Tracing.Basic)
