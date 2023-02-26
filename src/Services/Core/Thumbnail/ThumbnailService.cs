@@ -76,7 +76,7 @@ public class ThumbnailService : IThumbnailService
         var height = image.Height / ratio;
 
         Image resized = image.Clone(ctx => ctx.Resize(newWidth, (int)height));
-        MemoryStream thumb = new MemoryStream();
+        var thumb = new MemoryStream();
         await resized.SaveAsync(thumb, new JpegEncoder(), cancellationToken);
         thumb.Position = 0;
 

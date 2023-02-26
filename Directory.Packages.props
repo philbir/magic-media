@@ -3,15 +3,15 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="HotChocolate.AspNetCore" Version="13.0.0-rc.4" />
-    <PackageVersion Include="HotChocolate" Version="13.0.0-rc.4" />
-    <PackageVersion Include="HotChocolate.AspNetCore.Authorization" Version="13.0.0-rc.4" />
-    <PackageVersion Include="HotChocolate.Data" Version="13.0.0-rc.4" />
-    <PackageVersion Include="HotChocolate.Types" Version="13.0.0-rc.4" />
-    <PackageVersion Include="HotChocolate.Types.Analyzers" Version="13.0.0-rc.4" />
+    <PackageVersion Include="HotChocolate.AspNetCore" Version="13.0.5" />
+    <PackageVersion Include="HotChocolate" Version="13.0.5" />
+    <PackageVersion Include="HotChocolate.AspNetCore.Authorization" Version="13.0.5" />
+    <PackageVersion Include="HotChocolate.Data" Version="13.0.5" />
+    <PackageVersion Include="HotChocolate.Types" Version="13.0.5" />
+    <PackageVersion Include="HotChocolate.Types.Analyzers" Version="13.0.5" />
     <PackageVersion Include="GreenDonut" Version="13.0.0-rc.4" />
-    <PackageVersion Include="HotChocolate.Types.Scalars" Version="13.0.0-rc.4" />
-    <PackageVersion Include="StrawberryShake" Version="13.0.0-rc.4" />
+    <PackageVersion Include="HotChocolate.Types.Scalars" Version="13.0.5" />
+    <PackageVersion Include="StrawberryShake" Version="13.0.5" />
     <PackageVersion Include="IdentityModel" Version="6.0.0" />
     <PackageVersion Include="Magick.NET-Q16-AnyCPU" Version="12.2.2" />
     <PackageVersion Include="Magick.NET-Q16-x64" Version="12.2.2" />

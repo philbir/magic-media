@@ -31,4 +31,5 @@ public interface IFaceService
     Task<SearchResult<MediaFace>> SearchAsync(SearchFacesRequest request, CancellationToken cancellationToken);
     Task<IEnumerable<MediaFace>> UnassignAllPredictedByMediaAsync(Guid mediaId, CancellationToken cancellationToken);
     Task<MediaFace> UnAssignPersonAsync(Guid id, CancellationToken cancellationToken);
+    Task<MediaFace> UpdateAgeAsync(MediaFace face, CancellationToken cancellationToken);
 }

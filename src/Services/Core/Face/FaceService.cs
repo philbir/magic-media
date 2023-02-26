@@ -54,7 +54,7 @@ public class FaceService : IFaceService
         face.State = FaceState.Validated;
         face.RecognitionType = FaceRecognitionType.Human;
 
-        await UpdateAgeAsync(face, person, cancellationToken);
+        await CalculateAgeAsync(face, person, cancellationToken);
         await _faceStore.UpdateAsync(face, cancellationToken);
 
         await _bus.Publish(new FaceUpdatedMessage(face.Id, "ASSIGN_BY_HUMAN") { PersonId = person.Id });
@@ -76,20 +76,29 @@ public class FaceService : IFaceService
         return await _faceStore.SearchAsync(request, cancellationToken);
     }
 
-    private async Task UpdateAgeAsync(
-       MediaFace face,
-       Guid personId,
-       CancellationToken cancellationToken)
+    public async Task<MediaFace> UpdateAgeAsync(MediaFace face, CancellationToken cancellationToken)
     {
-        Person person = await _mediaStore.Persons.GetByIdAsync(personId, cancellationToken);
+        await CalculateAgeAsync(face, cancellationToken);
+        await _faceStore.UpdateAsync(face, cancellationToken);
 
-        await UpdateAgeAsync(face, person, cancellationToken);
+        return face;
     }
 
-    private async Task UpdateAgeAsync(
+    private async Task CalculateAgeAsync(
+       MediaFace face,
+       CancellationToken cancellationToken)
+    {
+        if (face.PersonId.HasValue)
+        {
+            Person person = await _mediaStore.Persons.GetByIdAsync(face.PersonId.Value, cancellationToken);
+            await CalculateAgeAsync(face, person, cancellationToken);
+        }
+    }
+
+    private async Task CalculateAgeAsync(
         MediaFace face,
         Person person,
-    CancellationToken cancellationToken)
+        CancellationToken cancellationToken)
     {
         if (person.DateOfBirth.HasValue)
         {
@@ -173,9 +182,11 @@ public class FaceService : IFaceService
         face.State = FaceState.Predicted;
         face.DistanceThreshold = distance;
 
-        await UpdateAgeAsync(face, personId, cancellationToken);
+        await CalculateAgeAsync(face, cancellationToken);
         await _faceStore.UpdateAsync(face, cancellationToken);
-        await _bus.Publish(new FaceUpdatedMessage(face.Id, "ASSIGN_BY_COMPUTER") { PersonId = personId });
+        await _bus.Publish(
+            new FaceUpdatedMessage(face.Id, "ASSIGN_BY_COMPUTER") { PersonId = personId },
+            cancellationToken);
 
         return face;
     }
@@ -210,8 +221,9 @@ public class FaceService : IFaceService
             face.Age = null;
 
             await _faceStore.UpdateAsync(face, cancellationToken);
-            await _bus.Publish(new FaceUpdatedMessage(face.Id, "UNASSIGN_PERSON")
-            { PersonId = currentPersonId });
+            await _bus.Publish(
+                new FaceUpdatedMessage(face.Id, "UNASSIGN_PERSON") { PersonId = currentPersonId },
+                cancellationToken);
         }
 
         return face;
@@ -290,11 +302,13 @@ public class FaceService : IFaceService
         {
             face.State = FaceState.Validated;
 
+            await CalculateAgeAsync(face, cancellationToken);
             await _faceStore.UpdateAsync(face, cancellationToken);
+
             await _bus.Publish(new FaceUpdatedMessage(face.Id, "APPROVE_COMPUTER")
             {
                 PersonId = face.PersonId.Value
-            });
+            }, cancellationToken);
         }
 
         return face;
@@ -327,7 +341,7 @@ public class FaceService : IFaceService
         await DeleteAsync(face, cancellationToken);
     }
 
-    public async Task DeleteAsync(MediaFace face, CancellationToken cancellationToken)
+    private async Task DeleteAsync(MediaFace face, CancellationToken cancellationToken)
     {
         //Log.Information("Deleting face {Id}", face.Id);
 
@@ -338,7 +352,7 @@ public class FaceService : IFaceService
             await _mediaStore.Thumbnails.DeleteAsync(face.Thumbnail.Id, cancellationToken);
         }
 
-        await _bus.Publish(new FaceUpdatedMessage(face.Id, "DELETED"));
+        await _bus.Publish(new FaceUpdatedMessage(face.Id, "DELETED"), cancellationToken);
     }
 
     public async Task<MediaThumbnail> GetThumbnailAsync(
