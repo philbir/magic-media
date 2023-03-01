@@ -22,15 +22,13 @@
 
 <script>
 export default {
-  created() {
-  },
+  created() {},
   methods: {
-    login: function () {
-      window.location.href = "/api/session/auth";
-    },
-  },
+    login: function() {
+      window.location.href = "/bff/login";
+    }
+  }
 };
 </script>
 
-<style>
-</style>
+<style></style>

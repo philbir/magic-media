@@ -24,12 +24,11 @@
 <script>
 export default {
   methods: {
-    login: function () {
-      window.location.href = "/api/session/auth";
-    },
-  },
+    login: function() {
+      window.location.href = "/bff/login";
+    }
+  }
 };
 </script>
 
-<style>
-</style>
+<style></style>

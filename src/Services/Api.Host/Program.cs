@@ -44,26 +44,15 @@ builder.Services.AddMassTransitHostedService();
 
 WebApplication app = builder.Build();
 
-app.UseDefaultForwardedHeaders();
-app.UseCookiePolicy();
-
-app.UseCors();
-app.UseStaticFiles();
 app.UseRouting();
-
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseMiddleware<EnsureAuthenticatedMiddleware>();
 
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapGraphQL();
     endpoints.MapControllers();
     endpoints.MapHub<MediaHub>("/signalr");
-});
-
-app.UseSpa(spa =>
-{
 });
 
 app.Run();
