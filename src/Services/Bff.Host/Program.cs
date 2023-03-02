@@ -1,4 +1,5 @@
 using Duende.Bff.Yarp;
+using MagicMedia.AspNetCore;
 using MagicMedia.Bff;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +21,9 @@ builder.Services.AddUserAccessTokenHttpClient("api_client", configureClient: cli
 });
 
 var app = builder.Build();
+
+app.UseDefaultForwardedHeaders();
+app.UseCookiePolicy();
 
 app.UseDefaultFiles();
 app.UseStaticFiles();

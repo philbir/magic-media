@@ -12,6 +12,7 @@ COPY ["Directory.Build.props", "/"]
 COPY ["Directory.Packages.props", "/"]
 COPY ["src/Directory.Build.props", "/src"]
 COPY ["src/Versions.props", "/src"]
+COPY ["src/Shared/AspNetCore/Shared.AspNetCore.csproj", "src/Shared/AspNetCore/"]
 COPY ["src/Shared/Telemetry/Telemetry.csproj", "src/Shared/Telemetry/"]
 COPY ["src/Services/Bff.Host/Bff.Host.csproj", "src/Services/Bff.Host/"]
 

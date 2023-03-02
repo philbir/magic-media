@@ -18,7 +18,6 @@ builder.Logging.ConfigureSerilog(builder.Configuration);
 builder.Configuration
     .AddJsonFile("appsettings.json")
     .AddUserSecrets<Program>(optional: true)
-    .AddJsonFile("appsettings.local.json", optional: true)
     .AddEnvironmentVariables();
 
 builder.Services
@@ -40,7 +39,7 @@ builder.Services.AddAuthentication(builder.Environment, builder.Configuration);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<IUserContextFactory, ClaimsPrincipalUserContextFactory>();
 builder.Services.AddMassTransitHostedService();
-//builder.Services.AddOpenTelemetry(builder.Configuration);
+builder.Services.AddOpenTelemetry(builder.Configuration);
 
 WebApplication app = builder.Build();
 
