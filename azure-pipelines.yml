@@ -14,8 +14,8 @@ stages:
   pool:
     vmImage: 'ubuntu-latest'
   jobs:
-  - job: Build_Host
-    displayName: Build Host
+  - job: Build_BFF
+    displayName: Build BFF
     steps:
     - task: Bash@3
       inputs:
@@ -40,27 +40,27 @@ stages:
     - task: PowerShell@2
       inputs:
         targetType: 'inline'
-        script: 'ls ./src/Services/Api.Host/'
-    - task: Docker@2
-      inputs:
-        containerRegistry: 'Docker Hub Magic Media'
-        repository: 'magicmedia/magic-media-api'
-        command: 'buildAndPush'
-        Dockerfile: './.docker/api.Dockerfile'
-        buildContext: .
-        addPipelineData: false
-        tags:  |
-          $(Build.SourceBranchName)
-          latest
-  - job: Build_Bff
-    displayName: Build BFF
-    steps:
+        script: 'ls ./src/Services/Bff.Host/'
     - task: Docker@2
       inputs:
         containerRegistry: 'Docker Hub Magic Media'
         repository: 'magicmedia/magic-media-bff'
         command: 'buildAndPush'
         Dockerfile: './.docker/bff.Dockerfile'
+        buildContext: .
+        addPipelineData: false
+        tags:  |
+          $(Build.SourceBranchName)
+          latest
+  - job: Build_Api
+    displayName: Build API
+    steps:
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'Docker Hub Magic Media'
+        repository: 'magicmedia/magic-media-api'
+        command: 'buildAndPush'
+        Dockerfile: './.docker/api.Dockerfile'
         buildContext: .
         addPipelineData: false
         tags:  |
