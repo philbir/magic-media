@@ -32,8 +32,7 @@ public static class AuthorizationResourceResolver
                     resourceInfo.Id = input.GetType().GetProperty("Id")?.GetValue(input);
                     resourceInfo.Raw = JsonSerializer.Serialize(new GraphQLRequestInfo
                     {
-                        Path = gql.Path.ToString(),
-                        Input = input
+                        Path = gql.Path.ToString(), Input = input
                     });
                 }
 
@@ -50,11 +49,13 @@ public static class AuthorizationResourceResolver
                         resourceInfo.Id = parsed;
                     }
                 }
+
                 break;
         }
 
         return resourceInfo;
     }
+
 
     private static ProtectedResourceType? MapFromRequest(IDirectiveContext gql)
     {
@@ -90,6 +91,7 @@ public static class AuthorizationResourceResolver
                         id = parsed;
                     }
                 }
+
                 break;
         }
 

@@ -7,25 +7,25 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup Label="Logging Elasticsearch">
-    <PackageReference Include="Serilog.Enrichers.Span" Version="2.2.0" />
-    <PackageReference Include="Elastic.CommonSchema.Serilog" Version="1.5.3" />
-    <PackageReference Include="Serilog.Enrichers.Environment" Version="2.2.0" />
-    <PackageReference Include="Serilog.Sinks.Elasticsearch" Version="8.4.1" />
-    <PackageReference Include="Serilog.AspNetCore" Version="5.0.0" />
+  <ItemGroup>
+    <PackageReference Include="Serilog.Enrichers.Span"/>
+    <PackageReference Include="Elastic.CommonSchema.Serilog"/>
+    <PackageReference Include="Serilog.Enrichers.Environment"/>
+    <PackageReference Include="Serilog.Sinks.Elasticsearch"/>
+    <PackageReference Include="Serilog.AspNetCore"/>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OpenTelemetry.Api" Version="1.2.0-rc1" />
-    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.2.0-rc1" />
-    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol.Logs" Version="1.0.0-rc8" />
-    <PackageReference Include="OpenTelemetry.Exporter.Console" Version="1.2.0-rc1" />
-    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.0.0-rc8" />
-    <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.0.0-rc8" />
-    <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.0.0-rc8" />
-    <PackageReference Include="HotChocolate.Diagnostics" Version="$(HotChocolateVersion)" />
-    <PackageReference Include="OpenTelemetry.Contrib.Instrumentation.MassTransit" Version="1.0.0-beta2" />
-    <PackageReference Include="MongoDB.Driver.Core.Extensions.OpenTelemetry" Version="1.0.0" />
+    <PackageReference Include="OpenTelemetry.Api"/>
+    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol"/>
+    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol.Logs"/>
+    <PackageReference Include="OpenTelemetry.Exporter.Console"/>
+    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore"/>
+    <PackageReference Include="OpenTelemetry.Instrumentation.Http"/>
+    <PackageReference Include="OpenTelemetry.Extensions.Hosting"/>
+    <PackageReference Include="HotChocolate.Diagnostics"/>
+    <PackageReference Include="OpenTelemetry.Contrib.Instrumentation.MassTransit"/>
+    <PackageReference Include="MongoDB.Driver.Core.Extensions.OpenTelemetry"/>
   </ItemGroup>
 
 </Project>

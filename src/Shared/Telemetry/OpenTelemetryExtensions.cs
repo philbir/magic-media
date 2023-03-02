@@ -44,7 +44,7 @@ public static class OpenTelemetryExtensions
         TelemetryOptions otelOptions = configuration.GetTelemetryOptions();
         ResourceBuilder resourceBuilder = CreateResourceBuilder(otelOptions.ServiceName);
 
-        services.AddOpenTelemetryTracing(tracing =>
+        services.AddOpenTelemetry().WithTracing(tracing =>
         {
             tracing
                 .AddAspNetCoreInstrumentation()
@@ -55,7 +55,7 @@ public static class OpenTelemetryExtensions
                 .AddSources()
                 .AddOtlpExporter(ConfigureOtlp)
                 .SetResourceBuilder(resourceBuilder)
-                    .SetErrorStatusOnException();
+                .SetErrorStatusOnException();
 
             if (Debugger.IsAttached)
             {
@@ -63,9 +63,7 @@ public static class OpenTelemetryExtensions
             }
 
             builder?.Invoke(tracing);
-        });
-
-        services.AddOpenTelemetryMetrics(metrics =>
+        }).WithMetrics(metrics =>
         {
             metrics.SetResourceBuilder(resourceBuilder);
             metrics.AddHttpClientInstrumentation();
@@ -84,15 +82,11 @@ public static class OpenTelemetryExtensions
     private static void ConfigureOtlp(OtlpExporterOptions o)
     {
         o.ExportProcessorType = ExportProcessorType.Batch;
-        o.MetricReaderType = MetricReaderType.Periodic;
-        o.PeriodicExportingMetricReaderOptions = new PeriodicExportingMetricReaderOptions
-        {
-            ExportIntervalMilliseconds = 30000
-        };
+        o.BatchExportProcessorOptions = new BatchExportActivityProcessorOptions { ExporterTimeoutMilliseconds = 3000 };
         o.Protocol = OtlpExportProtocol.Grpc;
     }
 
-    public static TracerProviderBuilder AddSources(this TracerProviderBuilder tracing)
+    private static TracerProviderBuilder AddSources(this TracerProviderBuilder tracing)
     {
         tracing.AddSource("MagicMedia*");
 

@@ -14,20 +14,7 @@
       <PackageReference Include="Duende.BFF.Yarp" />
       <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" />
     </ItemGroup>
-
-    <ItemGroup>
-      <_ContentIncludedByDefault Remove="wwwroot\css\app.f4b5ab51.css" />
-      <_ContentIncludedByDefault Remove="wwwroot\css\chunk-vendors.c70cdb77.css" />
-      <_ContentIncludedByDefault Remove="wwwroot\js\app.06ffa328.js" />
-      <_ContentIncludedByDefault Remove="wwwroot\js\app.06ffa328.js.map" />
-      <_ContentIncludedByDefault Remove="wwwroot\js\app.0da5b739.js" />
-      <_ContentIncludedByDefault Remove="wwwroot\js\app.0da5b739.js.map" />
-      <_ContentIncludedByDefault Remove="wwwroot\js\app.28f19442.js" />
-      <_ContentIncludedByDefault Remove="wwwroot\js\app.28f19442.js.map" />
-      <_ContentIncludedByDefault Remove="wwwroot\js\chunk-vendors.2f0175b7.js" />
-      <_ContentIncludedByDefault Remove="wwwroot\js\chunk-vendors.2f0175b7.js.map" />
-    </ItemGroup>
-
+  
     <ItemGroup>
       <Folder Include="wwwroot" />
     </ItemGroup>
