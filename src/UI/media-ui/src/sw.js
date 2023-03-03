@@ -120,7 +120,7 @@ addEventListener('fetch', event => {
                 }
 
                 return response;
-            }));
+            })); .4
     }
 });
 

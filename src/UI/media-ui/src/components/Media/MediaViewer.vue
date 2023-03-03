@@ -404,7 +404,7 @@ export default {
         case 68: //d
           console.log(this.$vuetify.breakpoint);
           break;
-        case 69: //e
+        case 81: //q
           this.$store.dispatch("media/export", this.media.id);
           break;
         case 73: //i

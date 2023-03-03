@@ -46,30 +46,30 @@ export default {
   },
   data() {
     return {
-      person: null,
+      person: null
     };
   },
   computed: {
-    personId: function () {
+    personId: function() {
       return this.$route.params.id;
-    },
+    }
   },
   methods: {
     async load(id) {
       var res = await getTimeline(id);
       this.person = res.data.person;
     },
-    clickFace: function (face, e) {
+    clickFace: function(face, e) {
       if (e.ctrlKey) {
         this.$store.dispatch("face/openEdit", face);
       } else {
         this.$store.dispatch("media/show", face.mediaId);
       }
     },
-    back: function () {
+    back: function() {
       this.$router.push({ name: "Persons" });
-    },
-  },
+    }
+  }
 };
 </script>
 
