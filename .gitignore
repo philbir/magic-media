@@ -312,3 +312,4 @@ ffprobe.exe
 samples/Migration**
 sign_key.jwk
 tempkey.jwk
+src/Services/Bff.Host/dp-keys/*.xml
