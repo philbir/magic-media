@@ -24,13 +24,12 @@
 <script>
 export default {
   methods: {
-    retry: function () {
+    retry: function() {
       this.$store.dispatch("user/resetError");
-      window.location.href = "/";
-    },
-  },
+      window.location.href = "/bff/login";
+    }
+  }
 };
 </script>
 
-<style>
-</style>
+<style></style>

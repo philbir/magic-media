@@ -4,18 +4,26 @@ using MagicMedia.AspNetCore;
 using MagicMedia.Bff;
 using Microsoft.AspNetCore.DataProtection;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+
+BffOptions bffOptions = builder.Configuration.GetSection("MagicMedia:Bff")
+    .Get<BffOptions>();
 
 builder.Services.AddBff()
     .AddServerSideSessions()
     .AddRemoteApis();
 
-builder.Services.AddReverseProxy()
-    .AddBffExtensions()
-    .LoadFromConfig(builder.Configuration.GetSection("MagicMedia:Bff:Yarp"));
+IReverseProxyBuilder proxyBuilder = builder.Services.AddReverseProxy()
+    .AddBffExtensions();
 
-BffOptions bffOptions = builder.Configuration.GetSection("MagicMedia:Bff")
-    .Get<BffOptions>();
+if (bffOptions.YarpConfigSectionName is { })
+{
+    proxyBuilder.LoadFromConfig(builder.Configuration.GetSection(bffOptions.YarpConfigSectionName));
+}
+else
+{
+    proxyBuilder.LoadFromBffOptions(bffOptions);
+}
 
 builder.Services.AddDataProtection()
     .PersistKeysToFileSystem(new DirectoryInfo(bffOptions.DataProtectionKeysDirectory));
@@ -45,5 +53,6 @@ app.MapReverseProxy(proxyApp =>
 });
 
 app.MapDevelopmentHandler();
+app.MapFallbackToFile("index.html");
 
 app.Run();
