@@ -13,7 +13,7 @@ internal static class YarpConfigBuilder
         var metadata = new Dictionary<string, string>
         {
             { "Duende.Bff.Yarp.TokenType", "User" },
-            { "Duende.Bff.Yarp.AntiforgeryCheck", options.DisableAntiForgery.ToString().ToLower() }
+            { "Duende.Bff.Yarp.AntiforgeryCheck", (!options.DisableAntiForgery).ToString().ToLower() }
         };
 
         builder.LoadFromMemory(

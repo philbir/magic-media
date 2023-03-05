@@ -10,7 +10,6 @@ using SixLabors.ImageSharp.Processing;
 
 namespace MagicMedia;
 
-
 public class MediaExportService : IMediaExportService
 {
     private readonly IMediaService _mediaService;
@@ -44,7 +43,6 @@ public class MediaExportService : IMediaExportService
             // TODO: Load profile from database
         }
 
-
         Media media = await _mediaService.GetByIdAsync(id, cancellationToken);
 
         if (media.MediaType == MediaType.Image)
@@ -53,18 +51,20 @@ public class MediaExportService : IMediaExportService
 
             using Image image = await Image.LoadAsync(mediaStream, cancellationToken);
 
-            image.Mutate(x => x.Resize( new ResizeOptions
+            if (profile.Size is { })
             {
-                Size = new Size(profile.Size.Width, profile.Size.Height),
-                Mode = ResizeMode.Crop,
-            }));
+                image.Mutate(x => x.Resize( new ResizeOptions
+                {
+                    Size = new Size(profile.Size.Width, profile.Size.Height),
+                    Mode = ResizeMode.Crop,
+                }));
+            }
 
             var folder = Path.Combine(_fileSystemStoreOptions.RootDirectory, "export", profile.Location.Path);
             if (!Directory.Exists(folder))
             {
                 Directory.CreateDirectory(folder);
             }
-
             var filename = CreateFilename(media);
             var exportPath = Path.Combine(folder, filename);
 
