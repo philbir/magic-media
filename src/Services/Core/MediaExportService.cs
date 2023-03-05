@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Configuration;
+using MagicMedia.Security;
 using MagicMedia.Store;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
@@ -13,68 +15,64 @@ namespace MagicMedia;
 public class MediaExportService : IMediaExportService
 {
     private readonly IMediaService _mediaService;
-    private readonly IMediaStore _mediaStore;
+    private readonly IMediaExportProfileService _profileService;
+    private readonly IMediaTransformService _transformService;
     private readonly FileSystemStoreOptions _fileSystemStoreOptions;
 
     public MediaExportService(
         IMediaService mediaService,
-        IMediaStore mediaStore,
+        IMediaExportProfileService profileService,
+        IMediaTransformService transformService,
         FileSystemStoreOptions fileSystemStoreOptions)
     {
         _mediaService = mediaService;
-        _mediaStore = mediaStore;
+        _profileService = profileService;
+        _transformService = transformService;
         _fileSystemStoreOptions = fileSystemStoreOptions;
     }
+
+    public async Task<MediaExportResult> ExportAsync(
+        IEnumerable<Guid> ids,
+        MediaExportProfile profile,
+        CancellationToken cancellationToken)
+    {
+        return null;
+    }
+
 
     public async Task<MediaExportResult> ExportAsync(
         Guid id,
         Guid? profileId,
         CancellationToken cancellationToken)
     {
-        // Take default profile
-        var profile = new MediaExportProfile()
+        MediaExportProfile profile = await _profileService.GetProfileOrDefault(profileId, cancellationToken);
+
+        TransformedMedia transformed = await _transformService.TransformAsync(id, profile.Transform, cancellationToken);
+
+        if (profile.Location.Type == LocationType.FileSystem)
         {
-            Location = new ExportLocation { Path = "samsung-frame" },
-            Size = new ImageSize { Width = 3840, Height = 2160 }
-        };
-
-        if (profileId.HasValue)
-        {
-            // TODO: Load profile from database
-        }
-
-        Media media = await _mediaService.GetByIdAsync(id, cancellationToken);
-
-        if (media.MediaType == MediaType.Image)
-        {
-            Stream mediaStream = _mediaService.GetMediaStream(media);
-
-            using Image image = await Image.LoadAsync(mediaStream, cancellationToken);
-
-            if (profile.Size is { })
-            {
-                image.Mutate(x => x.Resize( new ResizeOptions
-                {
-                    Size = new Size(profile.Size.Width, profile.Size.Height),
-                    Mode = ResizeMode.Crop,
-                }));
-            }
-
-            var folder = Path.Combine(_fileSystemStoreOptions.RootDirectory, "export", profile.Location.Path);
-            if (!Directory.Exists(folder))
-            {
-                Directory.CreateDirectory(folder);
-            }
-            var filename = CreateFilename(media);
-            var exportPath = Path.Combine(folder, filename);
-
-            await image.SaveAsync(exportPath, cancellationToken);
+            var exportPath = GetFileSystemExportPath(transformed, profile.Location);
+            await File.WriteAllBytesAsync(exportPath, transformed.Data, cancellationToken);
 
             return new MediaExportResult { Path = exportPath };
         }
 
-        return new MediaExportResult();
+        throw new NotSupportedException("Only FileSystem export supported at the moment");
+    }
 
+    private string GetFileSystemExportPath(TransformedMedia media, ExportLocation location)
+    {
+        var folder = Path.Combine(_fileSystemStoreOptions.RootDirectory, "export", location.Path);
+
+        if (!Directory.Exists(folder))
+        {
+            Directory.CreateDirectory(folder);
+        }
+
+        var filename = CreateFilename(media.Media) + $".{media.Format.ToLower()}";
+        var exportPath = Path.Combine(folder, filename);
+
+        return exportPath;
     }
 
 
@@ -89,7 +87,7 @@ public class MediaExportService : IMediaExportService
             sb.Append('_');
         }
 
-        sb.Append(media.Filename);
+        sb.Append(Path.GetFileNameWithoutExtension(media.Filename));
 
         return RemoveIllegalChars(sb.ToString());
     }
@@ -98,5 +96,4 @@ public class MediaExportService : IMediaExportService
     {
         return string.Concat(filename.Split(Path.GetInvalidFileNameChars()));
     }
-
 }

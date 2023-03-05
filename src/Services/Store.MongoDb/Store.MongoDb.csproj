@@ -6,35 +6,35 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Aggregations\Duplicate_ByHashes.json"/>
-    <None Remove="Aggregations\MediaAI_GroupByObject.json"/>
-    <None Remove="Aggregations\MediaAI_GroupByTag.json"/>
-    <None Remove="Aggregations\Media_GroupByCamera.json"/>
-    <None Remove="Aggregations\Media_GroupByCity.json"/>
-    <None Remove="Aggregations\Media_GroupByCountry.json"/>
-    <None Remove="Aggregations\SimilarMedia.json"/>
+    <None Remove="Aggregations\Duplicate_ByHashes.json" />
+    <None Remove="Aggregations\MediaAI_GroupByObject.json" />
+    <None Remove="Aggregations\MediaAI_GroupByTag.json" />
+    <None Remove="Aggregations\Media_GroupByCamera.json" />
+    <None Remove="Aggregations\Media_GroupByCity.json" />
+    <None Remove="Aggregations\Media_GroupByCountry.json" />
+    <None Remove="Aggregations\SimilarMedia.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Aggregations\Duplicate_ByHashes.json"/>
-    <EmbeddedResource Include="Aggregations\MediaAI_GroupByTag.json"/>
-    <EmbeddedResource Include="Aggregations\MediaAI_GroupByObject.json"/>
-    <EmbeddedResource Include="Aggregations\Media_GroupByCamera.json"/>
-    <EmbeddedResource Include="Aggregations\Media_GroupByCity.json"/>
-    <EmbeddedResource Include="Aggregations\Media_GroupByCountry.json"/>
-    <EmbeddedResource Include="Aggregations\SimilarMedia.json"/>
+    <EmbeddedResource Include="Aggregations\Duplicate_ByHashes.json" />
+    <EmbeddedResource Include="Aggregations\MediaAI_GroupByTag.json" />
+    <EmbeddedResource Include="Aggregations\MediaAI_GroupByObject.json" />
+    <EmbeddedResource Include="Aggregations\Media_GroupByCamera.json" />
+    <EmbeddedResource Include="Aggregations\Media_GroupByCity.json" />
+    <EmbeddedResource Include="Aggregations\Media_GroupByCountry.json" />
+    <EmbeddedResource Include="Aggregations\SimilarMedia.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="MongoDB.Driver.GridFS"/>
-    <PackageReference Include="MongoDB.Extensions.Context"/>
-    <PackageReference Include="Newtonsoft.Json"/>
-    <PackageReference Include="Serilog"/>
-    <PackageReference Include="MongoDB.Driver.Core.Extensions.OpenTelemetry"/>
+    <PackageReference Include="MongoDB.Driver.GridFS" />
+    <PackageReference Include="MongoDB.Extensions.Context" />
+    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="Serilog" />
+    <PackageReference Include="MongoDB.Driver.Core.Extensions.OpenTelemetry" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Abstractions\Abstractions.csproj"/>
+    <ProjectReference Include="..\Abstractions\Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

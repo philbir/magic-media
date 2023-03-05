@@ -34,7 +34,6 @@ builder.Services.AddMvc();
 builder.Services.AddSignalR();
 
 builder.Services.AddMagicAuthorization();
-builder.Services.ConfigureSameSiteCookies();
 builder.Services.AddAuthentication(builder.Environment, builder.Configuration);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<IUserContextFactory, ClaimsPrincipalUserContextFactory>();

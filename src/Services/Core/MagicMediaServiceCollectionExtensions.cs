@@ -70,6 +70,8 @@ public static class MagicMediaServiceCollectionExtensions
         services.AddSingleton<IMediaExportService, MediaExportService>();
         services.AddSingleton<ISimilarMediaService, SimilarMediaService>();
         services.AddSingleton<IDuplicateMediaGuard, DuplicateMediaGuard>();
+        services.AddSingleton<IMediaExportProfileService, MediaExportProfileService>();
+        services.AddSingleton<IMediaTransformService, MediaTransformService>();
 
         return services;
     }

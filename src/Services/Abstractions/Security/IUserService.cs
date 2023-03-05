@@ -25,4 +25,9 @@ public interface IUserService
     void InvalidateUserCacheAsync(Guid id);
     Task<User> GetByIdAsync(Guid id, bool bypassCache, CancellationToken cancellationToken);
     Task<IEnumerable<User>> GetManyAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken);
+
+    Task<User> UpdateCurrentExportProfileAsync(
+        Guid userId,
+        Guid profileId,
+        CancellationToken cancellationToken);
 }

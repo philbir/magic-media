@@ -17,6 +17,8 @@ public class User
 
     public IEnumerable<string> Roles { get; set; } = new List<string>();
     public string? InvitationCode { get; set; }
+
+    public Guid? CurrentExportProfile { get; set; }
 }
 
 public enum UserState

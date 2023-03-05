@@ -74,7 +74,6 @@ public class UserService : IUserService
         SearchUserRequest request,
         CancellationToken cancellationToken)
     {
-
         return await _mediaStore.Users.SearchAsync(request, cancellationToken);
     }
 
@@ -123,6 +122,19 @@ public class UserService : IUserService
         return await _mediaStore.Albums.GetSharedWithUserIdAsync(userId, cancellationToken);
     }
 
+    public async Task<User> UpdateCurrentExportProfileAsync(
+        Guid userId,
+        Guid profileId,
+        CancellationToken cancellationToken)
+    {
+        User user = await GetByIdAsync(userId, cancellationToken);
+        user.CurrentExportProfile = profileId;
+
+        _mediaStore.Users.UpdateAsync(user, cancellationToken);
+
+        return user;
+    }
+
     public async Task<IEnumerable<Guid>> GetAuthorizedOnMediaIdsAsync(
         Guid userId,
         CancellationToken cancellationToken)
@@ -132,11 +144,11 @@ public class UserService : IUserService
         IEnumerable<Guid> ids = await _memoryCache.GetOrCreateAsync(
             cachekey,
             async (e) =>
-             {
-                 e.AbsoluteExpiration = DateTime.Now.Add(_cacheExpiration);
+            {
+                e.AbsoluteExpiration = DateTime.Now.Add(_cacheExpiration);
 
-                 return await GetAuthorizedOnMediaIdsInternalAsync(userId, cancellationToken);
-             });
+                return await GetAuthorizedOnMediaIdsInternalAsync(userId, cancellationToken);
+            });
 
         return ids;
     }
@@ -243,19 +255,14 @@ public class UserService : IUserService
         return user;
     }
 
-    public async Task<User> CreateFromPersonAsync(CreateUserFromPersonRequest request, CancellationToken cancellationToken)
+    public async Task<User> CreateFromPersonAsync(CreateUserFromPersonRequest request,
+        CancellationToken cancellationToken)
     {
         //TODO: Validate if there is allready a user for this person
 
         Person person = await _mediaStore.Persons.GetByIdAsync(request.PersonId, cancellationToken);
 
-        var user = new User
-        {
-            Id = Guid.NewGuid(),
-            Name = person.Name,
-            Email = request.Email,
-            PersonId = person.Id
-        };
+        var user = new User { Id = Guid.NewGuid(), Name = person.Name, Email = request.Email, PersonId = person.Id };
 
         await _mediaStore.Users.AddAsync(user, cancellationToken);
 

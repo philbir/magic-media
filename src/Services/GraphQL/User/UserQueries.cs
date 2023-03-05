@@ -7,17 +7,6 @@ using MagicMedia.Store;
 namespace MagicMedia.GraphQL;
 
 [ExtendObjectType(RootTypes.Query)]
-public class TestQueries
-{
-    public Task<bool> Test()
-    {
-        return Task.FromResult(true);
-    }
-}
-
-
-
-[ExtendObjectType(RootTypes.Query)]
 public class UserQueries
 {
     private readonly IUserService _userService;
