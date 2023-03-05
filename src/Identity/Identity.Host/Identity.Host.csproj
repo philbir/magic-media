@@ -8,8 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Serilog.AspNetCore" Version="5.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="$(AspNetCoreVersion)" />
+    <PackageReference Include="Serilog.AspNetCore"  />
+    <PackageReference Include="MassTransit.AspNetCore"/>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation"  />
   </ItemGroup>
 
   <ItemGroup>
@@ -18,7 +19,7 @@
     <ProjectReference Include="..\Identity.Abstractions\Identity.Abstractions.csproj" />
     <ProjectReference Include="..\Identity.Core\Identity.Core.csproj" />
     <ProjectReference Include="..\Identity.Data.Mongo\Identity.Data.Mongo.csproj" />
-    <PackageReference Include="MassTransit.AspNetCore" Version="$(MassTransitVersion)" />
+    <PackageReference Include="MassTransit.AspNetCore"/>
   </ItemGroup>
 
 </Project>

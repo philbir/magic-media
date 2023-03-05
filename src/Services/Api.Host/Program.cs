@@ -18,7 +18,6 @@ builder.Logging.ConfigureSerilog(builder.Configuration);
 builder.Configuration
     .AddJsonFile("appsettings.json")
     .AddUserSecrets<Program>(optional: true)
-    .AddJsonFile("appsettings.local.json", optional: true)
     .AddEnvironmentVariables();
 
 builder.Services
@@ -44,26 +43,15 @@ builder.Services.AddOpenTelemetry(builder.Configuration);
 
 WebApplication app = builder.Build();
 
-app.UseDefaultForwardedHeaders();
-app.UseCookiePolicy();
-
-app.UseCors();
-app.UseStaticFiles();
 app.UseRouting();
-
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseMiddleware<EnsureAuthenticatedMiddleware>();
 
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapGraphQL();
     endpoints.MapControllers();
     endpoints.MapHub<MediaHub>("/signalr");
-});
-
-app.UseSpa(spa =>
-{
 });
 
 app.Run();

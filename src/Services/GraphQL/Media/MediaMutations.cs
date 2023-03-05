@@ -102,4 +102,19 @@ public class MediaMutations
 
         return new AnalyseMediaPayload(mediaAi);
     }
+
+    public async Task<ExportMediaPayload> ExportMediaAsync(
+        [Service] IMediaExportService service,
+        ExportMediaInput input,
+        CancellationToken cancellationToken)
+    {
+        MediaExportResult export = await service.ExportAsync(input.Id, null, cancellationToken);
+
+        return new ExportMediaPayload(export.Path);
+    }
 }
+
+
+public record ExportMediaInput(Guid Id);
+
+public  record ExportMediaPayload(string Path);

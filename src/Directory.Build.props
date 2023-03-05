@@ -7,7 +7,7 @@
   <Import Project="$(PropsAbove)" Condition="Exists($(PropsAbove))" />
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <RootNamespace>MagicMedia</RootNamespace>
     <Nullable>enable</Nullable>
     <LangVersion>preview</LangVersion>

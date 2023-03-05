@@ -45,24 +45,22 @@ export default {
       {
         text: "Logout",
         icon: "mdi-logout",
-        action: "LOGOUT",
-      },
-    ],
+        action: "LOGOUT"
+      }
+    ]
   }),
   computed: {
-    ...mapState("user", ["me"]),
+    ...mapState("user", ["me"])
   },
   methods: {
-    debug: function (e) {
+    debug: function(e) {
       e.preventDefault();
-      console.log(this.$vuetify);
     },
-    logout: function () {
-      window.location = "/api/session/logout";
-    },
-  },
+    logout: function() {
+      window.location = "/bff/logout";
+    }
+  }
 };
 </script>
 
-<style>
-</style>
+<style></style>

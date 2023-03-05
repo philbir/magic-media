@@ -39,10 +39,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Identity.Abstractions", "Id
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Identity.Data.Mongo", "Identity\Identity.Data.Mongo\Identity.Data.Mongo.csproj", "{C8F262AD-3E58-4E84-B5CF-2F102CFDAE13}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Identity.Host.Tests", "..\test\Identity.Host.Tests\Identity.Host.Tests.csproj", "{C1E71555-2845-4EB5-9ADB-F181D20A18FC}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Identity.UI.Tests", "..\test\Identity.UI.Tests\Identity.UI.Tests.csproj", "{99CD05D1-0A5B-423C-8ACE-DF4FBE961114}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api.Host.Tests", "..\test\Api.Host.Tests\Api.Host.Tests.csproj", "{7A3C2334-E7B7-44FC-9FE7-13BEEAAAF699}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleDataSeeder", "..\samples\SampleDataSeeder\SampleDataSeeder.csproj", "{1544E576-BD97-4576-8239-857F290F3388}"
@@ -52,14 +48,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".props", ".props", "{FFA075
 		Directory.Build.props = Directory.Build.props
 		..\global.json = ..\global.json
 		Versions.props = Versions.props
+		..\Directory.Packages.props = ..\Directory.Packages.props
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".props", ".props", "{43BC2FC5-234F-4B58-BF47-B8C5149956CB}"
 	ProjectSection(SolutionItems) = preProject
 		..\test\Directory.Build.props = ..\test\Directory.Build.props
 	EndProjectSection
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Store.MongoDb.Tests", "..\test\Store.MongoDb.Tests\Store.MongoDb.Tests.csproj", "{B59B0305-1AA6-4431-B80E-685CF5EE318B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Worker", "Services\Worker\Worker.csproj", "{8C760CE4-52DF-4444-B2B8-68ACD09C81A3}"
 EndProject
@@ -72,6 +67,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telemetry", "Shared\Telemetry\Telemetry.csproj", "{ED20DF0C-C4F3-410A-A62E-AAFC87EFFBB0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Maps", "Services\Google.Maps\Google.Maps.csproj", "{7B342CDD-FB05-4E3D-AF80-5CDF25228D11}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bff.Host", "Services\Bff.Host\Bff.Host.csproj", "{C9D61545-5E6F-4A7C-B3C0-DD6C2CA32764}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -139,14 +136,6 @@ Global
 		{C8F262AD-3E58-4E84-B5CF-2F102CFDAE13}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C8F262AD-3E58-4E84-B5CF-2F102CFDAE13}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C8F262AD-3E58-4E84-B5CF-2F102CFDAE13}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C1E71555-2845-4EB5-9ADB-F181D20A18FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C1E71555-2845-4EB5-9ADB-F181D20A18FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C1E71555-2845-4EB5-9ADB-F181D20A18FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C1E71555-2845-4EB5-9ADB-F181D20A18FC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{99CD05D1-0A5B-423C-8ACE-DF4FBE961114}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{99CD05D1-0A5B-423C-8ACE-DF4FBE961114}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{99CD05D1-0A5B-423C-8ACE-DF4FBE961114}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{99CD05D1-0A5B-423C-8ACE-DF4FBE961114}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7A3C2334-E7B7-44FC-9FE7-13BEEAAAF699}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7A3C2334-E7B7-44FC-9FE7-13BEEAAAF699}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7A3C2334-E7B7-44FC-9FE7-13BEEAAAF699}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -155,10 +144,6 @@ Global
 		{1544E576-BD97-4576-8239-857F290F3388}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1544E576-BD97-4576-8239-857F290F3388}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1544E576-BD97-4576-8239-857F290F3388}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B59B0305-1AA6-4431-B80E-685CF5EE318B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B59B0305-1AA6-4431-B80E-685CF5EE318B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B59B0305-1AA6-4431-B80E-685CF5EE318B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B59B0305-1AA6-4431-B80E-685CF5EE318B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8C760CE4-52DF-4444-B2B8-68ACD09C81A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8C760CE4-52DF-4444-B2B8-68ACD09C81A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C760CE4-52DF-4444-B2B8-68ACD09C81A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -179,6 +164,10 @@ Global
 		{7B342CDD-FB05-4E3D-AF80-5CDF25228D11}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B342CDD-FB05-4E3D-AF80-5CDF25228D11}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7B342CDD-FB05-4E3D-AF80-5CDF25228D11}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9D61545-5E6F-4A7C-B3C0-DD6C2CA32764}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9D61545-5E6F-4A7C-B3C0-DD6C2CA32764}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9D61545-5E6F-4A7C-B3C0-DD6C2CA32764}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9D61545-5E6F-4A7C-B3C0-DD6C2CA32764}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -192,12 +181,9 @@ Global
 		{24F1ED1F-3CFB-40CC-86E7-CCAC31BC8B50} = {5D19ABB7-7DB6-4EB6-87B2-893A3571ED0E}
 		{EC670115-8DCE-4949-BDC6-8F3C07D3B223} = {5D19ABB7-7DB6-4EB6-87B2-893A3571ED0E}
 		{C8F262AD-3E58-4E84-B5CF-2F102CFDAE13} = {5D19ABB7-7DB6-4EB6-87B2-893A3571ED0E}
-		{C1E71555-2845-4EB5-9ADB-F181D20A18FC} = {F6075731-6037-4B36-B720-4A4E2CF5D42F}
-		{99CD05D1-0A5B-423C-8ACE-DF4FBE961114} = {F6075731-6037-4B36-B720-4A4E2CF5D42F}
 		{7A3C2334-E7B7-44FC-9FE7-13BEEAAAF699} = {F6075731-6037-4B36-B720-4A4E2CF5D42F}
 		{1544E576-BD97-4576-8239-857F290F3388} = {B9946157-A449-4176-805B-F47D209D29AA}
 		{43BC2FC5-234F-4B58-BF47-B8C5149956CB} = {F6075731-6037-4B36-B720-4A4E2CF5D42F}
-		{B59B0305-1AA6-4431-B80E-685CF5EE318B} = {F6075731-6037-4B36-B720-4A4E2CF5D42F}
 		{E1D28004-4E4D-42DE-9784-E4D80FF9347D} = {1200063E-406D-45B8-9259-C19547938D17}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution

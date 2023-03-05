@@ -87,7 +87,7 @@ public class MediaDownloadService : IMediaDownloadService
         DownloadMediaOptions options,
         CancellationToken cancellationToken)
     {
-        Image image = await Image.LoadAsync(stream);
+        Image image = await Image.LoadAsync(stream, cancellationToken);
 
         if (options.ImageSize != ImageDownloadSize.Original)
         {

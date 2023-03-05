@@ -15,7 +15,7 @@
         left: () => swipe('left'),
         right: () => swipe('right'),
         up: () => swipe('up'),
-        down: () => swipe('down'),
+        down: () => swipe('down')
       }"
     >
       <GlobalEvents
@@ -152,7 +152,7 @@ export default {
     MediaQuickInfo,
     MediaInfo,
     AIObjects,
-    ViewerMenu,
+    ViewerMenu
   },
   data() {
     return {
@@ -161,12 +161,12 @@ export default {
         width: 0,
         naturalWidth: 0,
         offsetLeft: 0,
-        offsetTop: 0,
+        offsetTop: 0
       },
       showInfoPage: false,
       showStripe: false,
       mediaId: this.$route.params.id,
-      windowWidth: window.innerWidth,
+      windowWidth: window.innerWidth
     };
   },
   mounted() {
@@ -184,13 +184,13 @@ export default {
   },
   computed: {
     ...mapGetters("user", ["userActions"]),
-    headerLoading: function () {
+    headerLoading: function() {
       return this.$store.state.media.viewerHeaderLoading;
     },
-    thumbnail: function () {
+    thumbnail: function() {
       if (this.$store) {
         const existing = this.$store.state.media.list.filter(
-          (x) => x.id === this.$route.params.id
+          x => x.id === this.$route.params.id
         );
 
         if (existing.length > 0) {
@@ -200,49 +200,49 @@ export default {
 
       return null;
     },
-    pathInfo: function () {
+    pathInfo: function() {
       return parsePath(this.media.folder);
     },
-    caption: function () {
+    caption: function() {
       if (this.media.ai && this.media.ai.caption) {
         return {
           text: this.media.ai.caption.text,
-          color: this.media.ai.colors.accent,
+          color: this.media.ai.colors.accent
         };
       }
 
       return null;
     },
-    video: function () {
+    video: function() {
       return {
-        src: "/api/video/" + this.media.id,
+        src: "/api/video/" + this.media.id
       };
     },
-    imageSrc: function () {
+    imageSrc: function() {
       return "/api/media/webimage/" + this.media.id;
     },
-    loading: function () {
+    loading: function() {
       return this.media === null;
     },
-    media: function () {
+    media: function() {
       return this.$store.state.media.current;
     },
-    showFaceBox: function () {
+    showFaceBox: function() {
       return this.$store.state.media.viewer.showFaceBox;
     },
-    showObjects: function () {
+    showObjects: function() {
       return this.$store.state.media.viewer.showObjects;
     },
-    showQuickInfo: function () {
+    showQuickInfo: function() {
       return this.$store.state.media.viewer.showFaceList;
     },
-    geoLocation: function () {
+    geoLocation: function() {
       if (this.media.geoLocation && this.media.geoLocation.address) {
         return this.media.geoLocation.address.name;
       }
       return null;
     },
-    box: function () {
+    box: function() {
       const media = this.media;
 
       if (media) {
@@ -267,11 +267,11 @@ export default {
       }
 
       return null;
-    },
+    }
   },
   methods: {
     ...mapActions("media", ["setFilter"]),
-    browserBackClicked: function (e) {
+    browserBackClicked: function(e) {
       e.preventDefault();
       return false;
     },
@@ -289,14 +289,14 @@ export default {
           naturalWidth: this.$refs.img.naturalWidth,
           offsetLeft: this.$refs.img.offsetLeft - this.$refs.img.width / 2,
           offsetTop: this.$refs.img.offsetTop - this.$refs.img.height / 2,
-          loaded: true,
+          loaded: true
         };
       }
     },
     async onLongpress() {
       this.$store.dispatch("media/share", [this.media]);
     },
-    swipe: function (direction) {
+    swipe: function(direction) {
       switch (direction) {
         case "left":
           this.navigate(+1);
@@ -312,13 +312,13 @@ export default {
           break;
       }
     },
-    handlePrevious: function () {
+    handlePrevious: function() {
       this.navigate(-1);
     },
-    handleNext: function () {
+    handleNext: function() {
       this.navigate(+1);
     },
-    navigate: function (step) {
+    navigate: function(step) {
       this.image.loaded = false;
       var nextId = this.$store.getters["next"](step);
       if (nextId) {
@@ -327,18 +327,18 @@ export default {
         this.handleHome();
       }
     },
-    handleHome: function () {
+    handleHome: function() {
       this.$store.dispatch("media/close");
     },
-    onMouseMove: function (e) {
+    onMouseMove: function(e) {
       if (this.media.mediaType === "IMAGE") {
         this.showStripe = e.clientY > 300;
       }
     },
-    toggleFavorite: function () {
+    toggleFavorite: function() {
       this.$store.dispatch("media/toggleFavorite", this.media);
     },
-    keyPressed: function (e) {
+    keyPressed: function(e) {
       switch (e.which) {
         case 37:
           this.navigate(-1);
@@ -349,7 +349,8 @@ export default {
         case 27: //esc
           this.handleHome();
           break;
-        case 46:
+        case 8: //backspace
+        case 46: //delete
           this.recycle();
           break;
         case 65: //a
@@ -380,7 +381,7 @@ export default {
           this.$store.dispatch(
             "media/setViewerOptions",
             Object.assign({}, this.$store.state.media.viewer, {
-              showFaceBox: !this.$store.state.media.viewer.showFaceBox,
+              showFaceBox: !this.$store.state.media.viewer.showFaceBox
             })
           );
           break;
@@ -388,7 +389,7 @@ export default {
           this.$store.dispatch(
             "media/setViewerOptions",
             Object.assign({}, this.$store.state.media.viewer, {
-              showFaceList: !this.$store.state.media.viewer.showFaceList,
+              showFaceList: !this.$store.state.media.viewer.showFaceList
             })
           );
           break;
@@ -396,12 +397,15 @@ export default {
           this.$store.dispatch(
             "media/setViewerOptions",
             Object.assign({}, this.$store.state.media.viewer, {
-              showObjects: !this.$store.state.media.viewer.showObjects,
+              showObjects: !this.$store.state.media.viewer.showObjects
             })
           );
           break;
         case 68: //d
           console.log(this.$vuetify.breakpoint);
+          break;
+        case 81: //q
+          this.$store.dispatch("media/export", this.media.id);
           break;
         case 73: //i
           this.toggleInfo();
@@ -414,7 +418,7 @@ export default {
     onResize() {
       this.setImage();
     },
-    onFaceAction: function (action) {
+    onFaceAction: function(action) {
       switch (action) {
         case "APPROVE_ALL":
           this.approveAll();
@@ -430,7 +434,7 @@ export default {
           break;
       }
     },
-    onMediaAction: function (action) {
+    onMediaAction: function(action) {
       switch (action) {
         case "RECYCLE":
           this.recycle();
@@ -443,16 +447,16 @@ export default {
           break;
       }
     },
-    approveAll: function () {
+    approveAll: function() {
       this.$store.dispatch("face/approveAllByMedia", this.media.id);
     },
-    unassignPredicted: function () {
+    unassignPredicted: function() {
       this.$store.dispatch("face/unAssignPredictedByMedia", this.media.id);
     },
-    deleteUnassigned: function () {
+    deleteUnassigned: function() {
       this.$store.dispatch("face/deleteUnassignedByMedia", this.media.id);
     },
-    predictPersons: function () {
+    predictPersons: function() {
       this.$store.dispatch("face/predictPersonsByMedia", this.media.id);
     },
     recycle() {
@@ -462,25 +466,25 @@ export default {
     analyseAI() {
       this.$store.dispatch("media/analyseAI", this.media.id);
     },
-    toggleInfo: function () {
+    toggleInfo: function() {
       this.showInfoPage = !this.showInfoPage;
     },
-    setFolderFilter: function (folder) {
+    setFolderFilter: function(folder) {
       this.setFilter({
         key: "folder",
-        value: folder,
+        value: folder
       });
       this.handleHome();
     },
-    setDateFilter: function (date) {
+    setDateFilter: function(date) {
       var dateFilter = DateTime.fromISO(date).toISODate();
       this.setFilter({
         key: "date",
-        value: dateFilter,
+        value: dateFilter
       });
       this.handleHome();
-    },
-  },
+    }
+  }
 };
 </script>
 
@@ -572,4 +576,3 @@ export default {
   right: 40px;
 }
 </style>
-

@@ -23,68 +23,19 @@ public static partial class AuthenticationExtensions
 
         AuthenticationBuilder authBuilder = services.AddAuthentication(options =>
         {
-            options.DefaultScheme = env.IsDevelopment() ?
-                DevTokenDefaults.AuthenticationScheme :
-                CookieAuthenticationDefaults.AuthenticationScheme;
-
-            options.DefaultChallengeScheme = "oidc";
-        });
-
-        authBuilder.AddCookie(options =>
-        {
-            options.SlidingExpiration = true;
-            options.Cookie.Name = "mm-id";
-        })
-        .AddOpenIdConnect("oidc", options =>
-        {
-            options.Authority = secOptions.Authority;
-            options.RequireHttpsMetadata = env.IsProduction();
-
-            options.ClientSecret = secOptions.Secret;
-            options.ClientId = secOptions.ClientId;
-            options.ClaimActions.MapUniqueJsonKey("scope", "scope");
-            options.ResponseType = "code";
-            options.Scope.Clear();
-            options.Scope.Add("openid");
-            options.Scope.Add("profile");
-            options.Scope.Add("api.magic.read");
-            options.Scope.Add("api.magic.write");
-
-            options.ClaimActions.MapAllExcept("iss", "nbf", "exp", "aud", "nonce", "iat", "c_hash");
-
-            options.Events = new OpenIdConnectEvents
-            {
-                OnRedirectToIdentityProvider = (ctx) =>
-                {
-                    return Task.CompletedTask;
-                },
-                OnTicketReceived = (ctx) =>
-                {
-                    return Task.CompletedTask;
-                },
-                OnAuthorizationCodeReceived = (ctx) =>
-                {
-                    return Task.CompletedTask;
-                }
-            };
-
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-                NameClaimType = JwtClaimTypes.Name,
-                RoleClaimType = JwtClaimTypes.Role,
-            };
-        })
-        .AddJwtBearer("jwt", options =>
+            options.DefaultScheme = "jwt";
+        }).AddJwtBearer("jwt", options =>
         {
             options.RequireHttpsMetadata = env.IsProduction();
             options.Authority = secOptions.Authority;
             options.Audience = "api.magic";
         });
 
+        /*
         if (env.IsDevelopment())
         {
             SetupDevelopmentAuthentication(authBuilder);
-        }
+        }*/
 
         return authBuilder;
     }

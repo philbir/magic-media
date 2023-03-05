@@ -71,7 +71,7 @@ if (workbox) {
     );
 
     workbox.routing.registerRoute(
-        ({ url }) => url.pathname.startsWith('/session') || url.pathname === '/',
+        ({ url }) => url.pathname.startsWith('/bff/user') || url.pathname === '/',
         new workbox.strategies.NetworkOnly()
     );
 
@@ -89,27 +89,23 @@ self.addEventListener('message', (event) => {
 
 setInterval(() => {
 
-    fetch('api/session').then(response => {
-        response.json().then(data => {
-
-            if (!data.isAuthenticated) {
-                self.clients.matchAll().then(clients => {
-                    clients.forEach(client => {
-                        sendClientAction(client, { action: 'ROUTE', value: 'SessionExpired' })
-                    });
-                })
-            }
-        })
+    fetch('bff/user', { headers: { "x-csrf": "1" } }).then(response => {
+        if (response.status === 401) {
+            self.clients.matchAll().then(clients => {
+                clients.forEach(client => {
+                    sendClientAction(client, { action: 'ROUTE', value: 'SessionExpired' })
+                });
+            })
+        }
     })
 
-}, 1000 * 60 * 3)
+}, 1000 * 30)
 
 addEventListener('fetch', event => {
 
     const requestUrl = new URL(event.request.url);
 
     if (requestUrl.pathname.startsWith("/graphql")) {
-
         event.respondWith(
             fetch(event.request).then(function (response) {
                 if (response.status === 403) {

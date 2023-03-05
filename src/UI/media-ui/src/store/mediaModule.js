@@ -18,6 +18,7 @@ import MediaFilterManager from '../services/mediaFilterManager';
 import { excuteGraphQL } from "./graphqlClient"
 import { mediaOperationTypeMap } from "../services/mediaOperationService";
 import { shareManyMedia } from "../services/shareService"
+import { exportMedia } from "../services/mediaService";
 import { addSnack } from "./snackService"
 import { mediaListViewMap } from "../services/mediaListViewMap";
 
@@ -62,7 +63,7 @@ const mediaModule = {
     hasMore: true,
     isEditMode: false,
     thumbnailSize: "M",
-    loadThumbnailData: true,
+    loadThumbnailData: false,
     filter: {
       pageNr: 0,
       pageSize: 200,
@@ -406,7 +407,14 @@ const mediaModule = {
         addSnack(dispatch, `Error while sharing`, "ERROR");
       }
     },
+    async export({ dispatch }, id) {
 
+      addSnack(dispatch, 'Export started...', "INFO");
+
+      const result = await exportMedia({ id: id });
+
+      addSnack(dispatch, `Exported to ${result?.data?.exportMedia.path}`);
+    },
     async shareSelected({ state, dispatch }) {
 
       const medias = getSelectedMedias(state);

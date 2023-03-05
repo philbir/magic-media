@@ -36,17 +36,21 @@ namespace MagicMedia.Playground
                 .Where(x =>
                     x.FaceCount == 0 &&
                     x.MediaType == MediaType.Image &&
+                    x.Folder.StartsWith("Family/2022") &&
                     x.State == MediaState.Active)
 
                 .OrderByDescending(x => x.DateTaken)
-                .Take(1000)
+                .Take(10000)
                 .ToListAsync(cancellationToken);
+
+            int total = medias.Count();
+            int completed = 0;
 
             foreach (Media media in medias)
             {
                 try
                 {
-                    Console.WriteLine($"Scanning faces: {media.Id}");
+                    Console.WriteLine($"{completed} of {total} | Scanning faces: {media.Id}.");
                     var context = new MediaProcessorContext
                     {
                         Media = media,
@@ -59,6 +63,8 @@ namespace MagicMedia.Playground
                 {
                     Console.WriteLine("Error: " + ex.Message);
                 }
+
+                completed ++;
             }
         }
 

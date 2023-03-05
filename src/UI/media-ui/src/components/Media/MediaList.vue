@@ -53,22 +53,24 @@
             left: box.left + 'px',
             height: box.height + 'px',
             width: box.width + 'px',
-            'background-image': layout.type === 'image'
-              ? 'url(' + box.media.imageUrl + ')'
-              : null,
+            'background-image':
+              layout.type === 'image' ? 'url(' + box.media.imageUrl + ')' : null
           }"
         >
-          <div v-if="box.media.mediaType === 'VIDEO' && layout.type === 'image'" class="duration">
+          <div
+            v-if="box.media.mediaType === 'VIDEO' && layout.type === 'image'"
+            class="duration"
+          >
             {{ box.media.videoInfo.duration }}
           </div>
 
-          <div v-if="layout.type ==='detail'" class="media-detail-wrapper">
+          <div v-if="layout.type === 'detail'" class="media-detail-wrapper">
             <div
               class="media-detail-image"
               :style="{
                 height: box.height + 'px',
                 width: '100px',
-                'background-image': 'url(' + box.media.imageUrl + ')',
+                'background-image': 'url(' + box.media.imageUrl + ')'
               }"
             ></div>
             <div
@@ -76,15 +78,17 @@
                 padding-left: 6px;
                 font-size: 12px;
                 background-color: #fff;"
-                :style="{
-                'width': (box.width -100) + 'px',
+              :style="{
+                width: box.width - 100 + 'px'
               }"
             >
-              <div class="detail-row" >
+              <div class="detail-row">
                 <strong>{{ box.media.filename }}</strong>
               </div>
-              <div class="detail-row" >{{ box.media.folder }}</div>
-              <div class="detail-row">{{ box.media.camera ? box.media.camera.title : "" }}</div>
+              <div class="detail-row">{{ box.media.folder }}</div>
+              <div class="detail-row">
+                {{ box.media.camera ? box.media.camera.title : "" }}
+              </div>
               <div class="detail-row">
                 {{ box.media.dateTaken | dateformat("DATETIME_SHORT") }}
               </div>
@@ -104,27 +108,29 @@
               :style="{
                 height: box.height + 'px',
                 width: '40px',
-                'background-image': 'url(' + box.media.imageUrl + ')',
+                'background-image': 'url(' + box.media.imageUrl + ')'
               }"
             ></div>
 
             <div class="table-column" style="width: 200px">
-             <strong> {{ box.media.filename}}</strong>
+              <strong> {{ box.media.filename }}</strong>
             </div>
             <div class="table-column" style="width: 200px">
-              {{ box.media.folder}}
+              {{ box.media.folder }}
             </div>
-            <div class="table-column" style="width: 150px">{{ box.media.camera ? box.media.camera.title : "" }}</div>
-              <div class="table-column" style="width: 150px">
-                {{ box.media.dateTaken | dateformat("DATETIME_SHORT") }}
-              </div>
+            <div class="table-column" style="width: 150px">
+              {{ box.media.camera ? box.media.camera.title : "" }}
+            </div>
+            <div class="table-column" style="width: 150px">
+              {{ box.media.dateTaken | dateformat("DATETIME_SHORT") }}
+            </div>
 
-              <div class="table-column" style="width: 220px">
-                {{ box.media.id }}
-              </div>
-              <div class="table-column" :title="box.media.source.identifier">
-                {{ box.media.source.identifier }}
-              </div>
+            <div class="table-column" style="width: 220px">
+              {{ box.media.id }}
+            </div>
+            <div class="table-column" :title="box.media.source.identifier">
+              {{ box.media.source.identifier }}
+            </div>
           </div>
         </div>
       </div>
@@ -147,7 +153,10 @@ import { mapActions, mapGetters } from "vuex";
 export default {
   components: {},
   created() {
-    if (this.$store.state.media.list.length === 0)
+    if (
+      this.$store.state.media.list.length === 0 &&
+      !this.$store.state.media.listLoading
+    )
       this.$store.dispatch("media/search");
 
     this.containerWith =
@@ -156,11 +165,11 @@ export default {
   },
   computed: {
     ...mapGetters("user", ["userActions"]),
-    layout: function () {
+    layout: function() {
       const items = this.$store.state.media.list;
       const viewMap = mediaListViewMap[this.$store.state.media.thumbnailSize];
       const ratios = [];
-      items.forEach((item) => {
+      items.forEach(item => {
         ratios.push(
           viewMap.fixedRatio > 0
             ? viewMap.fixedRatio
@@ -171,7 +180,7 @@ export default {
         containerWidth: this.containerWith,
         targetRowHeight: viewMap.rowHeight,
         boxSpacing: viewMap.spacing,
-        containerPadding: viewMap.spacing,
+        containerPadding: viewMap.spacing
       });
       layout.withText = viewMap.withText;
       layout.type = viewMap.layoutType;
@@ -189,7 +198,7 @@ export default {
         if (layout.boxes[i].top !== currentTop) {
           currentRow = {
             top: layout.boxes[i].top,
-            boxes: [],
+            boxes: []
           };
           layout.rows.push(currentRow);
           currentTop = layout.boxes[i].top;
@@ -200,62 +209,62 @@ export default {
 
       return layout;
     },
-    loading: function () {
+    loading: function() {
       return this.$store.state.media.listLoading;
     },
-    filterDesc: function () {
+    filterDesc: function() {
       return this.$store.getters["media/filterDescriptions"];
-    },
+    }
   },
   data() {
     return {
       containerWith: 0,
       viewPort: {
         start: 0,
-        end: window.innerHeight,
+        end: window.innerHeight
       },
       hoveredIndex: -1,
-      previousScroll: 0,
+      previousScroll: 0
     };
   },
   methods: {
     ...mapActions("media", ["removeFilter", "resetAllFilters"]),
-    inViewPort: function (top) {
+    inViewPort: function(top) {
       return top > this.viewPort.start && top < this.viewPort.end;
     },
-    isSelected: function (idx) {
+    isSelected: function(idx) {
       if (this.$store.state.media.selectedIndexes.includes(idx)) {
         return true;
       }
       return false;
     },
-    thumbSrc: function (media) {
+    thumbSrc: function(media) {
       if (media.mediaType === "VIDEO" && this.hoveredIndex === media.idx) {
         return "/api/video/preview/" + media.id;
       }
       return media.thumbnail ? media.thumbnail.dataUrl : null;
     },
-    handleUpload: function () {
+    handleUpload: function() {
       this.$router.push("/upload");
     },
-    handleRefresh: function () {
+    handleRefresh: function() {
       this.$store.dispatch("media/search");
     },
     loadMore() {
       this.$store.dispatch("media/loadMore");
     },
-    selectMedia: function (media, e) {
+    selectMedia: function(media, e) {
       if (this.$store.state.media.isEditMode) {
         this.$store.dispatch("media/select", {
           idx: media.idx,
-          multi: e.shiftKey,
+          multi: e.shiftKey
         });
       } else {
         if (e.shiftKey && this.userActions.media.edit) {
           this.$store.dispatch("media/toggleEditMode", true);
           this.$store.dispatch("media/select", {
             idx: media.idx,
-            multi: false,
+            multi: false
           });
         } else if (
           e.ctrlKey &&
@@ -264,30 +273,30 @@ export default {
         ) {
           this.$store.dispatch("album/setCover", {
             albumId: this.$store.state.media.filter.albumId,
-            mediaId: media.id,
+            mediaId: media.id
           });
         } else {
           this.$store.dispatch("media/show", media.id);
         }
       }
     },
-    selectAll: function () {
+    selectAll: function() {
       this.$store.dispatch("media/selectAll");
     },
-    hover: function (isHover, index) {
+    hover: function(isHover, index) {
       if (isHover) {
         this.hoveredIndex = index;
       } else {
         this.hoveredIndex = -1;
       }
     },
-    onScroll: function (e) {
+    onScroll: function(e) {
       const elm = e.target;
       const percent = (elm.scrollTop + elm.clientHeight) / elm.scrollHeight;
       const offset = 600;
       this.viewPort = {
         start: elm.scrollTop - offset,
-        end: elm.scrollTop + elm.offsetHeight + offset,
+        end: elm.scrollTop + elm.offsetHeight + offset
       };
       if (!this.loading && percent > 0.85 && percent > this.previousScroll) {
         this.loadMore();
@@ -295,10 +304,10 @@ export default {
 
       this.previousScroll = percent;
     },
-    longpress: function () {
+    longpress: function() {
       this.$store.dispatch("openNavDrawer", true);
-    },
-  },
+    }
+  }
 };
 </script>
 
@@ -352,12 +361,12 @@ export default {
   height: 36px;
 }
 
-.media-detail-wrapper{
+.media-detail-wrapper {
   display: flex;
   font-size: 12px;
 }
 
-.media-detail-image{
+.media-detail-image {
   background-repeat: no-repeat;
   background-size: 100% 100%;
 }
@@ -369,14 +378,12 @@ export default {
   text-overflow: ellipsis;
 }
 
-.table-column{
+.table-column {
   padding-left: 4px;
   border-left: 2px solid #fff;
   margin-top: 4px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-
 }
-
 </style>

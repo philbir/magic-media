@@ -1,12 +1,24 @@
+using System.Threading;
 using System.Threading.Tasks;
+using MagicMedia.Face;
+using MagicMedia.Store;
 using MassTransit;
 
 namespace MagicMedia.Messaging.Consumers;
 
 public class FaceUpdatedConsumer : IConsumer<FaceUpdatedMessage>
 {
-    public Task Consume(ConsumeContext<FaceUpdatedMessage> context)
+    private readonly FaceService _faceService;
+
+    public FaceUpdatedConsumer(FaceService faceService)
     {
-        return Task.CompletedTask;
+        _faceService = faceService;
+    }
+
+    public async Task Consume(ConsumeContext<FaceUpdatedMessage> context)
+    {
+        MediaFace face = await _faceService.GetByIdAsync(context.Message.Id, context.CancellationToken);
+
+        await _faceService.UpdateAgeAsync(face, context.CancellationToken);
     }
 }

@@ -12,12 +12,14 @@ namespace MagicMedia;
 public class PersonTimelineService : IPersonTimelineService
 {
     private readonly IMediaStore _store;
-    private readonly IUserContextFactory _userContextFactory;
+    private readonly IUserAuthorizationService _userAuthorizationService;
 
-    public PersonTimelineService(IMediaStore store, IUserContextFactory userContextFactory)
+    public PersonTimelineService(
+        IMediaStore store,
+        IUserAuthorizationService userAuthorizationService)
     {
         _store = store;
-        _userContextFactory = userContextFactory;
+        _userAuthorizationService = userAuthorizationService;
     }
 
     public async Task<PersonTimeline> BuildTimelineAsync(
@@ -27,14 +29,15 @@ public class PersonTimelineService : IPersonTimelineService
     {
         var ages = new List<PersonTimelineAge>();
 
-        Person person = await _store.Persons.GetByIdAsync(personId, cancellationToken);
+        //Person person = await _store.Persons.GetByIdAsync(personId, cancellationToken);
 
-        IUserContext userContext = await _userContextFactory.CreateAsync(cancellationToken);
-        IEnumerable<Guid>? faceIds = await userContext.GetAuthorizedFaceAsync(cancellationToken);
+        UserResourceAccessInfo authInfo = await _userAuthorizationService.GetAuthorizedOnAsync(
+            ProtectedResourceType.Face,
+            cancellationToken);
 
         IEnumerable<MediaFace> faces = await _store.Faces.GetFacesByPersonAsync(
             personId,
-            faceIds,
+            authInfo.ViewAll ? null : authInfo.Ids,
             cancellationToken);
 
         IEnumerable<IGrouping<int, MediaFace>>? byYear = faces
@@ -58,16 +61,9 @@ public class PersonTimelineService : IPersonTimelineService
                 facesByYaer.Add(sorted[i * step]);
             }
 
-            ages.Add(new PersonTimelineAge
-            {
-                Age = yaer.Key,
-                Faces = facesByYaer
-            });
+            ages.Add(new PersonTimelineAge { Age = yaer.Key, Faces = facesByYaer });
         }
 
-        return new PersonTimeline
-        {
-            Ages = ages
-        };
+        return new PersonTimeline { Ages = ages };
     }
 }

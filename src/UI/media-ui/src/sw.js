@@ -68,7 +68,7 @@ if (workbox) {
     );
 
     workbox.routing.registerRoute(
-        ({ url }) => url.pathname.startsWith('/session') || url.pathname === '/',
+        ({ url }) => url.pathname.startsWith('/bff') || url.pathname === '/',
         new workbox.strategies.NetworkOnly()
     );
 
@@ -86,17 +86,14 @@ self.addEventListener('message', (event) => {
 
 setInterval(() => {
 
-    fetch('api/session').then(response => {
-        response.json().then(data => {
-
-            if (!data.isAuthenticated) {
-                self.clients.matchAll().then(clients => {
-                    clients.forEach(client => {
-                        sendClientAction(client, { action: 'ROUTE', value: 'SessionExpired' })
-                    });
-                })
-            }
-        })
+    fetch('bff/user', { headers: { "x-csrf": "1" } }).then(response => {
+        if (response.status === 401) {
+            self.clients.matchAll().then(clients => {
+                clients.forEach(client => {
+                    sendClientAction(client, { action: 'ROUTE', value: 'SessionExpired' })
+                });
+            })
+        }
     })
 
 }, 1000 * 60 * 3)
@@ -107,16 +104,23 @@ addEventListener('fetch', event => {
 
     if (requestUrl.pathname.startsWith("/graphql")) {
 
+        const headers = new Headers(event.request.headers);
+        headers.set("x-csrf", "1");
+
         event.respondWith(
-            fetch(event.request).then(function (response) {
-                if (response.status === 403) {
+            fetch(new Request(event.request, {
+                mode: 'cors',
+                credentials: 'same-origin',
+                headers: headers
+            })).then(function (response) {
+                if (response.status === 403 || response.status === 401) {
                     self.clients.get(event.clientId).then(client => {
                         sendClientAction(client, { action: 'ROUTE', value: 'SessionExpired' })
                     });
                 }
 
                 return response;
-            }));
+            })); .4
     }
 });
 

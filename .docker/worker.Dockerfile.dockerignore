@@ -8,6 +8,7 @@
 !/src/Versions.props
 !/global.json
 !/Directory.Build.props
+!/Directory.Packages.props
 **appsettings.local.json
 **/bin/**
 **/obj/**

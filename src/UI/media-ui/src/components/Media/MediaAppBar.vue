@@ -59,7 +59,8 @@
       icon
       class="mr-0 ml-0"
     >
-      <v-icon>mdi-check-box-multiple-outline</v-icon>
+      <v-icon v-if="!isEditMode">mdi-select</v-icon>
+      <v-icon v-else>mdi-selection-off</v-icon>
     </v-btn>
     <v-menu left offset-y bottom v-if="isEditMode">
       <template v-slot:activator="{ on, attrs }">
@@ -164,7 +165,7 @@ export default {
     AddToAlbumDialog,
     EditMediaDialog,
     GlobalEvents,
-    MeMenu,
+    MeMenu
   },
 
   data: () => ({
@@ -176,75 +177,75 @@ export default {
     sizes: [
       {
         text: "Square XS",
-        code: "SQ_XS",
+        code: "SQ_XS"
       },
       { text: "Square S", code: "SQ_S" },
       { text: "Small", code: "S" },
       { text: "Medium", code: "M" },
       { text: "Large", code: "L" },
       { text: "Details", code: "D" },
-      { text: "Table", code: "T" },
+      { text: "Table", code: "T" }
     ],
-    showUpload: false,
+    showUpload: false
   }),
   computed: {
     ...mapGetters("user", ["userActions"]),
     ...mapState("user", ["me"]),
-    mediaActions: function () {
+    mediaActions: function() {
       return getAuthorized(resources.mediaActions, this.me.permissions);
     },
-    albumActions: function () {
+    albumActions: function() {
       var actions = [];
       if (this.$store.state.media.filter.folder != null) {
         actions.push({
           text: "Add Folder to album",
           action: "ADD_FOLDER",
-          icon: "mdi-folder-outline",
+          icon: "mdi-folder-outline"
         });
       }
       if (this.$store.getters["media/filterDescriptions"].length > 0) {
         actions.push({
           text: "Create from filters",
           action: "CREATE_FROM_QUERY",
-          icon: "mdi-playlist-plus",
+          icon: "mdi-playlist-plus"
         });
       }
 
       return actions;
     },
-    isEditMode: function () {
+    isEditMode: function() {
       return this.$store.state.media.isEditMode;
     },
-    totalLoaded: function () {
+    totalLoaded: function() {
       return this.$store.state.media.totalLoaded;
     },
-    totalCount: function () {
+    totalCount: function() {
       return this.$store.state.media.totalCount;
     },
-    selectedCount: function () {
+    selectedCount: function() {
       return this.$store.state.media.selectedIndexes.length;
     },
-    loading: function () {
+    loading: function() {
       return this.$store.state.media.listLoading;
-    },
+    }
   },
   methods: {
-    setSize: function (code) {
+    setSize: function(code) {
       this.$store.dispatch("media/setThumbnailSize", code);
     },
-    openUpload: function () {
+    openUpload: function() {
       this.$store.dispatch("media/toggleUploadDialog", true);
     },
-    toggleEditMode: function () {
+    toggleEditMode: function() {
       this.$store.dispatch("media/toggleEditMode");
     },
-    selectAll: function () {
+    selectAll: function() {
       this.$store.dispatch("media/selectAll");
     },
-    clearSelected: function () {
+    clearSelected: function() {
       this.$store.dispatch("media/clearSelected");
     },
-    onMediaAction: function (action) {
+    onMediaAction: function(action) {
       console.log(action);
       if (action.action === "ADD_TO_ALBUM") {
         this.addAlbumType = "ID";
@@ -253,7 +254,7 @@ export default {
         this.showMove = true;
       }
     },
-    onClickAction: function (action) {
+    onClickAction: function(action) {
       switch (action) {
         case "MOVE":
           this.showMove = true;
@@ -276,7 +277,7 @@ export default {
           break;
       }
     },
-    onClickAlbumAction: function (action) {
+    onClickAlbumAction: function(action) {
       switch (action) {
         case "ADD_FOLDER":
           this.addAlbumType = "FOLDER";
@@ -288,7 +289,7 @@ export default {
           break;
       }
     },
-    keyPressed: function (e) {
+    keyPressed: function(e) {
       if (!this.userActions.media.edit) {
         return;
       }
@@ -312,10 +313,8 @@ export default {
           this.$store.dispatch("media/toggleLoadThumbnailData");
           break;
       }
-    },
-  },
+    }
+  }
 };
 </script>
-<style >
-</style>
-
+<style></style>

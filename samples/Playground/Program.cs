@@ -52,8 +52,8 @@ namespace Playground
 
             //DeleteEmptyDirs("H:\\Photos\\MobileBackup");
 
-            await updater.UpdateLocationAsync(CancellationToken.None);
-            //await faceScanner.RunAsync(default);
+            //await updater.UpdateLocationAsync(CancellationToken.None);
+            await faceScanner.RunAsync(default);
 
             //await updater.DeleteMediaAIOrphansAsync();
 

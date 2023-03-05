@@ -6,7 +6,7 @@ public static class IPExtensions
 {
     public static bool IsInternalIP(this string ipAddress)
     {
-        if (ipAddress == "::1" || ipAddress is null)
+        if (string.IsNullOrEmpty(ipAddress) ||  ipAddress == "::1" )
             return true;
 
         byte[] ip = IPAddress.Parse(ipAddress).GetAddressBytes();

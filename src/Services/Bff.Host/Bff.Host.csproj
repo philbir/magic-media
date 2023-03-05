@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <AssemblyName>MagicMedia.Bff</AssemblyName>
+        <RootNamespace>MagicMedia.Bff</RootNamespace>
+        <UserSecretsId>magic-media-bff</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Duende.BFF" />
+      <PackageReference Include="Duende.BFF.Yarp" />
+      <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" />
+    </ItemGroup>
+  
+    <ItemGroup>
+      <Folder Include="wwwroot" />
+    </ItemGroup>
+  
+    <ItemGroup>
+      <ProjectReference Include="..\..\Shared\AspNetCore\Shared.AspNetCore.csproj" />
+    </ItemGroup>
+
+</Project>

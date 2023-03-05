@@ -1,0 +1,5 @@
+mutation exportMedia($input: ExportMediaInput!) {
+  exportMedia(input: $input) {
+    path
+  }
+}

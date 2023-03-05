@@ -11,9 +11,10 @@ public static class GitHubExtensions
         this AuthenticationBuilder authBuilder,
         AuthProviderOptions options)
     {
+
         authBuilder.AddGitHub(options.Name, gitOptions =>
         {
-            gitOptions.SignInScheme = IdentityServerConstants
+            gitOptions.SignInScheme =  IdentityServerConstants
                 .ExternalCookieAuthenticationScheme;
 
             gitOptions.ClientId = options.ClientId;

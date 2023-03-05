@@ -1,6 +1,7 @@
 <template>
   <div>
-    <v-container>
+    <v-progress-linear v-if="loading" indeterminate color="blue" top />
+    <v-container v-else>
       <v-row style="overflow-x: auto; height: 92vh">
         <v-col v-for="person in persons" :key="person.id" sm="3" lg="4">
           <v-card width="400" min-height="200">
@@ -86,7 +87,7 @@ import EditPersonDialog from "./EditPersonDialog";
 
 export default {
   components: {
-    EditPersonDialog,
+    EditPersonDialog
   },
   created() {
     this.$store.dispatch("person/search");
@@ -94,33 +95,35 @@ export default {
   data() {
     return {
       showEditDialog: false,
-      editPersonId: null,
+      editPersonId: null
     };
   },
   computed: {
     ...mapGetters("user", ["userActions"]),
-    persons: function () {
+    persons: function() {
       return this.$store.state.person.list;
     },
+    loading: function() {
+      return this.$store.state.person.listLoading;
+    }
   },
   methods: {
-    thumbnail: function (person) {
+    thumbnail: function(person) {
       if (person.thumbnail) {
         return person.thumbnail.dataUrl;
       } else {
         return null;
       }
     },
-    editClick: function (id) {
+    editClick: function(id) {
       this.editPersonId = id;
       this.showEditDialog = true;
     },
-    openTimeline: function (person) {
+    openTimeline: function(person) {
       this.$router.push({ name: "PersonTimeline", params: { id: person.id } });
-    },
-  },
+    }
+  }
 };
 </script>
 
-<style>
-</style>
+<style></style>
