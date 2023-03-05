@@ -74,7 +74,6 @@ public static class GrapQLServiceCollectionExtensions
             {
                 o.RenameRootActivity = true;
             })
-            .AddMutationConventions()
             .AddAuthorization();
 
         return builder;

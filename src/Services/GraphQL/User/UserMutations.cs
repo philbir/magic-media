@@ -59,14 +59,14 @@ public class UserMutations
     public async Task<User> UpdateCurrentExportProfileAsync(
         [Service] IUserService userService,
         [Service] IUserContextFactory userContextFactory,
-        Guid profileId,
+        UpdateCurrentExportProfileInput input,
         CancellationToken cancellationToken)
     {
         IUserContext userContext = await userContextFactory.CreateAsync(cancellationToken);
 
         User user = await userService.UpdateCurrentExportProfileAsync(
             userContext.UserId.Value,
-            profileId,
+            input.ProfileId,
             cancellationToken);
 
         return user;
