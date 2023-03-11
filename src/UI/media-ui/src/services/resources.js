@@ -67,6 +67,11 @@ export const resources = {
             action: "SHARE",
             icon: "mdi-share-variant-outline",
         },
+        {
+            text: "Export",
+            action: "EXPORT",
+            icon: "mdi-export",
+        },
     ],
 }
 

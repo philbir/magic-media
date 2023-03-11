@@ -6,6 +6,8 @@ import QUERY_ALL_USERS from "../graphql/User/AllUsers.gql"
 import QUERY_ME from "../graphql/User/Me.gql"
 import QUERY_BY_ID from "../graphql/User/GetById.gql"
 import QUERY_SEARCH from "../graphql/User/Search.gql"
+import QUERY_EXPORT_PROFILES from "../graphql/User/GetExportProfiles.gql"
+import MUTATION_UPDATE_CURRENT_EXPORT_PROFILE from "../graphql/User/UpdateCurrentExportProfile.gql"
 
 export const createUserFromPerson = async (personId, email) => {
     return await apollo.mutate({
@@ -63,5 +65,21 @@ export const search = async (input) => {
     return await apollo.query({
         query: QUERY_SEARCH,
         variables: { input }
+    });
+};
+
+export const getExportProfiles = async () => {
+    return await apollo.query({
+        query: QUERY_EXPORT_PROFILES
+    });
+};
+
+
+export const updateCurrentExportProfile = async (input) => {
+    return await apollo.mutate({
+        mutation: MUTATION_UPDATE_CURRENT_EXPORT_PROFILE,
+        variables: {
+            input
+        }
     });
 };

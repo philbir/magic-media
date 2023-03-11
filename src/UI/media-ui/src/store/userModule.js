@@ -1,5 +1,5 @@
 import Vue from "vue";
-import { createInvite, createUserFromPerson, getAllUsers, getMe, saveSharedAlbums, search } from "../services/userService";
+import { createInvite, createUserFromPerson, getAllUsers, getMe, saveSharedAlbums, search, getExportProfiles, updateCurrentExportProfile } from "../services/userService";
 import { excuteGraphQL } from "./graphqlClient"
 import { addSnack } from "./snackService"
 
@@ -13,6 +13,7 @@ const userModule = {
         error: false,
         totalCount: 0,
         list: [],
+        exportProfiles: [],
         filter: {
             pageNr: 0,
             pageSize: 50,
@@ -48,6 +49,9 @@ const userModule = {
         },
         ERROR_RESET: function (state) {
             state.error = false;
+        },
+        EXPORT_PROFILES_LOADED: function (state, profiles) {
+            Vue.set(state, "exportProfiles", [...profiles])
         }
     },
     actions: {
@@ -108,6 +112,18 @@ const userModule = {
             if (result.success) {
                 addSnack(dispatch, `Shared albums saved.`)
             }
+        },
+        async getExportProfiles({ dispatch, commit }) {
+            const result = await excuteGraphQL(() => getExportProfiles(), dispatch);
+
+            commit("EXPORT_PROFILES_LOADED", result.data.mediaExportProfiles);
+        },
+        async updateCurrentExportProfile({ dispatch }, profile) {
+            const result = await excuteGraphQL(() => updateCurrentExportProfile({ profileId: profile.id }), dispatch);
+            if (result.success) {
+                addSnack(dispatch, `Profile: '${profile.name}' set.`)
+            }
+            dispatch("getExportProfiles")
         },
     },
     getters: {

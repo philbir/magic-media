@@ -9,7 +9,7 @@
         "OTEL_EXPORTER_OTLP_ENDPOINT": "http://localhost:55680"
       },
       "dotnetRunMessages": "true",
-      "applicationUrl": "http://localhost:5000/"
+      "applicationUrl": "http://localhost:5001/"
     },
     "Api.Host.Release": {
       "commandName": "Project",
@@ -19,7 +19,7 @@
         "ASPNETCORE_ENVIRONMENT": "Production"
       },
       "dotnetRunMessages": "true",
-      "applicationUrl": "http://localhost:5000/"
+      "applicationUrl": "http://localhost:5001/"
     }
   }
 }

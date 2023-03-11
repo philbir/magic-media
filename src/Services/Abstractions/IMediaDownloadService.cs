@@ -18,8 +18,14 @@ public interface IMediaExportService
 {
     Task<MediaExportResult> ExportAsync(
         Guid id,
-        Guid? profileId,
+        MediaExportOptions options,
         CancellationToken cancellationToken);
+}
+
+public class MediaExportOptions
+{
+    public Guid? ProfileId { get; set; }
+    public string? Path { get; set; }
 }
 
 public interface IMediaTransformService

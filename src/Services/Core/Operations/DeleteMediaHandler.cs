@@ -44,15 +44,15 @@ public class DeleteMediaHandler : IDeleteMediaHandler
             await _bus.Publish(msg, cancellationToken);
         }
 
-        var completedmsg = new MediaOperationRequestCompletedMessage
+        var completedMessage = new MediaOperationRequestCompletedMessage
         {
             Type = MediaOperationType.Delete,
             OperationId = message.OperationId,
-            SuccessCount = messages.Where(x => x.IsSuccess).Count(),
-            ErrorCount = messages.Where(x => !x.IsSuccess).Count(),
+            SuccessCount = messages.Count(x => x.IsSuccess),
+            ErrorCount = messages.Count(x => !x.IsSuccess),
         };
 
-        await _bus.Publish(completedmsg, cancellationToken);
+        await _bus.Publish(completedMessage, cancellationToken);
     }
 
 

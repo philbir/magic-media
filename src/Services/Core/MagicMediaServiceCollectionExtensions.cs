@@ -53,6 +53,7 @@ public static class MagicMediaServiceCollectionExtensions
         services.AddSingleton<IRecycleMediaHandler, RecycleMediaHandler>();
         services.AddSingleton<IDeleteMediaHandler, DeleteMediaHandler>();
         services.AddSingleton<IUpdateMediaMetadataHandler, UpdateMediaMetadataHandler>();
+        services.AddSingleton<IExportMediaHandler, ExportMediaHandler>();
 
         services.AddSingleton<IMediaSearchService, MediaSearchService>();
         services.AddSingleton<IMediaService, MediaService>();

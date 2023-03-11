@@ -1,0 +1,11 @@
+query profiles {
+  mediaExportProfiles {
+    id
+    name
+    isUserCurrent
+    location {
+      type
+      path
+    }
+  }
+}

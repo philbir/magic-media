@@ -25,10 +25,12 @@ public class MediaTransformService : IMediaTransformService
 
     public async Task<TransformedMedia> TransformAsync(
         Guid id,
-        MediaTransform transform,
+        MediaTransform? transform,
         CancellationToken cancellationToken)
     {
         Media media = await _mediaService.GetByIdAsync(id, cancellationToken);
+
+        transform ??= new MediaTransform { Format = "JPG" };
 
         if (media.MediaType == MediaType.Image)
         {
@@ -68,7 +70,7 @@ public class MediaTransformService : IMediaTransformService
             }
 
             using var transformedStream = new MemoryStream();
-            await image.SaveAsync(transformedStream , encoder, cancellationToken);
+            await image.SaveAsync(transformedStream, encoder, cancellationToken);
 
             var transformedMedia = new TransformedMedia
             {

@@ -19,7 +19,7 @@ const snackbarModule = {
         totalCount: operation.totalCount,
         successCount: 0,
         errorCount: 0,
-        text: `${0} of ${operation.totalCount} moved`,
+        text: `${0} of ${operation.totalCount} ${mediaOperationTypeMap[operation.operationType].verb}`,
         active: true
       });
     },

@@ -1,7 +1,5 @@
 using MagicMedia;
-using MagicMedia.Api;
 using MagicMedia.Api.Security;
-using MagicMedia.AspNetCore;
 using MagicMedia.BingMaps;
 using MagicMedia.Hubs;
 using MagicMedia.Messaging;

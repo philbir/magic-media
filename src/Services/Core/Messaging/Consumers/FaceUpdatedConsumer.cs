@@ -8,9 +8,9 @@ namespace MagicMedia.Messaging.Consumers;
 
 public class FaceUpdatedConsumer : IConsumer<FaceUpdatedMessage>
 {
-    private readonly FaceService _faceService;
+    private readonly IFaceService _faceService;
 
-    public FaceUpdatedConsumer(FaceService faceService)
+    public FaceUpdatedConsumer(IFaceService faceService)
     {
         _faceService = faceService;
     }

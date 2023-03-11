@@ -5,53 +5,38 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Configuration;
-using MagicMedia.Security;
 using MagicMedia.Store;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Processing;
 
 namespace MagicMedia;
 
 public class MediaExportService : IMediaExportService
 {
-    private readonly IMediaService _mediaService;
     private readonly IMediaExportProfileService _profileService;
     private readonly IMediaTransformService _transformService;
     private readonly FileSystemStoreOptions _fileSystemStoreOptions;
 
     public MediaExportService(
-        IMediaService mediaService,
         IMediaExportProfileService profileService,
         IMediaTransformService transformService,
         FileSystemStoreOptions fileSystemStoreOptions)
     {
-        _mediaService = mediaService;
         _profileService = profileService;
         _transformService = transformService;
         _fileSystemStoreOptions = fileSystemStoreOptions;
     }
 
     public async Task<MediaExportResult> ExportAsync(
-        IEnumerable<Guid> ids,
-        MediaExportProfile profile,
-        CancellationToken cancellationToken)
-    {
-        return null;
-    }
-
-
-    public async Task<MediaExportResult> ExportAsync(
         Guid id,
-        Guid? profileId,
+        MediaExportOptions options,
         CancellationToken cancellationToken)
     {
-        MediaExportProfile profile = await _profileService.GetProfileOrDefault(profileId, cancellationToken);
+        MediaExportProfile profile = await _profileService.GetProfileOrDefault(options.ProfileId, cancellationToken);
 
         TransformedMedia transformed = await _transformService.TransformAsync(id, profile.Transform, cancellationToken);
 
         if (profile.Location.Type == LocationType.FileSystem)
         {
-            var exportPath = GetFileSystemExportPath(transformed, profile.Location);
+            var exportPath = GetFileSystemExportPath(transformed, profile.Location, options);
             await File.WriteAllBytesAsync(exportPath, transformed.Data, cancellationToken);
 
             return new MediaExportResult { Path = exportPath };
@@ -60,9 +45,14 @@ public class MediaExportService : IMediaExportService
         throw new NotSupportedException("Only FileSystem export supported at the moment");
     }
 
-    private string GetFileSystemExportPath(TransformedMedia media, ExportLocation location)
+    private string GetFileSystemExportPath(TransformedMedia media, ExportLocation location, MediaExportOptions options)
     {
         var folder = Path.Combine(_fileSystemStoreOptions.RootDirectory, "export", location.Path);
+
+        if (!string.IsNullOrEmpty(options.Path))
+        {
+            folder = Path.Combine(folder, options.Path);
+        }
 
         if (!Directory.Exists(folder))
         {
@@ -74,7 +64,6 @@ public class MediaExportService : IMediaExportService
 
         return exportPath;
     }
-
 
     private string CreateFilename(Media media)
     {
@@ -97,3 +86,4 @@ public class MediaExportService : IMediaExportService
         return string.Concat(filename.Split(Path.GetInvalidFileNameChars()));
     }
 }
+

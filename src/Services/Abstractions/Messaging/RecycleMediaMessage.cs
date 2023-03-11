@@ -20,6 +20,12 @@ public record RescanFacesMessage(IEnumerable<Guid> Ids)
     public string? OperationId { get; init; }
 }
 
+public record ExportMediaMessage(IEnumerable<Guid> Ids, Guid ProfileId)
+{
+    public string? OperationId { get; init; }
+    public string? Path { get; init; }
+}
+
 public record UpdateMediaMetadataMessage(IEnumerable<Guid> Ids)
 {
     public string? OperationId { get; init; }

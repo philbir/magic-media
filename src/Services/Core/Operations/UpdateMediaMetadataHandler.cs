@@ -17,11 +17,11 @@ public class UpdateMediaMetadataHandler : IUpdateMediaMetadataHandler
     private readonly IBus _bus;
 
     public UpdateMediaMetadataHandler(
-        IMediaStore _mediaStore,
+        IMediaStore mediaStore,
         IMediaService mediaService,
         IBus bus)
     {
-        this._mediaStore = _mediaStore;
+        _mediaStore = mediaStore;
         _mediaService = mediaService;
         _bus = bus;
     }
@@ -46,15 +46,15 @@ public class UpdateMediaMetadataHandler : IUpdateMediaMetadataHandler
             await _bus.Publish(msg, cancellationToken);
         }
 
-        var completedmsg = new MediaOperationRequestCompletedMessage
+        var completedMessage = new MediaOperationRequestCompletedMessage
         {
             Type = MediaOperationType.UpdateMetadata,
             OperationId = message.OperationId,
-            SuccessCount = messages.Where(x => x.IsSuccess).Count(),
-            ErrorCount = messages.Where(x => !x.IsSuccess).Count(),
+            SuccessCount = messages.Count(x => x.IsSuccess),
+            ErrorCount = messages.Count(x => !x.IsSuccess),
         };
 
-        await _bus.Publish(completedmsg, cancellationToken);
+        await _bus.Publish(completedMessage, cancellationToken);
     }
 
     private async Task<MediaOperationCompletedMessage> UpdateMetadataAsync(
