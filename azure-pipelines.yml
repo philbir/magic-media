@@ -28,7 +28,7 @@ stages:
     - task: PowerShell@2
       inputs:
         targetType: 'inline'
-        script: 'yarn --cwd --ignore-engines ./src/UI/media-ui build '
+        script: 'yarn --cwd ./src/UI/media-ui build '
     - task: PowerShell@2
       inputs:
         targetType: 'inline'
