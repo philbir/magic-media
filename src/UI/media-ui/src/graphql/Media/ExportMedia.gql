@@ -1,5 +1,8 @@
-mutation exportMedia($input: ExportMediaInput!) {
+mutation exportMedia($input: ExportMediaRequestInput!) {
   exportMedia(input: $input) {
-    path
+    operationId
+    errors {
+      code
+    }
   }
 }

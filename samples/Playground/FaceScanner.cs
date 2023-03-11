@@ -36,7 +36,7 @@ namespace MagicMedia.Playground
                 .Where(x =>
                     x.FaceCount == 0 &&
                     x.MediaType == MediaType.Image &&
-                    x.Folder.StartsWith("Family/2022") &&
+                    x.Folder.StartsWith("New") &&
                     x.State == MediaState.Active)
 
                 .OrderByDescending(x => x.DateTaken)

@@ -1,0 +1,8 @@
+mutation updateCurrentExportProfile($input: UpdateCurrentExportProfileInput!) {
+  User_UpdateCurrentExportProfile(input: $input) {
+    user {
+      id
+      currentExportProfile
+    }
+  }
+}

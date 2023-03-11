@@ -55,6 +55,38 @@ public class UserMutations
         return new UpdateUserPayload(user);
     }
 
+    [GraphQLName("User_UpdateCurrentExportProfile")]
+    public async Task<UpdateCurrentExportProfilePayload> UpdateCurrentExportProfileAsync(
+        [Service] IUserService userService,
+        [Service] IUserContextFactory userContextFactory,
+        UpdateCurrentExportProfileInput input,
+        CancellationToken cancellationToken)
+    {
+        IUserContext userContext = await userContextFactory.CreateAsync(cancellationToken);
+
+        User user = await userService.UpdateCurrentExportProfileAsync(
+            userContext.UserId.Value,
+            input.ProfileId,
+            cancellationToken);
+
+        return new UpdateCurrentExportProfilePayload(user);
+    }
+
+    public class UpdateCurrentExportProfilePayload
+    {
+        public UpdateCurrentExportProfilePayload(User user)
+        {
+            User = user;
+        }
+
+        public User User { get; set; }
+    }
+
+    public class UpdateCurrentExportProfileInput
+    {
+        public Guid ProfileId { get; set; }
+    }
+
     public class UpdateUserPayload : Payload
     {
         public UpdateUserPayload(User? user)

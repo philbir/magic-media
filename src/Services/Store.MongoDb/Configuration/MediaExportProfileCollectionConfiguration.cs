@@ -3,14 +3,14 @@ using MongoDB.Extensions.Context;
 
 namespace MagicMedia.Store.MongoDb.Configuration;
 
-internal class GroupCollectionConfiguration :
-    IMongoCollectionConfiguration<Group>
+internal class MediaExportProfileCollectionConfiguration :
+    IMongoCollectionConfiguration<MediaExportProfile>
 {
     public void OnConfiguring(
-        IMongoCollectionBuilder<Group> builder)
+        IMongoCollectionBuilder<MediaExportProfile> builder)
     {
         builder
-            .WithCollectionName(CollectionNames.Group)
+            .WithCollectionName(CollectionNames.MediaExportProfile)
             .AddBsonClassMap<Group>(cm =>
             {
                 cm.AutoMap();

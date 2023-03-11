@@ -28,14 +28,15 @@ Microsoft.Extensions.Hosting.IHost host = Host.CreateDefaultBuilder(args)
     })
     .UseSerilog((context, provider, loggerConfiguration) =>
     {
-        loggerConfiguration.ConfigureElastic(context.Configuration, provider);
+        //loggerConfiguration.ConfigureElastic(context.Configuration, provider);
     })
     .ConfigureServices((hostContext, services) =>
     {
+        /*
         services.AddOpenTelemetry(hostContext.Configuration, tracing =>
         {
             //tracing.AddQuartzInstrumentation()
-        });
+        });*/
 
         services.Configure<HostOptions>(hostOptions =>
         {

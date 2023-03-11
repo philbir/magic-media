@@ -1,0 +1,5 @@
+mutation quickExportMedia($input: QuickExportMediaInput!) {
+  quickExportMedia(input: $input) {
+    path
+  }
+}

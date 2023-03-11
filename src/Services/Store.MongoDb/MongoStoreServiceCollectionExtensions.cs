@@ -39,6 +39,7 @@ public static class MongoStoreServiceCollectionExtensions
         services.AddSingleton<IAuditEventStore, AuditEventStore>();
         services.AddSingleton<IClientThumbprintStore, ClientThumbprintStore>();
         services.AddSingleton<ISimilarMediaStore, SimilarMediaStore>();
+        services.AddSingleton<IMediaExportProfileStore, MediaExportProfileStore>();
 
         return services;
     }

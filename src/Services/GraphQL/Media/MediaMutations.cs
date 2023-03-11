@@ -103,18 +103,34 @@ public class MediaMutations
         return new AnalyseMediaPayload(mediaAi);
     }
 
-    public async Task<ExportMediaPayload> ExportMediaAsync(
+    public async Task<ExportMediaPayload> QuickExportMediaAsync(
         [Service] IMediaExportService service,
-        ExportMediaInput input,
+        QuickExportMediaInput input,
         CancellationToken cancellationToken)
     {
-        MediaExportResult export = await service.ExportAsync(input.Id, null, cancellationToken);
+        MediaExportResult export = await service.ExportAsync(
+            input.Id,
+            new MediaExportOptions(),
+            cancellationToken);
 
         return new ExportMediaPayload(export.Path);
     }
+
+    public async Task<MediaOperationPayload> ExportMediaAsync(
+        ExportMediaRequest input,
+        CancellationToken cancellationToken)
+    {
+        ExportMediaRequest request = input with
+        {
+            OperationId = input.OperationId ?? Guid.NewGuid().ToString("N")
+        };
+
+        await _operationsService.ExportAsync(request, cancellationToken);
+
+        return new MediaOperationPayload(request.OperationId);
+    }
 }
 
-
-public record ExportMediaInput(Guid Id);
+public record QuickExportMediaInput(Guid Id);
 
 public  record ExportMediaPayload(string Path);

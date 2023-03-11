@@ -60,7 +60,7 @@ public class RecycleMediaHandler : IRecycleMediaHandler
     {
         Media media = await _mediaStore.GetByIdAsync(id, cancellationToken);
 
-        MediaOperationCompletedMessage msg = new MediaOperationCompletedMessage
+        var msg = new MediaOperationCompletedMessage
         {
             Type = MediaOperationType.Recycle,
             MediaId = id,

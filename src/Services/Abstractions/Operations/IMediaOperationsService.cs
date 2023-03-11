@@ -15,4 +15,8 @@ public interface IMediaOperationsService
     Task ReScanFacesAsync(RescanFacesRequest request, CancellationToken cancellationToken);
     Task ToggleFavoriteAsync(Guid id, bool isFavorite, CancellationToken cancellationToken);
     Task UpdateMetadataAsync(UpdateMediaMetadataRequest request, CancellationToken cancellationToken);
+
+    Task ExportAsync(
+        ExportMediaRequest request,
+        CancellationToken cancellationToken);
 }

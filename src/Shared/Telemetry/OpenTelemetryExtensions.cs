@@ -69,11 +69,8 @@ public static class OpenTelemetryExtensions
             metrics.AddHttpClientInstrumentation();
             metrics.AddAspNetCoreInstrumentation();
             metrics.AddOtlpExporter(ConfigureOtlp);
+//metrics.AddConsoleExporter();
 
-            if (Debugger.IsAttached)
-            {
-                metrics.AddConsoleExporter();
-            }
         });
 
         return services;

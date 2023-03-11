@@ -26,6 +26,7 @@ public class MediaStoreContext : MongoDbContext
     IMongoCollection<AuditEvent> _auditEvents;
     IMongoCollection<ClientThumbprint> _clientThumbprints;
     IMongoCollection<SimilarMediaInfo> _similarInfo;
+    IMongoCollection<MediaExportProfile> _mediaExportProfile;
 
     public MediaStoreContext(MongoOptions mongoOptions)
         : base(mongoOptions)
@@ -55,6 +56,7 @@ public class MediaStoreContext : MongoDbContext
             .ConfigureCollection(new GroupCollectionConfiguration())
             .ConfigureCollection(new AlbumCollectionConfiguration())
             .ConfigureCollection(new MediaAICollectionConfiguration())
+            .ConfigureCollection(new MediaExportProfileCollectionConfiguration())
             .ConfigureCollection(new AuditEventCollectionConfiguration())
             .ConfigureCollection(new GeoAddressCacheCollectionConfiguration())
             .ConfigureCollection(new ClientThumbprintCollectionConfiguration())
@@ -215,6 +217,19 @@ public class MediaStoreContext : MongoDbContext
             }
 
             return _similarInfo;
+        }
+    }
+
+    public IMongoCollection<MediaExportProfile> MediaExportProfile
+    {
+        get
+        {
+            if (_mediaExportProfile is null)
+            {
+                _mediaExportProfile = CreateCollection<MediaExportProfile>();
+            }
+
+            return _mediaExportProfile;
         }
     }
 

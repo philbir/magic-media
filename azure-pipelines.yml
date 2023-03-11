@@ -24,11 +24,11 @@ stages:
     - task: PowerShell@2
       inputs:
         targetType: 'inline'
-        script: 'yarn --cwd ./src/UI/media-ui'
+        script: 'yarn --ignore-engines --cwd ./src/UI/media-ui'
     - task: PowerShell@2
       inputs:
         targetType: 'inline'
-        script: 'yarn --cwd ./src/UI/media-ui build'
+        script: 'yarn --cwd ./src/UI/media-ui build '
     - task: PowerShell@2
       inputs:
         targetType: 'inline'

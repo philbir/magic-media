@@ -27,7 +27,7 @@ public static class GrapQLServiceCollectionExtensions
         builder
             .AddQueryType(d => d.Name(RootTypes.Query))
                 //.Authorize(AuthorizationPolicies.Names.ApiAccess))
-            .AddTypeExtension<TestQueries>()
+            .AddTypeExtension<MediaExportProfileQueries>()
             .AddTypeExtension<MediaQueries>()
             .AddTypeExtension<FaceQueries>()
             .AddTypeExtension<PersonQueries>()
@@ -55,6 +55,7 @@ public static class GrapQLServiceCollectionExtensions
             .AddType<SearchFacetType>()
             .AddType<AuditEventType>()
             .AddType<UserAgentInfoType>()
+            .AddType<MediaExportProfileType>()
             .AddType(new UuidType(defaultFormat: 'N'))
             .RenameRequestToInput<RemoveFoldersFromAlbumRequest>()
             .RenameRequestToInput<CreateUserFromPersonRequest>()

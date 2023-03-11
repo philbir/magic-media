@@ -1,7 +1,5 @@
 using MagicMedia;
-using MagicMedia.Api;
 using MagicMedia.Api.Security;
-using MagicMedia.AspNetCore;
 using MagicMedia.BingMaps;
 using MagicMedia.Hubs;
 using MagicMedia.Messaging;
@@ -34,7 +32,6 @@ builder.Services.AddMvc();
 builder.Services.AddSignalR();
 
 builder.Services.AddMagicAuthorization();
-builder.Services.ConfigureSameSiteCookies();
 builder.Services.AddAuthentication(builder.Environment, builder.Configuration);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<IUserContextFactory, ClaimsPrincipalUserContextFactory>();

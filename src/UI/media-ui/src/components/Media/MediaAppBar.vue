@@ -135,6 +135,12 @@
       @close="showEditDialog = false"
     ></edit-media-dialog>
 
+    <export-media-dialog
+      :show="showExportDialog"
+      @close="showExportDialog = false"
+    >
+    </export-media-dialog>
+
     <GlobalEvents
       v-if="userActions.media.edit"
       @keydown="keyPressed"
@@ -150,6 +156,7 @@ import AppBarNavMenu from "../AppBarNavMenu";
 import NotificationMenu from "../Common/NotificationMenu";
 import AddToAlbumDialog from "../Album/AddToAlbumDialog";
 import EditMediaDialog from "./EditMediaDialog";
+import ExportMediaDialog from "./ExportMediaDialog";
 import GlobalEvents from "vue-global-events";
 import MeMenu from "../MeMenu";
 import { mapGetters, mapState } from "vuex";
@@ -164,6 +171,7 @@ export default {
     NotificationMenu,
     AddToAlbumDialog,
     EditMediaDialog,
+    ExportMediaDialog,
     GlobalEvents,
     MeMenu
   },
@@ -173,6 +181,7 @@ export default {
     showMove: false,
     showAddToAlbum: false,
     showEditDialog: false,
+    showExportDialog: false,
     addAlbumType: null,
     sizes: [
       {
@@ -246,7 +255,6 @@ export default {
       this.$store.dispatch("media/clearSelected");
     },
     onMediaAction: function(action) {
-      console.log(action);
       if (action.action === "ADD_TO_ALBUM") {
         this.addAlbumType = "ID";
         this.showAddToAlbum = true;
@@ -274,6 +282,9 @@ export default {
           break;
         case "SHARE":
           this.$store.dispatch("media/shareSelected");
+          break;
+        case "EXPORT":
+          this.showExportDialog = true;
           break;
       }
     },

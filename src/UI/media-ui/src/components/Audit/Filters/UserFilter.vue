@@ -26,28 +26,26 @@ export default {
     selectedUsers: {
       set(value) {
         this.filter({
-          userId: value,
+          userId: value
         });
       },
       get() {
         return this.$store.state.audit.filter.users;
-      },
+      }
     },
-    users: function () {
-      console.log(this.$store.state.user.all);
-      return this.$store.state.user.all.map((p) => {
+    users: function() {
+      return this.$store.state.user.all.map(p => {
         return {
           name: p.name,
-          id: p.id,
+          id: p.id
         };
       });
-    },
+    }
   },
   methods: {
-    ...mapActions("audit", ["filter"]),
-  },
+    ...mapActions("audit", ["filter"])
+  }
 };
 </script>
 
-<style>
-</style>
+<style></style>

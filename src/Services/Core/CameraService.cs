@@ -31,12 +31,7 @@ public class CameraService : ICameraService
         if (camera == null)
         {
             camera = await _cameraStore.CreateAsync(
-                new Camera
-                {
-                    Id = Guid.NewGuid(),
-                    Make = make,
-                    Model = model
-                }, cancellationToken);
+                new Camera { Id = Guid.NewGuid(), Make = make, Model = model }, cancellationToken);
         }
 
         return camera;

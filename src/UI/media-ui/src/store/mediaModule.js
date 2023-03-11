@@ -19,6 +19,7 @@ import { excuteGraphQL } from "./graphqlClient"
 import { mediaOperationTypeMap } from "../services/mediaOperationService";
 import { shareManyMedia } from "../services/shareService"
 import { exportMedia } from "../services/mediaService";
+import { quickExportMedia } from "../services/mediaService";
 import { addSnack } from "./snackService"
 import { mediaListViewMap } from "../services/mediaListViewMap";
 
@@ -218,14 +219,18 @@ const mediaModule = {
       state.selectedIndexes = [];
       state.lastSelectedIndex = -1;
     },
-    OPERATION_COMMITED: function (state) {
+    OPERATION_COMMITED: function (state, payload) {
       var mediaIds = getMediaIdsFromIndexes(state);
-
       const current = [...state.list];
-      for (let i = 0; i < mediaIds.length; i++) {
-        var idx = current.findIndex(x => x.id === mediaIds[i]);
-        current.splice(idx, 1);
+      var operationType = mediaOperationTypeMap[payload.type];
+
+      if (operationType.removeFromList) {
+        for (let i = 0; i < mediaIds.length; i++) {
+          var idx = current.findIndex(x => x.id === mediaIds[i]);
+          current.splice(idx, 1);
+        }
       }
+
       state.selectedIndexes = [];
       Vue.set(state, "list", current);
     },
@@ -287,12 +292,13 @@ const mediaModule = {
       if (result.success) {
         const operationId = result.data[operation.dataField].operationId;
 
-        commit("OPERATION_COMMITED", operationId);
+        commit("OPERATION_COMMITED", { id: operationId, type: operation.type });
 
         dispatch(
           "snackbar/operationStarted",
           {
             id: operationId,
+            operationType: operation.type,
             type: "INFO",
             title: mediaOperationTypeMap[operation.type].title,
             totalCount: operation.ids.length,
@@ -372,6 +378,28 @@ const mediaModule = {
 
       dispatch('startOperation', operation);
     },
+    async exportSelected({ state, dispatch, getters }, request) {
+      if (!getters["canEdit"])
+        return;
+
+      const ids = getMediaIdsFromIndexes(state);
+
+      const operation = {
+        type: 5,
+        api: exportMedia({
+          ids: ids,
+          profileId: request.profileId,
+          path: request.path,
+          operationId: uuidv4()
+        }),
+        dataField: "exportMedia",
+        ids: ids,
+      }
+
+      console.log(operation);
+
+      dispatch('startOperation', operation);
+    },
     async updateMetadata({ dispatch, getters }, input) {
 
       if (!getters["canEdit"])
@@ -407,13 +435,11 @@ const mediaModule = {
         addSnack(dispatch, `Error while sharing`, "ERROR");
       }
     },
-    async export({ dispatch }, id) {
+    async quickExport({ dispatch }, id) {
 
-      addSnack(dispatch, 'Export started...', "INFO");
-
-      const result = await exportMedia({ id: id });
-
-      addSnack(dispatch, `Exported to ${result?.data?.exportMedia.path}`);
+      addSnack(dispatch, 'Quick export started...', "INFO");
+      const result = await quickExportMedia({ id: id });
+      addSnack(dispatch, `Exported to ${result?.data?.quickExportMedia.path}`);
     },
     async shareSelected({ state, dispatch }) {
 
@@ -473,7 +499,6 @@ const mediaModule = {
       if (result.success) {
         commit("SEARCH_FACETS_LOADED", result.data.facets);
       }
-
     },
     toggleUploadDialog: function ({ commit }, open) {
       commit("UPLOAD_DIALOG_TOGGLED", open);

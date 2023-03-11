@@ -54,7 +54,6 @@ public class MediaOperationsService : IMediaOperationsService
         await _bus.Publish(message, cancellationToken);
     }
 
-
     public async Task DeleteAsync(
         DeleteMediaRequest request,
         CancellationToken cancellationToken)
@@ -88,6 +87,19 @@ public class MediaOperationsService : IMediaOperationsService
         RescanFacesMessage message = new(request.Ids)
         {
             OperationId = request.OperationId
+        };
+
+        await _bus.Publish(message, cancellationToken);
+    }
+
+    public async Task ExportAsync(
+        ExportMediaRequest request,
+        CancellationToken cancellationToken)
+    {
+        ExportMediaMessage message = new(request.Ids, request.ProfileId)
+        {
+            OperationId = request.OperationId,
+            Path = request.Path
         };
 
         await _bus.Publish(message, cancellationToken);

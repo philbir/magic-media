@@ -39,7 +39,6 @@ const auditModule = {
     actions: {
         async search({ commit, state, dispatch }) {
             commit("SET_SEARCH_LOADING", true);
-            console.log(state.filter)
             const result = await excuteGraphQL(() => search(state.filter), dispatch);
 
             if (result.success) {

@@ -5,29 +5,29 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CoenM.ImageSharp.ImageHash"/>
-    <PackageReference Include="Magick.NET-Q8-x64"/>
-    <PackageReference Include="MassTransit.Extensions.DependencyInjection"/>
-    <PackageReference Include="MassTransit.RabbitMQ"/>
+    <PackageReference Include="CoenM.ImageSharp.ImageHash" />
+    <PackageReference Include="Magick.NET-Q8-x64" />
+    <PackageReference Include="MassTransit.Extensions.DependencyInjection" />
+    <PackageReference Include="MassTransit.RabbitMQ" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Core" />
     <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" />
     <PackageReference Include="Microsoft.Extensions.Http" />
     <PackageReference Include="Microsoft.Extensions.Http.Polly" />
-    <PackageReference Include="Serilog"/>
+    <PackageReference Include="Serilog" />
     <PackageReference Include="SixLabors.ImageSharp" />
     <PackageReference Include="NGeoHash" />
     <PackageReference Include="NodaTime" />
-    <PackageReference Include="Microsoft.Extensions.Configuration"/>
+    <PackageReference Include="Microsoft.Extensions.Configuration" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
     <PackageReference Include="UAParser" />
     <PackageReference Include="Xabe.FFmpeg" />
     <PackageReference Include="Xabe.FFmpeg.Downloader" />
     <PackageReference Include="MetadataExtractor" />
-    <PackageReference Include="OpenTelemetry.Api"/>
+    <PackageReference Include="OpenTelemetry.Api" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Abstractions\Abstractions.csproj"/>
+    <ProjectReference Include="..\Abstractions\Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

@@ -99,6 +99,7 @@ public static class MessagingServiceCollectionExtensions
         busConfigurator.AddConsumer<UpdateMediaMetadataConsumer>();
         busConfigurator.AddConsumer<NewMediaAddedConsumer>();
         busConfigurator.AddConsumer<RescanFacesMessageConsumer>();
+        busConfigurator.AddConsumer<ExportMediaConsumer>();
 
         busConfigurator.AddConsumer<InviteUserCreatedConsumer>();
         busConfigurator.AddConsumer<UserAccountCreatedConsumer>();

@@ -35,3 +35,4 @@ internal class FaceCollectionConfiguration :
             });
     }
 }
+

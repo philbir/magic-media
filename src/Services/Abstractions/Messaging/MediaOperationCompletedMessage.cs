@@ -36,5 +36,6 @@ public enum MediaOperationType
     Recycle,
     UpdateMetadata,
     RescanFaces,
-    Delete
+    Delete,
+    Export
 }
