@@ -57,7 +57,11 @@
       </v-snackbar>
       <signal-shell></signal-shell>
     </v-app>
-    <v-dialog v-model="mediaViewerOpen" @keydown.esc.stop="handleEsc" fullscreen>
+    <v-dialog
+      v-model="mediaViewerOpen"
+      @keydown.esc.stop="handleEsc"
+      fullscreen
+    >
       <MediaViewer
         @mediaAction="onMediaAction"
         v-if="mediaViewerOpen"
@@ -85,12 +89,12 @@ export default {
     Upload,
     MediaViewer,
     EditFaceDialog,
-    SignalShell,
+    SignalShell
   },
 
   created() {
     document.addEventListener("swUpdated", this.updateAvailable, {
-      once: true,
+      once: true
     });
     navigator.serviceWorker.addEventListener("controllerchange", () => {
       if (this.refreshing) return;
@@ -98,7 +102,7 @@ export default {
       window.location.reload();
     });
 
-    navigator.serviceWorker.addEventListener("message", (event) => {
+    navigator.serviceWorker.addEventListener("message", event => {
       switch (event.data.action) {
         case "ROUTE":
           if (this.$route.name != event.data.value) {
@@ -123,65 +127,65 @@ export default {
     sizes: [
       {
         text: "Square XS",
-        code: "SQ_XS",
+        code: "SQ_XS"
       },
       { text: "Square S", code: "SQ_S" },
       { text: "Small", code: "S" },
       { text: "Medium", code: "M" },
-      { text: "Large", code: "L" },
+      { text: "Large", code: "L" }
     ],
     showUpload: false,
-    mediaViewerOpen: false,
+    mediaViewerOpen: false
   }),
   computed: {
-    navDrawerOpen: function () {
+    navDrawerOpen: function() {
       return this.$store.state.navDrawerOpen;
     },
-    mediaActions: function () {
+    mediaActions: function() {
       return [
         { text: "Add to album" },
         { text: "Move" },
         { text: "Edit" },
-        { text: "Delete" },
+        { text: "Delete" }
       ];
     },
-    navMenuItems: function () {
+    navMenuItems: function() {
       return [
         {
           text: "Media",
           icon: "mdi-image",
-          route: "Home",
+          route: "Home"
         },
         {
           text: "Face",
           icon: "mdi-face-recognition",
-          route: "Faces",
+          route: "Faces"
         },
         {
           text: "Persons",
           icon: "mdi-account-details",
-          route: "Persons",
+          route: "Persons"
         },
         {
           text: "Album",
           icon: "mdi-image-album",
-          route: "Albums",
+          route: "Albums"
         },
         {
           text: "Map",
           icon: "mdi-map-search-outline",
-          route: "Map",
-        },
+          route: "Map"
+        }
       ];
     },
-    editModeText: function () {
+    editModeText: function() {
       return this.$store.state.media.isEditMode ? "Edit" : "View";
     },
-    currentMediaId: function () {
+    currentMediaId: function() {
       return this.$store.state.media.currentMediaId;
     },
-    snacks: function () {
-      return this.$store.state.snackbar.snacks.map((snack) => {
+    snacks: function() {
+      return this.$store.state.snackbar.snacks.map(snack => {
         switch (snack.type) {
           case "INFO":
             snack.icon = "mdi-information-outline";
@@ -204,62 +208,62 @@ export default {
         return snack;
       });
     },
-    mediaCount: function () {
+    mediaCount: function() {
       return this.$store.state.media.list.length;
     },
-    selectedCount: function () {
+    selectedCount: function() {
       return this.$store.state.media.selectedIndexes.length;
     },
-    loading: function () {
+    loading: function() {
       return this.$store.state.media.listLoading;
     },
-    showSidebar: function () {
+    showSidebar: function() {
       if (this.$route.meta.hideSidebar) {
         return false;
       }
 
       return true;
     },
-    isFullscreen: function () {
+    isFullscreen: function() {
       if (this.$route.meta.fullscreen) {
         return true;
       } else {
         return false;
       }
-    },
+    }
   },
   watch: {
-    currentMediaId: function (newValue) {
+    currentMediaId: function(newValue) {
       this.mediaViewerOpen = newValue !== null;
     },
-    navDrawerOpen: function (newValue) {
+    navDrawerOpen: function(newValue) {
       if (newValue) {
         this.nav = true;
       }
     },
-    nav: function (newValue) {
+    nav: function(newValue) {
       if (!newValue) {
         this.$store.dispatch("openNavDrawer", false);
       }
-    },
+    }
   },
   methods: {
-    handleEsc: function(){
+    handleEsc: function() {
       this.$store.dispatch("media/close");
     },
-    setSize: function (code) {
+    setSize: function(code) {
       this.$store.dispatch("media/setThumbnailSize", code);
     },
-    openUpload: function () {
+    openUpload: function() {
       this.$store.dispatch("media/toggleUploadDialog", true);
     },
-    toggleEditMode: function (value) {
+    toggleEditMode: function(value) {
       this.$store.dispatch("media/toggleEditMode", value === "edit");
     },
-    selectAll: function () {
+    selectAll: function() {
       this.$store.dispatch("media/selectAll");
     },
-    onMediaAction: function (e) {
+    onMediaAction: function(e) {
       const view = this.$refs.appBarView;
       view.onMediaAction(e);
     },
@@ -267,15 +271,15 @@ export default {
       this.registration = event.detail;
       this.updateExists = true;
     },
-    refreshApp: function () {
+    refreshApp: function() {
       this.updateExists = false;
       if (!this.registration || !this.registration.waiting) return;
       this.registration.waiting.postMessage({ type: "SKIP_WAITING" });
-    },
-  },
+    }
+  }
 };
 </script>
-<style >
+<style>
 html {
   overflow-x: hidden !important;
   overflow-y: hidden !important;
@@ -322,4 +326,3 @@ main {
   background: #3481b4;
 }
 </style>
-

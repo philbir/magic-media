@@ -405,7 +405,7 @@ export default {
           console.log(this.$vuetify.breakpoint);
           break;
         case 81: //q
-          this.$store.dispatch("media/export", this.media.id);
+          this.$store.dispatch("media/quickExport", this.media.id);
           break;
         case 73: //i
           this.toggleInfo();
@@ -511,7 +511,7 @@ export default {
 
 .head {
   color: #fff;
-  line-height: 20px;
+  line-height: 36px;
   position: absolute;
   padding: 0;
   width: 100%;
@@ -520,7 +520,7 @@ export default {
   background-color: #000;
   opacity: 0.5;
   z-index: 100;
-  height: 48px;
+  height: 36px;
 }
 
 .foot {

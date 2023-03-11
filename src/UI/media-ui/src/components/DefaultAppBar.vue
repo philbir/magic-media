@@ -1,7 +1,6 @@
 <template>
   <v-app-bar app dense clipped-left color="indigo darken-4">
     <AppBarNavMenu></AppBarNavMenu>
-
     <v-spacer></v-spacer>
     <v-progress-circular
       indeterminate
@@ -23,13 +22,11 @@ export default {
 
   data: () => ({}),
   computed: {
-    loading: function () {
+    loading: function() {
       return false;
-    },
+    }
   },
-  methods: {},
+  methods: {}
 };
 </script>
-<style >
-</style>
-
+<style></style>

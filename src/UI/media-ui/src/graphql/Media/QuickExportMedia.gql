@@ -1,5 +1,5 @@
 mutation quickExportMedia($input: QuickExportMediaInput!) {
-  exportMedia(input: $input) {
+  quickExportMedia(input: $input) {
     path
   }
 }

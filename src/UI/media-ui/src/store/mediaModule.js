@@ -439,7 +439,7 @@ const mediaModule = {
 
       addSnack(dispatch, 'Quick export started...', "INFO");
       const result = await quickExportMedia({ id: id });
-      addSnack(dispatch, `Exported to ${result?.data?.exportMedia.path}`);
+      addSnack(dispatch, `Exported to ${result?.data?.quickExportMedia.path}`);
     },
     async shareSelected({ state, dispatch }) {
 

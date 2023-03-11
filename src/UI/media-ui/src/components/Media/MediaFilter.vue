@@ -1,18 +1,19 @@
 <template>
   <div>
-    <v-row>
-      <v-btn
-        v-for="tab in tabs"
-        :key="tab.id"
-        class="ml-1"
-        :color="tab.color"
-        small
-        @click="select(tab)"
-      >
-        <v-icon> {{ tab.icon }} </v-icon>
-      </v-btn>
+    <v-row dense class="mb-1">
+      <v-col dense>
+        <v-btn
+          v-for="tab in tabs"
+          :key="tab.id"
+          class="ml-0"
+          :color="tab.color"
+          small
+          @click="select(tab)"
+        >
+          <v-icon> {{ tab.icon }} </v-icon>
+        </v-btn>
+      </v-col>
     </v-row>
-
     <div v-if="activeTabId == 'folder'">
       <FolderTree></FolderTree>
       <album-filter></album-filter>
@@ -39,7 +40,6 @@
       <media-type-filter></media-type-filter>
 
       <text-filter></text-filter>
-
     </div>
   </div>
 </template>
@@ -58,7 +58,7 @@ import AITagsFilter from "./Filters/AITagsFilter.vue";
 import AIObjectsFilter from "./Filters/AIObjectsFilter.vue";
 import CameraFilter from "./Filters/CameraFilter.vue";
 import GroupFilter from "./Filters/GroupFilter.vue";
-import TextFilter from './Filters/TextFilter.vue';
+import TextFilter from "./Filters/TextFilter.vue";
 
 export default {
   components: {
@@ -74,7 +74,7 @@ export default {
     AIObjectsFilter,
     CameraFilter,
     GroupFilter,
-    TextFilter,
+    TextFilter
   },
   created() {
     this.$store.dispatch("media/getSearchFacets");
@@ -87,30 +87,30 @@ export default {
       tabDef: [
         {
           id: "folder",
-          icon: "mdi-folder-outline",
+          icon: "mdi-folder-outline"
         },
         {
           id: "geo",
-          icon: " mdi-earth",
+          icon: " mdi-earth"
         },
         {
           id: "person",
-          icon: " mdi-account-outline",
+          icon: " mdi-account-outline"
         },
         {
           id: "date",
-          icon: "mdi-calendar-range-outline",
+          icon: "mdi-calendar-range-outline"
         },
         {
           id: "other",
-          icon: " mdi-dots-horizontal",
-        },
-      ],
+          icon: " mdi-dots-horizontal"
+        }
+      ]
     };
   },
   computed: {
-    tabs: function () {
-      return this.tabDef.map((tab) => {
+    tabs: function() {
+      return this.tabDef.map(tab => {
         if (tab.id === this.activeTabId) {
           tab.color = "blue lighten-4";
         } else {
@@ -118,13 +118,13 @@ export default {
         }
         return tab;
       });
-    },
+    }
   },
   methods: {
     ...mapActions("media", ["setFilter"]),
-    select: function (tab) {
+    select: function(tab) {
       this.activeTabId = tab.id;
-    },
-  },
+    }
+  }
 };
 </script>
