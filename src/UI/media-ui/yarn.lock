@@ -2253,7 +2253,7 @@
   "resolved" "https://registry.npmjs.org/@vue/cli-shared-utils/-/cli-shared-utils-4.5.19.tgz"
   "version" "4.5.19"
   dependencies:
-    "@achrinza/node-ipc" "9.2.2"
+    "@achrinza/node-ipc" "9.2.4"
     "@hapi/joi" "^15.0.1"
     "chalk" "^2.4.2"
     "execa" "^1.0.0"
