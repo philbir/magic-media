@@ -1,6 +1,6 @@
 namespace MagicMedia.Identity;
 
-public class IdentityServerOptions
+public class IdentityServerHostingOptions
 {
     public string DataProtectionKeysDirectory { get; set; } = "./dp_keys";
 }

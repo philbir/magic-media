@@ -55,7 +55,8 @@ namespace Playground
             //await updater.UpdateLocationAsync(CancellationToken.None);
             //await faceScanner.RunAsync(default);
 
-            await consistencyScanner.RunAsync(CancellationToken.None);
+            await consistencyScanner.CreateFileList();
+            //await consistencyScanner.RunAsync(CancellationToken.None);
 
             //await updater.DeleteMediaAIOrphansAsync();
 

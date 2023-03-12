@@ -23,11 +23,11 @@ JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 IIdentityServerBuilder idBuilder = builder.Services
     .AddIdentityServer(builder.Configuration, builder.Environment);
 
-IdentityServerOptions options = builder.Configuration.GetSection("Identity:Server")
-    .Get<IdentityServerOptions>();
+IdentityServerHostingOptions hostingOptions = builder.Configuration.GetSection("Identity:Server")
+    .Get<IdentityServerHostingOptions>();
 
 builder.Services.AddDataProtection()
-    .PersistKeysToFileSystem(new DirectoryInfo(options.DataProtectionKeysDirectory));
+    .PersistKeysToFileSystem(new DirectoryInfo(hostingOptions.DataProtectionKeysDirectory));
 
 builder.Services.AddDataAccess(builder.Configuration);
 builder.Services.AddIdentityCore(builder.Configuration);

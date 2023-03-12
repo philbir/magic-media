@@ -6,6 +6,7 @@
     <RootNamespace>MagicMedia.Playground</RootNamespace>
     <OutputType>Exe</OutputType>
     <UserSecretsId>75433c12-81ac-4dee-88de-ab9f3fbcbc40</UserSecretsId>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
