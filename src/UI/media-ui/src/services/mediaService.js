@@ -16,6 +16,7 @@ import MUTATION_ANALYSE_MEDIA from "../graphql/Media/AnalyseMedia.gql";
 import QUERY_GEO_LOCATION_CLUSTERS from "../graphql/Media/geoLocationClusters.gql";
 import QUERY_SIMILAR_GROUPS from "../graphql/Media/GetSimilarGroups.gql"
 import QUERY_SEARCH_FACETS from "../graphql/SearchFacets.gql";
+import QUERY_CONSISTENCY_REPORT from "../graphql/Media/GetMediaConsistencyReport.gql"
 
 
 export const searchMedia = async (request, size, loadThumbnailData) => {
@@ -175,6 +176,18 @@ export const getSimilarGroups = async (request) => {
     }
   });
 };
+
+export const getConsistencyReport = async (id) => {
+  return await apollo.query({
+    query: QUERY_CONSISTENCY_REPORT,
+    variables: {
+      id: id,
+    }
+  });
+};
+
+
+
 
 export const parsePath = path => {
   const parts = path.split("/");

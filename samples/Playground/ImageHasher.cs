@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using CoenM.ImageHash.HashAlgorithms;
 using MagicMedia.Store;
@@ -18,12 +19,17 @@ namespace MagicMedia.Playground
         private readonly MediaStoreContext _dbContext;
         private readonly IMediaService _mediaService;
         private readonly ISimilarMediaService _duplicateMediaService;
+        private readonly IFileSystemSnapshotService _systemSnapshotService;
 
-        public ImageHasher(MediaStoreContext dbContext, IMediaService mediaService, ISimilarMediaService duplicateMediaService)
+        public ImageHasher(MediaStoreContext dbContext,
+            IMediaService mediaService,
+            ISimilarMediaService duplicateMediaService,
+            IFileSystemSnapshotService systemSnapshotService)
         {
             _dbContext = dbContext;
             _mediaService = mediaService;
             _duplicateMediaService = duplicateMediaService;
+            _systemSnapshotService = systemSnapshotService;
         }
 
         public async Task GetDuplicatesAsync()
@@ -46,7 +52,7 @@ namespace MagicMedia.Playground
             var percHasher = new PerceptualHash();
             var diffHasher = new DifferenceHash();
 
-            IEnumerable<MediaFileEntry> fsDump = FileSystemSnapshotBuilder.Load();
+            FileSystemSnapshot snapshot = await _systemSnapshotService.LoadAsync(CancellationToken.None);
 
             foreach (Media media in medias)
             {
@@ -108,7 +114,7 @@ namespace MagicMedia.Playground
                 }
                 catch (Exception ex)
                 {
-                    MediaFileEntry existing = fsDump.FirstOrDefault(x => x.Filename == media.Filename);
+                    MediaFileEntry existing = snapshot.Entries.FirstOrDefault(x => x.Name == media.Filename);
 
                     File.WriteAllText($@"C:\MagicMedia\Broken\{media.Id}.txt", $"ERROR:{ex.Message}");
                 }

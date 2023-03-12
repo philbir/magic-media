@@ -263,7 +263,17 @@ public class MediaService : IMediaService
                     type,
                     fileInfo.DirectoryName!,
                     fileInfo.Name,
-                    fileInfo.Length));
+                    fileInfo.Length,
+                    true));
+            }
+            else
+            {
+                infos.Add(new MediaFileInfo(
+                    type,
+                    fileInfo.DirectoryName!,
+                    fileInfo.Name,
+                    0,
+                    false));
             }
         }
 

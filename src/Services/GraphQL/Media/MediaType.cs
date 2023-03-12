@@ -38,6 +38,10 @@ public partial class MediaType : ObjectType<Media>
                 .DefaultValue(0.0)
                 .Type(typeof(double)))
            .ResolveWith<Resolvers>(x => x.GetAIDataAsync(default!, default!, default!, default!));
+
+        descriptor
+            .Field("consistencyReport")
+            .ResolveWith<Resolvers>(x => x.GetConsitencyReportAsync(default!, default!, default!));
     }
 
     class Resolvers
@@ -66,6 +70,13 @@ public partial class MediaType : ObjectType<Media>
             [Parent] Media media)
                 => mediaService.GetMediaFiles(media);
 
+        public  Task<ConsistencyReport> GetConsitencyReportAsync(
+            [Parent] Media media,
+            [Service] IMediaConsistencyService service,
+            CancellationToken cancellationToken)
+        {
+            return service.GetReportAsync(media, cancellationToken);
+        }
 
         public async Task<MediaAI> GetAIDataAsync(
             [Service] IMediaService mediaService,

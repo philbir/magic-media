@@ -29,6 +29,7 @@ public static class FileSystemStoreServiceCollectionExtensions
 
         services.AddSingleton(options);
         services.AddSingleton<IMediaBlobStore, FileSystemMediaBlobStore>();
+        services.AddSingleton<IFileSystemSnapshotService, FileSystemSnapshotService>();
 
         return services;
     }

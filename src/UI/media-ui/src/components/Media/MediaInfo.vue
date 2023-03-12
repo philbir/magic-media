@@ -4,6 +4,9 @@
       <img :src="`/api/media/webimage/${mediaId}`" />
     </div>
     <v-toolbar v-if="!loading" color="gray" dense dark>
+      <v-icon rounded class="mr-4" color="white" @click="back">
+        mdi-arrow-left
+      </v-icon>
       <h4 class="d-none d-lg-inline">{{ media ? media.filename : "" }}</h4>
       <v-tabs v-model="tab" dark class="ml-lg-8 ml-sm-0">
         <v-tab href="#attributes"> Attributes </v-tab>
@@ -12,10 +15,9 @@
         <v-tab href="#ai"> AI </v-tab>
         <v-tab href="#files"> Files </v-tab>
         <v-tab href="#raw"> Raw </v-tab>
+        <v-tab href="#report"> Report </v-tab>
       </v-tabs>
       <v-spacer></v-spacer>
-
-      <v-icon class="mr-4" color="white" @click="back"> mdi-arrow-left </v-icon>
     </v-toolbar>
 
     <v-card-text class="card-content" v-if="!loading">
@@ -68,7 +70,7 @@
                     >
                       <GmapMarker
                         v-if="map.center"
-                        :position="map.center" /></GmapMap
+                        :position="map.center"/></GmapMap
                   ></v-col>
                 </v-row>
               </v-sheet>
@@ -86,7 +88,9 @@
                   <v-col sm="6">
                     <img
                       class="face-image"
-                      :src="`/api/face/${face.id}/thumbnail/${face.thumbnail.id}`"
+                      :src="
+                        `/api/face/${face.id}/thumbnail/${face.thumbnail.id}`
+                      "
                     />
                   </v-col>
                   <v-col sm="6">
@@ -207,7 +211,7 @@
                           :style="{
                             'background-color': getColorString(
                               media.ai.colors.accent
-                            ),
+                            )
                           }"
                         >
                           &nbsp;
@@ -222,7 +226,7 @@
                           :style="{
                             'background-color': getColorString(
                               media.ai.colors.dominantForeground
-                            ),
+                            )
                           }"
                         >
                           &nbsp;
@@ -237,7 +241,7 @@
                           :style="{
                             'background-color': getColorString(
                               media.ai.colors.dominantBackground
-                            ),
+                            )
                           }"
                         >
                           &nbsp;
@@ -273,6 +277,10 @@
                 </div>
               </v-sheet>
             </v-tab-item>
+
+            <v-tab-item value="report">
+              <media-report-view :report="report"></media-report-view>
+            </v-tab-item>
           </v-tabs-items>
         </v-col>
       </v-row>
@@ -283,33 +291,41 @@
 <script>
 import "vue-json-pretty/lib/styles.css";
 import VueJsonPretty from "vue-json-pretty";
+import MediaReportView from "./MediaReportView";
 import { getFaceColor } from "../../services/faceColor";
-import { getInfo } from "../../services/mediaService";
+import { getInfo, getConsistencyReport } from "../../services/mediaService";
 
 export default {
-  components: { VueJsonPretty },
+  components: { VueJsonPretty, MediaReportView },
   props: {
-    mediaId: String,
+    mediaId: String
   },
   data() {
     return {
       tab: "attributes",
       media: null,
+      report: null
     };
   },
   created() {
     this.loadInfo(this.mediaId);
   },
   watch: {
-    mediaId: function (newValue) {
+    mediaId: function(newValue) {
       this.loadInfo(newValue);
+      this.report = null;
     },
+    tab: function(newValue) {
+      if (newValue === "report") {
+        this.loadReport(this.mediaId);
+      }
+    }
   },
   computed: {
-    loading: function () {
+    loading: function() {
       return this.media == null;
     },
-    map: function () {
+    map: function() {
       let center = null;
 
       if (this.hasLocation) {
@@ -317,7 +333,7 @@ export default {
 
         center = {
           lat: point.coordinates[1],
-          lng: point.coordinates[0],
+          lng: point.coordinates[0]
         };
       }
 
@@ -330,126 +346,130 @@ export default {
           streetViewControl: true,
           rotateControl: false,
           fullscreenControl: false,
-          disableDefaultUi: false,
+          disableDefaultUi: false
         },
-        marker: null,
+        marker: null
       };
     },
-    hasLocation: function () {
+    hasLocation: function() {
       return this.media.geoLocation != null;
     },
-    location: function () {
+    location: function() {
       const geoProps = [];
 
       if (this.hasLocation) {
         const loc = this.media.geoLocation;
 
         if (this.media.geoLocation.address != null) {
-          geoProps.push(... [
-            {
-              label: "Address",
-              value: loc.address.name,
-            },
-            {
-              label: "Street",
-              value: loc.address.address,
-            },
-            {
-              label: "City",
-              value: loc.address.city,
-            },
-            {
-              label: "Country",
-              value: loc.address.country,
-            },
-            {
-              label: "District 1",
-              value: loc.address.distric1,
-            },
-            {
-              label: "District 2",
-              value: loc.address.distric2,
-            },
-          ]);
+          geoProps.push(
+            ...[
+              {
+                label: "Address",
+                value: loc.address.name
+              },
+              {
+                label: "Street",
+                value: loc.address.address
+              },
+              {
+                label: "City",
+                value: loc.address.city
+              },
+              {
+                label: "Country",
+                value: loc.address.country
+              },
+              {
+                label: "District 1",
+                value: loc.address.distric1
+              },
+              {
+                label: "District 2",
+                value: loc.address.distric2
+              }
+            ]
+          );
         }
 
-        geoProps.push(... [
-          {
-            label: "Coordinates",
-            value: `${this.media.geoLocation.point.coordinates[0]}, ${this.media.geoLocation.point.coordinates[1]}`,
-          },
-          {
-            label: "Altitude",
-            value: loc.altitude,
-          },
-        ]);
+        geoProps.push(
+          ...[
+            {
+              label: "Coordinates",
+              value: `${this.media.geoLocation.point.coordinates[0]}, ${this.media.geoLocation.point.coordinates[1]}`
+            },
+            {
+              label: "Altitude",
+              value: loc.altitude
+            }
+          ]
+        );
       }
 
       return geoProps;
     },
-    attributes: function () {
+    attributes: function() {
       var data = [
         {
           label: "Date taken",
           value: this.$options.filters.dateformat(
             this.media.dateTaken,
             "DATETIME_MED"
-          ),
+          )
         },
         {
           label: "Folder",
-          value: this.media.folder,
+          value: this.media.folder
         },
         {
           label: "Size",
-          value: this.formatSize(this.media.size),
+          value: this.formatSize(this.media.size)
         },
         {
           label: "Dimension",
-          value: `${this.media.dimension.width} x ${this.media.dimension.height}`,
+          value: `${this.media.dimension.width} x ${this.media.dimension.height}`
         },
         {
           label: "Favorite",
-          value: this.isFavorite ? "yes" : "no",
-        },
+          value: this.isFavorite ? "yes" : "no"
+        }
       ];
 
       if (this.media.camera) {
         data.push({
           label: "Camera",
-          value: this.media.camera.make + " " + this.media.camera.model,
+          value: this.media.camera.make + " " + this.media.camera.model
         });
       }
 
       if (this.media.videoInfo) {
         data.push({
           label: "Duration",
-          value: this.media.videoInfo.duration,
+          value: this.media.videoInfo.duration
         });
         data.push({
           label: "Format",
-          value: this.media.videoInfo.format,
+          value: this.media.videoInfo.format
         });
         data.push({
           label: "Framerate",
-          value: this.media.videoInfo.frameRate,
+          value: this.media.videoInfo.frameRate
         });
       }
 
       data.push({
         label: "Source",
-        value: this.media.source.identifier,
+        value: this.media.source.identifier
       });
       data.push({
         label: "Imported at",
         value: this.$options.filters.dateformat(
           this.media.source.importedAt,
           "DATETIME_MED"
-        ),
+        )
       });
 
       return data;
-    },
+    }
   },
   methods: {
     async loadInfo(mediaId) {
@@ -460,29 +480,33 @@ export default {
         this.media = null;
       }
     },
-    getColorString: function (col) {
+    async loadReport(mediaId) {
+      const res = await getConsistencyReport(mediaId);
+      this.report = res.data.mediaById.consistencyReport;
+    },
+    getColorString: function(col) {
       if (col.length === 6) return "#" + col;
       return col;
     },
-    getFaceProperties: function (face) {
+    getFaceProperties: function(face) {
       return [
         {
           label: "State / Type",
-          value: `${face.state} / ${face.recognitionType}`,
-        },
+          value: `${face.state} / ${face.recognitionType}`
+        }
       ];
     },
-    back: function () {
+    back: function() {
       this.$emit("back");
     },
-    faceTitle: function (face) {
+    faceTitle: function(face) {
       let name = "Unknown";
       if (face.person) {
         name = face.person.name;
       }
       return name;
     },
-    age: function (face) {
+    age: function(face) {
       if (!face.age) {
         return "";
       } else if (face.age < 12) {
@@ -491,16 +515,16 @@ export default {
         return Math.floor(face.age / 12) + " years";
       }
     },
-    faceColor: function (face) {
+    faceColor: function(face) {
       return getFaceColor(face);
     },
-    editFace: function (face) {
+    editFace: function(face) {
       this.$store.dispatch("face/openEdit", face);
     },
-    formatSize: function (size) {
+    formatSize: function(size) {
       return (size / 1024.0 / 1024.0).toPrecision(2) + " MB";
-    },
-  },
+    }
+  }
 };
 </script>
 
@@ -589,5 +613,5 @@ export default {
 .dot-ai-source.azure_c_v {
   background-color: #d900b8;
   box-shadow: 0 0 6px 2px #f740db;
-}
-</style>>
+}</style
+>>

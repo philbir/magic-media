@@ -14,11 +14,8 @@ using MagicMedia.Playground;
 using MagicMedia.Security;
 using MagicMedia.Store.MongoDb;
 using MagicMedia.Stores;
-using MagicMedia.Telemetry;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using OpenTelemetry;
-using OpenTelemetry.Trace;
 using Serilog;
 
 namespace Playground
@@ -53,9 +50,9 @@ namespace Playground
             //DeleteEmptyDirs("H:\\Photos\\MobileBackup");
 
             //await updater.UpdateLocationAsync(CancellationToken.None);
-            //await faceScanner.RunAsync(default);
+            await faceScanner.RunAsync(default);
 
-            await consistencyScanner.CreateFileList();
+            //await consistencyScanner.RepairMissingFile(CancellationToken.None);
             //await consistencyScanner.RunAsync(CancellationToken.None);
 
             //await updater.DeleteMediaAIOrphansAsync();
@@ -110,7 +107,8 @@ namespace Playground
                 .AddWorkerMessaging();
 
             services.AddSingleton<ImportSample>();
-            services.AddSingleton<DiscoverySample>();
+            services.AddSingleton<ImportSample>();
+            services.AddSingleton<IConfiguration>(config);
             services.AddSingleton<FaceScanner>();
             services.AddSingleton<VideoConverter>();
             services.AddSingleton<BulkMediaUpdater>();
@@ -123,6 +121,13 @@ namespace Playground
             //        new BingMapsGeoDecoderService(p.GetRequiredService<BingMapsOptions>()));
             //});
 
+            services.AddSingleton<PlaygroundOptions>(c =>
+            {
+                var options = new PlaygroundOptions();
+                options.RootDirectory = config["MagicMedia:FileSystemStore:RootDirectory"];
+
+                return options;
+            });
             services.AddSingleton<IGeoDecoderService>(p =>
             {
                 return new GeoDecoderCacheStore(p.GetRequiredService<MediaStoreContext>(),
