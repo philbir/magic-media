@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Search;
+using MagicMedia.Security;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
@@ -25,7 +26,8 @@ public class MongoMediaStore : IMediaStore
         ICameraStore cameraStore,
         IPersonStore personStore,
         IMediaAIStore mediaAIStore,
-        IUserStore userStore)
+        IUserStore userStore,
+        ITagDefinitionStore tagDefinitions)
     {
         _mediaStoreContext = mediaStoreContext;
         Thumbnails = thumbnailBlobStore;
@@ -36,6 +38,7 @@ public class MongoMediaStore : IMediaStore
         Persons = personStore;
         MediaAI = mediaAIStore;
         Users = userStore;
+        TagDefinitions = tagDefinitions;
     }
 
     public IFaceStore Faces { get; }
@@ -49,6 +52,8 @@ public class MongoMediaStore : IMediaStore
     public IMediaAIStore MediaAI { get; }
 
     public IUserStore Users { get; }
+
+    public ITagDefinitionStore TagDefinitions { get; }
 
     public IThumbnailBlobStore Thumbnails { get; }
 
@@ -129,7 +134,8 @@ public class MongoMediaStore : IMediaStore
             .AddAlbum(request.AlbumId)
             .AddGeoRadius(request.GeoRadius)
             .AddDate(request.Date)
-            .AddAITags(request.Tags)
+            .AddTags(request.Tags)
+            .AddAITags(request.AiTags)
             .AddAIObjects(request.Objects)
             .BuildAsync();
 
@@ -183,6 +189,40 @@ public class MongoMediaStore : IMediaStore
             .ToListAsync(cancellationToken);
 
         return medias.ToDictionary(x => x.Id, y => y.Hashes);
+    }
+
+    public async Task<IReadOnlyList<MediaTag>> SetMediaTagAsync(
+        Guid id,
+        MediaTag tag,
+        CancellationToken cancellationToken)
+    {
+        Media media = await GetByIdAsync(id, cancellationToken);
+        var mediaTags = media.Tags.ToList();
+
+        MediaTag? existing = mediaTags.SingleOrDefault(x => x.DefinitionId == tag.DefinitionId);
+
+        if (existing is {})
+        {
+            existing.Data = tag.Data;
+            existing.ModifiedAt = DateTimeOffset.UtcNow;
+        }
+        else
+        {
+            mediaTags.Add(new MediaTag
+            {
+                DefinitionId = tag.DefinitionId,
+                Data = tag.Data,
+                ModifiedAt = DateTimeOffset.Now
+            });
+        }
+
+        UpdateResult result = await _mediaStoreContext.Medias.UpdateOneAsync(
+            x => x.Id == id,
+            Builders<Media>.Update.Set(x => x.Tags, mediaTags),
+            new UpdateOptions(),
+            cancellationToken);
+
+        return mediaTags;
     }
 
     public async Task<IReadOnlyDictionary<Guid, MediaThumbnail>> GetThumbnailsByMediaIdsAsync(

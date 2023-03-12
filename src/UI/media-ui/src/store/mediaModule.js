@@ -11,7 +11,8 @@ import {
   recycleMedia,
   searchMedia,
   toggleFavorite,
-  updateMetadata
+  updateMetadata,
+  reScanFaces
 } from "../services/mediaService";
 
 import MediaFilterManager from '../services/mediaFilterManager';
@@ -73,6 +74,7 @@ const mediaModule = {
       persons: [],
       groups: [],
       tags: [],
+      aiTags: [],
       objects: [],
       mediaTypes: [],
       cameras: [],
@@ -396,7 +398,23 @@ const mediaModule = {
         ids: ids,
       }
 
-      console.log(operation);
+      dispatch('startOperation', operation);
+    },
+    async reScanFaces({ state, dispatch, getters }) {
+      if (!getters["canEdit"])
+        return;
+
+      const ids = getMediaIdsFromIndexes(state);
+
+      const operation = {
+        type: 3,
+        api: reScanFaces({
+          ids: ids,
+          operationId: uuidv4()
+        }),
+        dataField: "reScanFaces",
+        ids: ids,
+      }
 
       dispatch('startOperation', operation);
     },

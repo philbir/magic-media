@@ -35,6 +35,14 @@ query mediaDetails($id: UUID!) {
         countryCode
       }
     }
+    tags {
+      definition {
+        id
+        name
+        color
+      }
+      data
+    }
     faces {
       id
       mediaId
@@ -71,14 +79,13 @@ query mediaDetails($id: UUID!) {
           ...bbox
         }
       }
-      caption{
-        text,
+      caption {
+        text
         confidence
-      },
-      colors{
+      }
+      colors {
         accent
       }
     }
   }
 }
-

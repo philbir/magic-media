@@ -286,6 +286,9 @@ export default {
         case "EXPORT":
           this.showExportDialog = true;
           break;
+        case "RESCAN_FACE":
+          this.$store.dispatch("media/reScanFaces");
+          break;
       }
     },
     onClickAlbumAction: function(action) {

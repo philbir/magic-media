@@ -22,4 +22,9 @@ public interface IMediaService
     MediaThumbnail? GetThumbnail(Media media, ThumbnailSizeName size);
     Task<MediaThumbnail?> GetThumbnailAsync(Guid mediaId, ThumbnailSizeName size, CancellationToken cancellationToken);
     Task<Media> UpdateDateTakenAsync(Guid id, DateTimeOffset? dateTaken, CancellationToken cancellationToken);
+
+    Task<IReadOnlyList<MediaTag>> SetMediaTagAsync(
+        Guid id,
+        MediaTag tag,
+        CancellationToken cancellationToken);
 }

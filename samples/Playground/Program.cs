@@ -39,6 +39,7 @@ namespace Playground
             VideoConverter videoConverter = sp.GetService<VideoConverter>();
             FaceScanner faceScanner = sp.GetService<FaceScanner>();
             ImageHasher hasher = sp.GetService<ImageHasher>();
+            ConsistencyScanner consistencyScanner = sp.GetService<ConsistencyScanner>();
             ClientThumbprintLoader thumbprintLoader = sp.GetService<ClientThumbprintLoader>();
 
             //FileSystemSnapshotBuilder.BuildSnapshot();
@@ -49,16 +50,16 @@ namespace Playground
             //await hasher.GetDuplicatesAsync();
             //await hasher.HashAsync();
 
-
             //DeleteEmptyDirs("H:\\Photos\\MobileBackup");
 
             //await updater.UpdateLocationAsync(CancellationToken.None);
-            await faceScanner.RunAsync(default);
+            //await faceScanner.RunAsync(default);
+
+            await consistencyScanner.RunAsync(CancellationToken.None);
 
             //await updater.DeleteMediaAIOrphansAsync();
 
             //await thumbprintLoader.LoadAuditThumbprintsAsync();
-
 
         }
 
@@ -114,6 +115,7 @@ namespace Playground
             services.AddSingleton<BulkMediaUpdater>();
             services.AddSingleton<ImageHasher>();
             services.AddSingleton<ClientThumbprintLoader>();
+            services.AddSingleton<ConsistencyScanner>();
             //services.AddSingleton<IGeoDecoderService>(p =>
             //{
             //    return new GeoDecoderCacheStore(p.GetRequiredService<MediaStoreContext>(),

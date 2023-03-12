@@ -12,4 +12,5 @@ public interface ISearchFacetService
     Task<IEnumerable<SearchFacetItem>> GetCameraFacetsAsync(CancellationToken cancellationToken);
     Task<IEnumerable<SearchFacetItem>> GetCityFacetsAsync(CancellationToken cancellationToken);
     Task<IEnumerable<SearchFacetItem>> GetCountryFacetsAsync(CancellationToken cancellationToken);
+    Task<IEnumerable<SearchFacetItem>> GetTagDefinitionsAsync(CancellationToken cancellationToken);
 }

@@ -205,6 +205,14 @@ public class MediaService : IMediaService
         return media;
     }
 
+    public Task<IReadOnlyList<MediaTag>> SetMediaTagAsync(
+        Guid id,
+        MediaTag tag,
+        CancellationToken cancellationToken)
+    {
+        return _mediaStore.SetMediaTagAsync(id, tag, cancellationToken);
+    }
+
     public MediaBlobData GetBlobRequest(Media media, MediaFileType type)
     {
         switch (type)

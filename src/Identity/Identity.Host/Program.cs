@@ -8,6 +8,7 @@ using MagicMedia.Identity.Messaging;
 using MagicMedia.Identity.Services;
 using MagicMedia.Telemetry;
 using MassTransit;
+using Microsoft.AspNetCore.DataProtection;
 
 WebApplicationBuilder? builder = WebApplication.CreateBuilder(args);
 builder.Logging.ConfigureSerilog(builder.Configuration);
@@ -22,7 +23,11 @@ JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 IIdentityServerBuilder idBuilder = builder.Services
     .AddIdentityServer(builder.Configuration, builder.Environment);
 
-idBuilder.AddDeveloperSigningCredential();
+IdentityServerOptions options = builder.Configuration.GetSection("Identity:Server")
+    .Get<IdentityServerOptions>();
+
+builder.Services.AddDataProtection()
+    .PersistKeysToFileSystem(new DirectoryInfo(options.DataProtectionKeysDirectory));
 
 builder.Services.AddDataAccess(builder.Configuration);
 builder.Services.AddIdentityCore(builder.Configuration);

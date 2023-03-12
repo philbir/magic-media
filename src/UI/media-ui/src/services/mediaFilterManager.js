@@ -58,8 +58,17 @@ class MediaFilterManager {
                 name: "Tags",
                 default: [],
                 stringValue: (state) => state.filter.tags.join(','),
-                valueText: (rootState) => rootState.media.facets.aiTags.filter(x =>
+                valueText: (rootState) => rootState.media.facets.tags.filter(x =>
                     rootState.media.filter.tags.includes(x.value))
+                    .map(x => x.text)
+                    .join(' | ')
+            },
+            aiTags: {
+                name: "AI Tags",
+                default: [],
+                stringValue: (state) => state.filter.aiTags.join(','),
+                valueText: (rootState) => rootState.media.facets.aiTags.filter(x =>
+                    rootState.media.filter.aiTags.includes(x.value))
                     .map(x => x.text)
                     .join(' | ')
             },

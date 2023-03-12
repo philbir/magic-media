@@ -11,6 +11,7 @@ import MUTATION_QUICK_EXPORT_MEDIA from "../graphql/Media/QuickExportMedia.gql";
 import QUERY_SEARCH from "../graphql/Media/SearchMedia.gql";
 import MUTATION_TOGGLE_FAVORITE from "../graphql/Media/ToggleFavorite.gql";
 import MUTATION_UPDATE_METADATA from "../graphql/Media/UpdateMediaMetadata.gql";
+import MUTATION_RESCAN_FACES from "../graphql/Media/ReScanFaces.gql";
 import MUTATION_ANALYSE_MEDIA from "../graphql/Media/AnalyseMedia.gql";
 import QUERY_GEO_LOCATION_CLUSTERS from "../graphql/Media/geoLocationClusters.gql";
 import QUERY_SIMILAR_GROUPS from "../graphql/Media/GetSimilarGroups.gql"
@@ -45,7 +46,6 @@ export const getInfo = async id => {
     }
   });
 };
-
 
 export const getMetadata = async id => {
   return await apollo.query({
@@ -114,6 +114,16 @@ export const exportMedia = async input => {
     }
   });
 };
+
+export const reScanFaces = async input => {
+  return await apollo.mutate({
+    mutation: MUTATION_RESCAN_FACES,
+    variables: {
+      input: input
+    }
+  });
+};
+
 
 export const quickExportMedia = async input => {
   return await apollo.mutate({
