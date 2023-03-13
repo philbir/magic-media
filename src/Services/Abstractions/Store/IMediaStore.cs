@@ -69,4 +69,9 @@ public interface IMediaStore
         Guid id,
         MediaTag tag,
         CancellationToken cancellationToken);
+
+    Task RemoveTagsByDefinitionIdAsync(
+        Guid id,
+        IEnumerable<Guid> definitionIds,
+        CancellationToken cancellationToken);
 }

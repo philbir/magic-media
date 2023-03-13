@@ -38,10 +38,8 @@ namespace MagicMedia.Playground
                 .Where(x =>
                     x.FaceCount == 0 &&
                     x.MediaType == MediaType.Image &&
-                    x.Folder.StartsWith("New") &&
                     x.State == MediaState.Active)
                 .OrderByDescending(x => x.DateTaken)
-                .Take(10000)
                 .ToListAsync(cancellationToken);
 
             int total = medias.Count();
@@ -59,7 +57,7 @@ namespace MagicMedia.Playground
                         completed++;
                         continue;
                     }
-                    
+
                     var context = new MediaProcessorContext { Media = media, Image = await GetImageAsync(media) };
 
                     await flow.ExecuteAsync(context, cancellationToken);

@@ -37,7 +37,7 @@ public class MediaConsistencyService : IMediaConsistencyService
         //Check for repairs
         foreach (ConsistencyCheck check in report.Checks.Where(x => !x.Success))
         {
-            await _mediaRepairService.ApplyRepairsAsync(media, check, cancellationToken);
+            await _mediaRepairService.GetPossibleRepairsAsync(media, check, cancellationToken);
         }
 
         return report;

@@ -300,6 +300,22 @@ public class MongoMediaStore : IMediaStore
             cancellationToken);
     }
 
+    public async Task RemoveTagsByDefinitionIdAsync(
+        Guid id,
+        IEnumerable<Guid> definitionIds,
+        CancellationToken cancellationToken)
+    {
+        UpdateDefinition<Media> update = Builders<Media>.Update.PullFilter(
+            x => x.Tags,
+            Builders<MediaTag>.Filter.In(x => x.DefinitionId, definitionIds));
+
+        await _mediaStoreContext.Medias.UpdateOneAsync(
+            x => x.Id == id,
+            update,
+            new UpdateOptions(),
+            cancellationToken);
+    }
+
     public async Task InsertMediaAsync(
         Media media,
         IEnumerable<MediaFace>? faces,

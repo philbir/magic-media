@@ -64,6 +64,7 @@ public static class GrapQLServiceCollectionExtensions
             .RenameRequestToInput<SaveUserSharedAlbumsRequest>()
             .RenameRequestToInput<SearchAuditRequest>()
             .RenameRequestToInput<SetAlbumCoverRequest>()
+            .RenameRequestToInput<RepairMediaRequest>()
             .AddDataLoader<CameraByIdDataLoader>()
             .AddDataLoader<TagDefinitionByIdDataLoader>()
             .AddDataLoader<ThumbnailByMediaIdDataLoader>()

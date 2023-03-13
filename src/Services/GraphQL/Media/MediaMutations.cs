@@ -45,10 +45,7 @@ public class MediaMutations
         RecycleMediaRequest input,
         CancellationToken cancellationToken)
     {
-        RecycleMediaRequest request = input with
-        {
-            OperationId = input.OperationId ?? Guid.NewGuid().ToString("N")
-        };
+        RecycleMediaRequest request = input with { OperationId = input.OperationId ?? Guid.NewGuid().ToString("N") };
 
         await _operationsService.RecycleAsync(request, cancellationToken);
 
@@ -59,10 +56,7 @@ public class MediaMutations
         DeleteMediaRequest input,
         CancellationToken cancellationToken)
     {
-        DeleteMediaRequest request = input with
-        {
-            OperationId = input.OperationId ?? Guid.NewGuid().ToString("N")
-        };
+        DeleteMediaRequest request = input with { OperationId = input.OperationId ?? Guid.NewGuid().ToString("N") };
 
         await _operationsService.DeleteAsync(request, cancellationToken);
 
@@ -83,10 +77,7 @@ public class MediaMutations
         RescanFacesRequest input,
         CancellationToken cancellationToken)
     {
-        RescanFacesRequest request = input with
-        {
-            OperationId = input.OperationId ?? Guid.NewGuid().ToString("N")
-        };
+        RescanFacesRequest request = input with { OperationId = input.OperationId ?? Guid.NewGuid().ToString("N") };
 
         await _operationsService.ReScanFacesAsync(request, cancellationToken);
 
@@ -120,17 +111,34 @@ public class MediaMutations
         ExportMediaRequest input,
         CancellationToken cancellationToken)
     {
-        ExportMediaRequest request = input with
-        {
-            OperationId = input.OperationId ?? Guid.NewGuid().ToString("N")
-        };
+        ExportMediaRequest request = input with { OperationId = input.OperationId ?? Guid.NewGuid().ToString("N") };
 
         await _operationsService.ExportAsync(request, cancellationToken);
 
         return new MediaOperationPayload(request.OperationId);
     }
+
+    public async Task<ExecuteMediaRepairPayload> ExecuteMediaRepairAsync(
+        [Service] IMediaRepairService service,
+        RepairMediaRequest input,
+        CancellationToken cancellationToken)
+    {
+        Media media = await service.ExecuteRepairAsync(input, cancellationToken);
+
+        return new ExecuteMediaRepairPayload(media);
+    }
+}
+
+public class ExecuteMediaRepairPayload
+{
+    public ExecuteMediaRepairPayload(Media media)
+    {
+        Media = media;
+    }
+
+    public Media Media { get; set; }
 }
 
 public record QuickExportMediaInput(Guid Id);
 
-public  record ExportMediaPayload(string Path);
+public record ExportMediaPayload(string Path);

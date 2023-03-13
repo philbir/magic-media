@@ -46,6 +46,7 @@
                         color="primary"
                         variant="outlined"
                         elevation="4"
+                        @click="handleClick(repair)"
                       >
                         {{ repair.title }}
                         <v-icon right>mdi-wrench-outline</v-icon>
@@ -81,6 +82,11 @@ export default {
   },
   data() {
     return {};
+  },
+  methods: {
+    handleClick: function(repair) {
+      this.$emit("onRepair", repair);
+    }
   }
 };
 </script>

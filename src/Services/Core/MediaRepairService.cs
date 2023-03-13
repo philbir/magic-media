@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -5,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Configuration;
 using MagicMedia.Extensions;
+using MagicMedia.Security;
 using MagicMedia.Store;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
@@ -14,27 +16,33 @@ namespace MagicMedia;
 public class MediaRepairService : IMediaRepairService
 {
     private readonly IFileSystemSnapshotService _snapshotService;
+    private readonly IMediaService _mediaService;
+    private readonly IMediaStore _mediaStore;
     private readonly FileSystemStoreOptions _fileSystemStoreOptions;
 
     public MediaRepairService(
         IFileSystemSnapshotService snapshotService,
+        IMediaService mediaService,
+        IMediaStore mediaStore,
         FileSystemStoreOptions fileSystemStoreOptions)
     {
         _snapshotService = snapshotService;
+        _mediaService = mediaService;
+        _mediaStore = mediaStore;
         _fileSystemStoreOptions = fileSystemStoreOptions;
     }
 
-    public async Task ApplyRepairsAsync(Media media, ConsistencyCheck check, CancellationToken cancellationToken)
+    public async Task GetPossibleRepairsAsync(Media media, ConsistencyCheck check, CancellationToken cancellationToken)
     {
         switch (check.Name)
         {
             case "File_Original":
-                await ApplyOriginalFileMissingRepairAsync(media, check, cancellationToken);
+                await GetOriginalFileMissingRepairAsync(media, check, cancellationToken);
                 break;
         }
     }
 
-    private async Task ApplyOriginalFileMissingRepairAsync(Media media, ConsistencyCheck check,
+    private async Task GetOriginalFileMissingRepairAsync(Media media, ConsistencyCheck check,
         CancellationToken cancellationToken)
     {
         FileSystemSnapshot snapshot = await _snapshotService.LoadAsync(cancellationToken);
@@ -48,7 +56,7 @@ public class MediaRepairService : IMediaRepairService
 
             repair.Parameters.Add(new(
                 "Resolved_Path",
-                Path.Combine(file.Folder, file.Name)) { AddToAction = true });
+                file.Folder) { AddToAction = true });
 
             var fileName = Path.Combine(_fileSystemStoreOptions.RootDirectory + file.Folder, file.Name);
             var dataUrl = await GetPreviewDataUrlAsync(fileName, cancellationToken);
@@ -63,6 +71,39 @@ public class MediaRepairService : IMediaRepairService
             check.Repairs.Add(repairMove);
         }
     }
+
+    public async Task<Media> ExecuteRepairAsync(RepairMediaRequest request, CancellationToken cancellationToken)
+    {
+        Media media = await _mediaService.GetByIdAsync(request.MediaId, cancellationToken);
+
+        switch (request.Type)
+        {
+            case "UpdateFolder":
+                await ExecuteUpdateFolderRepairAsync(media, request, cancellationToken);
+                break;
+        }
+
+        await RemoveCheckTagsAsync(media, cancellationToken);
+
+        return media;
+    }
+
+    private async Task ExecuteUpdateFolderRepairAsync(Media media, RepairMediaRequest request, CancellationToken cancellationToken)
+    {
+        MediaRepairParameter newFolder = request.Parameters.Single(x => x.Name == "Resolved_Path");
+        media.Folder = newFolder.Value.TrimStart(new[] { '/' });
+
+        await _mediaStore.UpdateAsync(media, cancellationToken);
+    }
+
+    private async Task RemoveCheckTagsAsync(Media media, CancellationToken cancellationToken)
+    {
+        IReadOnlyList<TagDefintion> tagDefs = await _mediaStore.TagDefinitions.GetAllAsync(cancellationToken);
+        IEnumerable<Guid> ids = tagDefs.Where(x => x.Name.StartsWith("CC-")).Select(x => x.Id);
+
+        await _mediaStore.RemoveTagsByDefinitionIdAsync(media.Id, ids, cancellationToken);
+    }
+
 
     private async Task<string> GetPreviewDataUrlAsync(string fileName, CancellationToken cancellationToken)
     {

@@ -279,7 +279,17 @@
             </v-tab-item>
 
             <v-tab-item value="report">
-              <media-report-view :report="report"></media-report-view>
+              <v-progress-circular
+                class="ma-4"
+                v-if="isRepairing"
+                indeterminate
+                color="primary"
+              ></v-progress-circular>
+              <media-report-view
+                v-else
+                :report="report"
+                @onRepair="handleRepair"
+              ></media-report-view>
             </v-tab-item>
           </v-tabs-items>
         </v-col>
@@ -293,7 +303,11 @@ import "vue-json-pretty/lib/styles.css";
 import VueJsonPretty from "vue-json-pretty";
 import MediaReportView from "./MediaReportView";
 import { getFaceColor } from "../../services/faceColor";
-import { getInfo, getConsistencyReport } from "../../services/mediaService";
+import {
+  getInfo,
+  getConsistencyReport,
+  executeMediaRepair
+} from "../../services/mediaService";
 
 export default {
   components: { VueJsonPretty, MediaReportView },
@@ -304,7 +318,8 @@ export default {
     return {
       tab: "attributes",
       media: null,
-      report: null
+      report: null,
+      isRepairing: false
     };
   },
   created() {
@@ -523,6 +538,26 @@ export default {
     },
     formatSize: function(size) {
       return (size / 1024.0 / 1024.0).toPrecision(2) + " MB";
+    },
+    handleRepair: async function(repair) {
+      this.isRepairing = true;
+      var result = await executeMediaRepair({
+        mediaId: this.media.id,
+        type: repair.type,
+        parameters: repair.parameters
+          .filter(x => x.addToAction)
+          .map(x => ({
+            name: x.name,
+            value: x.value,
+            addToAction: false
+          }))
+      });
+
+      this.isRepairing = false;
+      this.loadInfo(this.mediaId);
+      this.loadReport(this.mediaId);
+
+      console.log(result);
     }
   }
 };

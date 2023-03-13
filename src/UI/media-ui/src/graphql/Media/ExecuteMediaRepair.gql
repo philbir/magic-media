@@ -1,0 +1,8 @@
+mutation executeMediaRepair($input: RepairMediaInput!) {
+  executeMediaRepair(input: $input) {
+    media {
+      id
+      folder
+    }
+  }
+}

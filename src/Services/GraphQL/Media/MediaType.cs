@@ -68,7 +68,7 @@ public partial class MediaType : ObjectType<Media>
         public IEnumerable<MediaFileInfo> GetFileInfos(
             [Service] IMediaService mediaService,
             [Parent] Media media)
-                => mediaService.GetMediaFiles(media);
+                => mediaService.GetMediaFiles(media).Where(x => x.Exists);
 
         public  Task<ConsistencyReport> GetConsitencyReportAsync(
             [Parent] Media media,

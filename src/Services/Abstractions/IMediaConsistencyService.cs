@@ -1,5 +1,5 @@
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Store;
@@ -40,4 +40,13 @@ public class MediaRepair
 public record MediaRepairParameter(string Name, string Value)
 {
     public bool AddToAction { get; init; }
-};
+}
+
+public class RepairMediaRequest
+{
+    public Guid MediaId { get; set; }
+
+    public string Type { get; set; }
+
+    public List<MediaRepairParameter> Parameters { get; set; }
+}

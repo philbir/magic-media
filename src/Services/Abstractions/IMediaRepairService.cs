@@ -6,5 +6,7 @@ namespace MagicMedia;
 
 public interface IMediaRepairService
 {
-    Task ApplyRepairsAsync(Media media, ConsistencyCheck check, CancellationToken cancellationToken);
+    Task GetPossibleRepairsAsync(Media media, ConsistencyCheck check, CancellationToken cancellationToken);
+    Task<Media> ExecuteRepairAsync(RepairMediaRequest request, CancellationToken cancellationToken);
 }
+
