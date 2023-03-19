@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -42,12 +43,15 @@ public class MediaRepairService : IMediaRepairService
         }
     }
 
-    private async Task GetOriginalFileMissingRepairAsync(Media media, ConsistencyCheck check,
+    private async Task GetOriginalFileMissingRepairAsync(
+        Media media,
+        ConsistencyCheck check,
         CancellationToken cancellationToken)
     {
         FileSystemSnapshot snapshot = await _snapshotService.LoadAsync(cancellationToken);
 
-        IEnumerable<MediaFileEntry> files = snapshot.Entries.Where(x => x.Name == media.Filename);
+        IEnumerable<MediaFileEntry> files = snapshot.Entries.Where(x => x.Name.EndsWith(media.Filename));
+
 
         foreach (MediaFileEntry file in files)
         {
@@ -58,17 +62,23 @@ public class MediaRepairService : IMediaRepairService
                 "Resolved_Path",
                 file.Folder) { AddToAction = true });
 
+            repair.Parameters.Add(new(
+                "Resolved_Filename",
+                file.Name) { AddToAction = true });
+
+            /*
             var fileName = Path.Combine(_fileSystemStoreOptions.RootDirectory + file.Folder, file.Name);
+
             var dataUrl = await GetPreviewDataUrlAsync(fileName, cancellationToken);
 
             repair.Parameters.Add(new(
                 "Found_Image",
-                dataUrl));
+                dataUrl));*/
 
             repairMove.Parameters.AddRange(repair.Parameters.ToList());
 
             check.Repairs.Add(repair);
-            check.Repairs.Add(repairMove);
+            //check.Repairs.Add(repairMove);
         }
     }
 
@@ -88,10 +98,21 @@ public class MediaRepairService : IMediaRepairService
         return media;
     }
 
-    private async Task ExecuteUpdateFolderRepairAsync(Media media, RepairMediaRequest request, CancellationToken cancellationToken)
+    private async Task ExecuteUpdateFolderRepairAsync(Media media, RepairMediaRequest request,
+        CancellationToken cancellationToken)
     {
         MediaRepairParameter newFolder = request.Parameters.Single(x => x.Name == "Resolved_Path");
         media.Folder = newFolder.Value.TrimStart(new[] { '/' });
+
+        var resolvedName = request.Parameters.Single(x => x.Name == "Resolved_Filename").Value;
+
+        if (resolvedName != media.Filename)
+        {
+            var oldPath = Path.Combine(_fileSystemStoreOptions.RootDirectory + newFolder.Value, resolvedName);
+            var newPath = Path.Combine(_fileSystemStoreOptions.RootDirectory + newFolder.Value, media.Filename);
+
+            File.Move(oldPath, newPath);
+        }
 
         await _mediaStore.UpdateAsync(media, cancellationToken);
     }
@@ -117,6 +138,12 @@ public class MediaRepairService : IMediaRepairService
         await image.SaveAsWebpAsync(ms, cancellationToken);
 
         var data = await File.ReadAllBytesAsync(fileName, cancellationToken);
+
+        /*await File.WriteAllBytesAsync(
+            Path.Combine(_fileSystemStoreOptions.RootDirectory + "/_RECOVERY", Guid.NewGuid() + ".webp" ),
+            data,
+            cancellationToken);*/
+
         return data.ToDataUrl("webp");
     }
 }

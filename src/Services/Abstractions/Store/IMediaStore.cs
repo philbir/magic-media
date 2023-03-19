@@ -74,4 +74,6 @@ public interface IMediaStore
         Guid id,
         IEnumerable<Guid> definitionIds,
         CancellationToken cancellationToken);
+
+    Task DeleteMediaAIAsync(Guid mediaId, CancellationToken cancellationToken);
 }

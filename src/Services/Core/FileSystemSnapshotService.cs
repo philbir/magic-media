@@ -31,7 +31,7 @@ public class FileSystemSnapshotService : IFileSystemSnapshotService
         {
             var extension = Path.GetExtension(entry);
 
-            if ( !string.IsNullOrWhiteSpace(extension) && validExtensions.Contains(extension))
+            if ( !string.IsNullOrWhiteSpace(extension) && validExtensions.Contains(extension.ToLower()))
             {
                 var path = entry.Replace(_options.RootDirectory, "");
                 files.Add(new MediaFileEntry(Path.GetFileName(entry), Path.GetDirectoryName(path)));

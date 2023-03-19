@@ -333,7 +333,7 @@ public class FaceService : IFaceService
         IEnumerable<MediaFace> faces = await GetFacesByMediaAsync(mediaId, cancellationToken);
 
         faces.ToList().ForEach(async face => await DeleteAsync(face, cancellationToken));
-    }
+     }
 
     public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
     {

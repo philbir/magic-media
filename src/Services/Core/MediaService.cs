@@ -152,7 +152,9 @@ public class MediaService : IMediaService
 
         await _mediaStore.DeleteAsync(media.Id, cancellationToken);
 
-        await _bus.Publish(new MediaDeletedMessage(media.Id));
+        await _mediaStore.DeleteMediaAIAsync(media.Id, cancellationToken);
+
+        await _bus.Publish(new MediaDeletedMessage(media.Id), cancellationToken);
     }
 
     private async Task DeleteThumbnailsAsync(Media media, CancellationToken cancellationToken)

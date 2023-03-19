@@ -7,14 +7,13 @@ public class DefaultWebPImageConverter : IWebPImageConverter
 {
     public Stream ConvertToWebP(Stream stream, int quality = 50)
     {
-        using (MagickImage image = new MagickImage(stream))
-        {
-            image.Quality = quality;
-            image.Format = MagickFormat.WebP;
-            var ms = new MemoryStream();
-            image.Write(ms);
+        using var image = new MagickImage(stream);
+        image.Quality = quality;
+        image.Format = MagickFormat.WebP;
+        var ms = new MemoryStream();
 
-            return ms;
-        }
+        image.Write(ms);
+
+        return ms;
     }
 }

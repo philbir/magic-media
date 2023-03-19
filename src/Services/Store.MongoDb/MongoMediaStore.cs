@@ -165,6 +165,14 @@ public class MongoMediaStore : IMediaStore
             cancellationToken);
     }
 
+    public async Task DeleteMediaAIAsync(Guid mediaId, CancellationToken cancellationToken)
+    {
+        await _mediaStoreContext.MediaAI.DeleteManyAsync(
+            x => x.MediaId == mediaId,
+            DefaultMongoOptions.Delete,
+            cancellationToken);
+    }
+
     public async Task<IEnumerable<Media>> GetManyAsync(
         IEnumerable<Guid> ids,
         CancellationToken cancellationToken)

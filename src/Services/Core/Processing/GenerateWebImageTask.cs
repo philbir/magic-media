@@ -21,7 +21,7 @@ public class GenerateWebImageTask : IMediaProcessorTask
         MediaProcessorContext context,
         CancellationToken cancellationToken)
     {
-        MemoryStream stream = new MemoryStream();
+        using var stream = new MemoryStream();
         await context.Image.SaveAsJpegAsync(stream, cancellationToken);
         stream.Position = 0;
 
