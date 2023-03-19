@@ -42,6 +42,8 @@ public class UpdateWebPreviewJob : IJob
         using Activity? activity = Tracing.Source.StartRootActivity(
             "Execute UpdateWebPreview job");
 
+        Console.WriteLine($"Start create WebPreview");
+
         IReadOnlyList<TagDefintion> tagDefs =
             await _store.TagDefinitions.GetAllAsync(context.CancellationToken);
 
@@ -52,11 +54,16 @@ public class UpdateWebPreviewJob : IJob
                         x.MediaType == MediaType.Image)
             .ToListAsync(context.CancellationToken);
 
+        Console.WriteLine($"{medias.Count} media to go");
+
         foreach (Media media in medias)
         {
             try
             {
+                Console.WriteLine($"Create preview for {media.Id}");
                 await SaveWebPreviewAsync(media, context.CancellationToken);
+
+                await _store.RemoveTagsByDefinitionIdAsync(media.Id, new[] { tagId.Id }, context.CancellationToken);
             }
             catch (Exception e)
             {
