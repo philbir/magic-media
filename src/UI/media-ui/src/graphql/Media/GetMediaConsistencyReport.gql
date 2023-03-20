@@ -1,0 +1,29 @@
+query mediaConsistency($id: UUID!) {
+  mediaById(id: $id) {
+    consistencyReport {
+      checks {
+        name
+        success
+        data {
+          name
+          value
+        }
+        repairs {
+          type
+          title
+          parameters {
+            name
+            value
+            addToAction
+          }
+        }
+      }
+    }
+    id
+    filename
+    dateTaken
+    isFavorite
+    mediaType
+    folder
+  }
+}

@@ -152,7 +152,9 @@ public class MediaService : IMediaService
 
         await _mediaStore.DeleteAsync(media.Id, cancellationToken);
 
-        await _bus.Publish(new MediaDeletedMessage(media.Id));
+        await _mediaStore.DeleteMediaAIAsync(media.Id, cancellationToken);
+
+        await _bus.Publish(new MediaDeletedMessage(media.Id), cancellationToken);
     }
 
     private async Task DeleteThumbnailsAsync(Media media, CancellationToken cancellationToken)
@@ -205,6 +207,14 @@ public class MediaService : IMediaService
         return media;
     }
 
+    public Task<IReadOnlyList<MediaTag>> SetMediaTagAsync(
+        Guid id,
+        MediaTag tag,
+        CancellationToken cancellationToken)
+    {
+        return _mediaStore.SetMediaTagAsync(id, tag, cancellationToken);
+    }
+
     public MediaBlobData GetBlobRequest(Media media, MediaFileType type)
     {
         switch (type)
@@ -255,7 +265,17 @@ public class MediaService : IMediaService
                     type,
                     fileInfo.DirectoryName!,
                     fileInfo.Name,
-                    fileInfo.Length));
+                    fileInfo.Length,
+                    true));
+            }
+            else
+            {
+                infos.Add(new MediaFileInfo(
+                    type,
+                    fileInfo.DirectoryName!,
+                    fileInfo.Name,
+                    0,
+                    false));
             }
         }
 

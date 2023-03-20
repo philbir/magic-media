@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Search;
@@ -68,5 +69,13 @@ public class SearchFacetService : ISearchFacetService
             cancellationToken);
 
         return await _mediaStore.MediaAI.GetGroupedAIObjectsAsync(accessInfo.Ids, cancellationToken);
+    }
+
+    public async Task<IEnumerable<SearchFacetItem>> GetTagDefinitionsAsync(
+        CancellationToken cancellationToken)
+    {
+        IReadOnlyList<TagDefintion> definitions = await _mediaStore.TagDefinitions.GetAllAsync(cancellationToken);
+
+        return definitions.Select(d => new SearchFacetItem { Text = d.Name, Count = 0, Value = d.Id.ToString("N") });
     }
 }

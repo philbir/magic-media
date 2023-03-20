@@ -18,3 +18,5 @@ public class AddItemToAlbumRequest
 }
 
 public record RemoveFoldersFromAlbumRequest(Guid AlbumId, IEnumerable<string> Folders);
+
+

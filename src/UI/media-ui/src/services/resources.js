@@ -56,6 +56,7 @@ export const resources = {
         { text: "Move", action: "MOVE", icon: "mdi-file-move-outline" },
         { text: "Edit", action: "EDIT", icon: "mdi-pencil" },
         { text: "Recycle", action: "RECYCLE", icon: "mdi-recycle" },
+        { text: "ReScan faces", action: "RESCAN_FACE", icon: "mdi-face-recognition" },
         {
             text: "Delete",
             action: "DELETE",

@@ -32,6 +32,7 @@
       <city-filter></city-filter>
     </div>
     <div v-if="activeTabId == 'other'">
+      <TagsFilter></TagsFilter>
       <AITagsFilter></AITagsFilter>
 
       <AIObjectsFilter></AIObjectsFilter>
@@ -53,6 +54,7 @@ import CountryFilter from "./Filters/CountryFilter.vue";
 import AlbumFilter from "./Filters/AlbumFilter.vue";
 import DateFilter from "./Filters/DateFilter.vue";
 import MapFilter from "./Filters/MapFilter.vue";
+import TagsFilter from "./Filters/TagsFilter.vue";
 import MediaTypeFilter from "./Filters/MediaTypeFilter.vue";
 import AITagsFilter from "./Filters/AITagsFilter.vue";
 import AIObjectsFilter from "./Filters/AIObjectsFilter.vue";
@@ -74,7 +76,8 @@ export default {
     AIObjectsFilter,
     CameraFilter,
     GroupFilter,
-    TextFilter
+    TextFilter,
+    TagsFilter
   },
   created() {
     this.$store.dispatch("media/getSearchFacets");

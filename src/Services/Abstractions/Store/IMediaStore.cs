@@ -16,6 +16,7 @@ public interface IMediaStore
     IMediaBlobStore Blob { get; }
     IMediaAIStore MediaAI { get; }
     IUserStore Users { get; }
+    ITagDefinitionStore TagDefinitions { get; }
 
     Task DeleteAsync(Guid id, CancellationToken cancellationToken);
 
@@ -63,4 +64,16 @@ public interface IMediaStore
         CancellationToken cancellationToken);
     Task UpdateAISummaryAsync(Guid mediaId, MediaAISummary mediaAISummary, CancellationToken cancellationToken);
     Task UpdateAsync(Media media, CancellationToken cancellationToken);
+
+    Task<IReadOnlyList<MediaTag>> SetMediaTagAsync(
+        Guid id,
+        MediaTag tag,
+        CancellationToken cancellationToken);
+
+    Task RemoveTagsByDefinitionIdAsync(
+        Guid id,
+        IEnumerable<Guid> definitionIds,
+        CancellationToken cancellationToken);
+
+    Task DeleteMediaAIAsync(Guid mediaId, CancellationToken cancellationToken);
 }

@@ -33,6 +33,8 @@ public class Media
 
     public IEnumerable<MediaHash>? Hashes { get; set; }
 
+    public IReadOnlyList<MediaTag> Tags { get; set; } = Array.Empty<MediaTag>();
+
     public string? Folder { get; set; }
 
     public bool IsFavorite { get; set; }
@@ -44,7 +46,15 @@ public class Media
     public Guid? CameraId { get; set; }
 
     public MediaAISummary? AISummary { get; set; }
+}
 
+public class MediaTag
+{
+    public Guid DefinitionId { get; set; }
+
+    public DateTimeOffset ModifiedAt { get; set; }
+
+    public string? Data { get; set; }
 }
 
 public enum FaceRecognitionType

@@ -1,9 +1,9 @@
 <template>
   <FilterList
-    v-if="aiTags"
-    :items="aiTags"
-    title="AI Tags"
-    max-height="250"
+    v-if="tags"
+    :items="tags"
+    title="Tags"
+    max-height="80"
     v-model="selectedTags"
   ></FilterList>
 </template>
@@ -18,16 +18,16 @@ export default {
     selectedTags: {
       set(value) {
         this.setFilter({
-          key: "aiTags",
+          key: "tags",
           value: value
         });
       },
       get() {
-        return this.$store.state.media.filter.aiTags;
+        return this.$store.state.media.filter.tags;
       }
     },
-    aiTags: function() {
-      return this.$store.state.media.facets.aiTags;
+    tags: function() {
+      return this.$store.state.media.facets.tags;
     }
   },
   methods: {

@@ -209,6 +209,17 @@ public class MediaFilterBuilder
         return this;
     }
 
+    public MediaFilterBuilder AddTags(IEnumerable<Guid>? tags)
+    {
+        if (tags is { } c && c.Any())
+        {
+            FilterDefinition<MediaTag>? tagFilter = Builders<MediaTag>.Filter.In(x => x.DefinitionId, tags);
+            _filter &= Builders<Media>.Filter.ElemMatch(x => x.Tags, tagFilter);
+        }
+
+        return this;
+    }
+
     public MediaFilterBuilder AddMediaTypes(IEnumerable<MediaType>? mediaTypes)
     {
         if (mediaTypes is { } types && types.Any() && types.Count() < 2)
@@ -366,7 +377,6 @@ public class MediaFilterBuilder
 
         return docs.Select(x => x["_id"].AsGuid);
     }
-
 
     private async Task<IEnumerable<Guid>> GetMediaIdsByAITags(
         IEnumerable<string> tags,

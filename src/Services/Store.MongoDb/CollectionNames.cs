@@ -17,4 +17,5 @@ internal static class CollectionNames
     public static readonly string MediaAI = "media_ai";
     public static readonly string AuditEvent = "audit_event";
     public static readonly string ClientThumbprint = "client_thumbprint";
+    public static readonly string TagDefinition = "tag_defintion";
 }

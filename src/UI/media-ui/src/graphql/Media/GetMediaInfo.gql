@@ -45,6 +45,14 @@ query mediaInfo($id: UUID!) {
         countryCode
       }
     }
+    tags {
+      definition {
+        id
+        name
+        color
+      }
+      data
+    }
     faces {
       id
       mediaId

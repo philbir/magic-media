@@ -27,6 +27,7 @@ public class MediaStoreContext : MongoDbContext
     IMongoCollection<ClientThumbprint> _clientThumbprints;
     IMongoCollection<SimilarMediaInfo> _similarInfo;
     IMongoCollection<MediaExportProfile> _mediaExportProfile;
+    IMongoCollection<TagDefintion> _tagDefinition;
 
     public MediaStoreContext(MongoOptions mongoOptions)
         : base(mongoOptions)
@@ -57,6 +58,7 @@ public class MediaStoreContext : MongoDbContext
             .ConfigureCollection(new AlbumCollectionConfiguration())
             .ConfigureCollection(new MediaAICollectionConfiguration())
             .ConfigureCollection(new MediaExportProfileCollectionConfiguration())
+            .ConfigureCollection(new TagDefinitionCollectionConfiguration())
             .ConfigureCollection(new AuditEventCollectionConfiguration())
             .ConfigureCollection(new GeoAddressCacheCollectionConfiguration())
             .ConfigureCollection(new ClientThumbprintCollectionConfiguration())
@@ -230,6 +232,19 @@ public class MediaStoreContext : MongoDbContext
             }
 
             return _mediaExportProfile;
+        }
+    }
+
+    public IMongoCollection<TagDefintion> TagDefinition
+    {
+        get
+        {
+            if (_tagDefinition is null)
+            {
+                _tagDefinition = CreateCollection<TagDefintion>();
+            }
+
+            return _tagDefinition;
         }
     }
 

@@ -49,6 +49,8 @@ public class RescanFacesHandler : IRescanFacesHandler
                 msg.Message = ex.Message;
             }
 
+            messages.Add(msg);
+
             await _bus.Publish(msg, cancellationToken);
         }
 

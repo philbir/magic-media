@@ -113,7 +113,7 @@ public class AlbumMediaIdResolver : IAlbumMediaIdResolver
                     };
                     break;
                 case "tags":
-                    request.Tags = filter.Value.Split(',');
+                    request.AiTags = filter.Value.Split(',');
                     break;
                 case "objects":
                     request.Objects = filter.Value.Split(',');

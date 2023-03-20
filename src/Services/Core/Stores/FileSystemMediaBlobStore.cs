@@ -71,7 +71,7 @@ public class FileSystemMediaBlobStore : IMediaBlobStore
 
         var newFilename = Path.Combine(newDir, Path.GetFileName(filename));
 
-        File.Move(filename, newFilename, true);
+        File.Move(filename, newFilename, false);
 
         return Task.CompletedTask;
     }

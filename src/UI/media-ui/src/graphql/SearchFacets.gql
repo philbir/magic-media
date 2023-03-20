@@ -5,15 +5,18 @@ query facets {
     }
     city {
       ...facet
-    },
+    }
     camera {
       ...facet
-    },
-    aiTags{
-      ... facet
-    },
-    aiObjects{
-      ... facet
+    }
+    aiTags {
+      ...facet
+    }
+    aiObjects {
+      ...facet
+    }
+    tags {
+      ...facet
     }
   }
 }

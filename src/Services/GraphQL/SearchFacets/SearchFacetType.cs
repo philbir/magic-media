@@ -25,45 +25,54 @@ public class SearchFacetType : ObjectType
         descriptor
            .Field("aiObjects")
            .ResolveWith<Resolvers>(x => x.GetAIObjectsAsync(default!, default!));
+
+        descriptor
+            .Field("tags")
+            .ResolveWith<Resolvers>(x => x.GetTagDefinitionsAsync(default!, default!));
     }
 
-    public class Resolvers
+    private class Resolvers
     {
-
-
-        public async Task<IEnumerable<SearchFacetItem>> GetCountriesAsync(
+        public Task<IEnumerable<SearchFacetItem>> GetCountriesAsync(
             [Service] ISearchFacetService searchFacetService,
             CancellationToken cancellationToken)
         {
-            return await searchFacetService.GetCountryFacetsAsync(cancellationToken);
+            return searchFacetService.GetCountryFacetsAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<SearchFacetItem>> GetCitiesAsync(
+        public Task<IEnumerable<SearchFacetItem>> GetCitiesAsync(
             [Service] ISearchFacetService searchFacetService,
             CancellationToken cancellationToken)
         {
-            return await searchFacetService.GetCityFacetsAsync(cancellationToken);
+            return searchFacetService.GetCityFacetsAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<SearchFacetItem>> GetCamerasAsync(
+        public Task<IEnumerable<SearchFacetItem>> GetCamerasAsync(
             [Service] ISearchFacetService searchFacetService,
             CancellationToken cancellationToken)
         {
-            return await searchFacetService.GetCameraFacetsAsync(cancellationToken);
+            return searchFacetService.GetCameraFacetsAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<SearchFacetItem>> GetAITagsAsync(
+        public Task<IEnumerable<SearchFacetItem>> GetAITagsAsync(
             [Service] ISearchFacetService searchFacetService,
             CancellationToken cancellationToken)
         {
-            return await searchFacetService.GetAITagFacetsAsync(cancellationToken);
+            return searchFacetService.GetAITagFacetsAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<SearchFacetItem>> GetAIObjectsAsync(
+        public Task<IEnumerable<SearchFacetItem>> GetAIObjectsAsync(
             [Service] ISearchFacetService searchFacetService,
             CancellationToken cancellationToken)
         {
-            return await searchFacetService.GetAIObjectsFacetsAsync(cancellationToken);
+            return searchFacetService.GetAIObjectsFacetsAsync(cancellationToken);
+        }
+
+        public Task<IEnumerable<SearchFacetItem>> GetTagDefinitionsAsync(
+            [Service] ISearchFacetService searchFacetService,
+            CancellationToken cancellationToken)
+        {
+            return searchFacetService.GetTagDefinitionsAsync(cancellationToken);
         }
     }
 }
