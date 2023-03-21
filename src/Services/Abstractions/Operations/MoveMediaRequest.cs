@@ -8,5 +8,7 @@ public class MoveMediaRequest
     public IEnumerable<Guid>? Ids { get; set; }
 
     public string? NewLocation { get; set; }
+
+    public string? Rule { get; set; }
     public string? OperationId { get; set; }
 }

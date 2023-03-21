@@ -1,11 +1,11 @@
 <template>
-  <v-dialog width="500" v-model="show">
+  <v-dialog width="600" v-model="show">
     <v-card elevation="2">
       <v-card-title> Move </v-card-title>
       <v-card-text>
         <v-container>
           <v-row dense>
-            <v-col cols="12" sm="12">
+            <v-col sm="8">
               <v-text-field
                 v-model="newLocation"
                 label="New location"
@@ -15,6 +15,14 @@
                 clearable
               ></v-text-field
             ></v-col>
+            <v-col sm="4">
+              <v-select
+                :items="rules"
+                v-model="rule"
+                clearable
+                label="Rule"
+              ></v-select>
+            </v-col>
           </v-row>
           <v-row dense>
             <v-col cols="12" sm="12">
@@ -83,13 +91,15 @@
 export default {
   props: {
     show: {
-      type: Boolean,
-    },
+      type: Boolean
+    }
   },
   data() {
     return {
       searchText: "",
       newLocation: null,
+      rules: ["YearAndMonth"],
+      rule: null
     };
   },
   computed: {
@@ -99,38 +109,40 @@ export default {
       },
       set(val) {
         this.$emit("close", val);
-      },
+      }
     },
-    folderTree: function () {
+    folderTree: function() {
       return this.$store.state.media.folderTree.children;
     },
-    recentMoves: function () {
+    recentMoves: function() {
       return this.$store.state.media.recentMoves;
-    },
+    }
   },
   methods: {
-    close: function () {
+    close: function() {
       this.isOpen = false;
     },
-    moveRecent: function (path) {
+    moveRecent: function(path) {
       this.newLocation = path;
       this.save();
     },
-    save: function () {
-      this.$store.dispatch("media/moveSelected", this.newLocation);
+    save: function() {
+      this.$store.dispatch("media/moveSelected", {
+        newLocation: this.newLocation,
+        rule: this.rule
+      });
       this.searchText = "";
       this.newLocation = null;
+      this;
       this.close();
     },
     onSelect(e) {
       if (e.length > 0) {
         this.newLocation = e[0].path;
       }
-    },
-  },
+    }
+  }
 };
 </script>
 
-<style scoped>
-</style>
-
+<style scoped></style>

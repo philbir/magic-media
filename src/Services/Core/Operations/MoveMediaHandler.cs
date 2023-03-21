@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml;
 using MagicMedia.Messaging;
 using MagicMedia.Store;
 using MassTransit;
@@ -38,6 +40,7 @@ public class MoveMediaHandler : IMoveMediaHandler
             MediaOperationCompletedMessage msg = await MoveMediaAsync(
                 mediaId,
                 message.NewLocation,
+                message.Rule,
                 cancellationToken);
 
             msg.OperationId = message.OperationId;
@@ -60,18 +63,21 @@ public class MoveMediaHandler : IMoveMediaHandler
     private async Task<MediaOperationCompletedMessage> MoveMediaAsync(
         Guid id,
         string newLocation,
+        string? rule,
         CancellationToken cancellationToken)
     {
         Media media = await _mediaStore.GetByIdAsync(id, cancellationToken);
 
-        MediaOperationCompletedMessage msg = new MediaOperationCompletedMessage
+        newLocation = GetNewLocation(media, newLocation, rule);
+
+        MediaOperationCompletedMessage msg = new()
         {
             MediaId = id,
             Data = new() { ["OldFolder"] = media.Folder, ["NewFolder"] = newLocation },
         };
         try
         {
-            await _mediaBlobStore.MoveAsync(
+            var movedFilename = await _mediaBlobStore.MoveAsync(
                 new MediaBlobData
                 {
                     Directory = media.Folder,
@@ -81,6 +87,7 @@ public class MoveMediaHandler : IMoveMediaHandler
                 cancellationToken);
 
             media.Folder = newLocation;
+            media.Filename = movedFilename;
 
             await _mediaStore.UpdateAsync(media, cancellationToken);
             msg.Message = $"{media.Filename} moved from " +
@@ -95,5 +102,31 @@ public class MoveMediaHandler : IMoveMediaHandler
         }
 
         return msg;
+    }
+
+    private string GetNewLocation(Media media, string newLocation, string? rule)
+    {
+        if (rule is { })
+        {
+            switch (rule)
+            {
+                case "YearAndMonth":
+                    if (media.DateTaken.HasValue)
+                    {
+                        return Path.Combine(
+                            newLocation,
+                            media.DateTaken.Value.Year.ToString(),
+                            "By Month",
+                            $"{media.DateTaken.Value:MM} {media.DateTaken.Value:MMMM}");
+                    }
+                    else
+                    {
+                        return "Unknown_Date";
+                    }
+                    break;
+            }
+        }
+
+        return newLocation;
     }
 }

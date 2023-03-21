@@ -26,6 +26,7 @@ public class MediaOperationsService : IMediaOperationsService
         {
             Ids = request.Ids,
             NewLocation = request.NewLocation,
+            Rule = request.Rule,
             OperationId = request.OperationId!,
         };
 

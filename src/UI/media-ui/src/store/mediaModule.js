@@ -310,7 +310,7 @@ const mediaModule = {
         );
       }
     },
-    async moveSelected({ state, dispatch, getters }, newLocation) {
+    async moveSelected({ state, dispatch, getters }, request) {
       if (!getters["canEdit"])
         return;
 
@@ -326,20 +326,21 @@ const mediaModule = {
         type: 0,
         api: moveMedia({
           ids,
-          newLocation,
+          newLocation: request.newLocation,
+          rule: request.rule,
           operationId: uuidv4()
         }),
         dataField: "moveMedia",
         ids: ids,
       }
 
-      const recents = state.recentMoves.filter(x => x == newLocation);
+      const recents = state.recentMoves.filter(x => x == request.newLocation);
       if (recents.length === 0) {
 
         if (state.recentMoves.length > 3) {
           state.recentAlbums.splice(0, 1);
         }
-        state.recentMoves.push(newLocation);
+        state.recentMoves.push(request.newLocation);
       }
 
       dispatch('startOperation', operation);

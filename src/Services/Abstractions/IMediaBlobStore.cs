@@ -12,7 +12,7 @@ public interface IMediaBlobStore
         MediaBlobData request,
         CancellationToken cancellationToken);
 
-    Task MoveAsync(
+    Task<string> MoveAsync(
         MediaBlobData request,
         string newLocation,
         CancellationToken cancellationToken);

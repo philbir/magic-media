@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Configuration;
@@ -35,7 +36,6 @@ public class FileSystemMediaBlobStore : IMediaBlobStore
     {
         var filename = GetFilename(request);
 
-
         return new FileStream(filename, FileMode.Open);
     }
 
@@ -52,12 +52,12 @@ public class FileSystemMediaBlobStore : IMediaBlobStore
         await File.WriteAllBytesAsync(filename, data.Data, cancellationToken);
     }
 
-    public Task MoveAsync(
+    public Task<string> MoveAsync(
         MediaBlobData request,
         string newLocation,
         CancellationToken cancellationToken)
     {
-        var filename = GetFilename(request);
+        var existingFilename = GetFilename(request);
 
         var newPathFragments = new List<string> { _options.RootDirectory };
         newPathFragments.AddRange(newLocation.Split('/'));
@@ -69,11 +69,40 @@ public class FileSystemMediaBlobStore : IMediaBlobStore
             Directory.CreateDirectory(newDir);
         }
 
-        var newFilename = Path.Combine(newDir, Path.GetFileName(filename));
+        var name = Path.GetFileName(existingFilename);
 
-        File.Move(filename, newFilename, false);
+        var newPath = Path.Combine(newDir, name );
 
-        return Task.CompletedTask;
+        //Exists handling
+        if (File.Exists(newPath))
+        {
+            name = GetNewFilename(newDir, Path.GetFileName(existingFilename));
+            newPath = Path.Combine(newDir, name);
+        }
+
+        File.Move(existingFilename, newPath, false);
+
+        return Task.FromResult(name);
+    }
+
+    private string GetNewFilename(string path, string filename)
+    {
+        var nr = 1;
+
+        while (nr < 10)
+        {
+            var name = Path.GetFileNameWithoutExtension(filename);
+            var newName = $"{name}_{nr}{Path.GetExtension(filename)}";
+
+            if (!File.Exists(Path.Combine(path,newName)))
+            {
+                return newName;
+            }
+
+            nr++;
+        }
+
+        throw new ApplicationException("No no filename could be found");
     }
 
     public Task MoveToSpecialFolderAsync(
