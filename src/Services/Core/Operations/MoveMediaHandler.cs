@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml;
 using MagicMedia.Messaging;
 using MagicMedia.Store;
 using MassTransit;
@@ -116,7 +115,7 @@ public class MoveMediaHandler : IMoveMediaHandler
                         return Path.Combine(
                             newLocation,
                             media.DateTaken.Value.Year.ToString(),
-                            "By Month",
+                            "ByMonth",
                             $"{media.DateTaken.Value:MM} {media.DateTaken.Value:MMMM}");
                     }
                     else
