@@ -1,14 +1,14 @@
 <template>
-    <FilerbotImageEditor @saved="handleSaved" @close="handleClose" :src="src"></FilerbotImageEditor>
+    <FilerobotImageEditor @saved="handleSaved" @close="handleClose" :src="src"></FilerobotImageEditor>
 </template>
 
 
 <script>
 
-import FilerbotImageEditor from "../Common/FilerbotImageEditor"
+import FilerobotImageEditor from "../Common/FilerobotImageEditor"
 
 export default {
-    components: { FilerbotImageEditor },
+    components: { FilerobotImageEditor },
     props: {
         mediaId: String
     },

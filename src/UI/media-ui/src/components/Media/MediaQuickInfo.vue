@@ -15,7 +15,7 @@
       </v-col>
       <v-col sm="6" class="pa-0 ma-0">
         <v-row>
-          <v-col sm="12" class="pa-0 ma-0"> {{ faceTitle(face) }}</v-col>
+          <v-col class="pa-0 ma-0"> {{ faceTitle(face) }}</v-col>
         </v-row>
         <v-row>
           <v-col class="pa-0 ma-0">
@@ -66,7 +66,7 @@ export default {
 
 <style scoped>
 .container {
-  max-height: 400px;
+  max-height: 600px;
   overflow-x: auto;
 }
 .face-image {
@@ -75,7 +75,7 @@ export default {
   border-radius: 8px;
 }
 .face-row {
-  height: 84px;
+
   color: #fff;
   width: 250px;
   border-left: #272727 solid 3px;
