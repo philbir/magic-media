@@ -11,6 +11,7 @@ using MagicMedia.Store;
 using MagicMedia.Thumbnail;
 using MassTransit;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 
 namespace MagicMedia;
 
@@ -68,6 +69,19 @@ public class MediaEditorService : IMediaEditorService
         await _webPreviewImageService.SavePreviewImageAsync(media, cancellationToken);
 
         await _bus.Publish(new MediaEditedMessage(media.Id), cancellationToken);
+
+        return media;
+    }
+
+    public async Task<Media> RotateMediaAsync(Guid id, float degrees, CancellationToken cancellationToken)
+    {
+        Media media = await _mediaService.GetByIdAsync(id, cancellationToken);
+        EnsureOriginalBackup(media);
+
+        Stream data = _mediaService.GetMediaStream(media);
+        Image? image = await Image.LoadAsync(data, cancellationToken);
+
+        Image rotated = image.Clone(x => x.Rotate(degrees));
 
         return media;
     }
