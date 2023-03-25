@@ -1,17 +1,29 @@
 <template>
-  <media-info v-if="showInfoPage" :mediaId="media.id" @back="showInfoPage = false"></media-info>
+  <media-info
+    v-if="showInfoPage"
+    :mediaId="media.id"
+    @back="showInfoPage = false"
+  ></media-info>
 
   <div v-resize="onResize" v-else>
     <v-progress-linear v-if="loading" indeterminate color="blue" top />
-    <div v-else class="media-wrapper" @dblclick="onLongpress" v-touch="{
-      left: () => swipe('left'),
-      right: () => swipe('right'),
-      up: () => swipe('up'),
-      down: () => swipe('down')
-    }">
-      <GlobalEvents @keydown="keyPressed" :filter="
-        (event, handler, eventName) => event.target.tagName !== 'INPUT'
-      "></GlobalEvents>
+    <div
+      v-else
+      class="media-wrapper"
+      @dblclick="onLongpress"
+      v-touch="{
+        left: () => swipe('left'),
+        right: () => swipe('right'),
+        up: () => swipe('up'),
+        down: () => swipe('down')
+      }"
+    >
+      <GlobalEvents
+        @keydown="keyPressed"
+        :filter="
+          (event, handler, eventName) => event.target.tagName !== 'INPUT'
+        "
+      ></GlobalEvents>
 
       <div class="media-nav">
         <v-row>
@@ -34,19 +46,37 @@
             <v-icon @click="handleHome" color="white" class="mr-2">
               mdi-home
             </v-icon>
-            <span class="path d-none d-md-inline" v-for="(path, i) in pathInfo" :key="path.path"
-              @click="setFolderFilter(path.path)">{{ path.name }}
+            <span
+              class="path d-none d-md-inline"
+              v-for="(path, i) in pathInfo"
+              :key="path.path"
+              @click="setFolderFilter(path.path)"
+              >{{ path.name }}
               <span v-if="i < pathInfo.length - 1"> | </span>
             </span>
-            <span class="path d-none d-md-inline" v-if="media.dateTaken" @click="setDateFilter(media.dateTaken)">
+            <span
+              class="path d-none d-md-inline"
+              v-if="media.dateTaken"
+              @click="setDateFilter(media.dateTaken)"
+            >
               @ {{ media.dateTaken | dateformat("DATE_MED") }}
             </span>
           </v-col>
           <v-spacer v-if="$vuetify.breakpoint.mdAndUp"></v-spacer>
           <v-col class="mr-1" xs="11" lg="2" align="right">
-            <v-progress-circular indeterminate :size="22" :width="2" color="white" class="mr-2 mr-lg-4"
-              v-show="headerLoading"></v-progress-circular>
-            <v-icon :color="media.isFavorite ? 'red' : 'white'" class="mr-2 mr-lg-4" @click="toggleFavorite(media)">
+            <v-progress-circular
+              indeterminate
+              :size="22"
+              :width="2"
+              color="white"
+              class="mr-2 mr-lg-4"
+              v-show="headerLoading"
+            ></v-progress-circular>
+            <v-icon
+              :color="media.isFavorite ? 'red' : 'white'"
+              class="mr-2 mr-lg-4"
+              @click="toggleFavorite(media)"
+            >
               mdi-heart
             </v-icon>
 
@@ -54,23 +84,38 @@
               mdi-information-outline
             </v-icon>
 
-            <viewer-menu @faceAction="onFaceAction" @mediaAction="onMediaAction"></viewer-menu>
+            <viewer-menu
+              @faceAction="onFaceAction"
+              @mediaAction="onMediaAction"
+            ></viewer-menu>
           </v-col>
         </v-row>
       </div>
       <div class="foot">
         {{ geoLocation }}
       </div>
-      <img :src="imageSrc" @load="onImgLoaded" ref="img" v-if="media.mediaType === 'IMAGE'" />
+      <img
+        :src="imageSrc"
+        @load="onImgLoaded"
+        ref="img"
+        v-if="media.mediaType === 'IMAGE'"
+      />
       <div v-else class="video-wrapper">
-        <vue-core-video-player :src="video.src" :muted="false"></vue-core-video-player>
+        <vue-core-video-player
+          :src="video.src"
+          :muted="false"
+        ></vue-core-video-player>
       </div>
       <div v-if="image.loaded && showFaceBox">
         <template v-for="face in media.faces">
           <face-box :key="face.id" :face="face" :image="image"></face-box>
         </template>
       </div>
-      <AIObjects v-if="image.loaded && showObjects" :image="image" :objects="media.ai.objects"></AIObjects>
+      <AIObjects
+        v-if="image.loaded && showObjects"
+        :image="image"
+        :objects="media.ai.objects"
+      ></AIObjects>
 
       <div v-if="showQuickInfo" class="quick-info">
         <media-quick-info :faces="media.faces"></media-quick-info>
@@ -139,10 +184,10 @@ export default {
   },
   computed: {
     ...mapGetters("user", ["userActions"]),
-    headerLoading: function () {
+    headerLoading: function() {
       return this.$store.state.media.viewerHeaderLoading;
     },
-    thumbnail: function () {
+    thumbnail: function() {
       if (this.$store) {
         const existing = this.$store.state.media.list.filter(
           x => x.id === this.$route.params.id
@@ -155,10 +200,10 @@ export default {
 
       return null;
     },
-    pathInfo: function () {
+    pathInfo: function() {
       return parsePath(this.media.folder);
     },
-    caption: function () {
+    caption: function() {
       if (this.media.ai && this.media.ai.caption) {
         return {
           text: this.media.ai.caption.text,
@@ -168,36 +213,36 @@ export default {
 
       return null;
     },
-    video: function () {
+    video: function() {
       return {
         src: "/api/video/" + this.media.id
       };
     },
-    imageSrc: function () {
+    imageSrc: function() {
       return "/api/media/webimage/" + this.media.id;
     },
-    loading: function () {
+    loading: function() {
       return this.media === null;
     },
-    media: function () {
+    media: function() {
       return this.$store.state.media.current;
     },
-    showFaceBox: function () {
+    showFaceBox: function() {
       return this.$store.state.media.viewer.showFaceBox;
     },
-    showObjects: function () {
+    showObjects: function() {
       return this.$store.state.media.viewer.showObjects;
     },
-    showQuickInfo: function () {
+    showQuickInfo: function() {
       return this.$store.state.media.viewer.showFaceList;
     },
-    geoLocation: function () {
+    geoLocation: function() {
       if (this.media.geoLocation && this.media.geoLocation.address) {
         return this.media.geoLocation.address.name;
       }
       return null;
     },
-    box: function () {
+    box: function() {
       const media = this.media;
 
       if (media) {
@@ -226,7 +271,7 @@ export default {
   },
   methods: {
     ...mapActions("media", ["setFilter"]),
-    browserBackClicked: function (e) {
+    browserBackClicked: function(e) {
       e.preventDefault();
       return false;
     },
@@ -251,7 +296,7 @@ export default {
     async onLongpress() {
       this.$store.dispatch("media/share", [this.media]);
     },
-    swipe: function (direction) {
+    swipe: function(direction) {
       switch (direction) {
         case "left":
           this.navigate(+1);
@@ -267,13 +312,13 @@ export default {
           break;
       }
     },
-    handlePrevious: function () {
+    handlePrevious: function() {
       this.navigate(-1);
     },
-    handleNext: function () {
+    handleNext: function() {
       this.navigate(+1);
     },
-    navigate: function (step) {
+    navigate: function(step) {
       this.image.loaded = false;
       var nextId = this.$store.getters["next"](step);
       if (nextId) {
@@ -282,18 +327,18 @@ export default {
         this.handleHome();
       }
     },
-    handleHome: function () {
+    handleHome: function() {
       this.$store.dispatch("media/close");
     },
-    onMouseMove: function (e) {
+    onMouseMove: function(e) {
       if (this.media.mediaType === "IMAGE") {
         this.showStripe = e.clientY > 300;
       }
     },
-    toggleFavorite: function () {
+    toggleFavorite: function() {
       this.$store.dispatch("media/toggleFavorite", this.media);
     },
-    keyPressed: function (e) {
+    keyPressed: function(e) {
       switch (e.which) {
         case 37:
           this.navigate(-1);
@@ -376,7 +421,7 @@ export default {
     onResize() {
       this.setImage();
     },
-    onFaceAction: function (action) {
+    onFaceAction: function(action) {
       switch (action) {
         case "APPROVE_ALL":
           this.approveAll();
@@ -392,7 +437,7 @@ export default {
           break;
       }
     },
-    onMediaAction: function (action) {
+    onMediaAction: function(action) {
       switch (action) {
         case "RECYCLE":
           this.recycle();
@@ -405,16 +450,16 @@ export default {
           break;
       }
     },
-    approveAll: function () {
+    approveAll: function() {
       this.$store.dispatch("face/approveAllByMedia", this.media.id);
     },
-    unassignPredicted: function () {
+    unassignPredicted: function() {
       this.$store.dispatch("face/unAssignPredictedByMedia", this.media.id);
     },
-    deleteUnassigned: function () {
+    deleteUnassigned: function() {
       this.$store.dispatch("face/deleteUnassignedByMedia", this.media.id);
     },
-    predictPersons: function () {
+    predictPersons: function() {
       this.$store.dispatch("face/predictPersonsByMedia", this.media.id);
     },
     recycle() {
@@ -424,22 +469,21 @@ export default {
     analyseAI() {
       this.$store.dispatch("media/analyseAI", this.media.id);
     },
-    toggleInfo: function () {
+    toggleInfo: function() {
       this.showInfoPage = !this.showInfoPage;
     },
-    openEditor: function () {
+    openEditor: function() {
       this.$router.push({ name: "MediaEditor", params: { id: this.media.id } });
       this.$store.dispatch("media/close");
-
     },
-    setFolderFilter: function (folder) {
+    setFolderFilter: function(folder) {
       this.setFilter({
         key: "folder",
         value: folder
       });
       this.handleHome();
     },
-    setDateFilter: function (date) {
+    setDateFilter: function(date) {
       var dateFilter = DateTime.fromISO(date).toISODate();
       this.setFilter({
         key: "date",
