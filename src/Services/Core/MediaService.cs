@@ -81,7 +81,6 @@ public class MediaService : IMediaService
               cancellationToken);
         }
 
-
         if (request.SaveMode == SaveMediaMode.CreateNew)
         {
             if (request.Media.MediaType == MediaType.Image)
@@ -116,6 +115,8 @@ public class MediaService : IMediaService
 
         await _bus.Publish(new NewMediaAddedMessage(request.Media.Id));
     }
+
+
 
     public async Task<MediaThumbnail?> GetThumbnailAsync(Guid mediaId, ThumbnailSizeName size, CancellationToken cancellationToken)
     {
@@ -238,6 +239,12 @@ public class MediaService : IMediaService
                 {
                     Type = MediaBlobType.VideoPreview,
                     Filename = $"720P_{media.Id}.mp4"
+                };
+            case MediaFileType.OriginalBackup:
+                return new MediaBlobData
+                {
+                    Type = MediaBlobType.Backup,
+                    Filename = $"{media.Id}{Path.GetExtension(media.Filename)}"
                 };
             default:
                 throw new ArgumentException($"Unknown type: {type}");

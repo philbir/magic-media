@@ -52,7 +52,6 @@ public class MediaRepairService : IMediaRepairService
 
         IEnumerable<MediaFileEntry> files = snapshot.Entries.Where(x => x.Name.EndsWith(media.Filename));
 
-
         foreach (MediaFileEntry file in files)
         {
             var repair = new MediaRepair { Type = "UpdateFolder", Title = "Update media folder" };
@@ -66,19 +65,18 @@ public class MediaRepairService : IMediaRepairService
                 "Resolved_Filename",
                 file.Name) { AddToAction = true });
 
-            /*
-            var fileName = Path.Combine(_fileSystemStoreOptions.RootDirectory + file.Folder, file.Name);
 
+            var fileName = Path.Combine(_fileSystemStoreOptions.RootDirectory + file.Folder, file.Name);
             var dataUrl = await GetPreviewDataUrlAsync(fileName, cancellationToken);
 
             repair.Parameters.Add(new(
                 "Found_Image",
-                dataUrl));*/
+                dataUrl));
 
             repairMove.Parameters.AddRange(repair.Parameters.ToList());
 
             check.Repairs.Add(repair);
-            //check.Repairs.Add(repairMove);
+            check.Repairs.Add(repairMove);
         }
     }
 
@@ -136,13 +134,7 @@ public class MediaRepairService : IMediaRepairService
 
         using var ms = new MemoryStream();
         await image.SaveAsWebpAsync(ms, cancellationToken);
-
         var data = await File.ReadAllBytesAsync(fileName, cancellationToken);
-
-        /*await File.WriteAllBytesAsync(
-            Path.Combine(_fileSystemStoreOptions.RootDirectory + "/_RECOVERY", Guid.NewGuid() + ".webp" ),
-            data,
-            cancellationToken);*/
 
         return data.ToDataUrl("webp");
     }

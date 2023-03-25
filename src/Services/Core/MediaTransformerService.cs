@@ -86,4 +86,16 @@ public class MediaTransformService : IMediaTransformService
         // Video not yet supported
         return null;
     }
+
+    public async Task<Media> RotateMediaAsync(Guid id, float degrees, CancellationToken cancellationToken)
+    {
+        Media media = await _mediaService.GetByIdAsync(id, cancellationToken);
+        Stream data = _mediaService.GetMediaStream(media);
+
+        Image? image = await Image.LoadAsync(data, cancellationToken);
+
+        Image rotated = image.Clone(x => x.Rotate(degrees));
+
+        return null;
+    }
 }

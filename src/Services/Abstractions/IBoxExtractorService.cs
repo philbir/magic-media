@@ -20,3 +20,4 @@ public interface IBoxExtractorService
         ThumbnailSizeName thumbnailSize,
         CancellationToken cancellationToken);
 }
+

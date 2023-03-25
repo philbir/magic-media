@@ -27,7 +27,7 @@ public class Media
 
     public MediaDimension? Dimension { get; set; }
 
-    public int FaceCount { get; set; }
+    public int? FaceCount { get; set; }
 
     public IEnumerable<MediaThumbnail>? Thumbnails { get; set; }
 

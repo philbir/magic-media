@@ -81,7 +81,7 @@ const mediaModule = {
       date: null,
       albumId: null,
       geoRadius: null,
-      folder: null,
+      folder: window.location.href.startsWith("http://local") ?  "00_LocalDev" : null,
       text: null
     },
     recentMoves: [],

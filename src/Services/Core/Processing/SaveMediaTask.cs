@@ -84,7 +84,6 @@ public class SaveMediaTask : IMediaProcessorTask
             Hashes = context.Hashes
         };
 
-
         if (context.Thumbnails is { })
         {
             media.Thumbnails = context.Thumbnails.Select(x => new MediaThumbnail

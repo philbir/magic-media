@@ -5,5 +5,6 @@ public enum MediaFileType
     Original,
     WebPreview,
     VideoGif,
-    Video720
+    Video720,
+    OriginalBackup
 }

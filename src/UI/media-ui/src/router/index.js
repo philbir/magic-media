@@ -14,6 +14,7 @@ import MediaFilter from "../components/Media/MediaFilter";
 import PersonFilter from "../components/Person/PersonFilter";
 import FaceList from "../components/Face/FaceList.vue";
 import MediaList from "../components/Media/MediaList";
+import EditMedia from "../components/Media/EditMedia";
 import PersonList from "../components/Person/PersonList";
 import UserList from "../components/User/UserList";
 import UserFilter from "../components/User/UserFilter";
@@ -74,6 +75,16 @@ const routes = [
     name: "MediaViewLauncher",
     components: {
       default: MediaViewLaucher,
+      left: null,
+      appbar: DefaultAppBar
+    },
+    meta: { hideSidebar: true }
+  },
+  {
+    path: "/media/edit/:id",
+    name: "MediaEditor",
+    components: {
+      default: EditMedia,
       left: null,
       appbar: DefaultAppBar
     },

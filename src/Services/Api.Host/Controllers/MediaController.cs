@@ -11,15 +11,18 @@ public class MediaController : Controller
 {
     private readonly IMediaBlobStore _mediaBlobStore;
     private readonly IMediaService _mediaService;
+    private readonly IMediaEditorService _mediaEditorService;
     private readonly IThumbnailBlobStore _thumbnailBlobStore;
 
     public MediaController(
         IMediaBlobStore mediaBlobStore,
         IMediaService mediaService,
+        IMediaEditorService mediaEditorService,
         IThumbnailBlobStore thumbnailBlobStore)
     {
         _mediaBlobStore = mediaBlobStore;
         _mediaService = mediaService;
+        _mediaEditorService = mediaEditorService;
         _thumbnailBlobStore = thumbnailBlobStore;
     }
 
@@ -40,6 +43,34 @@ public class MediaController : Controller
         Response.Headers["X-Sw-Cache-Image"] = "true";
 
         return new FileContentResult(data.Data, "image/webp") { EnableRangeProcessing = true };
+    }
+
+    [Authorize(AuthorizationPolicies.Names.MediaEdit)]
+    [HttpPost]
+    [Route("editor/save/{id}")]
+    public async Task<IActionResult> SaveEditedImageAsync(
+        Guid id,
+        IFormFile file,
+        CancellationToken cancellationToken)
+    {
+        Media media = await _mediaEditorService.SaveEditedImageAsync(
+            id,
+            file.ContentType,
+            file.OpenReadStream(),
+            cancellationToken);
+
+        return Ok();
+    }
+
+    [Authorize(AuthorizationPolicies.Names.MediaView)]
+    [HttpGet]
+    [Route("original/{id}")]
+    public async Task<IActionResult> GetOriginalImageAsync(Guid id, CancellationToken cancellationToken)
+    {
+        Media media = await _mediaService.GetByIdAsync(id, cancellationToken);
+        Stream stream = _mediaService.GetMediaStream(media);
+
+        return new FileStreamResult(stream, "image/jpg");
     }
 
     //[HttpGet]

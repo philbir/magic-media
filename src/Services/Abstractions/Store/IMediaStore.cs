@@ -76,4 +76,9 @@ public interface IMediaStore
         CancellationToken cancellationToken);
 
     Task DeleteMediaAIAsync(Guid mediaId, CancellationToken cancellationToken);
+
+    Task UpdateThumbnailsAsync(
+        Media media,
+        IEnumerable<MediaThumbnail> thumbnails,
+        CancellationToken cancellationToken);
 }
