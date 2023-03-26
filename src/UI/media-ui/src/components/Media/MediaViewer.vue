@@ -336,6 +336,8 @@ export default {
     },
     navigate: function(step) {
       this.image.loaded = false;
+      this.rotate = 0;
+      this.rotateClass = "";
       var nextId = this.$store.getters["next"](step);
       if (nextId) {
         this.$store.dispatch("media/show", nextId);

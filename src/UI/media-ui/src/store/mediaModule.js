@@ -434,13 +434,10 @@ const mediaModule = {
       dispatch('startOperation', operation);
     },
     async rotate({ dispatch }, input) {
-      console.log(input);
-      const result = await rotateMedia(input);
+      await rotateMedia(input);
       dispatch("show", input.id);
-      console.log(result);
     },
     async share({ dispatch }, medias) {
-
       if (!navigator.share) {
         addSnack(dispatch, `Sharing is not possible on this device`, "ERROR");
         return;

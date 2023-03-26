@@ -15,13 +15,15 @@ import {
 const albumModule = {
   namespaced: true,
   state: () => ({
+    loading: false,
     albums: [],
     recentAlbums: [],
     allAlbums: [],
     filter: {
       searchText: "",
-      pageSize: 25,
-      pageNr: 0
+      pageSize: 50,
+      pageNr: 0,
+      persons: []
     }
   }),
   mutations: {
@@ -69,9 +71,13 @@ const albumModule = {
     },
     SEARCH_ITEMS_LOADED(state, result) {
       Vue.set(state, "albums", [...result.items]);
+      state.loading = false;
     },
     FILTER_SET(state, filter) {
-      state.filter = { ...this.state.filter, ...filter };
+      state.filter = { ...state.filter, ...filter };
+    },
+    SET_LOADING(state, loading) {
+      state.loading = loading
     }
   },
   actions: {
@@ -128,6 +134,7 @@ const albumModule = {
       }
     },
     async search({ state, commit, dispatch }) {
+      commit("SET_LOADING", true)
       const result = await excuteGraphQL(() => searchAlbums(state.filter), dispatch);
 
       if (result.success) {

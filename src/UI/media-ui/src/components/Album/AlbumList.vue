@@ -1,6 +1,7 @@
 <template>
   <div>
-    <v-container>
+    <v-progress-linear v-if="loading" indeterminate color="blue" top />
+    <v-container v-else>
       <v-row style="overflow-x: auto; width: 100%; height: 90vh">
         <v-col v-for="album in albums" :key="album.id" sm="3" lg="4">
           <v-card width="400" @click="viewAlbum(album.id)">
@@ -55,37 +56,40 @@ export default {
   data() {
     return {
       showEditDialog: false,
-      editAlbumId: null,
+      editAlbumId: null
     };
   },
   computed: {
-    filters: function () {
+    filters: function() {
       return this.$store.state.album.filter;
     },
-    albums: function () {
+    albums: function() {
       return this.$store.state.album.albums;
     },
+    loading: function() {
+      return this.$store.state.album.loading;
+    }
   },
   methods: {
-    imageUrl: function (album) {
+    imageUrl: function(album) {
       if (album.thumbnail) {
         return album.thumbnail.dataUrl;
       } else {
         return null;
       }
     },
-    editClick: function (id) {
+    editClick: function(id) {
       this.editAlbumId = id;
       this.showEditDialog = true;
     },
-    flagUrl: function (country) {
+    flagUrl: function(country) {
       return getFlagUrl(country.code);
     },
-    viewAlbum: function (id) {
+    viewAlbum: function(id) {
       this.$store.dispatch("media/viewAlbum", id);
       this.$router.push({ name: "Home" });
-    },
-  },
+    }
+  }
 };
 </script>
 

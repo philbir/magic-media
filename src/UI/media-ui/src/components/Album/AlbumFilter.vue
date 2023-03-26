@@ -4,6 +4,7 @@
       v-model="searchText"
       label="Album"
       prepend-inner-icon="mdi-magnify"
+      clearable
     ></v-text-field>
 
     <FilterList
@@ -27,15 +28,15 @@ export default {
   created() {},
   data() {
     return {
-      searchText: "",
+      searchText: ""
     };
   },
   watch: {
-    searchText: debounce(function (newValue) {
+    searchText: debounce(function(newValue) {
       this.filter({
-        searchText: newValue,
+        searchText: newValue
       });
-    }, 300),
+    }, 300)
   },
   computed: {
     selectedPersons: {
@@ -44,22 +45,21 @@ export default {
       },
       get() {
         return this.$store.state.album.filter.persons;
-      },
+      }
     },
-    persons: function () {
-      return this.$store.state.person.persons.map((p) => {
+    persons: function() {
+      return this.$store.state.person.persons.map(p => {
         return {
           name: p.name,
-          id: p.id,
+          id: p.id
         };
       });
-    },
+    }
   },
   methods: {
-    ...mapActions("album", ["filter"]),
-  },
+    ...mapActions("album", ["filter"])
+  }
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
