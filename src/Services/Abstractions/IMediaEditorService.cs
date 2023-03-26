@@ -13,4 +13,9 @@ public interface IMediaEditorService
         string type,
         Stream stream,
         CancellationToken cancellationToken);
+
+    Task<Media> RotateMediaAsync(
+        Guid id,
+        int degrees, 
+        CancellationToken cancellationToken);
 }

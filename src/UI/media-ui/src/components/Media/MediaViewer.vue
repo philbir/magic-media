@@ -76,6 +76,7 @@
               v-if="rotate != 0"
               color="green lighten-2"
               class="mr-2 mr-lg-2"
+              @click="handleSaveRotation"
             >
               mdi-content-save-check-outline
             </v-icon>
@@ -496,7 +497,6 @@ export default {
     },
     handleRotate: function() {
       const rotations = [0, 90, 180, 270];
-
       let index = rotations.indexOf(this.rotate);
       index++;
 
@@ -506,6 +506,12 @@ export default {
 
       this.rotate = rotations[index];
       this.rotateClass = "d" + this.rotate;
+    },
+    handleSaveRotation: function() {
+      this.$store.dispatch("media/rotate", {
+        id: this.media.id,
+        degrees: this.rotate
+      });
     },
     setFolderFilter: function(folder) {
       this.setFilter({

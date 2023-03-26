@@ -12,7 +12,8 @@ import {
   searchMedia,
   toggleFavorite,
   updateMetadata,
-  reScanFaces
+  reScanFaces,
+  rotateMedia
 } from "../services/mediaService";
 
 import MediaFilterManager from '../services/mediaFilterManager';
@@ -81,7 +82,7 @@ const mediaModule = {
       date: null,
       albumId: null,
       geoRadius: null,
-      folder: window.location.href.startsWith("http://local") ?  "00_LocalDev" : null,
+      folder: window.location.href.startsWith("http://local") ? "00_LocalDev" : null,
       text: null
     },
     recentMoves: [],
@@ -431,6 +432,12 @@ const mediaModule = {
         ids: input.ids,
       }
       dispatch('startOperation', operation);
+    },
+    async rotate({ dispatch }, input) {
+      console.log(input);
+      const result = await rotateMedia(input);
+      dispatch("show", input.id);
+      console.log(result);
     },
     async share({ dispatch }, medias) {
 

@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Face;
 using MagicMedia.Messaging;
+using MagicMedia.Security;
 using MagicMedia.Store;
 using MagicMedia.Thumbnail;
 using MassTransit;
@@ -47,7 +48,6 @@ public class MediaEditorService : IMediaEditorService
         CancellationToken cancellationToken)
     {
         Media media = await _mediaService.GetByIdAsync(id, cancellationToken);
-
         EnsureOriginalBackup(media);
 
         Stream existing = _mediaService.GetMediaStream(media);
@@ -55,25 +55,15 @@ public class MediaEditorService : IMediaEditorService
         Image editedImage = await Image.LoadAsync(stream, cancellationToken);
         editedImage.Metadata.ExifProfile = origImage.Metadata.ExifProfile;
 
-        var originalFilename = _mediaService.GetFilename(media, MediaFileType.Original);
-        File.Delete(originalFilename);
-
-        await editedImage.SaveAsJpegAsync(originalFilename, cancellationToken);
-
-        var fileInfo = new FileInfo(originalFilename);
-        media.Size = fileInfo.Length;
-
-        await ResetImageAsync(media, editedImage, cancellationToken);
-
-        await _store.UpdateAsync(media, cancellationToken);
-        await _webPreviewImageService.SavePreviewImageAsync(media, cancellationToken);
-
-        await _bus.Publish(new MediaEditedMessage(media.Id), cancellationToken);
+        await SaveAndResetNewImage(media, editedImage, cancellationToken);
 
         return media;
     }
 
-    public async Task<Media> RotateMediaAsync(Guid id, float degrees, CancellationToken cancellationToken)
+    public async Task<Media> RotateMediaAsync(
+        Guid id,
+        int degrees,
+        CancellationToken cancellationToken)
     {
         Media media = await _mediaService.GetByIdAsync(id, cancellationToken);
         EnsureOriginalBackup(media);
@@ -83,10 +73,33 @@ public class MediaEditorService : IMediaEditorService
 
         Image rotated = image.Clone(x => x.Rotate(degrees));
 
+        await SaveAndResetNewImage(media, rotated, cancellationToken);
+
         return media;
     }
 
-    private async Task ResetImageAsync(Media media, Image image, CancellationToken cancellationToken)
+    private async Task SaveAndResetNewImage(Media media, Image image, CancellationToken cancellationToken)
+    {
+        var originalFilename = _mediaService.GetFilename(media, MediaFileType.Original);
+        File.Delete(originalFilename);
+
+        await image.SaveAsJpegAsync(originalFilename, cancellationToken);
+
+        var fileInfo = new FileInfo(originalFilename);
+        media.Size = fileInfo.Length;
+
+        await ResetImageAsync(media, image, cancellationToken);
+
+        await _store.UpdateAsync(media, cancellationToken);
+        await _webPreviewImageService.SavePreviewImageAsync(media, cancellationToken);
+
+        await _bus.Publish(new MediaEditedMessage(media.Id), cancellationToken);
+    }
+
+    private async Task ResetImageAsync(
+        Media media,
+        Image image,
+        CancellationToken cancellationToken)
     {
         media.Dimension = new MediaDimension { Height = image.Height, Width = image.Width };
         media.FaceCount = null;
@@ -118,6 +131,5 @@ public class MediaEditorService : IMediaEditorService
         {
             File.Copy(originalLocation, backupLocation);
         }
-
     }
 }
