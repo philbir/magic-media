@@ -14,6 +14,7 @@ import MUTATION_UPDATE_METADATA from "../graphql/Media/UpdateMediaMetadata.gql";
 import MUTATION_RESCAN_FACES from "../graphql/Media/ReScanFaces.gql";
 import MUTATION_ANALYSE_MEDIA from "../graphql/Media/AnalyseMedia.gql";
 import MUTATION_EXECUTE_MEDIA_REPAIR from "../graphql/Media/ExecuteMediaRepair.gql";
+import MUTATION_ROTATE_MEDIA from "../graphql/Media/RotateMedia.gql";
 import QUERY_GEO_LOCATION_CLUSTERS from "../graphql/Media/geoLocationClusters.gql";
 import QUERY_SIMILAR_GROUPS from "../graphql/Media/GetSimilarGroups.gql"
 import QUERY_SEARCH_FACETS from "../graphql/SearchFacets.gql";
@@ -125,6 +126,16 @@ export const executeMediaRepair = async input => {
     }
   });
 };
+
+export const rotateMedia = async input => {
+  return await apollo.mutate({
+    mutation: MUTATION_ROTATE_MEDIA,
+    variables: {
+      input: input
+    }
+  });
+};
+
 
 
 export const reScanFaces = async input => {

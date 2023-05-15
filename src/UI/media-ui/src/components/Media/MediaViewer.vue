@@ -73,6 +73,18 @@
               v-show="headerLoading"
             ></v-progress-circular>
             <v-icon
+              v-if="rotate != 0"
+              color="green lighten-2"
+              class="mr-2 mr-lg-2"
+              @click="handleSaveRotation"
+            >
+              mdi-content-save-check-outline
+            </v-icon>
+            <v-icon color="white" class="mr-2 mr-lg-4" @click="handleRotate">
+              mdi-rotate-right
+            </v-icon>
+
+            <v-icon
               :color="media.isFavorite ? 'red' : 'white'"
               class="mr-2 mr-lg-4"
               @click="toggleFavorite(media)"
@@ -98,6 +110,8 @@
         :src="imageSrc"
         @load="onImgLoaded"
         ref="img"
+        :class="rotateClass"
+        class="media-image"
         v-if="media.mediaType === 'IMAGE'"
       />
       <div v-else class="video-wrapper">
@@ -106,13 +120,13 @@
           :muted="false"
         ></vue-core-video-player>
       </div>
-      <div v-if="image.loaded && showFaceBox">
+      <div v-if="image.loaded && showFaceBox && rotate == 0">
         <template v-for="face in media.faces">
           <face-box :key="face.id" :face="face" :image="image"></face-box>
         </template>
       </div>
       <AIObjects
-        v-if="image.loaded && showObjects"
+        v-if="image.loaded && showObjects && rotate == 0"
         :image="image"
         :objects="media.ai.objects"
       ></AIObjects>
@@ -166,7 +180,9 @@ export default {
       showInfoPage: false,
       showStripe: false,
       mediaId: this.$route.params.id,
-      windowWidth: window.innerWidth
+      windowWidth: window.innerWidth,
+      rotateClass: "",
+      rotate: 0
     };
   },
   mounted() {
@@ -320,6 +336,8 @@ export default {
     },
     navigate: function(step) {
       this.image.loaded = false;
+      this.rotate = 0;
+      this.rotateClass = "";
       var nextId = this.$store.getters["next"](step);
       if (nextId) {
         this.$store.dispatch("media/show", nextId);
@@ -410,6 +428,12 @@ export default {
         case 73: //i
           this.toggleInfo();
           break;
+        case 88: //x
+          this.openEditor();
+          break;
+        case 84: //t
+          this.handleRotate();
+          break;
         default:
           console.log(e.which);
           break;
@@ -469,6 +493,28 @@ export default {
     toggleInfo: function() {
       this.showInfoPage = !this.showInfoPage;
     },
+    openEditor: function() {
+      this.$router.push({ name: "MediaEditor", params: { id: this.media.id } });
+      this.$store.dispatch("media/close");
+    },
+    handleRotate: function() {
+      const rotations = [0, 90, 180, 270];
+      let index = rotations.indexOf(this.rotate);
+      index++;
+
+      if (index >= rotations.length || index < 0) {
+        index = 0;
+      }
+
+      this.rotate = rotations[index];
+      this.rotateClass = "d" + this.rotate;
+    },
+    handleSaveRotation: function() {
+      this.$store.dispatch("media/rotate", {
+        id: this.media.id,
+        degrees: this.rotate
+      });
+    },
     setFolderFilter: function(folder) {
       this.setFilter({
         key: "folder",
@@ -493,12 +539,32 @@ export default {
   background-color: #1b1b1c;
   height: 100vh;
 }
+
 .media-wrapper img {
-  height: 100vh;
+  object-fit: cover;
   position: absolute;
+  max-width: 100%;
+  max-height: 100%;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+.media-image {
+  transition-duration: 1s;
+  transition-property: transform;
+}
+
+img.d90 {
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+img.d180 {
+  transform: translate(-50%, -50%) rotate(180deg);
+}
+
+img.d270 {
+  transform: translate(-50%, -50%) rotate(270deg);
 }
 
 .media-nav {

@@ -57,6 +57,7 @@ public static class MagicMediaServiceCollectionExtensions
 
         services.AddSingleton<IMediaSearchService, MediaSearchService>();
         services.AddSingleton<IMediaService, MediaService>();
+        services.AddSingleton<IMediaEditorService, MediaEditorService>();
         services.AddSingleton<IVideoPlayerService, VideoPlayerService>();
         services.AddSingleton<IVideoProcessingService, VideoProcessingService>();
         services.AddSingleton<IMediaAIService, MediaAIService>();
@@ -75,6 +76,7 @@ public static class MagicMediaServiceCollectionExtensions
         services.AddSingleton<IMediaTransformService, MediaTransformService>();
         services.AddSingleton<IMediaConsistencyService, MediaConsistencyService>();
         services.AddSingleton<IMediaRepairService, MediaRepairService>();
+        services.AddSingleton<IWebPreviewImageService, WebPreviewImageService>();
 
         return services;
     }

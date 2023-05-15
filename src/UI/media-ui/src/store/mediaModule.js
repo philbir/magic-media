@@ -12,7 +12,8 @@ import {
   searchMedia,
   toggleFavorite,
   updateMetadata,
-  reScanFaces
+  reScanFaces,
+  rotateMedia
 } from "../services/mediaService";
 
 import MediaFilterManager from '../services/mediaFilterManager';
@@ -81,7 +82,7 @@ const mediaModule = {
       date: null,
       albumId: null,
       geoRadius: null,
-      folder: null,
+      folder: window.location.href.startsWith("http://local") ? "00_LocalDev" : null,
       text: null
     },
     recentMoves: [],
@@ -310,7 +311,7 @@ const mediaModule = {
         );
       }
     },
-    async moveSelected({ state, dispatch, getters }, newLocation) {
+    async moveSelected({ state, dispatch, getters }, request) {
       if (!getters["canEdit"])
         return;
 
@@ -326,20 +327,21 @@ const mediaModule = {
         type: 0,
         api: moveMedia({
           ids,
-          newLocation,
+          newLocation: request.newLocation,
+          rule: request.rule,
           operationId: uuidv4()
         }),
         dataField: "moveMedia",
         ids: ids,
       }
 
-      const recents = state.recentMoves.filter(x => x == newLocation);
+      const recents = state.recentMoves.filter(x => x == request.newLocation);
       if (recents.length === 0) {
 
         if (state.recentMoves.length > 3) {
           state.recentAlbums.splice(0, 1);
         }
-        state.recentMoves.push(newLocation);
+        state.recentMoves.push(request.newLocation);
       }
 
       dispatch('startOperation', operation);
@@ -431,8 +433,11 @@ const mediaModule = {
       }
       dispatch('startOperation', operation);
     },
+    async rotate({ dispatch }, input) {
+      await rotateMedia(input);
+      dispatch("show", input.id);
+    },
     async share({ dispatch }, medias) {
-
       if (!navigator.share) {
         addSnack(dispatch, `Sharing is not possible on this device`, "ERROR");
         return;

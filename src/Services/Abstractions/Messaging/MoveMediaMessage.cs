@@ -10,4 +10,5 @@ public class MoveMediaMessage
     public string? NewLocation { get; set; }
 
     public string? OperationId { get; set; }
+    public string? Rule { get; set; }
 }

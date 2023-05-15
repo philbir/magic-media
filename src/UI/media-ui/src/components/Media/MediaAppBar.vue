@@ -320,7 +320,7 @@ export default {
             }
           }
           break;
-        case 88: //x
+        case 89: //y
           this.$store.dispatch("person/buildModel");
           break;
         case 68: //d

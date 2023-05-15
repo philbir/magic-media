@@ -8,5 +8,6 @@ public enum MediaBlobType
     Recycled,
     Duplicate,
     Imported,
-    Inbox
+    Inbox,
+    Backup
 }

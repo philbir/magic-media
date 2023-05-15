@@ -1,0 +1,7 @@
+mutation rotateMedia($input: RotateMediaInput!) {
+  rotateMedia(input: $input) {
+    media {
+      id
+    }
+  }
+}

@@ -127,6 +127,31 @@ public class MediaMutations
 
         return new ExecuteMediaRepairPayload(media);
     }
+
+    public async Task<RotateMediaPayload> RotateMediaAsync(
+        [Service] IMediaEditorService service,
+        RotateMediaInput input,
+        CancellationToken cancellationToken)
+    {
+        Media media = await service.RotateMediaAsync(
+            input.Id,
+            input.Degrees,
+            cancellationToken);
+
+        return new RotateMediaPayload(media);
+    }
+}
+
+public record RotateMediaInput(Guid Id, int Degrees);
+
+public class RotateMediaPayload
+{
+    public RotateMediaPayload(Media media)
+    {
+        Media = media;
+    }
+
+    public Media Media { get; set; }
 }
 
 public class ExecuteMediaRepairPayload

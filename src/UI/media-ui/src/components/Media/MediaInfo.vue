@@ -252,7 +252,8 @@
                 </v-col>
               </v-row>
             </v-tab-item>
-            <v-tab-item value="files">
+            <v-tab-item value="files"
+              >e
               <v-row
                 v-for="file in media.files"
                 :key="file.filename"

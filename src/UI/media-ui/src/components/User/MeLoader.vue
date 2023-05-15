@@ -8,12 +8,22 @@
           <v-row align="center" justify="center">
             <v-col class="d-flex justify-center">
               <div class="text-center">
-                <v-progress-circular
-                  :size="28"
-                  color="blue"
-                  indeterminate
-                ></v-progress-circular>
-                {{ message }}
+                <v-row>
+                  <v-col>
+                    <v-progress-circular
+                      :size="110"
+                      color="blue"
+                      indeterminate
+                    ></v-progress-circular>
+                  </v-col>
+                </v-row>
+
+                <v-row>
+                  <v-subheader class="text-center" style="margin: auto"
+                    >Loading the magic... {{ message }}</v-subheader
+                  >
+                </v-row>
+                <br />
               </div>
             </v-col>
           </v-row>
@@ -27,22 +37,22 @@
 import { mapState } from "vuex";
 export default {
   data: () => ({
-    message: "Authenticating user...",
+    message: "Authenticating user..."
   }),
   computed: {
     ...mapState("user", ["me", "error"]),
-    ready: function () {
+    ready: function() {
       return this.me != null && !this.$route.meta.isRoot;
     },
-    isRootSlot: function () {
+    isRootSlot: function() {
       return this.error || this.$route.meta.isRoot;
-    },
+    }
   },
   created() {
     this.$store.dispatch("user/getMe");
   },
   watch: {
-    me: function (newValue) {
+    me: function(newValue) {
       if (newValue) {
         this.message = "Loading data...";
         this.$store.dispatch("person/getAll").then(() => {
@@ -57,15 +67,13 @@ export default {
         this.$store.dispatch("album/getAll");
       }
     },
-    error: function (newValue) {
+    error: function(newValue) {
       if (newValue && !this.$route.meta.isRoot) {
         this.$router.push({ name: "Error" });
       }
-    },
-  },
+    }
+  }
 };
 </script>
 
-<style>
-</style>
-
+<style></style>

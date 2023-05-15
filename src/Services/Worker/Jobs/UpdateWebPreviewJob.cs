@@ -20,21 +20,20 @@ namespace MagicMedia.Jobs;
 
 public class UpdateWebPreviewJob : IJob
 {
-    private readonly IMediaService _mediaService;
     private readonly MediaStoreContext _storeContext;
     private readonly IMediaStore _store;
+    private readonly IWebPreviewImageService _webPreviewImageService;
     private readonly IWebPImageConverter _converter;
 
     public UpdateWebPreviewJob(
         IMediaService mediaService,
         MediaStoreContext storeContext,
         IMediaStore store,
-        IWebPImageConverter converter)
+        IWebPreviewImageService webPreviewImageService)
     {
-        _mediaService = mediaService;
         _storeContext = storeContext;
         _store = store;
-        _converter = converter;
+        _webPreviewImageService = webPreviewImageService;
     }
 
     public async Task Execute(IJobExecutionContext context)
@@ -61,7 +60,7 @@ public class UpdateWebPreviewJob : IJob
             try
             {
                 Console.WriteLine($"Create preview for {media.Id}");
-                await SaveWebPreviewAsync(media, context.CancellationToken);
+                await _webPreviewImageService.SavePreviewImageAsync(media, context.CancellationToken);
 
                 await _store.RemoveTagsByDefinitionIdAsync(media.Id, new[] { tagId.Id }, context.CancellationToken);
             }
@@ -70,34 +69,5 @@ public class UpdateWebPreviewJob : IJob
                 Console.WriteLine(e);
             }
         }
-    }
-
-    private async Task SaveWebPreviewAsync(Media media, CancellationToken cancellationToken)
-    {
-        var filename = _mediaService.GetFilename(media, MediaFileType.Original);
-        var webPFilename = _mediaService.GetFilename(media, MediaFileType.WebPreview);
-
-        Image image = await Image.LoadAsync(filename, cancellationToken);
-        image.Mutate(x => x.AutoOrient());
-
-        try
-        {
-            using var ms = new MemoryStream();
-
-            await image.SaveAsJpegAsync(ms, cancellationToken: cancellationToken);
-            ms.Position = 0;
-            Stream webP = _converter.ConvertToWebP(ms);
-            webP.Position = 0;
-
-            await File.WriteAllBytesAsync(webPFilename, webP.ToByteArray(), cancellationToken);
-
-            return;
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e.Message);
-        }
-
-        await image.SaveAsync(webPFilename, new WebpEncoder() { Quality = 75 }, cancellationToken: cancellationToken);
     }
 }

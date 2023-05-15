@@ -324,12 +324,22 @@ public class MongoMediaStore : IMediaStore
             cancellationToken);
     }
 
-    public async Task InsertMediaAsync(
+    public async Task UpdateThumbnailsAsync(
         Media media,
-        IEnumerable<MediaFace>? faces,
+        IEnumerable<MediaThumbnail> thumbnails,
         CancellationToken cancellationToken)
     {
-        foreach (MediaThumbnail thumb in media.Thumbnails)
+        await DeleteThumbnailsByMediaAsync(media, cancellationToken);
+
+        media.Thumbnails = thumbnails;
+        await StoreThumbnailsAsync(media.Thumbnails, cancellationToken);
+    }
+
+    private async Task StoreThumbnailsAsync(
+        IEnumerable<MediaThumbnail> thumbnails,
+        CancellationToken cancellationToken)
+    {
+        foreach (MediaThumbnail thumb in thumbnails)
         {
             await Thumbnails.StoreAsync(
                 new ThumbnailData(thumb.Id, thumb.Data),
@@ -337,6 +347,26 @@ public class MongoMediaStore : IMediaStore
 
             thumb.Data = null;
         }
+    }
+
+    private async Task DeleteThumbnailsByMediaAsync(Media media, CancellationToken cancellationToken)
+    {
+        var tasks = new List<Task>();
+
+        foreach (MediaThumbnail thumb in media.Thumbnails)
+        {
+            tasks.Add(DeleteAsync(thumb.Id, cancellationToken));
+        }
+
+        await Task.WhenAll(tasks);
+    }
+
+    public async Task InsertMediaAsync(
+        Media media,
+        IEnumerable<MediaFace>? faces,
+        CancellationToken cancellationToken)
+    {
+        await StoreThumbnailsAsync(media.Thumbnails, cancellationToken);
 
         await _mediaStoreContext.Medias.InsertOneAsync(
             media,

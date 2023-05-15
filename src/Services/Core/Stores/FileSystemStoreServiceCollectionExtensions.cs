@@ -45,6 +45,7 @@ public static class FileSystemStoreServiceCollectionExtensions
             [MediaBlobType.Inbox] = "System/Inbox",
             [MediaBlobType.VideoPreview] = "System/VideoPreview",
             [MediaBlobType.Web] = "System/Web",
+            [MediaBlobType.Backup] = "System/Backup",
         };
     }
 }

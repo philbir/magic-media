@@ -14,9 +14,11 @@
     "@vue/babel-preset-jsx": "^1.2.4",
     "axios": "^0.21.0",
     "core-js": "^3.6.5",
+    "filerobot-image-editor": "^4.3.8",
     "gmap-vue": "^1.5.0",
     "justified-layout": "^4.0.0",
     "lodash": "^4.17.20",
+    "react-filerobot-image-editor": "^4.3.8",
     "register-service-worker": "^1.7.1",
     "uuid": "^8.3.2",
     "v-mask": "^2.2.3",
@@ -30,7 +32,8 @@
     "vue-router": "^3.2.0",
     "vue2-gmap-custom-marker": "^6.0.0",
     "vuetify": "^2.6.14",
-    "vuex": "^3.4.0"
+    "vuex": "^3.4.0",
+    "yarn": "^1.22.19"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
@@ -39,6 +42,7 @@
     "@vue/cli-plugin-router": "~4.5.0",
     "@vue/cli-plugin-vuex": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
+    "@vue/runtime-dom": "latest",
     "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
