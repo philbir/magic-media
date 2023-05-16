@@ -1,0 +1,9 @@
+site_name: "magic-media-docs"
+
+nav:
+  - Home: index.md
+  - "Getting Started": getting-started.md
+  - Installation: installation.md
+
+plugins:
+  - techdocs-core
