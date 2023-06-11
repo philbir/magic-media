@@ -1,0 +1,5 @@
+mutation changeSamsungTvMatte($input: ChangeSamsungTvMatteInput!) {
+  changeSamsungTvMatte(input: $input) {
+    id
+  }
+}

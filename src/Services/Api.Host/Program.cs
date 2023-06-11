@@ -25,6 +25,7 @@ builder.Services
     .AddAzureAI()
     .AddMongoDbStore()
     .AddFileSystemStore()
+    .AddSamsungTv()
     .AddClientThumbprintServices()
     .AddApiMessaging();
 

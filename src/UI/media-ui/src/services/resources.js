@@ -32,6 +32,12 @@ export const resources = {
             auth: "USER_VIEW"
         },
         {
+            text: "Samsung TV",
+            icon: "mdi-television",
+            route: "samsung",
+            auth: "USER_VIEW"
+        },
+        {
             text: "Audit log",
             icon: "mdi-monitor-eye",
             route: "AuditLog",

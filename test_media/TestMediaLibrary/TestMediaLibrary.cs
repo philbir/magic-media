@@ -12,9 +12,11 @@ namespace MagicMedia.TestLibrary
 
         public static Stream TwoFacesWithExif => GetMedia("003.jpg");
 
+        public static Stream SamsungFrameFormat => GetMedia("004.jpg");
+
         private static Stream GetMedia(string name)
         {
-            FileStream stream = new FileStream($"{GetTestMediaPath()}/{name}", FileMode.Open);
+            var stream = new FileStream($"{GetTestMediaPath()}/{name}", FileMode.Open);
 
             return stream;
         }

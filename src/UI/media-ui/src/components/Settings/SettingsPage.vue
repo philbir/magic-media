@@ -26,10 +26,12 @@
                 </v-list-item-action>
                 <v-list-item-content>
                   <v-list-item-title>{{ profile.name }}</v-list-item-title>
-                  <v-list-item-subtitle
-                    >{{ profile.location.type }} ->
-                    {{ profile.location.path }}</v-list-item-subtitle
-                  >
+
+                  <div v-for="dest in profile.destinations" :key="dest.name">
+                    <v-list-item-subtitle
+                      >{{ dest.type }} -> {{ dest.name }}</v-list-item-subtitle
+                    >
+                  </div>
                 </v-list-item-content>
               </template>
             </v-list-item>

@@ -68,6 +68,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google.Maps", "Services\Goo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bff.Host", "Services\Bff.Host\Bff.Host.csproj", "{C9D61545-5E6F-4A7C-B3C0-DD6C2CA32764}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SamsungTV", "Services\SamsungTV\SamsungTV.csproj", "{E43E8EAD-FB2C-4AA0-AD38-AE0093447493}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SamsungTV.Tests", "..\test\SamsungTV.Tests\SamsungTV.Tests.csproj", "{5044A06E-455D-4DD4-87D7-96854FD1C08C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -162,6 +166,14 @@ Global
 		{C9D61545-5E6F-4A7C-B3C0-DD6C2CA32764}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C9D61545-5E6F-4A7C-B3C0-DD6C2CA32764}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C9D61545-5E6F-4A7C-B3C0-DD6C2CA32764}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E43E8EAD-FB2C-4AA0-AD38-AE0093447493}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E43E8EAD-FB2C-4AA0-AD38-AE0093447493}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E43E8EAD-FB2C-4AA0-AD38-AE0093447493}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E43E8EAD-FB2C-4AA0-AD38-AE0093447493}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5044A06E-455D-4DD4-87D7-96854FD1C08C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5044A06E-455D-4DD4-87D7-96854FD1C08C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5044A06E-455D-4DD4-87D7-96854FD1C08C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5044A06E-455D-4DD4-87D7-96854FD1C08C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -178,6 +190,7 @@ Global
 		{1544E576-BD97-4576-8239-857F290F3388} = {B9946157-A449-4176-805B-F47D209D29AA}
 		{43BC2FC5-234F-4B58-BF47-B8C5149956CB} = {F6075731-6037-4B36-B720-4A4E2CF5D42F}
 		{E1D28004-4E4D-42DE-9784-E4D80FF9347D} = {1200063E-406D-45B8-9259-C19547938D17}
+		{5044A06E-455D-4DD4-87D7-96854FD1C08C} = {F6075731-6037-4B36-B720-4A4E2CF5D42F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {779E8080-1E0E-4536-9183-89B02491C584}

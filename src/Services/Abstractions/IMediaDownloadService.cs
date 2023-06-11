@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Store;
@@ -18,6 +19,16 @@ public interface IMediaExportService
 {
     Task<MediaExportResult> ExportAsync(
         Guid id,
+        MediaExportOptions options,
+        CancellationToken cancellationToken);
+}
+
+public interface IDestinationExporter
+{
+    ExportDestinationType CanHandleType { get; }
+    Task<string> ExportAsync(
+        TransformedMedia media,
+        ExportDestination destination,
         MediaExportOptions options,
         CancellationToken cancellationToken);
 }
@@ -46,7 +57,8 @@ public class MediaExportProfile
     public Guid Id { get; set; }
 
     public string Name { get; set; }
-    public ExportLocation Location { get; set; }
+
+    public IEnumerable<ExportDestination> Destinations { get; set; }
 
     public MediaTransform? Transform { get; set; }
 
@@ -77,17 +89,27 @@ public class MediaSize
     public int Height { get; set; }
 }
 
-public class ExportLocation
+public class ExportDestination
 {
-    public LocationType Type { get; set; }
-    public string Path { get; set; }
+    public ExportDestinationType Type { get; set; }
+
+    public string Name { get; set; }
+
+    public IList<ExportDestinationOption> Options { get; set; } = new List<ExportDestinationOption>();
 }
 
-public enum LocationType
+public class ExportDestinationOption
 {
-    FileSystem
+    public string Name { get; set; }
+
+    public string Value { get; set; }
 }
 
+public enum ExportDestinationType
+{
+    FileSystem,
+    SamsungTvArt
+}
 
 public class TransformedMedia
 {

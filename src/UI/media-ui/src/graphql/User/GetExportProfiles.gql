@@ -3,9 +3,9 @@ query profiles {
     id
     name
     isUserCurrent
-    location {
+    destinations {
       type
-      path
+      name
     }
   }
 }

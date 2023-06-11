@@ -1,0 +1,7 @@
+query devices {
+  samsungTvDevices {
+    name
+    address
+    online
+  }
+}
