@@ -11,6 +11,7 @@ import snackbarModule from "./snackbarModule";
 import userModule from "./userModule";
 import auditModule from "./auditModule";
 import similarMediaModule from "./similarMediaModule";
+import samsungTvModule from "./samsungTvModule";
 
 Vue.use(Vuex);
 
@@ -49,6 +50,7 @@ export default new Vuex.Store({
     map: mapModule,
     user: userModule,
     audit: auditModule,
-    similar: similarMediaModule
+    similar: similarMediaModule,
+    samsung: samsungTvModule
   }
 });

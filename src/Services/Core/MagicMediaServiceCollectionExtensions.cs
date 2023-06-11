@@ -70,6 +70,8 @@ public static class MagicMediaServiceCollectionExtensions
         services.AddSingleton<IUserContextMessagePublisher, UserContextMessagePublisher>();
         services.AddSingleton<IMediaDownloadService, MediaDownloadService>();
         services.AddSingleton<IMediaExportService, MediaExportService>();
+        services.AddSingleton<IDestinationExporter, FileSystemDestinationExporter>();
+
         services.AddSingleton<ISimilarMediaService, SimilarMediaService>();
         services.AddSingleton<IDuplicateMediaGuard, DuplicateMediaGuard>();
         services.AddSingleton<IMediaExportProfileService, MediaExportProfileService>();

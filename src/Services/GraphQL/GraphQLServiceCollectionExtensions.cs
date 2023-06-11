@@ -3,6 +3,7 @@ using MagicMedia.Authorization;
 using MagicMedia.GraphQL;
 using MagicMedia.GraphQL.DataLoaders;
 using MagicMedia.GraphQL.Face;
+using MagicMedia.GraphQL.SamsungTv;
 using MagicMedia.GraphQL.SearchFacets;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -35,6 +36,7 @@ public static class GrapQLServiceCollectionExtensions
             .AddTypeExtension<SearchFacetQueries>()
             .AddTypeExtension<AlbumQueries>()
             .AddTypeExtension<CameraQueries>()
+            .AddTypeExtension<SamsungTvQueries>()
             .AddTypeExtension<AuditQueries>()
             .AddMutationType(d => d.Name(RootTypes.Mutation)
                 .Authorize(AuthorizationPolicies.Names.ApiAccess))
@@ -43,8 +45,8 @@ public static class GrapQLServiceCollectionExtensions
             .AddTypeExtension<PersonMutations>()
             .AddTypeExtension<AlbumMutations>()
             .AddTypeExtension<UserMutations>()
+            .AddTypeExtension<SamsungTvMutations>()
             .AddType<MediaType>()
-
             .AddType<VideoInfoType>()
             .AddType<FaceType>()
             .AddType<PersonType>()
@@ -55,6 +57,7 @@ public static class GrapQLServiceCollectionExtensions
             .AddType<SearchFacetType>()
             .AddType<MediaTagType>()
             .AddType<AuditEventType>()
+            .AddType<SamsungTvDeviceType>()
             .AddType<UserAgentInfoType>()
             .AddType<MediaExportProfileType>()
             .AddType(new UuidType(defaultFormat: 'N'))

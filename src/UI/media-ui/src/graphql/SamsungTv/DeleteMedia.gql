@@ -1,0 +1,5 @@
+mutation deleteSamsunsTvMedia($input: DeleteSamsungTvMediaInput!) {
+  deleteSamsungTvMedia(input: $input) {
+    id
+  }
+}

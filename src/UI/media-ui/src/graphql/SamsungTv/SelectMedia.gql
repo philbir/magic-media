@@ -1,0 +1,5 @@
+mutation selectSamsungTvMedia($input: SelectSamsungTvMediaInput!) {
+  selectSamsungTvMedia(input: $input) {
+    id
+  }
+}

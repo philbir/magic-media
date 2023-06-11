@@ -29,6 +29,9 @@ import AuditLogList from "../components/Audit/AuditLogList";
 import AuditFilters from "../components/Audit/AuditFilters"
 import SimilarMediaList from "../components/Similar/SimilarMediaList"
 import SimilarMediaFilter from "../components/Similar/SimilarMediaFilter"
+import SamsungTvPage from "../components/Samsung/SamsungTvPage"
+import SamsungTvFilter from "../components/Samsung/SamsungTvFilter"
+import SamsungTvMedia from "../components/Samsung/MediaDetail"
 
 Vue.use(VueRouter);
 
@@ -153,6 +156,25 @@ const routes = [
       left: null,
       appbar: DefaultAppBar
     }
+  },
+  {
+    path: "/samsung",
+    name: "samsung",
+    components: {
+      default: SamsungTvPage,
+      left: SamsungTvFilter,
+      appbar: DefaultAppBar
+    }
+  },
+  {
+    path: "/samsung/:id",
+    name: "SamsungTvMedia",
+    components: {
+      default: SamsungTvMedia,
+      left: null,
+      appbar: DefaultAppBar
+    },
+    meta: { hideSidebar: true }
   },
   {
     path: "/loggedout",

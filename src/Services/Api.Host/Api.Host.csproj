@@ -8,35 +8,36 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="IdentityModel"/>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer"/>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect"/>
-    <PackageReference Include="MassTransit.AspNetCore"/>
+    <PackageReference Include="IdentityModel" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" />
+    <PackageReference Include="MassTransit.AspNetCore" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol"/>
-    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol.Logs"/>
-    <PackageReference Include="OpenTelemetry.Exporter.Console"/>
-    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore"/>
-    <PackageReference Include="OpenTelemetry.Instrumentation.Http"/>
-    <PackageReference Include="OpenTelemetry.Contrib.Preview"/>
-    <PackageReference Include="OpenTelemetry.Extensions.Hosting"/>
+    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" />
+    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol.Logs" />
+    <PackageReference Include="OpenTelemetry.Exporter.Console" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Http" />
+    <PackageReference Include="OpenTelemetry.Contrib.Preview" />
+    <PackageReference Include="OpenTelemetry.Extensions.Hosting" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Shared\AspNetCore\Shared.AspNetCore.csproj"/>
-    <ProjectReference Include="..\..\Shared\Telemetry\Telemetry.csproj"/>
-    <ProjectReference Include="..\Authorization\Authorization.csproj"/>
-    <ProjectReference Include="..\AzureAI\AzureAI.csproj"/>
-    <ProjectReference Include="..\BingMaps\BingMaps.csproj"/>
-    <ProjectReference Include="..\Core\Core.csproj"/>
-    <ProjectReference Include="..\GraphQL\GraphQL.csproj"/>
-    <ProjectReference Include="..\Store.MongoDb\Store.MongoDb.csproj"/>
+    <ProjectReference Include="..\SamsungTV\SamsungTV.csproj" />
+    <ProjectReference Include="..\..\Shared\AspNetCore\Shared.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\Shared\Telemetry\Telemetry.csproj" />
+    <ProjectReference Include="..\Authorization\Authorization.csproj" />
+    <ProjectReference Include="..\AzureAI\AzureAI.csproj" />
+    <ProjectReference Include="..\BingMaps\BingMaps.csproj" />
+    <ProjectReference Include="..\Core\Core.csproj" />
+    <ProjectReference Include="..\GraphQL\GraphQL.csproj" />
+    <ProjectReference Include="..\Store.MongoDb\Store.MongoDb.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <Compile Remove="AuthenticationExtensions.Dev.cs"/>
+    <Compile Remove="AuthenticationExtensions.Dev.cs" />
   </ItemGroup>
 
 </Project>

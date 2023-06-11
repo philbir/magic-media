@@ -1,0 +1,5 @@
+mutation setSamsungTvFilter($input: SetSamsungTvFilterInput!) {
+  setSamsungTvFilter(input: $input) {
+    id
+  }
+}

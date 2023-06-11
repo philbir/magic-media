@@ -26,9 +26,7 @@ export default {
   mounted() {},
   computed: {},
   methods: {
-    handleSaved(file, designState) {
-      console.log(file, designState);
-
+    handleSaved(file) {
       if (file.name.startsWith(this.$route.params.id)) {
         var formData = new FormData();
         formData.append("file", file);
@@ -54,7 +52,6 @@ export default {
         this.src = element.canvas.toDataURL();
       }
     },
-
     onError(error) {
       console.log(" error " + error);
     }

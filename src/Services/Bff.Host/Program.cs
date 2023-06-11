@@ -32,7 +32,7 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddAuthentication(builder.Environment, builder.Configuration);
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 app.UseDefaultForwardedHeaders();
 app.UseCookiePolicy();

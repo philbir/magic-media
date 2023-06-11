@@ -1,0 +1,8 @@
+query getMedia($device: String!) {
+  samsungTvMedia(device: $device) {
+    imageDate
+    id
+    selected
+    matteId
+  }
+}

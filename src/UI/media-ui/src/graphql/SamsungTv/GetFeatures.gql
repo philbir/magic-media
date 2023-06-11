@@ -1,0 +1,6 @@
+query samsungTvFeatures($device: String!) {
+  samsungTvFeatures(device: $device) {
+    filters
+    mattes
+  }
+}
