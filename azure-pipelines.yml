@@ -122,3 +122,17 @@ stages:
         tags:  |
           $(Build.SourceBranchName)
           latest
+  - job: Build_Samsung_Frame
+    displayName: Build Samsung Frame Image
+    steps:
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'Docker Hub Magic Media'
+        repository: 'magicmedia/magic-media-samsung-tv'
+        command: 'buildAndPush'
+        Dockerfile: './src/Samsung-Frame/Dockerfile'
+        buildContext: ./src/Samsung-Frame/
+        addPipelineData: false
+        tags:  |
+          $(Build.SourceBranchName)
+          latest
