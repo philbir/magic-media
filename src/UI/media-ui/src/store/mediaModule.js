@@ -70,6 +70,7 @@ const mediaModule = {
     filter: {
       pageNr: 0,
       pageSize: 200,
+      orderBy: "NEWEST",
       countries: [],
       cities: [],
       persons: [],
@@ -166,6 +167,13 @@ const mediaModule = {
       state.filter.geoRadius = null;
       state.filter.folder = null;
       state.filter.date = null;
+    },
+    ORDERBY_SET: function (state, orderBy) {
+      state.list = [];
+      state.filter.pageNr = 0;
+      state.totalLoaded = 0;
+      state.selectedIndexes = [];
+      state.filter.orderBy = orderBy;
     },
     LOAD_TUMBNAIL_DATA_TOGGLED: function (state) {
       state.loadThumbnailData = !state.loadThumbnailData;
@@ -475,6 +483,10 @@ const mediaModule = {
     },
     setThumbnailSize({ dispatch, commit }, size) {
       commit("FILTER_THUMBNAIL_SIZE_SET", size);
+      dispatch("search");
+    },
+    setOrderBy({ dispatch, commit }, orderBy) {
+      commit("ORDERBY_SET", orderBy);
       dispatch("search");
     },
     setViewerOptions({ commit }, options) {

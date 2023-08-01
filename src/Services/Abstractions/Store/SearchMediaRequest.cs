@@ -38,6 +38,8 @@ public class SearchMediaRequest
     public string? Text { get; set; }
 
     public IEnumerable<Guid>? AuthorizedOnMedia { get; set; }
+
+    public string? OrderBy { get; set; } 
 }
 
 public class GeoRadiusFilter

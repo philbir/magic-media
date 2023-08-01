@@ -18,6 +18,23 @@
       </v-list>
     </v-menu>
 
+    <v-menu left offset-y bottom>
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn color="white" icon v-bind="attrs" v-on="on">
+          <v-icon>mdi-sort</v-icon>
+        </v-btn>
+      </template>
+      <v-list dense>
+        <v-list-item
+          v-for="order in orderBy"
+          :key="order.text"
+          @click="setOrderBy(order.code)"
+        >
+          <v-list-item-title> {{ order.text }}</v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
+
     <v-menu
       left
       bottom
@@ -195,6 +212,11 @@ export default {
       { text: "Details", code: "D" },
       { text: "Table", code: "T" }
     ],
+    orderBy: [
+      { text: "Newest", code: "NEWEST" },
+      { text: "Oldest", code: "OLDEST" },
+      { text: "Imported", code: "IMPORTED" }
+    ],
     showUpload: false
   }),
   computed: {
@@ -241,6 +263,9 @@ export default {
   methods: {
     setSize: function(code) {
       this.$store.dispatch("media/setThumbnailSize", code);
+    },
+    setOrderBy: function(code) {
+      this.$store.dispatch("media/setOrderBy", code);
     },
     openUpload: function() {
       this.$store.dispatch("media/toggleUploadDialog", true);
