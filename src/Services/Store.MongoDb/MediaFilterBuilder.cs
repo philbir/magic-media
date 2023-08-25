@@ -80,7 +80,7 @@ public class MediaFilterBuilder
                         break;
                     case "RECENTLY_ADDED":
                         _filter &= Builders<Media>.Filter
-                            .Lt(x => x.Source.ImportedAt, DateTime.Now.AddDays(5));
+                            .Gt(x => x.Source.ImportedAt, DateTime.Now.AddDays(-5));
                         break;
                 }
             }

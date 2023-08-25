@@ -66,7 +66,8 @@ public class MongoMediaStore : IMediaStore
     {
         Activity.Current?.AddTag("search:folder", request.Folder);
 
-        FilterDefinition<Media>? filter = await BuildFilterFromRequestAsync(request, albumMediaResolver, cancellationToken);
+        FilterDefinition<Media>? filter =
+            await BuildFilterFromRequestAsync(request, albumMediaResolver, cancellationToken);
 
         IFindFluent<Media, Media>? cursor = _mediaStoreContext.Medias.Find(filter);
 
@@ -76,7 +77,25 @@ public class MongoMediaStore : IMediaStore
         }
         else
         {
-            cursor = cursor.SortByDescending(x => x.DateTaken);
+            if (!string.IsNullOrEmpty(request.OrderBy))
+            {
+                switch (request.OrderBy)
+                {
+                    case "IMPORTED":
+                        cursor = cursor.SortByDescending(x => x.Source.ImportedAt);
+                        break;
+                    case "OLDEST":
+                        cursor = cursor.SortBy(x => x.DateTaken);
+                        break;
+                    default:
+                        cursor = cursor.SortByDescending(x => x.DateTaken);
+                        break;
+                }
+            }
+            else
+            {
+                cursor = cursor.SortByDescending(x => x.DateTaken);
+            }
         }
 
         List<Media> medias = await cursor
@@ -119,9 +138,9 @@ public class MongoMediaStore : IMediaStore
         CancellationToken cancellationToken)
     {
         FilterDefinition<Media>? filter = await new MediaFilterBuilder(
-            _mediaStoreContext,
-            albumMediaResolver,
-            cancellationToken)
+                _mediaStoreContext,
+                albumMediaResolver,
+                cancellationToken)
             .AddAuthorizedOn(request.AuthorizedOnMedia)
             .AddText(request.Text)
             .AddFolder(request.Folder)
@@ -189,11 +208,7 @@ public class MongoMediaStore : IMediaStore
     {
         List<Media> medias = await _mediaStoreContext.Medias.AsQueryable()
             .Where(x => x.Hashes != null)
-            .Select(x => new Media
-            {
-                Id = x.Id,
-                Hashes = x.Hashes
-            })
+            .Select(x => new Media { Id = x.Id, Hashes = x.Hashes })
             .ToListAsync(cancellationToken);
 
         return medias.ToDictionary(x => x.Id, y => y.Hashes);
@@ -209,7 +224,7 @@ public class MongoMediaStore : IMediaStore
 
         MediaTag? existing = mediaTags.SingleOrDefault(x => x.DefinitionId == tag.DefinitionId);
 
-        if (existing is {})
+        if (existing is { })
         {
             existing.Data = tag.Data;
             existing.ModifiedAt = DateTimeOffset.UtcNow;
@@ -218,9 +233,7 @@ public class MongoMediaStore : IMediaStore
         {
             mediaTags.Add(new MediaTag
             {
-                DefinitionId = tag.DefinitionId,
-                Data = tag.Data,
-                ModifiedAt = DateTimeOffset.Now
+                DefinitionId = tag.DefinitionId, Data = tag.Data, ModifiedAt = DateTimeOffset.Now
             });
         }
 
@@ -242,7 +255,7 @@ public class MongoMediaStore : IMediaStore
             .In(x => x.Id, mediaIds.ToList());
 
         filter = filter & Builders<Media>.Filter.ElemMatch(x =>
-            x.Thumbnails,
+                x.Thumbnails,
             Builders<MediaThumbnail>.Filter.Eq(t => t.Size, size));
 
         List<Media> medias = await _mediaStoreContext.Medias.Find(filter)
@@ -253,8 +266,8 @@ public class MongoMediaStore : IMediaStore
         foreach (Media media in medias)
         {
             MediaThumbnail? thumb = media!.Thumbnails!.Where(x =>
-                x.Size == size
-                /*x.Format == "webp" */)
+                        x.Size == size
+                    /*x.Format == "webp" */)
                 .FirstOrDefault();
 
             if (thumb != null)
@@ -420,7 +433,6 @@ public class MongoMediaStore : IMediaStore
     }
 
 
-
     public IMongoQueryable<Media> AddAuthorizedOnFilterAsync(IMongoQueryable<Media> query, IEnumerable<Guid>? ids)
     {
         if (ids != null)
@@ -525,7 +537,8 @@ public class MongoMediaStore : IMediaStore
 
         var options = new FindOptions<Media, BsonDocument> { Projection = projection };
 
-        IAsyncCursor<BsonDocument> cursor = await _mediaStoreContext.Medias.FindAsync(filter, options, cancellationToken);
+        IAsyncCursor<BsonDocument> cursor =
+            await _mediaStoreContext.Medias.FindAsync(filter, options, cancellationToken);
         List<BsonDocument> docs = await cursor.ToListAsync(cancellationToken);
 
         return docs.Select(x => x["_id"].AsGuid);
@@ -594,11 +607,11 @@ public class MongoMediaStore : IMediaStore
         CancellationToken cancellation)
     {
         FilterDefinition<Media> filter = Builders<Media>.Filter.GeoWithinBox(x =>
-           x.GeoLocation.Point,
-           box.SouthWest.Longitude,
-           box.SouthWest.Latitude,
-           box.NorthEast.Longitude,
-           box.NorthEast.Latitude);
+                x.GeoLocation.Point,
+            box.SouthWest.Longitude,
+            box.SouthWest.Latitude,
+            box.NorthEast.Longitude,
+            box.NorthEast.Latitude);
 
         if (mediaIds != null)
         {
@@ -607,22 +620,13 @@ public class MongoMediaStore : IMediaStore
 
         var medias = await _mediaStoreContext.Medias.Find(filter)
             .Limit(limit)
-            .Project(p => new
-            {
-                p.Id,
-                p.GeoLocation!.Point.Coordinates,
-                p.GeoLocation!.GeoHash
-            })
+            .Project(p => new { p.Id, p.GeoLocation!.Point.Coordinates, p.GeoLocation!.GeoHash })
             .ToListAsync(cancellation);
 
         IEnumerable<MediaGeoLocation> locs = medias.Select(x => new MediaGeoLocation
         {
             Id = x.Id,
-            Coordinates = new GeoCoordinate
-            {
-                Longitude = x.Coordinates[0],
-                Latitude = x.Coordinates[1]
-            },
+            Coordinates = new GeoCoordinate { Longitude = x.Coordinates[0], Latitude = x.Coordinates[1] },
             GeoHash = x.GeoHash
         });
 
