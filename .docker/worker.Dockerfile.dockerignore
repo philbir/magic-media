@@ -5,7 +5,6 @@
 !/src/Services/**
 !/src/Shared/**
 !/src/Directory.Build.props
-!/src/Versions.props
 !/global.json
 !/Directory.Build.props
 !/Directory.Packages.props

@@ -1,13 +1,11 @@
 <Project>
-
   <PropertyGroup>
     <PropsAbove>$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))</PropsAbove>
   </PropertyGroup>
-  <Import Project="$([MSBuild]::GetPathOfFileAbove('Versions.props', '$(MSBuildThisFileDirectory)'))" />
   <Import Project="$(PropsAbove)" Condition="Exists($(PropsAbove))" />
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <RootNamespace>MagicMedia</RootNamespace>
     <Nullable>enable</Nullable>
     <LangVersion>preview</LangVersion>

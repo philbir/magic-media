@@ -20,6 +20,7 @@ builder.Configuration
 
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
+
 IIdentityServerBuilder idBuilder = builder.Services
     .AddIdentityServer(builder.Configuration, builder.Environment);
 

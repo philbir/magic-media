@@ -13,7 +13,6 @@ namespace MagicMedia.Telemetry;
 
 public static class SerilogConfiguration
 {
-
     public static IServiceCollection ConfigureLogging(this IServiceCollection services)
     {
         //services.AddSingleton<ILoggerFactory>(sp =>
@@ -105,33 +104,7 @@ public static class SerilogConfiguration
             IHttpContextAccessor? httpContextAccessor = serviceProvider
                 .GetService<IHttpContextAccessor>();
 
-            if (httpContextAccessor != null)
-            {
-                formatterConfiguration.MapHttpContext(httpContextAccessor);
-            }
         }
-
-        formatterConfiguration.MapCurrentThread(true);
-        formatterConfiguration.MapExceptions(true);
-        formatterConfiguration.MapCustom((elasticLog, serilogLog) =>
-        {
-            elasticLog.Event.Dataset = telemetryOptions.ServiceName;
-            elasticLog.Event.Module = telemetryOptions.ServiceName;
-            elasticLog.Event.Kind = EventKind.Event;
-            elasticLog.Event.Outcome = serilogLog.Level < LogEventLevel.Warning
-                ? EventOutcome.Success
-                : EventOutcome.Failure;
-
-            elasticLog.Labels ??= new Dictionary<string, object>();
-            elasticLog.Labels.Add("application.name", telemetryOptions.ServiceName);
-
-            if (serilogLog.TryGetScalarPropertyValue("EventName", out ScalarValue? eventName))
-            {
-                elasticLog.Event.Provider = (string)eventName.Value;
-            }
-
-            return elasticLog;
-        });
 
         return new EcsTextFormatter(formatterConfiguration);
     }

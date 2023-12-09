@@ -21,6 +21,7 @@ public class MediaSourceScanner : IMediaSourceScanner
     {
         [".jpg"] = MediaType.Image,
         [".jpeg"] = MediaType.Image,
+        [".heic"] = MediaType.Image,
         [".png"] = MediaType.Image,
         [".mp4"] = MediaType.Video,
         [".mov"] = MediaType.Video,
