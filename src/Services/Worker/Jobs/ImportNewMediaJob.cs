@@ -11,19 +11,23 @@ namespace MagicMedia.Jobs;
 public class ImportNewMediaJob : IJob
 {
     private readonly IMediaSourceScanner _sourceScanner;
+    private readonly IMediaSourcePreConverter _preConverter;
 
-    public ImportNewMediaJob(IMediaSourceScanner sourceScanner)
+    public ImportNewMediaJob(
+        IMediaSourceScanner sourceScanner,
+        IMediaSourcePreConverter preConverter)
     {
         _sourceScanner = sourceScanner;
+        _preConverter = preConverter;
     }
 
     public async Task Execute(IJobExecutionContext context)
     {
         using Activity? activity = Tracing.Source.StartRootActivity(
             "Execute ImportNewMedia job");
-
         try
         {
+            await _preConverter.ProConvertAsync(context.CancellationToken);
             await _sourceScanner.ScanAsync(context.CancellationToken);
         }
         catch (Exception ex)

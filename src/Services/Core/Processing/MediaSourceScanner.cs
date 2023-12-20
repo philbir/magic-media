@@ -17,11 +17,11 @@ public class MediaSourceScanner : IMediaSourceScanner
     private readonly FileSystemDiscoveryOptions _options;
     private readonly IMediaProcessorFlow _imageFlow;
     private readonly IMediaProcessorFlow _videoFlow;
+
     static Dictionary<string, MediaType> _fileTypeMap = new()
     {
         [".jpg"] = MediaType.Image,
         [".jpeg"] = MediaType.Image,
-        [".heic"] = MediaType.Image,
         [".png"] = MediaType.Image,
         [".mp4"] = MediaType.Video,
         [".mov"] = MediaType.Video,
@@ -77,10 +77,8 @@ public class MediaSourceScanner : IMediaSourceScanner
         IMediaSourceDiscovery src = _discoveryFactory.GetSource(file.Source);
         var extension = Path.GetExtension(file.Id).ToLower();
 
-        if (_fileTypeMap.ContainsKey(extension))
+        if (_fileTypeMap.TryGetValue(extension, out MediaType mediaType))
         {
-            MediaType mediaType = _fileTypeMap[extension];
-
             var context = new MediaProcessorContext
             {
                 Guard = _duplicateMediaGuard,
@@ -89,8 +87,7 @@ public class MediaSourceScanner : IMediaSourceScanner
                 {
                     SaveMedia = new SaveMediaFileOptions
                     {
-                        SaveMode = SaveMediaMode.CreateNew,
-                        SourceAction = SaveMediaSourceAction.Delete
+                        SaveMode = SaveMediaMode.CreateNew, SourceAction = SaveMediaSourceAction.Delete
                     }
                 },
                 MediaType = mediaType

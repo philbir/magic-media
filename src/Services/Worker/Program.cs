@@ -26,10 +26,6 @@ Microsoft.Extensions.Hosting.IHost host = Host.CreateDefaultBuilder(args)
         builder.AddJsonFile("appsettings.local.json", optional: true);
         builder.AddEnvironmentVariables();
     })
-    .UseSerilog((context, provider, loggerConfiguration) =>
-    {
-        //loggerConfiguration.ConfigureElastic(context.Configuration, provider);
-    })
     .ConfigureServices((hostContext, services) =>
     {
         /*
