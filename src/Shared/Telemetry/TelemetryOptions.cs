@@ -2,17 +2,7 @@ namespace MagicMedia.Telemetry;
 
 public class TelemetryOptions
 {
-    public string ServiceName { get; set; }
+    public string ServiceName { get; init; }
 
-    public ElasticServerOptions ElasticServer { get; set; }
-}
-
-
-public class ElasticServerOptions
-{
-    public string Url { get; set; }
-
-    public string Username { get; set; }
-
-    public string Password { get; set; }
+    public string? AzureMonitorConnectionString { get; set; }
 }

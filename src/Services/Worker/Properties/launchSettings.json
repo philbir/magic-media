@@ -4,8 +4,7 @@
       "commandName": "Project",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development",
-        "OTEL_EXPORTER_OTLP_ENDPOINT": "elastic.home:8200",
-        "OTEL_EXPORTER_OTLP_INSECURE": "true"
+        "APPLICATIONINSIGHTS_CONNECTION_STRING": "InstrumentationKey=d475a750-8397-4b11-a496-becd850b3928;IngestionEndpoint=https://westeurope-5.in.applicationinsights.azure.com/;LiveEndpoint=https://westeurope.livediagnostics.monitor.azure.com/"
       },
       "dotnetRunMessages": "true"
     },

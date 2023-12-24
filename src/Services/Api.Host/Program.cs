@@ -11,8 +11,6 @@ using MassTransit;
 
 WebApplicationBuilder? builder = WebApplication.CreateBuilder(args);
 
-//builder.Logging.ConfigureSerilog(builder.Configuration);
-
 builder.Configuration
     .AddJsonFile("appsettings.json")
     .AddUserSecrets<Program>(optional: true)
@@ -37,7 +35,7 @@ builder.Services.AddAuthentication(builder.Environment, builder.Configuration);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<IUserContextFactory, ClaimsPrincipalUserContextFactory>();
 builder.Services.AddMassTransitHostedService();
-//builder.Services.AddOpenTelemetry(builder.Configuration);
+builder.Services.UseOpenTelemetry(builder.Configuration);
 
 WebApplication app = builder.Build();
 

@@ -1,10 +1,11 @@
-using System.Diagnostics;
 using Duende.Bff.Yarp;
 using MagicMedia.AspNetCore;
 using MagicMedia.Bff;
+using MagicMedia.Telemetry;
 using Microsoft.AspNetCore.DataProtection;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+builder.Services.UseOpenTelemetry(builder.Configuration);
 
 BffOptions bffOptions = builder.Configuration.GetSection("MagicMedia:Bff")
     .Get<BffOptions>();

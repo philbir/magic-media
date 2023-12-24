@@ -23,8 +23,9 @@ public class ImportNewMediaJob : IJob
 
     public async Task Execute(IJobExecutionContext context)
     {
-        using Activity? activity = Tracing.Source.StartRootActivity(
+        using Activity? activity = App.ActivitySource.StartRootActivity(
             "Execute ImportNewMedia job");
+
         try
         {
             await _preConverter.ProConvertAsync(context.CancellationToken);

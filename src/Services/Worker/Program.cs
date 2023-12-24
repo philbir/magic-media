@@ -1,5 +1,5 @@
-
-
+using System.Xml.Schema;
+using Azure.Monitor.OpenTelemetry.AspNetCore;
 using MagicMedia;
 using MagicMedia.BingMaps;
 using MagicMedia.Discovery;
@@ -15,61 +15,51 @@ using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using OpenTelemetry.Trace;
 using Serilog;
 using Worker;
+using IHost = Microsoft.Extensions.Hosting.IHost;
 
-Microsoft.Extensions.Hosting.IHost host = Host.CreateDefaultBuilder(args)
-    .ConfigureAppConfiguration(builder =>
-    {
-        builder.AddJsonFile("appsettings.json");
-        builder.AddUserSecrets<Program>(optional: true);
-        builder.AddJsonFile("appsettings.local.json", optional: true);
-        builder.AddEnvironmentVariables();
-    })
-    .ConfigureServices((hostContext, services) =>
-    {
-        /*
-        services.AddOpenTelemetry(hostContext.Configuration, tracing =>
-        {
-            //tracing.AddQuartzInstrumentation()
-        });*/
+HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
 
-        services.Configure<HostOptions>(hostOptions =>
-        {
-            hostOptions.BackgroundServiceExceptionBehavior = BackgroundServiceExceptionBehavior.Ignore;
-        });
+builder.Services.UseOpenTelemetry(builder.Configuration);
 
-        FileSystemDiscoveryOptions discoveryOptions = hostContext.Configuration
-            .GetSection("MagicMedia:Discovery")
-            .Get<FileSystemDiscoveryOptions>();
+builder.Services.Configure<HostOptions>(hostOptions =>
+{
+    hostOptions.BackgroundServiceExceptionBehavior = BackgroundServiceExceptionBehavior.Ignore;
+});
 
-        services.AddSingleton(discoveryOptions);
-        services
-            .AddMagicMediaServer(hostContext.Configuration)
-            .AddProcessingMediaServices()
-            .AddGoogleMaps()
-            .AddAzureAI()
-            .AddMongoDbStore()
-            .AddFileSystemStore()
-            .AddFileSystemDiscovery()
-            .AddWorkerMessaging()
-            .AddClientThumbprintServices()
-            .AddScheduler()
-            .AddJobs();
+FileSystemDiscoveryOptions discoveryOptions = builder.Configuration
+    .GetSection("MagicMedia:Discovery")
+    .Get<FileSystemDiscoveryOptions>();
 
-        //TODO: Switch to decorater pattern
-        services.AddSingleton<IGeoDecoderService>(p =>
-        {
-            return new GeoDecoderCacheStore(p.GetRequiredService<MediaStoreContext>(),
-                new GoogleMapsGeoDecoderService(p.GetRequiredService<GoogleMapsOptions>()));
-        });
+builder.Services.AddSingleton(discoveryOptions);
+builder.Services
+    .AddMagicMediaServer(builder.Configuration)
+    .AddProcessingMediaServices()
+    .AddGoogleMaps()
+    .AddAzureAI()
+    .AddMongoDbStore()
+    .AddFileSystemStore()
+    .AddFileSystemDiscovery()
+    .AddWorkerMessaging()
+    .AddClientThumbprintServices()
+    .AddScheduler()
+    .AddJobs();
 
-        services.AddSingleton<IUserContextFactory, WorkerUserContextFactory>();
-        services.AddMemoryCache();
+//TODO: Switch to decorater pattern
+builder.Services.AddSingleton<IGeoDecoderService>(p =>
+{
+    return new GeoDecoderCacheStore(p.GetRequiredService<MediaStoreContext>(),
+        new GoogleMapsGeoDecoderService(p.GetRequiredService<GoogleMapsOptions>()));
+});
 
-        services.AddMassTransitHostedService();
-        services.AddHostedService<JobWorker>();
-    })
-    .Build();
+builder.Services.AddSingleton<IUserContextFactory, WorkerUserContextFactory>();
+builder.Services.AddMemoryCache();
+
+builder.Services.AddMassTransitHostedService();
+builder.Services.AddHostedService<JobWorker>();
+
+IHost host = builder.Build();
 
 await host.RunAsync();
