@@ -3,11 +3,11 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Serilog;
+using Microsoft.Extensions.Logging;
 
 namespace MagicMedia.Discovery;
 
-public class FileSystemSourceDiscovery : IMediaSourceDiscovery
+public class FileSystemSourceDiscovery(ILogger<FileSystemSourceDiscovery> logger) : IMediaSourceDiscovery
 {
     public MediaDiscoverySource SourceType => MediaDiscoverySource.FileSystem;
 
@@ -19,30 +19,46 @@ public class FileSystemSourceDiscovery : IMediaSourceDiscovery
 
         foreach (FileDiscoveryLocation location in options.Locations)
         {
-            var filePath = location.Root != null ?
-                Path.Combine(location.Root, location.Path) :
-                location.Path;
+            var filePath = location.Root != null ? Path.Combine(location.Root, location.Path) : location.Path;
 
-            string pattern = location.Filter ?? "*.*";
-            Log.Information("Discover media in {Path} with pattern: {Pattern}", filePath, pattern);
+            var pattern = location.Filter ?? "*.*";
+            logger.DiscoverMediaWithPathAndPattern(filePath, pattern);
 
-            string[] files = Directory.GetFiles(
-                filePath,
-                pattern,
-                SearchOption.AllDirectories);
+            string[] files;
 
-            Log.Information("{Count} media found in {Path}", files.Length, filePath);
+            if (location.Filter is { } f && f != "*.*" && f.StartsWith("*."))
+            {
+                files = GetFilesByExtension(filePath, pattern).ToArray();
+            }
+            else
+            {
+                files = Directory.GetFiles(
+                    filePath,
+                    pattern,
+                    SearchOption.AllDirectories)
+                    .ToArray();
+            }
+
+            logger.MediaFoundWithPathAndPattern(files.Length, filePath, pattern);
 
             result.AddRange(files.Select(x =>
-                new MediaDiscoveryIdentifier
-                {
-                    BasePath = location.Root ?? filePath,
-                    Id = x,
-                    Source = SourceType
-                }));
+                new MediaDiscoveryIdentifier { BasePath = location.Root ?? filePath, Id = x, Source = SourceType }));
         }
 
         return Task.FromResult(result.Distinct());
+    }
+
+    private IEnumerable<string> GetFilesByExtension(string path, string extension)
+    {
+        foreach (var file in Directory.EnumerateFiles(path, extension.ToLower(), SearchOption.AllDirectories))
+        {
+            yield return file;
+        }
+
+        foreach (var file in Directory.EnumerateFiles(path, extension.ToUpper(), SearchOption.AllDirectories))
+        {
+            yield return file;
+        }
     }
 
     public async Task<byte[]> GetMediaDataAsync(string id, CancellationToken cancellationToken)
@@ -59,7 +75,7 @@ public class FileSystemSourceDiscovery : IMediaSourceDiscovery
 
     public async Task SaveMediaDataAsync(string id, byte[] data, CancellationToken cancellationToken)
     {
-        FileInfo file = new FileInfo(id);
+        var file = new FileInfo(id);
 
         if (file.Directory is { } && file.Directory.Exists)
         {

@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Discovery;
 using MagicMedia.Store;
-using Serilog;
+using Microsoft.Extensions.Logging;
 
 namespace MagicMedia.Processing;
 
@@ -14,6 +14,7 @@ public class MediaSourceScanner : IMediaSourceScanner
     private readonly IMediaSourceDiscoveryFactory _discoveryFactory;
     private readonly IMediaProcessorFlowFactory _flowFactory;
     private readonly IDuplicateMediaGuard _duplicateMediaGuard;
+    private readonly ILogger<MediaSourceScanner> _logger;
     private readonly FileSystemDiscoveryOptions _options;
     private readonly IMediaProcessorFlow _imageFlow;
     private readonly IMediaProcessorFlow _videoFlow;
@@ -31,11 +32,13 @@ public class MediaSourceScanner : IMediaSourceScanner
         IMediaSourceDiscoveryFactory discoveryFactory,
         IMediaProcessorFlowFactory flowFactory,
         IDuplicateMediaGuard duplicateMediaGuard,
+        ILogger<MediaSourceScanner> logger,
         FileSystemDiscoveryOptions options)
     {
         _discoveryFactory = discoveryFactory;
         _flowFactory = flowFactory;
         _duplicateMediaGuard = duplicateMediaGuard;
+        _logger = logger;
         _options = options;
         _imageFlow = _flowFactory.CreateFlow("ImportImage");
         _videoFlow = _flowFactory.CreateFlow("ImportVideo");
@@ -110,7 +113,7 @@ public class MediaSourceScanner : IMediaSourceScanner
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Error processing file {file}", file.Id);
+                _logger.ErrorProcessingFile(file.Id, ex);
             }
         }
     }

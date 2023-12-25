@@ -15,6 +15,7 @@ using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using OpenTelemetry.Trace;
 using Serilog;
 using Worker;
@@ -23,6 +24,7 @@ using IHost = Microsoft.Extensions.Hosting.IHost;
 HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
 
 builder.Services.UseOpenTelemetry(builder.Configuration);
+
 
 builder.Services.Configure<HostOptions>(hostOptions =>
 {

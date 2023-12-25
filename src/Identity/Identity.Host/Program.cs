@@ -30,7 +30,6 @@ builder.Services.UseOpenTelemetry(builder.Configuration, builder =>
 
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
-
 IIdentityServerBuilder idBuilder = builder.Services
     .AddIdentityServer(builder.Configuration, builder.Environment);
 
