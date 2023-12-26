@@ -13,23 +13,16 @@ using MetadataEx = MetadataExtractor;
 
 namespace MagicMedia.Video;
 
-public class VideoProcessingService : IVideoProcessingService
+public class VideoProcessingService(IGeoDecoderService geoDecoderService) : IVideoProcessingService
 {
     private const string QuickTimeDateFormat = "ddd MMM dd HH:mm:ss yyyy";
-    private readonly IGeoDecoderService _geoDecoderService;
-
-    public VideoProcessingService(
-        IGeoDecoderService geoDecoderService)
-    {
-        _geoDecoderService = geoDecoderService;
-    }
 
     public async Task<ExtractVideoDataResult> ExtractVideoDataAsync(
         string filename,
         CancellationToken cancellationToken)
     {
 
-        ExtractVideoDataResult result = new ExtractVideoDataResult()
+        var result = new ExtractVideoDataResult()
         {
             Meta = new MediaMetadata()
         };
@@ -63,7 +56,7 @@ public class VideoProcessingService : IVideoProcessingService
                 IConversionResult cr = await FFmpeg.Conversions.New()
                     .AddStream(videoStream)
                     .ExtractNthFrame(3, (n) => tmpFile)
-                    .Start();
+                    .Start(cancellationToken);
 
                 result.ImageData = await File.ReadAllBytesAsync(tmpFile, cancellationToken);
                 File.Delete(tmpFile);
@@ -94,7 +87,7 @@ public class VideoProcessingService : IVideoProcessingService
 
         var frames = (video.Duration.TotalSeconds == 0 ? 1 : video.Duration.TotalSeconds) * video.Framerate;
 
-        outfile = outfile ?? Path.Join(Path.GetTempPath(), $"{Guid.NewGuid()}.gif");
+        outfile ??= Path.Join(Path.GetTempPath(), $"{Guid.NewGuid()}.gif");
 
         var totalFrames = 50.0;
 
@@ -133,7 +126,7 @@ public class VideoProcessingService : IVideoProcessingService
         IAudioStream audio = mediaInfo.AudioStreams.FirstOrDefault()
             .SetCodec(AudioCodec.libvorbis);
 
-        outfile = outfile ?? Path.Join(Path.GetTempPath(), $"{Guid.NewGuid()}.webm");
+        outfile ??= Path.Join(Path.GetTempPath(), $"{Guid.NewGuid()}.webm");
 
         IConversion? conversion = FFmpeg.Conversions.New()
             .AddStream(video, audio)
@@ -202,7 +195,7 @@ public class VideoProcessingService : IVideoProcessingService
                 try
                 {
                     gps.GeoHash = GeoHash.Encode(gps.Point.Coordinates[1], gps.Point.Coordinates[0]);
-                    gps.Address = await _geoDecoderService.DecodeAsync(
+                    gps.Address = await geoDecoderService.DecodeAsync(
                         coordintates[0],
                         coordintates[1],
                         cancellationToken);

@@ -1,3 +1,4 @@
+using System;
 using System.Xml.Schema;
 using Azure.Monitor.OpenTelemetry.AspNetCore;
 using MagicMedia;
@@ -15,16 +16,13 @@ using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using OpenTelemetry.Trace;
-using Serilog;
 using Worker;
 using IHost = Microsoft.Extensions.Hosting.IHost;
 
 HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
 
+Console.WriteLine("Building worker...");
 builder.Services.UseOpenTelemetry(builder.Configuration);
-
 
 builder.Services.Configure<HostOptions>(hostOptions =>
 {
@@ -64,4 +62,5 @@ builder.Services.AddHostedService<JobWorker>();
 
 IHost host = builder.Build();
 
+Console.WriteLine("Starting worker...");
 await host.RunAsync();

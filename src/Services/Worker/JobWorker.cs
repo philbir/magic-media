@@ -25,6 +25,8 @@ public class JobWorker(
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        Console.WriteLine("JobWorker ExecuteAsync");
+
         while (!stoppingToken.IsCancellationRequested)
         {
             await Task.Delay(1000, stoppingToken);
@@ -33,6 +35,7 @@ public class JobWorker(
 
     public override async Task StartAsync(CancellationToken cancellationToken)
     {
+        Console.WriteLine("JobWorker StartAsync");
         using Activity? activity = Tracing.Source.StartRootActivity("Start JobWorker");
 
         await fFmpegInitializer.Intitialize();
