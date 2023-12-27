@@ -11,15 +11,24 @@ using MassTransit;
 using Microsoft.AspNetCore.DataProtection;
 
 WebApplicationBuilder? builder = WebApplication.CreateBuilder(args);
-builder.Logging.ConfigureSerilog(builder.Configuration);
 
 builder.Configuration
     .AddJsonFile("appsettings.json")
     .AddUserSecrets<Program>(optional: true)
     .AddEnvironmentVariables();
 
-JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+builder.Services.UseOpenTelemetry(builder.Configuration, builder =>
+{
+    builder
+        .AddSource(IdentityServerConstants.Tracing.Basic)
+        .AddSource(IdentityServerConstants.Tracing.Cache)
+        .AddSource(IdentityServerConstants.Tracing.Services)
+        .AddSource(IdentityServerConstants.Tracing.Stores)
+        .AddSource(IdentityServerConstants.Tracing.Validation);
+});
 
+
+JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
 IIdentityServerBuilder idBuilder = builder.Services
     .AddIdentityServer(builder.Configuration, builder.Environment);
@@ -40,14 +49,7 @@ builder.Services.AddControllersWithViews()
 
 builder.Services.AddMessaging(builder.Configuration);
 //builder.Services.AddMassTransitHostedService();
-builder.Services.AddOpenTelemetry(builder.Configuration, b =>
-{
-    b.AddSource(IdentityServerConstants.Tracing.Basic)
-        .AddSource(IdentityServerConstants.Tracing.Cache)
-        .AddSource(IdentityServerConstants.Tracing.Services)
-        .AddSource(IdentityServerConstants.Tracing.Stores)
-        .AddSource(IdentityServerConstants.Tracing.Validation);
-});
+
 
 builder.Services.AddSingleton<IDemoUserService>(s => new DemoUserService(
     builder.Environment.IsDemo(),

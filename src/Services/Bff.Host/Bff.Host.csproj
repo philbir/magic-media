@@ -15,11 +15,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="wwwroot" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\..\Shared\AspNetCore\Shared.AspNetCore.csproj" />
+      <ProjectReference Include="..\..\Shared\Telemetry\Telemetry.csproj" />
     </ItemGroup>
 
 </Project>

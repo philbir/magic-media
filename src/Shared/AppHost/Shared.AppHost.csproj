@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsAspireHost>true</IsAspireHost>
+    <AssemblyName>MagicMedia.AppHost</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Services\Api.Host\Api.Host.csproj" />
+    <ProjectReference Include="..\..\Services\Bff.Host\Bff.Host.csproj" />
+    <ProjectReference Include="..\..\Services\Worker\Worker.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Shared.ServiceDefaults\obj\project.assets.json" />
+    <_ContentIncludedByDefault Remove="Shared.ServiceDefaults\obj\Shared.ServiceDefaults.csproj.nuget.dgspec.json" />
+  </ItemGroup>
+
+</Project>

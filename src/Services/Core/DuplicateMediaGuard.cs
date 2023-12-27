@@ -4,26 +4,21 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MagicMedia.Discovery;
 using MagicMedia.Store;
-using Serilog;
+using Microsoft.Extensions.Logging;
 
 namespace MagicMedia;
 
-public class DuplicateMediaGuard : IDuplicateMediaGuard
+public class DuplicateMediaGuard(IMediaStore mediaStore, ILogger<DuplicateMediaGuard> logger) : IDuplicateMediaGuard
 {
-    private readonly IMediaStore _mediaStore;
-    private HashSet<MediaHash> _hashes = new HashSet<MediaHash>();
-
-    public DuplicateMediaGuard(IMediaStore mediaStore)
-    {
-        _mediaStore = mediaStore;
-    }
+    private HashSet<MediaHash> _hashes = new();
 
     public async Task InitializeAsync(CancellationToken cancellationToken)
     {
-        using Activity? activity = Tracing.Source.StartActivity("Initialize duplicate guard");
+        using Activity? activity = App.ActivitySource.StartActivity("Initialize duplicate guard");
 
-        Dictionary<Guid, IEnumerable<MediaHash>>? medias = await _mediaStore.GetAllHashesAsync(cancellationToken);
+        Dictionary<Guid, IEnumerable<MediaHash>>? medias = await mediaStore.GetAllHashesAsync(cancellationToken);
 
         _hashes = medias.SelectMany(x => x.Value)
             .Where(x =>
@@ -54,7 +49,7 @@ public class DuplicateMediaGuard : IDuplicateMediaGuard
 
         if (identifierHash is { } && _hashes.Contains(identifierHash, new MediaHashComparer()))
         {
-            Log.Information("Identifier allready exists: {Identifier}", identifierHash.Value);
+            logger.MediaIdentifierAllreadyExsists(identifierHash.Value);
 
             return true;
         }

@@ -1,11 +1,14 @@
 using System.Diagnostics;
 using System.Text;
+using Azure.Monitor.OpenTelemetry.AspNetCore;
 using HotChocolate.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.ObjectPool;
 using OpenTelemetry;
 using OpenTelemetry.Exporter;
+using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
@@ -18,10 +21,6 @@ public static class OpenTelemetryExtensions
     {
         ResourceBuilder resourceBuilder = ResourceBuilder.CreateEmpty()
             .AddService(name)
-            .AddAttributes(new KeyValuePair<string, object>[]
-            {
-                new("deployment.environment", "dev")
-            })
             .AddTelemetrySdk();
 
         return resourceBuilder;
@@ -34,24 +33,21 @@ public static class OpenTelemetryExtensions
            .Get<TelemetryOptions>();
     }
 
-    public static IServiceCollection AddOpenTelemetry(
+    public static IServiceCollection UseOpenTelemetry(
         this IServiceCollection services,
         IConfiguration configuration,
         Action<TracerProviderBuilder>? builder = null)
     {
-        services.ConfigureLogging();
-
         TelemetryOptions otelOptions = configuration.GetTelemetryOptions();
         ResourceBuilder resourceBuilder = CreateResourceBuilder(otelOptions.ServiceName);
 
-        services.AddOpenTelemetry().WithTracing(tracing =>
+        OpenTelemetryBuilder telemetryBuilder = services.AddOpenTelemetry().WithTracing(tracing =>
         {
             tracing
                 .AddAspNetCoreInstrumentation()
                 .AddHotChocolateInstrumentation()
                 .AddHttpClientInstrumentation()
                 .AddMongoDBInstrumentation()
-                .AddMassTransitInstrumentation()
                 .AddSources()
                 .AddOtlpExporter(ConfigureOtlp)
                 .SetResourceBuilder(resourceBuilder)
@@ -59,7 +55,7 @@ public static class OpenTelemetryExtensions
 
             if (Debugger.IsAttached)
             {
-                //tracing.AddConsoleExporter();
+                tracing.AddConsoleExporter();
             }
 
             builder?.Invoke(tracing);
@@ -68,10 +64,24 @@ public static class OpenTelemetryExtensions
             metrics.SetResourceBuilder(resourceBuilder);
             metrics.AddHttpClientInstrumentation();
             metrics.AddAspNetCoreInstrumentation();
-            metrics.AddOtlpExporter(ConfigureOtlp);
-//metrics.AddConsoleExporter();
-
         });
+
+        services.AddLogging(loggingBuilder =>
+        {
+            loggingBuilder.AddOpenTelemetry(b =>
+            {
+                b.SetResourceBuilder(resourceBuilder);
+                b.AddConsoleExporter();
+            });
+        });
+
+        if (otelOptions.AzureMonitorConnectionString  is { } connectionString)
+        {
+            telemetryBuilder.UseAzureMonitor(c =>
+            {
+                c.ConnectionString = connectionString;
+            });
+        }
 
         return services;
     }
