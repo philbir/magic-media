@@ -27,7 +27,7 @@ Microsoft.Extensions.Hosting.IHost host = Host.CreateDefaultBuilder(args)
     {
         services.AddOpenTelemetry(hostContext.Configuration, tracing =>
         {
-            tracing.AddQuartzInstrumentation();
+            //tracing.AddQuartzInstrumentation();
         });
 
         services.Configure<HostOptions>(hostOptions =>
