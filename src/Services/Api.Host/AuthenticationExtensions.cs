@@ -1,12 +1,8 @@
-using System.IdentityModel.Tokens.Jwt;
-using IdentityModel;
 using MagicMedia.Api;
-using MagicMedia.Api.DevTokenAuthentication;
+using MagicMedia.Api.Authorization;
+using MagicMedia.Api.Security;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.IdentityModel.JsonWebTokens;
-using Microsoft.IdentityModel.Tokens;
 
 namespace MagicMedia;
 
@@ -19,27 +15,24 @@ public static partial class AuthenticationExtensions
     {
         JsonWebTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
-        SecurityOptions secOptions = configuration.GetSection("MagicMedia:Security")
-            .Get<SecurityOptions>();
+        services.AddOptions<ApiKeyOptions>()
+            .Bind(configuration.GetSection("MagicMedia:Security:ApiKey"))
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
+
+        services.AddOptions<ThrustedHeaderAuthenticationOptions>(ThrustedHeaderDefaults.AuthenticationScheme)
+            .Bind(configuration.GetSection("MagicMedia:Security:ThrustedHeader"))
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
+
+        services.AddSingleton<IApiKeyValidator, ApiKeyValidator>();
 
         AuthenticationBuilder authBuilder = services.AddAuthentication(options =>
         {
-            options.DefaultScheme = "jwt";
-        }).AddJwtBearer("jwt", options =>
-        {
-            options.RequireHttpsMetadata = env.IsProduction();
-            options.Authority = secOptions.Authority;
-            options.Audience = "api.magic";
-        });
-
-        /*
-        if (env.IsDevelopment())
-        {
-            SetupDevelopmentAuthentication(authBuilder);
-        }*/
+            options.DefaultScheme = ThrustedHeaderDefaults.AuthenticationScheme;
+        }).AddThrustedHeader()
+        .AddApiKey();
 
         return authBuilder;
     }
-
-    static partial void SetupDevelopmentAuthentication(AuthenticationBuilder builder);
 }

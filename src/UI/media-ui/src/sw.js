@@ -68,7 +68,7 @@ if (workbox) {
     );
 
     workbox.routing.registerRoute(
-        ({ url }) => url.pathname.startsWith('/bff') || url.pathname === '/',
+        ({ url }) => url.pathname.startsWith('/session') || url.pathname === '/',
         new workbox.strategies.NetworkOnly()
     );
 
@@ -86,7 +86,7 @@ self.addEventListener('message', (event) => {
 
 setInterval(() => {
 
-    fetch('bff/user', { headers: { "x-csrf": "1" } }).then(response => {
+    fetch('session/user', { headers: { "x-csrf": "1" } }).then(response => {
         if (response.status === 401) {
             self.clients.matchAll().then(clients => {
                 clients.forEach(client => {

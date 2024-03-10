@@ -1,4 +1,5 @@
 using MagicMedia;
+using MagicMedia.Api;
 using MagicMedia.Api.Security;
 using MagicMedia.BingMaps;
 using MagicMedia.Hubs;
@@ -41,6 +42,10 @@ builder.Services.AddMassTransitHostedService();
 
 WebApplication app = builder.Build();
 
+app.UseDefaultForwardedHeaders();
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
@@ -51,5 +56,7 @@ app.UseEndpoints(endpoints =>
     endpoints.MapControllers();
     endpoints.MapHub<MediaHub>("/signalr");
 });
+
+app.MapFallbackToFile("index.html");
 
 app.Run();
