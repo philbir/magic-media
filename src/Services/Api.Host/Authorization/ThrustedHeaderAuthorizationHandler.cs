@@ -66,6 +66,8 @@ public class ThrustedHeaderAuthenticationHandler
         {
             username = GetUsername(Request, headerConfiguration.HeaderName);
 
+            Logger.LogInformation("Get user from header:  {headerConfiguration.HeaderName} -> {Username}", username);
+
             if (username != null)
             {
                 method = headerConfiguration.Method;
