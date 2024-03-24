@@ -47,6 +47,21 @@ public class UserService : IUserService
         return await GetByIdAsync(id, bypassCache: false, cancellationToken);
     }
 
+    public async Task<User> TryGetByIdentifier(string method, string value, CancellationToken cancellationToken)
+    {
+        var cachekey = $"mm_user_{method}_{value}";
+
+        User? user = await _memoryCache.GetOrCreateAsync(
+            cachekey,
+            async (e) =>
+            {
+                e.AbsoluteExpiration = DateTime.Now.Add(_cacheExpiration);
+                return await _mediaStore.Users.TryGetByIdentifierAsync(method, value, cancellationToken);
+            });
+
+        return user;
+    }
+
     public async Task<User> GetByIdAsync(Guid id, bool bypassCache, CancellationToken cancellationToken)
     {
         Activity.Current?.SetTag("userId", id);
@@ -63,7 +78,6 @@ public class UserService : IUserService
             async (e) =>
             {
                 e.AbsoluteExpiration = DateTime.Now.Add(_cacheExpiration);
-
                 return await _mediaStore.Users.TryGetByIdAsync(id, cancellationToken);
             });
 

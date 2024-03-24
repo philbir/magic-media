@@ -142,6 +142,7 @@ public static class MagicMediaServiceCollectionExtensions
         builder.Services.AddSingleton<IMediaFaceScanner, MediaFaceScanner>();
         builder.Services.AddSingleton<IMediaSourceScanner, MediaSourceScanner>();
         builder.Services.AddSingleton<IRescanFacesHandler, RescanFacesHandler>();
+        builder.Services.AddSingleton<IMediaSourcePreConverter, MediaSourcePreConverter>();
 
         return builder;
     }

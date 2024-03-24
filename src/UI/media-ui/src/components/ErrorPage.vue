@@ -26,7 +26,7 @@ export default {
   methods: {
     retry: function() {
       this.$store.dispatch("user/resetError");
-      window.location.href = "/bff/login";
+      window.location.href = "/";
     }
   }
 };

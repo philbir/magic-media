@@ -17,28 +17,4 @@ public class SessionController : Controller
             IsAuthenticated = User.Identity?.IsAuthenticated
         });
     }
-
-    [AllowAnonymous]
-    [Route("auth")]
-    public IActionResult Authenticate()
-    {
-        if (User.Identity.IsAuthenticated)
-        {
-            return Redirect("/");
-        }
-        else
-        {
-            return Challenge();
-        }
-    }
-
-    [AllowAnonymous]
-    [Route("logout")]
-    public async Task<IActionResult> Logout()
-    {
-        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-        await HttpContext.SignOutAsync("oidc");
-
-        return Redirect("/loggedout");
-    }
 }

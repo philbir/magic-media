@@ -30,4 +30,6 @@ public interface IUserService
         Guid userId,
         Guid profileId,
         CancellationToken cancellationToken);
+
+    Task<User> TryGetByIdentifier(string method, string value, CancellationToken cancellationToken);
 }

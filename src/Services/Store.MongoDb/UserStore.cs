@@ -20,6 +20,30 @@ public class UserStore : IUserStore
         _mediaStoreContext = mediaStoreContext;
     }
 
+    public async Task<User> TryGetByIdentifierAsync(
+        string method,
+        string value,
+        CancellationToken cancellationToken)
+    {
+        FilterDefinition<UserIdentifier> identifierFilter =
+            Builders<UserIdentifier>.Filter.And(
+            Builders<UserIdentifier>.Filter.Eq(
+                x => x.Method, method),
+            Builders<UserIdentifier>.Filter.Eq(
+                x => x.Value, value)
+            );
+
+        FilterDefinition<User> filter = Builders<User>.Filter
+            .ElemMatch(x => x.Identifiers, identifierFilter);
+
+        IAsyncCursor<User> cursor = await _mediaStoreContext.Users.FindAsync(
+            filter,
+            null,
+            cancellationToken);
+
+        return await cursor.FirstOrDefaultAsync(cancellationToken);
+    }
+
     public async Task<User> TryGetByIdAsync(
         Guid id,
         CancellationToken cancellationToken)

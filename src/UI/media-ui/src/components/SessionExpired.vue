@@ -25,7 +25,7 @@
 export default {
   methods: {
     login: function() {
-      window.location.href = "/bff/login";
+      window.location.href = "/";
     }
   }
 };

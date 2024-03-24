@@ -1,7 +1,4 @@
-
-
 using MagicMedia;
-using MagicMedia.BingMaps;
 using MagicMedia.Discovery;
 using MagicMedia.GoogleMaps;
 using MagicMedia.Jobs;
@@ -15,7 +12,7 @@ using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Serilog;
+using OpenTelemetry.Trace;
 using Worker;
 
 Microsoft.Extensions.Hosting.IHost host = Host.CreateDefaultBuilder(args)
@@ -26,17 +23,12 @@ Microsoft.Extensions.Hosting.IHost host = Host.CreateDefaultBuilder(args)
         builder.AddJsonFile("appsettings.local.json", optional: true);
         builder.AddEnvironmentVariables();
     })
-    .UseSerilog((context, provider, loggerConfiguration) =>
-    {
-        //loggerConfiguration.ConfigureElastic(context.Configuration, provider);
-    })
     .ConfigureServices((hostContext, services) =>
     {
-        /*
         services.AddOpenTelemetry(hostContext.Configuration, tracing =>
         {
-            //tracing.AddQuartzInstrumentation()
-        });*/
+            //tracing.AddQuartzInstrumentation();
+        });
 
         services.Configure<HostOptions>(hostOptions =>
         {
