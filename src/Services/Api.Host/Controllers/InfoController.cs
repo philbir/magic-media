@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MagicMedia.Api.Controllers;
 
-[Route("info")]
+[Route("api/info")]
 public class InfoController : Controller
 {
     [HttpGet("")]
