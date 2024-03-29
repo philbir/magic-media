@@ -1,3 +1,4 @@
+using System;
 using MagicMedia;
 using MagicMedia.Discovery;
 using MagicMedia.GoogleMaps;
@@ -12,7 +13,6 @@ using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using OpenTelemetry.Trace;
 using Worker;
 
 Microsoft.Extensions.Hosting.IHost host = Host.CreateDefaultBuilder(args)
@@ -67,5 +67,7 @@ Microsoft.Extensions.Hosting.IHost host = Host.CreateDefaultBuilder(args)
         services.AddHostedService<JobWorker>();
     })
     .Build();
+
+Console.WriteLine($"Applicated Builded! {DateTime.UtcNow}");
 
 await host.RunAsync();

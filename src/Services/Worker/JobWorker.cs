@@ -45,7 +45,7 @@ public class JobWorker : BackgroundService
         }
     }
 
-    public async override Task StartAsync(CancellationToken cancellationToken)
+    public override async Task StartAsync(CancellationToken cancellationToken)
     {
         using Activity? activity = Tracing.Source.StartRootActivity("Start JobWorker");
 
