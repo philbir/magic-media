@@ -35,14 +35,13 @@ public class AlbumSummaryService : IAlbumSummaryService
 
     private async Task<Album> UpdateAsync(Album album, CancellationToken cancellationToken)
     {
-        AlbumSummaryServiceLogExtensions.UpdatingAlbumSummary(_logger, album.Id);
+        Tracing.Source.StartActivity("Update Album Summary")?.SetTag("albumId", album.Id);
 
         album = await BuildAsync(album, cancellationToken);
         await _mediaStore.Albums.UpdateAsync(album, cancellationToken);
 
         return album;
     }
-
 
     public async Task UpdateAllAsync(CancellationToken cancellationToken)
     {
@@ -196,9 +195,4 @@ public static partial class AlbumSummaryServiceLogExtensions
         Level = LogLevel.Error,
         Message = "Error updating album summary for: {Id}-{Name} {Ex}")]
     public static partial void ErrorUpdatingAlbumSummary(ILogger logger, Guid id, string name, Exception ex);
-
-    [LoggerMessage(
-        Level = LogLevel.Information,
-        Message = "Updating album summary. {Id}")]
-    public static partial void UpdatingAlbumSummary(ILogger logger, Guid id);
 }

@@ -169,8 +169,8 @@ public class PersonService : IPersonService
         Person person,
         CancellationToken cancellationToken)
     {
-        //_logger.UpdatePersonSummary(person.Id);
-        PersonServiceLoggerExtensions.UpdatePersonSummary(_logger, person.Id);
+        Tracing.Source.StartActivity("Update person summary")
+            ?.SetTag("personId", person.Id);
 
         person.Summary = await GetSummaryAsync(person, cancellationToken);
 
@@ -236,12 +236,4 @@ public class PersonService : IPersonService
 
         return null;
     }
-}
-
-public static partial class PersonServiceLoggerExtensions
-{
-    [LoggerMessage(
-        Level = LogLevel.Information,
-        Message = "Update person summary: {Id}")]
-    public static partial void UpdatePersonSummary(ILogger logger, Guid id);
 }
