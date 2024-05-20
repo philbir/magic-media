@@ -9,8 +9,6 @@
     <PackageReference Include="Microsoft.Azure.CognitiveServices.Vision.ComputerVision"  />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions"  />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder"  />
-    <PackageReference Include="Serilog"  />
-
   </ItemGroup>
 
   <ItemGroup>

@@ -8,56 +8,40 @@ using MagicMedia.Search;
 using MagicMedia.Security;
 using MagicMedia.Store;
 using MassTransit;
+using Microsoft.Extensions.Logging;
 
 namespace MagicMedia.Face;
 
-public class FaceService : IFaceService
+public class FaceService(
+    IFaceStore faceStore,
+    IPersonService personStore,
+    IMediaStore mediaStore,
+    IUserContextFactory userContextFactory,
+    IFaceDetectionService faceDetectionService,
+    IAgeOperationsService ageOperationsService,
+    IBus bus,
+    ILogger<FaceService> logger)
+    : IFaceService
 {
-    private readonly IFaceStore _faceStore;
-    private readonly IPersonService _personService;
-    private readonly IMediaStore _mediaStore;
-    private readonly IUserContextFactory _userContextFactory;
-    private readonly IFaceDetectionService _faceDetectionService;
-    private readonly IAgeOperationsService _ageOperationsService;
-    private readonly IBus _bus;
-
-    public FaceService(
-        IFaceStore faceStore,
-        IPersonService personStore,
-        IMediaStore mediaStore,
-        IUserContextFactory userContextFactory,
-        IFaceDetectionService faceDetectionService,
-        IAgeOperationsService ageOperationsService,
-        IBus bus)
-    {
-        _faceStore = faceStore;
-        _personService = personStore;
-        _mediaStore = mediaStore;
-        _userContextFactory = userContextFactory;
-        _faceDetectionService = faceDetectionService;
-        _ageOperationsService = ageOperationsService;
-        _bus = bus;
-    }
-
     public async Task<MediaFace> AssignPersonByHumanAsync(
         Guid id,
         string personName,
         CancellationToken cancellationToken)
     {
-        Person person = await _personService.GetOrCreatePersonAsync(
+        Person person = await personStore.GetOrCreatePersonAsync(
             personName,
             cancellationToken);
 
-        MediaFace face = await _faceStore.GetByIdAsync(id, cancellationToken);
+        MediaFace face = await faceStore.GetByIdAsync(id, cancellationToken);
 
         face.PersonId = person.Id;
         face.State = FaceState.Validated;
         face.RecognitionType = FaceRecognitionType.Human;
 
         await CalculateAgeAsync(face, person, cancellationToken);
-        await _faceStore.UpdateAsync(face, cancellationToken);
+        await faceStore.UpdateAsync(face, cancellationToken);
 
-        await _bus.Publish(new FaceUpdatedMessage(face.Id, "ASSIGN_BY_HUMAN") { PersonId = person.Id });
+        await bus.Publish(new FaceUpdatedMessage(face.Id, "ASSIGN_BY_HUMAN") { PersonId = person.Id });
 
         return face;
     }
@@ -66,20 +50,20 @@ public class FaceService : IFaceService
         SearchFacesRequest request,
         CancellationToken cancellationToken)
     {
-        IUserContext userContext = await _userContextFactory.CreateAsync(cancellationToken);
+        IUserContext userContext = await userContextFactory.CreateAsync(cancellationToken);
 
         if (!userContext.HasPermission(Permissions.Media.ViewAll))
         {
             request.AuthorizedOnMedia = await userContext.GetAuthorizedMediaAsync(cancellationToken);
         }
 
-        return await _faceStore.SearchAsync(request, cancellationToken);
+        return await faceStore.SearchAsync(request, cancellationToken);
     }
 
     public async Task<MediaFace> UpdateAgeAsync(MediaFace face, CancellationToken cancellationToken)
     {
         await CalculateAgeAsync(face, cancellationToken);
-        await _faceStore.UpdateAsync(face, cancellationToken);
+        await faceStore.UpdateAsync(face, cancellationToken);
 
         return face;
     }
@@ -90,7 +74,7 @@ public class FaceService : IFaceService
     {
         if (face.PersonId.HasValue)
         {
-            Person person = await _mediaStore.Persons.GetByIdAsync(face.PersonId.Value, cancellationToken);
+            Person person = await mediaStore.Persons.GetByIdAsync(face.PersonId.Value, cancellationToken);
             await CalculateAgeAsync(face, person, cancellationToken);
         }
     }
@@ -102,9 +86,9 @@ public class FaceService : IFaceService
     {
         if (person.DateOfBirth.HasValue)
         {
-            Media media = await _mediaStore.GetByIdAsync(face.MediaId, cancellationToken);
+            Media media = await mediaStore.GetByIdAsync(face.MediaId, cancellationToken);
 
-            face.Age = _ageOperationsService.CalculateAge(
+            face.Age = ageOperationsService.CalculateAge(
                 media.DateTaken,
                 person.DateOfBirth.Value);
         }
@@ -142,7 +126,7 @@ public class FaceService : IFaceService
         CancellationToken cancellationToken)
     {
         var distanceValue = distance.GetValueOrDefault(.4);
-        Guid? personId = await _faceDetectionService.PredictPersonAsync(
+        Guid? personId = await faceDetectionService.PredictPersonAsync(
             new PredictPersonRequest
             {
                 Encoding = face.Encoding,
@@ -166,7 +150,7 @@ public class FaceService : IFaceService
         double? distance,
         CancellationToken cancellationToken)
     {
-        MediaFace face = await _faceStore.GetByIdAsync(faceId, cancellationToken);
+        MediaFace face = await faceStore.GetByIdAsync(faceId, cancellationToken);
 
         return await PredictPersonAsync(face, distance, cancellationToken);
     }
@@ -183,8 +167,8 @@ public class FaceService : IFaceService
         face.DistanceThreshold = distance;
 
         await CalculateAgeAsync(face, cancellationToken);
-        await _faceStore.UpdateAsync(face, cancellationToken);
-        await _bus.Publish(
+        await faceStore.UpdateAsync(face, cancellationToken);
+        await bus.Publish(
             new FaceUpdatedMessage(face.Id, "ASSIGN_BY_COMPUTER") { PersonId = personId },
             cancellationToken);
 
@@ -196,7 +180,7 @@ public class FaceService : IFaceService
         Guid id,
         CancellationToken cancellationToken)
     {
-        MediaFace face = await _faceStore.GetByIdAsync(id, cancellationToken);
+        MediaFace face = await faceStore.GetByIdAsync(id, cancellationToken);
 
         return await UnAssignPersonAsync(face, cancellationToken);
     }
@@ -220,8 +204,8 @@ public class FaceService : IFaceService
             face.RecognitionType = FaceRecognitionType.None;
             face.Age = null;
 
-            await _faceStore.UpdateAsync(face, cancellationToken);
-            await _bus.Publish(
+            await faceStore.UpdateAsync(face, cancellationToken);
+            await bus.Publish(
                 new FaceUpdatedMessage(face.Id, "UNASSIGN_PERSON") { PersonId = currentPersonId },
                 cancellationToken);
         }
@@ -233,7 +217,7 @@ public class FaceService : IFaceService
         Guid id,
         CancellationToken cancellationToken)
     {
-        MediaFace face = await _faceStore.GetByIdAsync(id, cancellationToken);
+        MediaFace face = await faceStore.GetByIdAsync(id, cancellationToken);
 
         return await ApproveComputerAsync(face, cancellationToken);
     }
@@ -242,7 +226,7 @@ public class FaceService : IFaceService
         Guid mediaId,
         CancellationToken cancellationToken)
     {
-        IEnumerable<MediaFace> faces = await _faceStore.GetFacesByMediaAsync(mediaId, cancellationToken);
+        IEnumerable<MediaFace> faces = await faceStore.GetFacesByMediaAsync(mediaId, cancellationToken);
 
         IEnumerable<MediaFace> filtered = faces
             .Where(x => x.PersonId.HasValue && x.RecognitionType == FaceRecognitionType.Computer);
@@ -259,7 +243,7 @@ public class FaceService : IFaceService
         Guid mediaId,
         CancellationToken cancellationToken)
     {
-        IEnumerable<MediaFace> faces = await _faceStore.GetFacesByMediaAsync(mediaId, cancellationToken);
+        IEnumerable<MediaFace> faces = await faceStore.GetFacesByMediaAsync(mediaId, cancellationToken);
 
         IEnumerable<MediaFace> filtered = faces
             .Where(x =>
@@ -280,7 +264,7 @@ public class FaceService : IFaceService
         Guid mediaId,
         CancellationToken cancellationToken)
     {
-        IEnumerable<MediaFace> faces = await _faceStore.GetFacesByMediaAsync(mediaId, cancellationToken);
+        IEnumerable<MediaFace> faces = await faceStore.GetFacesByMediaAsync(mediaId, cancellationToken);
 
         IEnumerable<MediaFace> filtered = faces
             .Where(x => x.PersonId.HasValue == false);
@@ -303,9 +287,9 @@ public class FaceService : IFaceService
             face.State = FaceState.Validated;
 
             await CalculateAgeAsync(face, cancellationToken);
-            await _faceStore.UpdateAsync(face, cancellationToken);
+            await faceStore.UpdateAsync(face, cancellationToken);
 
-            await _bus.Publish(new FaceUpdatedMessage(face.Id, "APPROVE_COMPUTER")
+            await bus.Publish(new FaceUpdatedMessage(face.Id, "APPROVE_COMPUTER")
             {
                 PersonId = face.PersonId.Value
             }, cancellationToken);
@@ -316,7 +300,7 @@ public class FaceService : IFaceService
 
     public async Task<MediaFace> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
-        MediaFace face = await _faceStore.GetByIdAsync(id, cancellationToken);
+        MediaFace face = await faceStore.GetByIdAsync(id, cancellationToken);
 
         return face;
     }
@@ -325,7 +309,7 @@ public class FaceService : IFaceService
         Guid mediaId,
         CancellationToken cancellationToken)
     {
-        return await _faceStore.GetFacesByMediaAsync(mediaId, cancellationToken);
+        return await faceStore.GetFacesByMediaAsync(mediaId, cancellationToken);
     }
 
     public async Task DeleteByMediaIdAsync(Guid mediaId, CancellationToken cancellationToken)
@@ -343,16 +327,16 @@ public class FaceService : IFaceService
 
     private async Task DeleteAsync(MediaFace face, CancellationToken cancellationToken)
     {
-        //Log.Information("Deleting face {Id}", face.Id);
+        logger.DeletingFace(face.Id);
 
-        await _faceStore.DeleteAsync(face.Id, cancellationToken);
+        await faceStore.DeleteAsync(face.Id, cancellationToken);
 
         if (face.Thumbnail != null)
         {
-            await _mediaStore.Thumbnails.DeleteAsync(face.Thumbnail.Id, cancellationToken);
+            await mediaStore.Thumbnails.DeleteAsync(face.Thumbnail.Id, cancellationToken);
         }
 
-        await _bus.Publish(new FaceUpdatedMessage(face.Id, "DELETED"), cancellationToken);
+        await bus.Publish(new FaceUpdatedMessage(face.Id, "DELETED"), cancellationToken);
     }
 
     public async Task<MediaThumbnail> GetThumbnailAsync(
@@ -361,10 +345,18 @@ public class FaceService : IFaceService
     {
         MediaFace face = await GetByIdAsync(id, cancellationToken);
 
-        face.Thumbnail.Data = await _mediaStore.Thumbnails.GetAsync(
+        face.Thumbnail.Data = await mediaStore.Thumbnails.GetAsync(
             face.Thumbnail.Id,
             cancellationToken);
 
         return face.Thumbnail;
     }
+}
+
+public static partial class FaceServiceLoggerExtensions
+{
+    [LoggerMessage(
+        Level = LogLevel.Information,
+        Message = "Deleting face {Id}")]
+    public static partial void DeletingFace(this ILogger logger, Guid id);
 }

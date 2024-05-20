@@ -5,7 +5,6 @@ using MagicMedia.Audit;
 using MagicMedia.Security;
 using MagicMedia.Store;
 using Microsoft.AspNetCore.Authorization;
-using Serilog;
 
 namespace MagicMedia.Authorization;
 
@@ -79,7 +78,7 @@ public class AuditedAuhorizationHandler<TRequirement>
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Error in HandleRequirementAsync for Media");
+                //Log.Error(ex, "Error in HandleRequirementAsync for Media");
                 context.Fail();
             }
         }

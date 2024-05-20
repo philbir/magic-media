@@ -5,6 +5,6 @@ namespace MagicMedia.Processing;
 
 public interface IMediaSourcePreConverter
 {
-    Task ProConvertAsync(
+    Task PreConvertAsync(
         CancellationToken cancellationToken);
 }

@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Diagnostics.Metrics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -7,28 +9,51 @@ using System.Threading.Tasks;
 using ImageMagick;
 using MagicMedia.Configuration;
 using MagicMedia.Discovery;
+using MassTransit.Courier.Contracts;
+using Microsoft.Extensions.Logging;
+using Activity = System.Diagnostics.Activity;
 
 namespace MagicMedia.Processing;
+
+public partial class Meters
+{
+    static Meter _meter = new Meter("magicmedia.core.processing");
+    private static Histogram<double> _hiecConversionTime = _meter.CreateHistogram<double>(
+        _meter.Name + ".hiec_conversion_time",
+        "The time it takes to convert a hiec file to jpg",
+        "ms");
+
+    internal static void RecordHiecConversionTime(double time)
+    {
+        _hiecConversionTime.Record(time);
+    }
+}
+
 
 public class MediaSourcePreConverter : IMediaSourcePreConverter
 {
     private readonly IMediaSourceDiscoveryFactory _discoveryFactory;
     private readonly FileSystemStoreOptions _storeOptions;
     private readonly FileSystemDiscoveryOptions _options;
+    private readonly ILogger<MediaSourcePreConverter> _logger;
+    private static ActivitySource _source = new ActivitySource("MagicMedia.Core.MediaSourcePreConverter");
 
     public MediaSourcePreConverter(
         IMediaSourceDiscoveryFactory discoveryFactory,
         FileSystemStoreOptions storeOptions,
-        FileSystemDiscoveryOptions options)
+        FileSystemDiscoveryOptions options,
+        ILogger<MediaSourcePreConverter> logger)
     {
         _discoveryFactory = discoveryFactory;
         _storeOptions = storeOptions;
         _options = options;
+        _logger = logger;
     }
 
-    public async Task ProConvertAsync(
+    public async Task PreConvertAsync(
         CancellationToken cancellationToken)
     {
+        using Activity? activity = _source.StartActivity("PreConvertFiles");
         var todo = new List<MediaDiscoveryIdentifier>();
 
         foreach (IMediaSourceDiscovery source in _discoveryFactory.GetSources())
@@ -44,16 +69,32 @@ public class MediaSourcePreConverter : IMediaSourcePreConverter
                     cancellationToken);
 
             todo.AddRange(identifiers);
+
+            activity?.SetTag("filesToConvert", todo.Count());
         }
 
         foreach (MediaDiscoveryIdentifier file in todo.ToList())
         {
-            await ConvertHiecToJpgAsync(file, cancellationToken);
+            try
+            {
+                var sw = Stopwatch.StartNew();
+                await ConvertHiecToJpgAsync(file, cancellationToken);
+
+                Meters.RecordHiecConversionTime(sw.ElapsedMilliseconds);
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorConvertingHiecFile(file.Id, ex);
+            }
         }
     }
 
     private async Task ConvertHiecToJpgAsync(MediaDiscoveryIdentifier file, CancellationToken cancellationToken)
     {
+        using Activity? activity = _source.StartActivity("ConvertHiecToJpg");
+        activity?.SetTag("file", file.Id);
+        _logger.ConvertingHiecFile(file.Id);
+
         using var image = new MagickImage(file.Id);
 
         var jpegPath = Path.ChangeExtension(file.Id, ".jpg");
@@ -71,4 +112,17 @@ public class MediaSourcePreConverter : IMediaSourcePreConverter
 
         File.Move(file.Id, newFilePath);
     }
+}
+
+public static partial class MediaSourcePreConverterLoggerExtensions
+{
+    [LoggerMessage(
+        Level = LogLevel.Information,
+        Message = "Converting HIEC file: {file}")]
+    public static partial void ConvertingHiecFile(this ILogger logger, string file);
+
+    [LoggerMessage(
+        Level = LogLevel.Error,
+        Message = "Error converting HIEC file: {file} - {ex}")]
+    public static partial void ErrorConvertingHiecFile(this ILogger logger, string file, Exception ex);
 }

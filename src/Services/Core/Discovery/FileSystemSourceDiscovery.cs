@@ -1,13 +1,14 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Serilog;
+using Microsoft.Extensions.Logging;
 
 namespace MagicMedia.Discovery;
 
-public class FileSystemSourceDiscovery : IMediaSourceDiscovery
+public class FileSystemSourceDiscovery(ILogger<FileSystemSourceDiscovery> logger) : IMediaSourceDiscovery
 {
     public MediaDiscoverySource SourceType => MediaDiscoverySource.FileSystem;
 
@@ -24,14 +25,14 @@ public class FileSystemSourceDiscovery : IMediaSourceDiscovery
                 location.Path;
 
             string pattern = location.Filter ?? "*.*";
-            Log.Information("Discover media in {Path} with pattern: {Pattern}", filePath, pattern);
+            logger.DiscoverMediaInPath(filePath, pattern);
 
             string[] files = Directory.GetFiles(
                 filePath,
                 pattern,
                 SearchOption.AllDirectories);
 
-            Log.Information("{Count} media found in {Path}", files.Length, filePath);
+            logger.MediaFoundInPath(files.Length, filePath);
 
             result.AddRange(files.Select(x =>
                 new MediaDiscoveryIdentifier
@@ -68,4 +69,17 @@ public class FileSystemSourceDiscovery : IMediaSourceDiscovery
 
         await File.WriteAllBytesAsync(id, data, cancellationToken);
     }
+}
+
+public static partial class FileSystemSourceDiscoveryLoggerExtensions
+{
+    [LoggerMessage(
+        Level = LogLevel.Information,
+        Message = "Discover media in {Path} with pattern: {Pattern}")]
+    public static partial void DiscoverMediaInPath(this ILogger logger, string path, string pattern);
+
+    [LoggerMessage(
+        Level = LogLevel.Information,
+        Message = "{Count} media found in {Path}")]
+    public static partial void MediaFoundInPath(this ILogger logger, int count, string path);
 }

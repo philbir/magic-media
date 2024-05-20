@@ -114,8 +114,9 @@ public static class MagicMediaServiceCollectionExtensions
             {
                 AutoDownload = true
             };
-
-        services.AddSingleton<IFFmpegInitializer>(c => new FFmpegInitializer(ffmpegOptions));
+        
+        services.AddSingleton(ffmpegOptions);
+        services.AddSingleton<IFFmpegInitializer>();
 
         return services;
     }

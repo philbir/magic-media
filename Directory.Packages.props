@@ -14,6 +14,7 @@
     <PackageVersion Include="HotChocolate.Types.Analyzers" Version="12.18.0" />
     <PackageVersion Include="GreenDonut" Version="13.0.0-rc.4" />
     <PackageVersion Include="HotChocolate.Types.Scalars" Version="12.18.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.8.0" />
     <PackageVersion Include="StrawberryShake" Version="12.18.0" />
     <PackageVersion Include="IdentityModel" Version="6.0.0" />
     <PackageVersion Include="Magick.NET-Q16-AnyCPU" Version="13.3.0" />
@@ -30,24 +31,22 @@
     <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.AspNetCore.SignalR.Core" Version="1.1.0"/>
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.5" />
+    <PackageVersion Include="Microsoft.AspNetCore.SignalR.Core" Version="1.1.0" />
     <PackageVersion Include="AspNet.Security.OAuth.GitHub" Version="8.0.0" />
-    <PackageVersion Include="Duende.IdentityServer" Version="6.3.6" />
-    <PackageVersion Include="Duende.IdentityServer.Storage" Version="6.3.6" />
-    <PackageVersion Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="8.0.5" />
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.5" />
     <PackageVersion Include="Microsoft.Extensions.Http" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Caching.Abstractions" Version="8.0.0"/>
-    <PackageVersion Include="Microsoft.Extensions.Http.Polly" Version="8.0.0"/>
-    <PackageVersion Include="Microsoft.Extensions.Options" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Caching.Abstractions" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Http.Polly" Version="8.0.5" />
+    <PackageVersion Include="Microsoft.Extensions.Options" Version="8.0.2" />
     <PackageVersion Include="Microsoft.Extensions.Logging" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
-    <PackageVersion Include="MongoDB.Extensions.Context" Version="3.3.0-preview.1" />
-    <PackageVersion Include="MongoDB.Extensions.Transactions" Version="3.3.0-preview.1" />
-    <PackageVersion Include="MongoDB.Driver.GridFS" Version="2.22.0" />
+    <PackageVersion Include="MongoDB.Extensions.Context" Version="3.5.0" />
+    <PackageVersion Include="MongoDB.Extensions.Transactions" Version="3.5.0" />
+    <PackageVersion Include="MongoDB.Driver.GridFS" Version="2.25.0" />
     <PackageVersion Include="MongoDB.Driver.Core.Extensions.OpenTelemetry" Version="1.0.0" />
     <PackageVersion Include="AnyDiff" Version="1.0.88" />
     <PackageVersion Include="AnyClone" Version="1.1.6" />
@@ -63,39 +62,28 @@
     <PackageVersion Include="Azure.Identity" Version="1.8.1" />
     <PackageVersion Include="Microsoft.Graph" Version="4.52.0" />
     <PackageVersion Include="Quartz.Extensions.DependencyInjection" Version="3.6.0" />
-    <PackageVersion Include="Serilog" Version="2.12.0" />
-    <PackageVersion Include="Serilog.Extensions.Hosting" Version="8.0.0" />
-    <PackageVersion Include="Serilog.Sinks.Console" Version="5.0.1" />
-    <PackageVersion Include="Serilog.Enrichers.Span" Version="3.1.0" />
-    <PackageVersion Include="Elastic.CommonSchema.Serilog" Version="8.6.1" />
-    <PackageVersion Include="Serilog.Enrichers.Environment" Version="2.3.0" />
-    <PackageVersion Include="Serilog.Sinks.Elasticsearch" Version="9.0.3" />
-    <PackageVersion Include="Serilog.AspNetCore" Version="8.0.0" />
     <PackageVersion Include="SixLabors.ImageSharp" Version="2.1.7" />
     <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="7.0.3" />
     <PackageVersion Include="Microsoft.Identity.Web" Version="2.16.0" />
     <PackageVersion Include="BingMapsRESTToolkit" Version="1.1.4" />
     <PackageVersion Include="Microsoft.Azure.CognitiveServices.Vision.ComputerVision" Version="6.0.0" />
     <PackageVersion Include="Otp.NET" Version="1.3.0" />
-    <PackageVersion Include="OpenTelemetry.Api" Version="1.4.0" />
-    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.4.0" />
-    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol.Logs" Version="1.4.0-rc.4" />
-    <PackageVersion Include="OpenTelemetry.Exporter.Console" Version="1.4.0" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.0.0-rc9.14" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.0.0-rc9.14" />
+    <PackageVersion Include="OpenTelemetry.Api" Version="1.8.1" />
+    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.8.1" />
+    <PackageVersion Include="OpenTelemetry.Exporter.Console" Version="1.8.1" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.8.1" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.8.1" />
     <PackageVersion Include="OpenTelemetry.Contrib.Preview" Version="1.0.0-beta2" />
-    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.4.0" />
+    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.8.1" />
     <PackageVersion Include="OpenTelemetry.Contrib.Instrumentation.MassTransit" Version="1.0.0-beta2" />
-
     <PackageVersion Include="CoenM.ImageSharp.ImageHash" Version="1.2.30" />
-
     <PackageVersion Include="SixLabors.ImageSharp" Version="3.0.0" />
-    <PackageVersion Include="NGeoHash" Version="1.2.0"/>
-    <PackageVersion Include="NodaTime" Version="3.0.9"/>
-    <PackageVersion Include="UAParser" Version="3.1.47"/>
-    <PackageVersion Include="Xabe.FFmpeg" Version="5.1.0"/>
-    <PackageVersion Include="Xabe.FFmpeg.Downloader" Version="5.1.0"/>
-    <PackageVersion Include="MetadataExtractor" Version="2.7.1"/>
+    <PackageVersion Include="NGeoHash" Version="1.2.0" />
+    <PackageVersion Include="NodaTime" Version="3.0.9" />
+    <PackageVersion Include="UAParser" Version="3.1.47" />
+    <PackageVersion Include="Xabe.FFmpeg" Version="5.1.0" />
+    <PackageVersion Include="Xabe.FFmpeg.Downloader" Version="5.1.0" />
+    <PackageVersion Include="MetadataExtractor" Version="2.7.1" />
   </ItemGroup>
   <ItemGroup>
     <PackageVersion Include="Verify.ImageMagick" Version="3.2.2" />
@@ -119,7 +107,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageVersion>
     <PackageVersion Include="Snapshooter.Xunit" Version="0.13.0" />
-
     <PackageVersion Include="Selenium.Support" Version="4.0.0-alpha05" />
     <PackageVersion Include="Selenium.WebDriver" Version="4.0.0-alpha05" />
     <PackageVersion Include="Selenium.WebDriver.IEDriver" Version="3.150.1.2" />

@@ -9,9 +9,9 @@ using MagicMedia.Jobs;
 using MagicMedia.Telemetry;
 using MagicMedia.Video;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Quartz;
 using Quartz.Spi;
-using Serilog;
 
 namespace Worker;
 
@@ -22,19 +22,22 @@ public class JobWorker : BackgroundService
     private readonly IFFmpegInitializer _fFmpegInitializer;
     private readonly IEnumerable<JobScheduleOptions> _scheduleOptions;
     private readonly IEnumerable<IJob> _jobs;
+    private readonly ILogger<JobWorker> _logger;
 
     public JobWorker(
         ISchedulerFactory schedulerFactory,
         IJobFactory jobFactory,
         IFFmpegInitializer fFmpegInitializer,
         IEnumerable<JobScheduleOptions> scheduleOptions,
-        IEnumerable<IJob> jobs)
+        IEnumerable<IJob> jobs,
+        ILogger<JobWorker> logger)
     {
         _schedulerFactory = schedulerFactory;
         _jobFactory = jobFactory;
         _fFmpegInitializer = fFmpegInitializer;
         _scheduleOptions = scheduleOptions;
         _jobs = jobs;
+        _logger = logger;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -61,7 +64,7 @@ public class JobWorker : BackgroundService
             Type jobType = job.GetType();
             activity?.AddEvent(new ActivityEvent($"Scheduling job {jobType.Name}"));
 
-            Log.Information("Scheduling job {Job}", jobType.Name);
+            _logger.SchedulingJob(jobType.Name);
 
             JobScheduleOptions? options = _scheduleOptions
                 .FirstOrDefault(x => x.Name == jobType.Name);
@@ -103,6 +106,13 @@ public class JobWorker : BackgroundService
             }
         }
 
-        await scheduler.Start();
+        await scheduler.Start(cancellationToken);
     }
+}
+public static partial class Log
+{
+    [LoggerMessage(
+        Level = LogLevel.Information,
+        Message = "Scheduling Job `{JobName}`")]
+    public static partial void SchedulingJob(this ILogger logger, string jobName);
 }

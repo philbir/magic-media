@@ -5,12 +5,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Discovery;
 using MagicMedia.Store;
-using Serilog;
+using Microsoft.Extensions.Logging;
 
 namespace MagicMedia.Processing;
 
 public class MediaSourceScanner : IMediaSourceScanner
 {
+    private readonly ILogger<MediaSourceScanner> _logger;
     private readonly IMediaSourceDiscoveryFactory _discoveryFactory;
     private readonly IMediaProcessorFlowFactory _flowFactory;
     private readonly IDuplicateMediaGuard _duplicateMediaGuard;
@@ -31,7 +32,8 @@ public class MediaSourceScanner : IMediaSourceScanner
         IMediaSourceDiscoveryFactory discoveryFactory,
         IMediaProcessorFlowFactory flowFactory,
         IDuplicateMediaGuard duplicateMediaGuard,
-        FileSystemDiscoveryOptions options)
+        FileSystemDiscoveryOptions options,
+        ILogger<MediaSourceScanner> logger)
     {
         _discoveryFactory = discoveryFactory;
         _flowFactory = flowFactory;
@@ -39,6 +41,7 @@ public class MediaSourceScanner : IMediaSourceScanner
         _options = options;
         _imageFlow = _flowFactory.CreateFlow("ImportImage");
         _videoFlow = _flowFactory.CreateFlow("ImportVideo");
+        _logger = logger;
     }
 
     private async Task<IEnumerable<MediaDiscoveryIdentifier>> DiscoverMediaAsync(
@@ -110,8 +113,16 @@ public class MediaSourceScanner : IMediaSourceScanner
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Error processing file {file}", file.Id);
+                _logger.ErrorProcessingFile(file.Id, ex);
             }
         }
     }
+}
+
+public static partial class MediaSourceScannerLoggerExtensions
+{
+    [LoggerMessage(
+        Level = LogLevel.Error,
+        Message = "Error processing file: {file} - {ex}")]
+    public static partial void ErrorProcessingFile(this ILogger logger, string file, Exception ex);
 }

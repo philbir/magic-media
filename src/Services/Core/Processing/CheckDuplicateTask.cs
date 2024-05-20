@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Configuration;
 using Microsoft.Extensions.Logging;
-using Serilog;
 
 namespace MagicMedia.Processing;
 

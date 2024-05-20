@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Store;
-using Serilog;
+using Microsoft.Extensions.Logging;
 
 namespace MagicMedia;
 
@@ -13,15 +13,17 @@ public class AlbumSummaryService : IAlbumSummaryService
     private readonly IMediaStore _mediaStore;
     private readonly IAlbumService _albumService;
     private readonly IAlbumMediaIdResolver _albumMediaIdResolver;
+    private readonly ILogger<AlbumSummaryService> _logger;
 
-    public AlbumSummaryService(
-        IMediaStore mediaStore,
+    public AlbumSummaryService(IMediaStore mediaStore,
         IAlbumService albumService,
-        IAlbumMediaIdResolver albumMediaIdResolver)
+        IAlbumMediaIdResolver albumMediaIdResolver,
+        ILogger<AlbumSummaryService> logger)
     {
         _mediaStore = mediaStore;
         _albumService = albumService;
         _albumMediaIdResolver = albumMediaIdResolver;
+        _logger = logger;
     }
 
     public async Task<Album> UpdateAsync(Guid id, CancellationToken cancellationToken)
@@ -31,9 +33,9 @@ public class AlbumSummaryService : IAlbumSummaryService
         return await UpdateAsync(album, cancellationToken);
     }
 
-    public async Task<Album> UpdateAsync(Album album, CancellationToken cancellationToken)
+    private async Task<Album> UpdateAsync(Album album, CancellationToken cancellationToken)
     {
-        //Log.Information("Updating album summary. {Id}", album.Id);
+        AlbumSummaryServiceLogExtensions.UpdatingAlbumSummary(_logger, album.Id);
 
         album = await BuildAsync(album, cancellationToken);
         await _mediaStore.Albums.UpdateAsync(album, cancellationToken);
@@ -54,7 +56,7 @@ public class AlbumSummaryService : IAlbumSummaryService
             }
             catch (Exception ex)
             {
-                Log.Error(ex,"Error updating album summary for: {Id}-{Name}", album.Id, album.Title);
+                AlbumSummaryServiceLogExtensions.ErrorUpdatingAlbumSummary(_logger, album.Id, album.Title, ex);
             }
         }
     }
@@ -80,7 +82,7 @@ public class AlbumSummaryService : IAlbumSummaryService
         album.VideoCount = data.Medias.Count(x => x.MediaType == MediaType.Video);
         album.StartDate = data.Medias.Min(x => x.DateTaken);
         album.EndDate = data.Medias.Max(x => x.DateTaken);
-        ;
+
         if (album.CoverMediaId == null)
         {
             album.CoverMediaId = mediaIds.ToArray()[mediaIds.Count() / 2];
@@ -186,4 +188,17 @@ public class AlbumSummaryService : IAlbumSummaryService
 
         return new AlbumData(medias, persons, faces);
     }
+}
+
+public static partial class AlbumSummaryServiceLogExtensions
+{
+    [LoggerMessage(
+        Level = LogLevel.Error,
+        Message = "Error updating album summary for: {Id}-{Name} {Ex}")]
+    public static partial void ErrorUpdatingAlbumSummary(ILogger logger, Guid id, string name, Exception ex);
+
+    [LoggerMessage(
+        Level = LogLevel.Information,
+        Message = "Updating album summary. {Id}")]
+    public static partial void UpdatingAlbumSummary(ILogger logger, Guid id);
 }

@@ -8,6 +8,7 @@ using MagicMedia.Search;
 using MagicMedia.Security;
 using MagicMedia.Store;
 using MassTransit;
+using Microsoft.Extensions.Logging;
 
 namespace MagicMedia;
 
@@ -20,6 +21,7 @@ public class PersonService : IPersonService
     private readonly IUserContextFactory _userContextFactory;
     private readonly IUserContextMessagePublisher _publisher;
     private readonly IBus _bus;
+    private readonly ILogger<PersonService> _logger;
 
     public PersonService(
         IPersonStore personStore,
@@ -28,7 +30,8 @@ public class PersonService : IPersonService
         IThumbnailBlobStore thumbnailBlob,
         IUserContextFactory userContextFactory,
         IUserContextMessagePublisher publisher,
-        IBus bus)
+        IBus bus,
+        ILogger<PersonService> logger)
     {
         _personStore = personStore;
         _groupService = groupService;
@@ -37,6 +40,7 @@ public class PersonService : IPersonService
         _userContextFactory = userContextFactory;
         _publisher = publisher;
         _bus = bus;
+        _logger = logger;
     }
 
     public async Task<Person> GetByIdAsync(
@@ -165,7 +169,9 @@ public class PersonService : IPersonService
         Person person,
         CancellationToken cancellationToken)
     {
-        //Log.Information("Update person summary: {Id}", person.Id);
+        //_logger.UpdatePersonSummary(person.Id);
+        PersonServiceLoggerExtensions.UpdatePersonSummary(_logger, person.Id);
+
         person.Summary = await GetSummaryAsync(person, cancellationToken);
 
         await _personStore.UpdateAsync(person, cancellationToken);
@@ -230,4 +236,12 @@ public class PersonService : IPersonService
 
         return null;
     }
+}
+
+public static partial class PersonServiceLoggerExtensions
+{
+    [LoggerMessage(
+        Level = LogLevel.Information,
+        Message = "Update person summary: {Id}")]
+    public static partial void UpdatePersonSummary(ILogger logger, Guid id);
 }

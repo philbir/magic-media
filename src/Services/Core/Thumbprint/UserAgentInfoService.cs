@@ -1,17 +1,12 @@
 using System;
-using Serilog;
+using Microsoft.Extensions.Logging;
 using UA = UAParser;
 
 namespace MagicMedia.Thumbprint;
 
-public class UserAgentInfoService : IUserAgentInfoService
+public class UserAgentInfoService(ILogger<UserAgentInfoService> logger) : IUserAgentInfoService
 {
-    private readonly UA.Parser _parser;
-
-    public UserAgentInfoService()
-    {
-        _parser = UA.Parser.GetDefault();
-    }
+    private readonly UA.Parser _parser = UA.Parser.GetDefault();
 
     public UserAgentInfo Parse(string userAgentString)
     {
@@ -24,7 +19,7 @@ public class UserAgentInfoService : IUserAgentInfoService
         }
         catch (Exception ex)
         {
-            Log.Error(ex, "Error parsing userAgentString: {UserAgent}", userAgentString);
+            logger.ErrorParsingUserAgentString(userAgentString, ex); ;
         }
 
         try
@@ -41,7 +36,7 @@ public class UserAgentInfoService : IUserAgentInfoService
         }
         catch (Exception ex)
         {
-            Log.Error(ex, "Error parsing userAgentString: {UserAgent}", userAgentString);
+            logger.ErrorParsingUserAgentString(userAgentString, ex);
         }
 
         return ua;
@@ -89,3 +84,12 @@ public class UserAgentInfoService : IUserAgentInfoService
         return osInfo;
     }
 }
+
+public static partial class UserAgentInfoServiceLoggerExtensions
+{
+    [LoggerMessage(
+        Level = LogLevel.Error,
+        Message = "Error parsing userAgentString: {UserAgent} {Ex}")]
+    public static partial void ErrorParsingUserAgentString(this ILogger logger, string userAgent, Exception ex);
+}
+
