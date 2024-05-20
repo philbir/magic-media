@@ -104,7 +104,6 @@ public static class MagicMediaServiceCollectionExtensions
         return builder;
     }
 
-
     private static IServiceCollection AddFFmpeg(
         this IServiceCollection services,
         IConfiguration configuration)
@@ -114,9 +113,9 @@ public static class MagicMediaServiceCollectionExtensions
             {
                 AutoDownload = true
             };
-        
+
         services.AddSingleton(ffmpegOptions);
-        services.AddSingleton<IFFmpegInitializer>();
+        services.AddSingleton<IFFmpegInitializer, FFmpegInitializer>();
 
         return services;
     }
