@@ -30,7 +30,11 @@ public class FileSystemSourceDiscovery(ILogger<FileSystemSourceDiscovery> logger
             string[] files = Directory.GetFiles(
                 filePath,
                 pattern,
-                SearchOption.AllDirectories);
+                new EnumerationOptions
+                {
+                    MatchCasing = MatchCasing.CaseInsensitive,
+                    RecurseSubdirectories = true
+                });
 
             logger.MediaFoundInPath(files.Length, filePath);
 
