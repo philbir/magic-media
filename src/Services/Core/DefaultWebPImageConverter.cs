@@ -5,7 +5,7 @@ namespace MagicMedia;
 
 public class DefaultWebPImageConverter : IWebPImageConverter
 {
-    public Stream ConvertToWebP(Stream stream, int quality = 50)
+    public Stream ConvertToWebP(Stream stream, uint quality = 50)
     {
         using var image = new MagickImage(stream);
         image.Quality = quality;
