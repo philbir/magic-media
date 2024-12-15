@@ -71,8 +71,8 @@ public class BoxExtractorService : IBoxExtractorService
         double multi = 1.95;
         var widthAdd = (int)((width * multi - width) / 2);
         //Make height and width same
-        var heighAdd = Math.Abs(widthAdd + width - height);
 
+        var heighAdd = Math.Abs(widthAdd + width - height);
         var faceBox = new ImageBox();
 
         faceBox.Left = input.Box.Left - widthAdd;

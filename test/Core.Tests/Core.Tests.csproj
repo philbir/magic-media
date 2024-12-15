@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Images\001.jpg" />
+    <None Remove="Images\001.jpg"/>
   </ItemGroup>
 
   <ItemGroup>
@@ -19,8 +19,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Services\Core\Core.csproj" />
-    <ProjectReference Include="..\..\test_media\TestMediaLibrary\TestMediaLibrary.csproj" />
+    <ProjectReference Include="..\..\src\Services\Core\Core.csproj"/>
+    <ProjectReference Include="..\..\test_media\TestMediaLibrary\TestMediaLibrary.csproj"/>
   </ItemGroup>
 
 </Project>

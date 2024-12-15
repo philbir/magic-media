@@ -32,7 +32,7 @@ public static class OpenTelemetryExtensions
             {
                 metrics.AddAspNetCoreInstrumentation();
                 metrics.AddHttpClientInstrumentation();
-                metrics.AddRuntimeInstrumentation();
+                //metrics.AddRuntimeInstrumentation();
                 metrics.AddMeter("magicmedia.core.processing");
             })
             .WithTracing(tracing =>
@@ -48,7 +48,7 @@ public static class OpenTelemetryExtensions
         useOtlpExporter = true;
         if (useOtlpExporter)
         {
-            builder.Services.AddOpenTelemetry().UseOtlpExporter();
+            //builder.Services.AddOpenTelemetry().UseOtlpExporter();
         }
 
         return builder;
