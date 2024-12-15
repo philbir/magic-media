@@ -4,5 +4,5 @@ namespace MagicMedia;
 
 public interface IWebPImageConverter
 {
-    Stream ConvertToWebP(Stream stream, int quality = 50);
+    Stream ConvertToWebP(Stream stream, uint quality = 50);
 }

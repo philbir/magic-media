@@ -6,24 +6,19 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace MagicMedia.Stores;
 
-public class FileSystemMediaBlobStore : IMediaBlobStore
+public class FileSystemMediaBlobStore(
+    FileSystemStoreOptions options,
+    ILogger<FileSystemMediaBlobStore> logger) : IMediaBlobStore
 {
-    private readonly FileSystemStoreOptions _options;
-    private static ActivitySource ActivitySource = new ActivitySource("MagicMedia.Core", "1.0.0");
-
-    public FileSystemMediaBlobStore(FileSystemStoreOptions options)
-    {
-        _options = options;
-    }
-
     public async Task<MediaBlobData> GetAsync(
         MediaBlobData request,
         CancellationToken cancellationToken)
     {
-        using Activity? activity = ActivitySource.StartActivity("GetBlob");
+        using Activity? activity = Tracing.Source.StartActivity("Get MediaBlobData");
 
         var filename = GetFilename(request);
         byte[] data = await File.ReadAllBytesAsync(filename, cancellationToken);
@@ -59,7 +54,7 @@ public class FileSystemMediaBlobStore : IMediaBlobStore
     {
         var existingFilename = GetFilename(request);
 
-        var newPathFragments = new List<string> { _options.RootDirectory };
+        var newPathFragments = new List<string> { options.RootDirectory };
         newPathFragments.AddRange(newLocation.Split('/'));
 
         var newDir = Path.Combine(newPathFragments.ToArray());
@@ -138,7 +133,7 @@ public class FileSystemMediaBlobStore : IMediaBlobStore
         if (File.Exists(filename))
         {
             File.Delete(filename);
-            //Log.Information("Delete {File}", filename);
+            logger.LogInformation("Delete {File}", filename);
             return Task.FromResult(true);
         }
 
@@ -154,10 +149,10 @@ public class FileSystemMediaBlobStore : IMediaBlobStore
 
     private string GetDirectory(MediaBlobData data)
     {
-        var loc = _options.BlobTypeMap[data.Type];
+        var loc = options.BlobTypeMap[data.Type];
         var paths = new List<string>
             {
-                _options.RootDirectory
+                options.RootDirectory
             };
 
         paths.AddRange(loc.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries));

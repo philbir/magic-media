@@ -7,43 +7,33 @@ using System.Threading.Tasks;
 using MagicMedia.Extensions;
 using MagicMedia.ImageAI;
 using MagicMedia.Store;
+using Microsoft.Extensions.Logging;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Jpeg;
 
 namespace MagicMedia;
 
-public class MediaAIService : IMediaAIService
+public class MediaAIService(
+    IEnumerable<ICloudAIMediaAnalyser> analysers,
+    IMediaService mediaService,
+    IMediaStore mediaStore,
+    ILogger<MediaAIService> logger)
+    : IMediaAIService
 {
-    private readonly IEnumerable<ICloudAIMediaAnalyser> _analysers;
-    private readonly IMediaService _mediaService;
-    private readonly IMediaStore _mediaStore;
-
-    public MediaAIService(
-        IEnumerable<ICloudAIMediaAnalyser> analysers,
-        IMediaService mediaService,
-        IMediaStore mediaStore)
-    {
-        _analysers = analysers;
-        _mediaService = mediaService;
-        _mediaStore = mediaStore;
-    }
-
     public async Task<MediaAI?> AnalyseMediaAsync(Media media, CancellationToken cancellationToken)
     {
         List<MediaAI> results = new List<MediaAI>();
 
-        foreach (ICloudAIMediaAnalyser imageAnalyzer in _analysers)
+        foreach (ICloudAIMediaAnalyser imageAnalyzer in analysers)
         {
             MediaAI aiData = await AnalyseMediaAsync(media, imageAnalyzer, cancellationToken);
             results.Add(aiData);
-
         }
 
         MediaAI merged = await SaveMediaAIDatas(results, cancellationToken);
 
         return merged;
     }
-
 
     private MediaAI MergeAIData(MediaAI existing, IEnumerable<MediaAI> aiDatas)
     {
@@ -82,14 +72,14 @@ public class MediaAIService : IMediaAIService
 
     public async Task<IEnumerable<Media>> GetMediaIdsForImageAIJobAsync(int limit, CancellationToken cancellationToken)
     {
-        IEnumerable<Media> medias = await _mediaStore.GetMediaWithoutAISourceAsync(AISource.ImageAI, limit, cancellationToken);
+        IEnumerable<Media> medias = await mediaStore.GetMediaWithoutAISourceAsync(AISource.ImageAI, limit, cancellationToken);
 
         return medias;
     }
 
     private async Task<MediaAI> SaveMediaAIDatas(IEnumerable<MediaAI> aiDatas, CancellationToken cancellationToken)
     {
-        MediaAI? existing = await _mediaStore.MediaAI.GetByMediaIdAsync(
+        MediaAI? existing = await mediaStore.MediaAI.GetByMediaIdAsync(
             aiDatas.First().MediaId,
             cancellationToken);
 
@@ -120,7 +110,7 @@ public class MediaAIService : IMediaAIService
         AISource source,
         CancellationToken cancellationToken)
     {
-        IEnumerable<MediaAI> result = await _mediaStore.MediaAI.GetWithoutSourceInfoAsync(
+        IEnumerable<MediaAI> result = await mediaStore.MediaAI.GetWithoutSourceInfoAsync(
             source,
             limit: 1,
             excludePersons: true,
@@ -128,9 +118,9 @@ public class MediaAIService : IMediaAIService
 
         foreach (MediaAI mediaAI in result)
         {
-            Media media = await _mediaService.GetByIdAsync(mediaAI.MediaId, cancellationToken);
+            Media media = await mediaService.GetByIdAsync(mediaAI.MediaId, cancellationToken);
 
-            ICloudAIMediaAnalyser analyser = _analysers.Single(x => x.Source == source);
+            ICloudAIMediaAnalyser analyser = analysers.Single(x => x.Source == source);
 
             MediaAI aiData = await AnalyseMediaAsync(media, analyser, cancellationToken);
 
@@ -142,7 +132,7 @@ public class MediaAIService : IMediaAIService
         Guid mediaId,
         CancellationToken cancellationToken)
     {
-        Media media = await _mediaService.GetByIdAsync(mediaId, cancellationToken);
+        Media media = await mediaService.GetByIdAsync(mediaId, cancellationToken);
 
         MediaAI? mediaAI = await AnalyseMediaAsync(media, cancellationToken);
 
@@ -216,9 +206,9 @@ public class MediaAIService : IMediaAIService
 
     private async Task<MediaAI> SaveMediaAI(MediaAI aiData, CancellationToken cancellationToken)
     {
-        await _mediaStore.UpdateAISummaryAsync(aiData.MediaId, BuildSummary(aiData), cancellationToken);
+        await mediaStore.UpdateAISummaryAsync(aiData.MediaId, BuildSummary(aiData), cancellationToken);
 
-        return await _mediaStore.MediaAI.SaveAsync(aiData, cancellationToken);
+        return await mediaStore.MediaAI.SaveAsync(aiData, cancellationToken);
     }
 
     private MediaAISummary BuildSummary(MediaAI mediaAI)
@@ -237,14 +227,14 @@ public class MediaAIService : IMediaAIService
         ICloudAIMediaAnalyser analyser,
         CancellationToken cancellationToken)
     {
-        //Log.Information("Analyse media {Id} using {Analyzer}", media.Id, analyser.Source);
+        logger.AnalyseMedia(media.Id, analyser.Source.ToString());
         MediaAI aiData = new();
 
         try
         {
-            MediaBlobData? request = _mediaService.GetBlobRequest(media, MediaFileType.Original);
+            MediaBlobData? request = mediaService.GetBlobRequest(media, MediaFileType.Original);
 
-            using Stream imageStream = _mediaStore.Blob.GetStreamAsync(request);
+            using Stream imageStream = mediaStore.Blob.GetStreamAsync(request);
             using Stream stream = await RemoveExifDataAsync(imageStream, cancellationToken);
 
             aiData = await analyser.AnalyseImageAsync(
@@ -300,3 +290,12 @@ public class MediaAIService : IMediaAIService
         return ms;
     }
 }
+
+public static partial class MediaAIServiceLoggerExtensions
+{
+    [LoggerMessage(
+        Level = LogLevel.Information,
+        Message = "Analyse media {Id} using {Analyzer}")]
+    public static partial void AnalyseMedia(this ILogger logger, Guid id, string analyzer);
+}
+

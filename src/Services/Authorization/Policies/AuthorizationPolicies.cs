@@ -165,8 +165,8 @@ public static class AuthorizationPolicies
         get
         {
             return new AuthorizationPolicyBuilder()
-                .RequireClaim("scope", "api.magic.imageai")
-                .AddAuthenticationSchemes("jwt")
+                .RequireAuthenticatedUser()
+                .AddAuthenticationSchemes("ApiKey")
                 .Build();
         }
     }

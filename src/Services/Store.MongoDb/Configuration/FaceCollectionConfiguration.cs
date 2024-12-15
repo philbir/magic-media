@@ -30,8 +30,8 @@ internal class FaceCollectionConfiguration :
                          .Descending(c => c.PersonId),
                      new CreateIndexOptions { Unique = false });
 
-                collection.Indexes.CreateOne(mediaIdIndex);
-                collection.Indexes.CreateOne(personIdIndex);
+                //collection.Indexes.CreateOne(mediaIdIndex);
+                //collection.Indexes.CreateOne(personIdIndex);
             });
     }
 }

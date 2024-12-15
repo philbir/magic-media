@@ -104,7 +104,6 @@ public static class MagicMediaServiceCollectionExtensions
         return builder;
     }
 
-
     private static IServiceCollection AddFFmpeg(
         this IServiceCollection services,
         IConfiguration configuration)
@@ -115,7 +114,8 @@ public static class MagicMediaServiceCollectionExtensions
                 AutoDownload = true
             };
 
-        services.AddSingleton<IFFmpegInitializer>(c => new FFmpegInitializer(ffmpegOptions));
+        services.AddSingleton(ffmpegOptions);
+        services.AddSingleton<IFFmpegInitializer, FFmpegInitializer>();
 
         return services;
     }
@@ -142,6 +142,7 @@ public static class MagicMediaServiceCollectionExtensions
         builder.Services.AddSingleton<IMediaFaceScanner, MediaFaceScanner>();
         builder.Services.AddSingleton<IMediaSourceScanner, MediaSourceScanner>();
         builder.Services.AddSingleton<IRescanFacesHandler, RescanFacesHandler>();
+        builder.Services.AddSingleton<IMediaSourcePreConverter, MediaSourcePreConverter>();
 
         return builder;
     }

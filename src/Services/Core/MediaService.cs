@@ -8,6 +8,7 @@ using MagicMedia.Messaging;
 using MagicMedia.Processing;
 using MagicMedia.Store;
 using MassTransit;
+using Microsoft.Extensions.Logging;
 using SixLabors.ImageSharp;
 
 namespace MagicMedia;
@@ -19,19 +20,22 @@ public class MediaService : IMediaService
     private readonly IAgeOperationsService _ageOperationsService;
     private readonly IThumbnailBlobStore _thumbnailBlobStore;
     private readonly IBus _bus;
+    private readonly ILogger<MediaService> _logger;
 
     public MediaService(
         IMediaStore mediaStore,
         IMediaBlobStore mediaBlobStore,
         IAgeOperationsService ageOperationsService,
         IThumbnailBlobStore thumbnailBlobStore,
-        IBus bus)
+        IBus bus,
+        ILogger<MediaService> logger)
     {
         _mediaStore = mediaStore;
         _mediaBlobStore = mediaBlobStore;
         _ageOperationsService = ageOperationsService;
         _thumbnailBlobStore = thumbnailBlobStore;
         _bus = bus;
+        _logger = logger;
     }
 
     public async Task<Media> GetByIdAsync(Guid id, CancellationToken cancellationToken)
@@ -145,7 +149,7 @@ public class MediaService : IMediaService
 
     public async Task DeleteAsync(Media media, CancellationToken cancellationToken)
     {
-        //Log.Information("Delete media {Id}", media.Id);
+        _logger.DeleteMedia(media.Id);
 
         await DeleteAllFilesAsync(media, cancellationToken);
 
@@ -293,4 +297,12 @@ public class MediaService : IMediaService
     {
         return _mediaStore.MediaAI.GetByMediaIdAsync(mediaId, cancellationToken);
     }
+}
+
+public static partial class MediaServiceLoggerExtensions
+{
+    [LoggerMessage(
+        Level = LogLevel.Information,
+        Message = "Delete media {Id}")]
+    public static partial void DeleteMedia(this ILogger logger, Guid id);
 }

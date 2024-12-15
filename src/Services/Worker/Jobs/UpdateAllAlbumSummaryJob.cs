@@ -16,7 +16,7 @@ public class UpdateAllAlbumSummaryJob : IJob
 
     public async Task Execute(IJobExecutionContext context)
     {
-        using Activity? _ = Tracing.Source.StartRootActivity("Execut UpdateAllAlbumSummary job");
+        using Activity? _ = Tracing.Source.StartRootActivity("Execute UpdateAllAlbumSummary job");
 
         await _albumSummaryService.UpdateAllAsync(context.CancellationToken);
     }

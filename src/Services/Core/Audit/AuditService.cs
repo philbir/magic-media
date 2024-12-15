@@ -7,26 +7,17 @@ using MagicMedia.Search;
 using MagicMedia.Security;
 using MagicMedia.Store;
 using MassTransit;
-using Serilog;
+using Microsoft.Extensions.Logging;
 
 namespace MagicMedia.Audit;
 
-public class AuditService : IAuditService
+public class AuditService(
+    IAuditEventStore auditEventStore,
+    IBus bus,
+    IUserContextFactory userContextFactory,
+    ILogger<AuditService> logger)
+    : IAuditService
 {
-    private readonly IAuditEventStore _auditEventStore;
-    private readonly IBus _bus;
-    private readonly IUserContextFactory _userContextFactory;
-
-    public AuditService(
-        IAuditEventStore auditEventStore,
-        IBus bus,
-        IUserContextFactory userContextFactory)
-    {
-        _auditEventStore = auditEventStore;
-        _bus = bus;
-        _userContextFactory = userContextFactory;
-    }
-
     public Task LogEventAsync(
         LogAuditEventRequest request,
         IUserContext userContext,
@@ -56,7 +47,7 @@ public class AuditService : IAuditService
         }
         catch (Exception ex)
         {
-            Log.Error(ex, "Could not send audit event");
+            logger.ErrorSendingAuditEvent(ex);
         }
 
         return Task.CompletedTask;
@@ -64,20 +55,28 @@ public class AuditService : IAuditService
 
     public async Task LogEventAsync(LogAuditEventRequest request, CancellationToken cancellationToken)
     {
-        IUserContext userContext = await _userContextFactory.CreateAsync(cancellationToken);
+        IUserContext userContext = await userContextFactory.CreateAsync(cancellationToken);
 
         await LogEventAsync(request, userContext, cancellationToken);
     }
 
     private async Task SendEventAsync(AuditEvent auditEvent, CancellationToken cancellationToken)
     {
-        await _bus.Publish(new NewAuditEventMessage(auditEvent), cancellationToken);
+        await bus.Publish(new NewAuditEventMessage(auditEvent), cancellationToken);
     }
 
     public async Task<SearchResult<AuditEvent>> SearchAsync(
         SearchAuditRequest request,
         CancellationToken cancellationToken)
     {
-        return await _auditEventStore.SearchAsync(request, cancellationToken);
+        return await auditEventStore.SearchAsync(request, cancellationToken);
     }
+}
+
+public static partial class AuditServiceLoggerExtensions
+{
+    [LoggerMessage(
+        Level = LogLevel.Error,
+        Message = "Could not send audit event. {Ex}")]
+    public static partial void ErrorSendingAuditEvent(this ILogger logger, Exception ex);
 }

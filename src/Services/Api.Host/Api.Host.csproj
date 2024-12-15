@@ -4,6 +4,7 @@
     <AssemblyName>MagicMedia.Api.Host</AssemblyName>
     <RootNamespace>MagicMedia.Api</RootNamespace>
     <UserSecretsId>75433c12-81ac-4dee-88de-ab9f3fbcbc40</UserSecretsId>
+    <ContainerRepository>magic-media-web</ContainerRepository>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
@@ -16,7 +17,6 @@
 
   <ItemGroup>
     <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" />
-    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol.Logs" />
     <PackageReference Include="OpenTelemetry.Exporter.Console" />
     <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" />
     <PackageReference Include="OpenTelemetry.Instrumentation.Http" />
@@ -26,7 +26,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SamsungTV\SamsungTV.csproj" />
-    <ProjectReference Include="..\..\Shared\AspNetCore\Shared.AspNetCore.csproj" />
     <ProjectReference Include="..\..\Shared\Telemetry\Telemetry.csproj" />
     <ProjectReference Include="..\Authorization\Authorization.csproj" />
     <ProjectReference Include="..\AzureAI\AzureAI.csproj" />

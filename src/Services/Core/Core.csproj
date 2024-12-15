@@ -6,14 +6,13 @@
 
   <ItemGroup>
     <PackageReference Include="CoenM.ImageSharp.ImageHash" />
-    <PackageReference Include="Magick.NET-Q8-x64" />
+    <PackageReference Include="Magick.NET-Q16-AnyCPU" />
     <PackageReference Include="MassTransit.Extensions.DependencyInjection" />
     <PackageReference Include="MassTransit.RabbitMQ" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Core" />
     <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" />
     <PackageReference Include="Microsoft.Extensions.Http" />
     <PackageReference Include="Microsoft.Extensions.Http.Polly" />
-    <PackageReference Include="Serilog" />
     <PackageReference Include="SixLabors.ImageSharp" />
     <PackageReference Include="NGeoHash" />
     <PackageReference Include="NodaTime" />

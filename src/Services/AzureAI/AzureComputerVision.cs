@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using MagicMedia.Store;
 using Microsoft.Azure.CognitiveServices.Vision.ComputerVision;
 using Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models;
-using Serilog;
 
 namespace MagicMedia.AzureAI;
 
@@ -47,12 +46,12 @@ public class AzureComputerVision : ICloudAIMediaAnalyser
         }
         catch (ComputerVisionErrorException ex)
         {
-            Log.Error(ex, "Error in analyse image. Message: {Message}", ex.Response.Content);
+            //Log.Error(ex, "Error in analyse image. Message: {Message}", ex.Response.Content);
             throw;
         }
         catch (Exception ex)
         {
-            Log.Error(ex, "Error in analyse image");
+            //Log.Error(ex, "Error in analyse image");
             throw;
         }
     }

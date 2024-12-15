@@ -29,7 +29,6 @@
     <PackageReference Include="MongoDB.Driver.GridFS" />
     <PackageReference Include="MongoDB.Extensions.Context" />
     <PackageReference Include="Newtonsoft.Json" />
-    <PackageReference Include="Serilog" />
     <PackageReference Include="MongoDB.Driver.Core.Extensions.OpenTelemetry" />
   </ItemGroup>
 

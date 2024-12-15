@@ -1,4 +1,5 @@
 using MagicMedia;
+using MagicMedia.Api;
 using MagicMedia.Api.Security;
 using MagicMedia.BingMaps;
 using MagicMedia.Hubs;
@@ -9,9 +10,8 @@ using MagicMedia.Stores;
 using MagicMedia.Telemetry;
 using MassTransit;
 
-WebApplicationBuilder? builder = WebApplication.CreateBuilder(args);
-
-//builder.Logging.ConfigureSerilog(builder.Configuration);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+builder.ConfigureOpenTelemetry();
 
 builder.Configuration
     .AddJsonFile("appsettings.json")
@@ -37,9 +37,12 @@ builder.Services.AddAuthentication(builder.Environment, builder.Configuration);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<IUserContextFactory, ClaimsPrincipalUserContextFactory>();
 builder.Services.AddMassTransitHostedService();
-//builder.Services.AddOpenTelemetry(builder.Configuration);
 
 WebApplication app = builder.Build();
+
+app.UseDefaultForwardedHeaders();
+app.UseDefaultFiles();
+app.UseStaticFiles();
 
 app.UseRouting();
 app.UseAuthentication();
@@ -51,5 +54,7 @@ app.UseEndpoints(endpoints =>
     endpoints.MapControllers();
     endpoints.MapHub<MediaHub>("/signalr");
 });
+
+app.MapFallbackToFile("index.html");
 
 app.Run();

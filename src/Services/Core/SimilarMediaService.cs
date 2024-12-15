@@ -5,26 +5,19 @@ using System.Threading;
 using System.Threading.Tasks;
 using CoenM.ImageHash;
 using MagicMedia.Store;
-using Serilog;
+using Microsoft.Extensions.Logging;
 
 namespace MagicMedia;
 
-public class SimilarMediaService : ISimilarMediaService
+public class SimilarMediaService(
+    IMediaStore mediaStore,
+    ISimilarMediaStore similarMediaInfoStore,
+    ILogger<SimilarMediaService> logger)
+    : ISimilarMediaService
 {
-    private readonly IMediaStore _mediaStore;
-    private readonly ISimilarMediaStore _similarMediaInfoStore;
-
-    public SimilarMediaService(
-        IMediaStore mediaStore,
-        ISimilarMediaStore similarMediaInfoStore)
-    {
-        _mediaStore = mediaStore;
-        _similarMediaInfoStore = similarMediaInfoStore;
-    }
-
     public async Task GetDuplicatesAsync(CancellationToken cancellationToken)
     {
-        Dictionary<Guid, IEnumerable<MediaHash>>? medias = await _mediaStore.GetAllHashesAsync(cancellationToken);
+        Dictionary<Guid, IEnumerable<MediaHash>>? medias = await mediaStore.GetAllHashesAsync(cancellationToken);
         var todo = medias.Count;
 
         foreach (KeyValuePair<Guid, IEnumerable<MediaHash>> media in medias)
@@ -61,14 +54,14 @@ public class SimilarMediaService : ISimilarMediaService
                         }
                         catch (Exception ex)
                         {
-                            Log.Error(ex, "Error GetSimilarity");
+                            logger.ErrorGetSimilarity(ex);
                         }
                     }
                 }
 
                 if (similar.Any())
                 {
-                    await _similarMediaInfoStore.AddAsync(similar, cancellationToken);
+                    await similarMediaInfoStore.AddAsync(similar, cancellationToken);
                 }
             }
 
@@ -89,7 +82,7 @@ public class SimilarMediaService : ISimilarMediaService
         SearchSimilarMediaRequest request,
         CancellationToken cancellationToken)
     {
-        return await _similarMediaInfoStore.GetSimilarGroupsAsync(request, cancellationToken);
+        return await similarMediaInfoStore.GetSimilarGroupsAsync(request, cancellationToken);
     }
 
     private double GetSimilarity(string aHash, IEnumerable<MediaHash> b, MediaHashType type)
@@ -105,4 +98,12 @@ public class SimilarMediaService : ISimilarMediaService
 
         return 0;
     }
+}
+
+public static partial class SimilarMediaServiceLoggerExtensions
+{
+    [LoggerMessage(
+        Level = LogLevel.Error,
+        Message = "Error in GetSimilarity")]
+    public static partial void ErrorGetSimilarity(this ILogger logger, Exception ex);
 }

@@ -5,25 +5,23 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MagicMedia.Store;
-using Serilog;
+using Microsoft.Extensions.Logging;
 
 namespace MagicMedia;
 
-public class DuplicateMediaGuard : IDuplicateMediaGuard
+public class DuplicateMediaGuard(
+    IMediaStore mediaStore,
+    ILogger<DuplicateMediaGuard> logger)
+    : IDuplicateMediaGuard
 {
-    private readonly IMediaStore _mediaStore;
+    private readonly ILogger<DuplicateMediaGuard> _logger = logger;
     private HashSet<MediaHash> _hashes = new HashSet<MediaHash>();
-
-    public DuplicateMediaGuard(IMediaStore mediaStore)
-    {
-        _mediaStore = mediaStore;
-    }
 
     public async Task InitializeAsync(CancellationToken cancellationToken)
     {
         using Activity? activity = Tracing.Source.StartActivity("Initialize duplicate guard");
 
-        Dictionary<Guid, IEnumerable<MediaHash>>? medias = await _mediaStore.GetAllHashesAsync(cancellationToken);
+        Dictionary<Guid, IEnumerable<MediaHash>>? medias = await mediaStore.GetAllHashesAsync(cancellationToken);
 
         _hashes = medias.SelectMany(x => x.Value)
             .Where(x =>
@@ -54,12 +52,19 @@ public class DuplicateMediaGuard : IDuplicateMediaGuard
 
         if (identifierHash is { } && _hashes.Contains(identifierHash, new MediaHashComparer()))
         {
-            Log.Information("Identifier allready exists: {Identifier}", identifierHash.Value);
-
+            _logger.IdentifierAllreadyExists(identifierHash.Value);
             return true;
         }
 
         return false;
     }
 }
+public static partial class DuplicateMediaGuardLoggerExtensions
+{
+    [LoggerMessage(
+        Level = LogLevel.Information,
+        Message = "Identifier allready exists: {Identifier}")]
+    public static partial void IdentifierAllreadyExists(this ILogger logger, string identifier);
+}
+
 
